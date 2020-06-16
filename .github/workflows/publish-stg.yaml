@@ -15,13 +15,8 @@ jobs:
         with:
           submodules: true
 
-      - name: Setup
-        run: |
-          script/setup
-          hugo
-
-      # - name: Build site
-      #   uses: jakejarvis/hugo-build-action@master
+      - name: Build site
+        uses: jakejarvis/hugo-build-action@master
 
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
