@@ -13,8 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup
+        run: script/setup
+
       - name: Build site
-        uses: jakejarvis/hugo-build-action@master
+        run: hugo
 
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
