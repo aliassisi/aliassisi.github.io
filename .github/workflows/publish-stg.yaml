@@ -16,7 +16,7 @@ jobs:
           submodules: true
 
       - name: Build site
-        uses: jakejarvis/hugo-build-action@master
+        uses: jakejarvis/hugo-build-action@0.72.0
         with:
           args: -b ${{ secrets.GCP_STAGING_BUCKET_NAME }}
 
