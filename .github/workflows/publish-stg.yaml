@@ -22,5 +22,5 @@ jobs:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
 
-      - name: gcloud
-        run: gcloud info
+      - name: Sync bucket contents
+        run: gsutil rsync -R public gs://${{ secrets.GCP_STAGING_BUCKET_NAME }}
