@@ -17,6 +17,8 @@ jobs:
 
       - name: Build site
         uses: jakejarvis/hugo-build-action@v0.72.0
+        env:
+          HUGO_PARAMS_NOINDEX: true
         with:
           args: -b http://${{ secrets.GCP_STAGING_BUCKET_NAME }}
 
