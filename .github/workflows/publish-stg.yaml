@@ -12,12 +12,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Setup
-        run: script/setup
+        run: |
+          script/setup
+          hugo
 
-      - name: Build site
-        run: hugo
+      # - name: Build site
+      #   uses: jakejarvis/hugo-build-action@master
 
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
