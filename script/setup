@@ -13,6 +13,6 @@ script/bootstrap
 echo "==> Setting up additional software…"
 asdf plugin-add hugo https://github.com/beardix/asdf-hugo.git || true
 asdf install
-
+. $HOME/.asdf/asdf.sh
 
 echo "==> Environment is now ready to go!"
