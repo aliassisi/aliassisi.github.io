@@ -27,4 +27,4 @@ jobs:
           export_default_credentials: true
 
       - name: Sync bucket contents
-        run: gsutil rsync -R public gs://${{ secrets.GCP_STAGING_BUCKET_NAME }}
+        run: gsutil -h "Cache-Control:no-cache,max-age=0" rsync -R public gs://${{ secrets.GCP_STAGING_BUCKET_NAME }}
