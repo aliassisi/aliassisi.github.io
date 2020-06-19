@@ -7,9 +7,9 @@ paginate = "6"
 # post excerpt
 summaryLength = "10"
 # Lang settings
-DefaultContentLanguage = "it"
+DefaultContentLanguage = "en"
 languageCode = "it"
-disableLanguages = [] # desable language from here
+disableLanguages = []
 
 
 ############################# Plugins ##############################
@@ -43,48 +43,36 @@ link = "plugins/google-map/gmap.js"
 ############################## navigation ###############################
 # main menu
 [[menu.main]]
-name = "About"
-URL = "about"
-weight = 1
-
-[[menu.main]]
-name = "course"
+name = "Courses"
 URL = "course"
 weight = 2
 
-[[menu.main]]
-weight = 3
-name = "Pages"
-hasChildren = true
+  [[menu.main]]
+  parent = "Courses"
+  name = "Language"
+  URL = "course"
+  weight = 1
 
   [[menu.main]]
-  parent = "Pages"
-  name = "teacher"
-  URL = "teacher"
+  parent = "Courses"
+  name = "Info"
+  URL = "info/course"
+  weight = 2
 
   [[menu.main]]
-  parent = "Pages"
-  name = "notice"
-  URL = "notice"
-
-  [[menu.main]]
-  parent = "Pages"
-  name = "event"
-  URL = "event"
-
-  [[menu.main]]
-  parent = "Pages"
-  name = "scholarship"
-  URL = "scholarship"
-
-  [[menu.main]]
-  parent = "Pages"
-  name = "research"
-  URL = "research"
+  parent = "Courses"
+  name = "Starting dates"
+  URL = "info/starting-dates"
+  weight = 3
 
 [[menu.main]]
-name = "blog"
+name = "News"
 URL = "blog"
+weight = 3
+
+[[menu.main]]
+name = "About"
+URL = "about"
 weight = 4
 
 [[menu.main]]
@@ -122,15 +110,17 @@ logo = "images/logo.png"
 description = "This is meta description"
 author = "Themefisher"
 # contact info
-address = "9567 Turner Trace Apt. BC C3G8A4"
-mobile = "+211234565523"
-email = "info@educenter.com"
+address = "Via Tiberio d'Assisi, 10 - 06081 Assisi, Italy"
+mobile = "+39075815281"
+email = "info@aliassisi.it"
 # contact form action
 contact_form_action = "#" # contact form works with https://formspree.io
 # Google Analitycs
 google_analitycs_id = "" # your id
 # top header
 top_header = true
+# disable SEO indexing
+noindex = false
 
 # Preloader
 [params.preloader]
