@@ -55,6 +55,9 @@
 - id: weekly
   translation: weekly
 
+- id: daily
+  translation: daily
+
 - id: fee
   translation: fee
 
