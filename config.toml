@@ -39,48 +39,6 @@ link = "plugins/filterizr/jquery.filterizr.min.js"
 [[params.plugins.js]]
 link = "plugins/google-map/gmap.js"
 
-
-############################## navigation ###############################
-# main menu
-[[menu.main]]
-name = "Courses"
-URL = "course"
-weight = 2
-
-  [[menu.main]]
-  parent = "Courses"
-  name = "See all courses"
-  URL = "course"
-  weight = 1
-
-  [[menu.main]]
-  parent = "Courses"
-  name = "Info"
-  URL = "info/course"
-  weight = 2
-
-  [[menu.main]]
-  parent = "Courses"
-  name = "Starting dates"
-  URL = "info/starting-dates"
-  weight = 3
-
-[[menu.main]]
-name = "News"
-URL = "blog"
-weight = 3
-
-[[menu.main]]
-name = "About"
-URL = "about"
-weight = 4
-
-[[menu.main]]
-name = "Contact"
-URL = "contact"
-weight = 5
-
-
 # footer menu
 [[menu.footer]]
 name = "teacher"
@@ -174,6 +132,39 @@ weight = 1
 home = "Home"
 # copyright
 copyright = "Copyright &copy; 2020 a hugo theme by [themefisher](https://themefisher.com)"
+# main menu
+[[Languages.it.menu.main]]
+name = "Corsi"
+URL = "course"
+weight = 2
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
+  name = "Tutti i corsi"
+  URL = "course"
+  weight = 1
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
+  name = "Info"
+  URL = "info/course"
+  weight = 2
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
+  name = "Date inizio"
+  URL = "info/starting-dates"
+  weight = 3
+[[Languages.it.menu.main]]
+name = "News"
+URL = "blog"
+weight = 3
+[[Languages.it.menu.main]]
+name = "Accademia"
+URL = "about"
+weight = 4
+[[Languages.it.menu.main]]
+name = "Contatti"
+URL = "contact"
+weight = 5
+
 
 [Languages.en]
 languageName = "En"
@@ -183,5 +174,35 @@ weight = 2
 home = "Home"
 # copyright
 copyright = "Copyright &copy; 2020 a hugo theme by [themefisher](https://themefisher.com)"
-
-
+# main menu
+[[Languages.en.menu.main]]
+name = "Courses"
+URL = "course"
+weight = 2
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "See all courses"
+  URL = "course"
+  weight = 1
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Info"
+  URL = "info/course"
+  weight = 2
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Starting dates"
+  URL = "info/starting-dates"
+  weight = 3
+[[Languages.en.menu.main]]
+name = "News"
+URL = "blog"
+weight = 3
+[[Languages.en.menu.main]]
+name = "About"
+URL = "about"
+weight = 4
+[[Languages.en.menu.main]]
+name = "Contact"
+URL = "contact"
+weight = 5
