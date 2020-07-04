@@ -7,7 +7,7 @@ bg_image: "images/backgrounds/page-title.jpg"
 # meta description
 description : "Corso di dizione individuale in videoconferenza."
 # course thumbnail
-image: "images/courses/wes-hicks-4-EeTnaC1S4-unsplash.jpg"
+image: "images/courses/emanuela-faraglia.jpg"
 # taxonomy
 category: "Italian"
 # teacher
