@@ -1,0 +1,325 @@
+---
+author: lorenzo
+date: 2018-09-10 14:46:15+00:00
+draft: false
+title: 'Second Language Acquisition: some basics (8th-11th  April 2019) '
+type: post
+image: "images/blog/alia.jpg"
+categories:
+- News
+---
+
+[:en]
+
+
+
+
+
+
+
+[![P1000893](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893-768x576.jpg)
+](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This course will provide participants with a basic introduction to second and foreign language learning. We will ask the fundamental question of what it means to learn a second or foreign language, illustrating basic principles by underscoring common perceptions and misperceptions of how language learning takes place. We will illustrate and define commonly-discussed concepts such as interlanguage, the role of the first language, order of acquisition (is there a natural order?), input, interaction, error correction, and output, among others. Commonly accepted principles will, to the extent possible, be illustrated with concrete examples. In the course, we will consider students in a classroom differ from one another (for example, in aptitude, motivation, attitude, anxiety) and how these might impact their language learning success or lack of success. Finally, we will take the concepts discussed and consider how they apply to a classroom context, asking the question of the relationship between teaching and learning and, in particular, discussing differences between classroom and natural learning. At the end of this course, participants will be guided in the development of materials focusing on any of the concepts discussed in the class.
+
+
+
+
+
+
+
+
+
+
+**Price: 150 € (120 € for University students) **
+
+
+
+
+![](http://aliassisi.it/wp-content/uploads/2018/09/th.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ID: 20148
+
+
+
+
+[Enrolment form](https://docs.google.com/forms/d/e/1FAIpQLSdzqsZanGqJlM5w7lolI93e-xl6NEQo9DvN1yTr5Y_Fa-Ws5g/viewform?usp=sf_link)
+
+
+
+
+
+
+
+
+
+
+**Susan Gass** is University Distinguished Professor in the Second Language Studies Program at Michigan State University in the U.S. She is the recipient of many local, national, and international awards and has served as the President of the American Association for Applied Linguistics and the International Association of Applied Linguistics. On her own campus, she directed the Second Language Studies program for 12 years and the English Language Center for 28 years. She co-directed the Center for Language Education and Research for 22 years and the Center for Language Teaching Advancement for 12 years. She currently serves as editor of the widely-acclaimed journal, Studies in Second Language Acquisition. She has published more than 150 articles and more than 30 books. She has taught courses and given lectures in all continents of the world (except Antarctica). She is well-known for her books on second language acquisition. Her introductory textbook Second Language Acquisition: An Introductory Course (with Jennifer Behney and Luke Plonsky) is about to be published in its fifth edition. She has also published a classic text on research methodology (Second language research: Methodology and design, with Alison Mackey) which was recently published in its 2nd edition. Other books have focused on specific aspects of second language acquisition, for example, books on input and interaction (Input, Interaction, and the Second Language Learner, 2018), on salience in second language acquisition (Salience in Second Language Acquisition, co-edited in 2018 with Patti Spinner and Jennifer Behney), and on research methodology (Stimulated Recall Methodology in Applied Linguistics and Second Language Research, published in 2016 with Alison Mackey; Using Judgment Data in Second Language Research, to be published in 2019 with Patti Spinner).
+
+
+
+
+**Jennifer Behney** is Associate Professor at Youngstown State University, where she teaches graduate and undergraduate courses in language acquisition, sociolinguistics, Italian language and linguistics, and foreign language teaching methods. She is also the University Supervisor of student teachers of Spanish and Italian and program coordinator of Foreign Language Education in the Beeghly College of Education (BCOE). She is active in the American Council on the Teaching of Foreign Languages (ACTFL) and the Ohio Foreign Language Association (OFLA), where she serves on the Teacher Education and Licensure Committee. Her research interests lie in Second Language Acquisition (SLA) and foreign language teacher training. In SLA, she researches second language processing and has conducted research on grammatical gender processing and eye-tracking. In foreign language teacher education, she researches teacher candidate performance and perceptions on the World Language edTPA. She is co-author of an introductory SLA textbook (with Susan Gass and Luke Plonsky) and co-editor of a volume on salience in SLA (with Susan Gass and Patti Spinner). Her work has appeared in Foreign Language Annals, Studies in Second Language Acquisition, and several book chapters.
+
+
+
+
+[download flyer](http://aliassisi.it/wp-content/uploads/2018/09/Locandina_aprile1.pdf)
+
+
+
+
+
+
+
+
+
+
+[:it]
+
+
+
+
+
+
+
+[![P1000893](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893-768x576.jpg)
+](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This course will provide participants with a basic introduction to second and foreign language learning.
+
+
+
+
+We will ask the fundamental question of what it means to learn a second or foreign language, illustrating basic principles by underscoring common perceptions and misperceptions of how language learning takes place.
+
+
+
+
+We will illustrate and define commonly-discussed concepts such as interlanguage, the role of the first language, order of acquisition (is there a natural order?), input, interaction, error correction, and output, among others.
+
+
+
+
+Commonly accepted principles will, to the extent possible, be illustrated with concrete examples. In the course, we will consider students in a classroom differ from one another (for example, in aptitude, motivation, attitude, anxiety) and how these might impact their language learning success or lack of success.
+
+
+
+
+Finally, we will take the concepts discussed and consider how they apply to a classroom context, asking the question of the relationship between teaching and learning and, in particular, discussing differences between classroom and natural learning. At the end of this course, participants will be guided in the development of materials focusing on any of the concepts discussed in the class.
+
+
+
+
+
+
+
+
+
+
+**Price: 150 € (120 € for University students) **
+
+
+
+
+![](http://aliassisi.it/wp-content/uploads/2018/09/th.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ID: 20148
+
+
+
+
+[Enrolment form](https://docs.google.com/forms/d/e/1FAIpQLSdzqsZanGqJlM5w7lolI93e-xl6NEQo9DvN1yTr5Y_Fa-Ws5g/viewform?usp=sf_link)
+
+
+
+
+
+
+
+
+
+
+**Susan Gass** is University Distinguished Professor in the Second Language Studies Program at Michigan State University in the U.S. She is the recipient of many local, national, and international awards and has served as the President of the American Association for Applied Linguistics and the International Association of Applied Linguistics. On her own campus, she directed the Second Language Studies program for 12 years and the English Language Center for 28 years. She co-directed the Center for Language Education and Research for 22 years and the Center for Language Teaching Advancement for 12 years. She currently serves as editor of the widely-acclaimed journal, Studies in Second Language Acquisition. She has published more than 150 articles and more than 30 books. She has taught courses and given lectures in all continents of the world (except Antarctica). She is well-known for her books on second language acquisition. Her introductory textbook Second Language Acquisition: An Introductory Course (with Jennifer Behney and Luke Plonsky) is about to be published in its fifth edition. She has also published a classic text on research methodology (Second language research: Methodology and design, with Alison Mackey) which was recently published in its 2nd edition. Other books have focused on specific aspects of second language acquisition, for example, books on input and interaction (Input, Interaction, and the Second Language Learner, 2018), on salience in second language acquisition (Salience in Second Language Acquisition, co-edited in 2018 with Patti Spinner and Jennifer Behney), and on research methodology (Stimulated Recall Methodology in Applied Linguistics and Second Language Research, published in 2016 with Alison Mackey; Using Judgment Data in Second Language Research, to be published in 2019 with Patti Spinner).
+
+
+
+
+**Jennifer Behney** is Associate Professor at Youngstown State University, where she teaches graduate and undergraduate courses in language acquisition, sociolinguistics, Italian language and linguistics, and foreign language teaching methods. She is also the University Supervisor of student teachers of Spanish and Italian and program coordinator of Foreign Language Education in the Beeghly College of Education (BCOE). She is active in the American Council on the Teaching of Foreign Languages (ACTFL) and the Ohio Foreign Language Association (OFLA), where she serves on the Teacher Education and Licensure Committee. Her research interests lie in Second Language Acquisition (SLA) and foreign language teacher training. In SLA, she researches second language processing and has conducted research on grammatical gender processing and eye-tracking. In foreign language teacher education, she researches teacher candidate performance and perceptions on the World Language edTPA. She is co-author of an introductory SLA textbook (with Susan Gass and Luke Plonsky) and co-editor of a volume on salience in SLA (with Susan Gass and Patti Spinner). Her work has appeared in Foreign Language Annals, Studies in Second Language Acquisition, and several book chapters.
+
+
+
+
+
+
+
+[download flyer](http://aliassisi.it/wp-content/uploads/2018/09/Locandina_aprile1.pdf)
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+[:ru]
+
+
+
+
+
+
+
+[![P1000893](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893-768x576.jpg)
+](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This course will provide participants with a basic introduction to second and foreign language learning. We will ask the fundamental question of what it means to learn a second or foreign language, illustrating basic principles by underscoring common perceptions and misperceptions of how language learning takes place. We will illustrate and define commonly-discussed concepts such as interlanguage, the role of the first language, order of acquisition (is there a natural order?), input, interaction, error correction, and output, among others. Commonly accepted principles will, to the extent possible, be illustrated with concrete examples. In the course, we will consider students in a classroom differ from one another (for example, in aptitude, motivation, attitude, anxiety) and how these might impact their language learning success or lack of success. Finally, we will take the concepts discussed and consider how they apply to a classroom context, asking the question of the relationship between teaching and learning and, in particular, discussing differences between classroom and natural learning. At the end of this course, participants will be guided in the development of materials focusing on any of the concepts discussed in the class.
+
+
+
+
+
+
+
+
+
+
+**Price: 150 € (120 € for University students) **
+
+
+
+
+[Enrolment form](https://docs.google.com/forms/d/e/1FAIpQLSdzqsZanGqJlM5w7lolI93e-xl6NEQo9DvN1yTr5Y_Fa-Ws5g/viewform?usp=sf_link)
+
+
+
+
+
+
+
+
+
+
+**Susan Gass** is University Distinguished Professor in the Second Language Studies Program at Michigan State University in the U.S. She is the recipient of many local, national, and international awards and has served as the President of the American Association for Applied Linguistics and the International Association of Applied Linguistics. On her own campus, she directed the Second Language Studies program for 12 years and the English Language Center for 28 years. She co-directed the Center for Language Education and Research for 22 years and the Center for Language Teaching Advancement for 12 years. She currently serves as editor of the widely-acclaimed journal, Studies in Second Language Acquisition. She has published more than 150 articles and more than 30 books. She has taught courses and given lectures in all continents of the world (except Antarctica). She is well-known for her books on second language acquisition. Her introductory textbook Second Language Acquisition: An Introductory Course (with Jennifer Behney and Luke Plonsky) is about to be published in its fifth edition. She has also published a classic text on research methodology (Second language research: Methodology and design, with Alison Mackey) which was recently published in its 2nd edition. Other books have focused on specific aspects of second language acquisition, for example, books on input and interaction (Input, Interaction, and the Second Language Learner, 2018), on salience in second language acquisition (Salience in Second Language Acquisition, co-edited in 2018 with Patti Spinner and Jennifer Behney), and on research methodology (Stimulated Recall Methodology in Applied Linguistics and Second Language Research, published in 2016 with Alison Mackey; Using Judgment Data in Second Language Research, to be published in 2019 with Patti Spinner).
+
+
+
+
+**Jennifer Behney** is Associate Professor at Youngstown State University, where she teaches graduate and undergraduate courses in language acquisition, sociolinguistics, Italian language and linguistics, and foreign language teaching methods. She is also the University Supervisor of student teachers of Spanish and Italian and program coordinator of Foreign Language Education in the Beeghly College of Education (BCOE). She is active in the American Council on the Teaching of Foreign Languages (ACTFL) and the Ohio Foreign Language Association (OFLA), where she serves on the Teacher Education and Licensure Committee. Her research interests lie in Second Language Acquisition (SLA) and foreign language teacher training. In SLA, she researches second language processing and has conducted research on grammatical gender processing and eye-tracking. In foreign language teacher education, she researches teacher candidate performance and perceptions on the World Language edTPA. She is co-author of an introductory SLA textbook (with Susan Gass and Luke Plonsky) and co-editor of a volume on salience in SLA (with Susan Gass and Patti Spinner). Her work has appeared in Foreign Language Annals, Studies in Second Language Acquisition, and several book chapters.
+
+
+
+
+[download flyer](http://aliassisi.it/wp-content/uploads/2018/09/Locandina_aprile1.pdf)
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+[:]
