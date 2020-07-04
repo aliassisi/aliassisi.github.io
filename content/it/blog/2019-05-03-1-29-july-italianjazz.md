@@ -11,7 +11,7 @@ image: "images/blog/Umbria-Jazz.jpg"
 author: "lorenzo"
 # taxonomy
 categories: ["News"]
-tags: ["course", "photography"]
+tags: ["course", "music"]
 type: "post"
 ---
 
