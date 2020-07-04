@@ -2,109 +2,112 @@
   translation: Lire la suite
 
 - id: contact_form
-  translation: Formulaire de contact
+  translation: Form di contatto
 
 - id: send
-  translation: envoyer
+  translation: invia
 
 - id: contact_info
-  translation: Info de contact
+  translation: Informazioni di contatto
 
 - id: subscribe_newsletter
-  translation: Abonnement à l’infolettre
+  translation: Iscriviti alla newsletter
 
 - id: subscribe
-  translation: S’abonner
+  translation: Iscriviti
 
 - id: contact_us
-  translation: Nous joindre
+  translation: Contattaci
 
 - id: latest_article
-  translation: Dernier article
+  translation: Ultimo articolo
 
 - id: categories
-  translation: Catégories
+  translation: Categorie
 
 - id: tags
-  translation: Étiquettes
+  translation: Tag
 
 - id: see_all
-  translation: Tout voir
+  translation: Vedi tutti
 
 - id: apply_now
-  translation: Postuler maintenant
+  translation: Iscriviti
 
 - id: posted_by
-  translation: Publié par
+  translation: Pubblicato da
 
 - id: date
-  translation: Date
+  translation: Data
 
 - id: time
-  translation: heure
+  translation: ora
 
 - id: category
-  translation: Catégorie
+  translation: Categoria
 
 - id: related_course
-  translation: Cours lié
+  translation: Corsi simili
 
 - id: duration
-  translation: durée
+  translation: durata
 
 - id: weekly
-  translation: hebdomadairement
+  translation: a settimana
 
 - id: fee
-  translation: frais
+  translation: costo
 
 - id: teacher
-  translation: enseignant·e
+  translation: insegnante
 
 - id: location
-  translation: emplacement
+  translation: luogo
 
 - id: entry_fee
-  translation: frais d’entrée
+  translation: costo di ingresso
 
 - id: event_speaker
-  translation: Présentateur•trice·s
+  translation: Relatore
 
 - id: more_event
-  translation: Plus d’événements
+  translation: Più eventi
 
 - id: join
-  translation: S’abonner
+  translation: Iscriviti
 
 - id: enter_email
-  translation: Entrez votre courriel…
+  translation: Inserisci la tua e-mail…
 
 - id: company
-  translation: compagnie
+  translation: azienda
 
 - id: links
-  translation: liens
+  translation: link
 
 - id: courses
-  translation: Cours
+  translation: Corsi
 
 - id: new_notice
-  translation: nouvelle notice
+  translation: Nuovo avviso
 
 - id: call
-  translation: appeler
+  translation: chiama
 
 - id: email
-  translation: courriel
+  translation: email
 
 - id: all
-  translation: Tous
+  translation: Tutti
 
 - id: interest
-  translation: RÉSUMÉ DES ACTIVITÉS/INTÉRÊTS
+  translation: Interessi
 
 - id: our_teachers
-  translation: Nos enseignants
+  translation: I nostri insegnanti
 
 - id: download
-  translation: Télécharger
+  translation: scarica
+
+- id: daily
+  translation: al giorno
