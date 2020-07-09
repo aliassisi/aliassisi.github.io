@@ -53,7 +53,7 @@
   translation: duration
 
 - id: weekly
-  translation: weekly
+  translation: hours per week
 
 - id: daily
   translation: daily

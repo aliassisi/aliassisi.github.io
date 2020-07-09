@@ -53,7 +53,7 @@
   translation: durata
 
 - id: weekly
-  translation: a settimana
+  translation: ore a settimana
 
 - id: fee
   translation: costo

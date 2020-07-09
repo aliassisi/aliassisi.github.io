@@ -15,17 +15,16 @@ teacher: ""
 # duration
 duration : "4 Weeks"
 # weekly
-weekly : "5 days "
+weekly : "30 hours"
 # daily
 daily: "6 hours"
 # course fee
-fee : "1.440,00€"
+fee : "2.080,00€"
 # apply url
 apply_url : "#"
 # type
 type: "course"
 ---
-
 
 ### About the course
 
@@ -37,6 +36,5 @@ type: "course"
 * Duration: 4 weeks
 * Total Hours: 120 hours
 * Credits: 8 CFU (ECTS) / 3 Neumann University Italian credits (at appropriate level)
-* Cost: 2.080,00 Euro
 * Levels: Beginners, A2 through C2
 * Diction classes included

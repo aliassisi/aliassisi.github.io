@@ -13,11 +13,11 @@ category: "Italian"
 # teacher
 teacher: ""
 # duration
-duration : "4 Weeks"
+duration : "-"
 # weekly
-weekly : "5 days"
+weekly : "-"
 # daily
-daily: "2 hours"
+daily: "-"
 # course fee
 fee : "40,00€"
 # apply url
@@ -25,7 +25,6 @@ apply_url : "#"
 # type
 type: "course"
 ---
-
 
 ### About the course
 

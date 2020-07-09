@@ -13,7 +13,7 @@ category: "Italian"
 # teacher
 teacher: ""
 # duration
-duration : "4 Weeks"
+duration : "4 weeks"
 # weekly
 weekly : "5 days"
 # daily
@@ -25,7 +25,6 @@ apply_url : "#"
 # type
 type: "course"
 ---
-
 
 ### About the course
 

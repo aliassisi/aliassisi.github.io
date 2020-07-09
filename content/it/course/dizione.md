@@ -15,7 +15,7 @@ teacher: ""
 # duration
 duration : "5 settimane"
 # weekly
-weekly : "1 giorno"
+weekly : "2 ore"
 # daily
 daily: "2 ore"
 # course fee
