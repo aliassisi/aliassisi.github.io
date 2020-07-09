@@ -3,3 +3,5 @@ Brewfile.lock.json
 
 # Do not check in generated files
 public/
+
+.DS_Store
