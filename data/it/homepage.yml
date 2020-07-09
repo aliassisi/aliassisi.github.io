@@ -66,11 +66,11 @@ banner_feature:
       zone più belle d'Italia."
 
     # feature item loop
-    - name : "Design your course"
+    - name : "Crea il tuo corso"
       icon : "ti-ruler-pencil" # icon pack : https://themify.me/themify-icons
-      content : "Please write to info@aliassisi.it if you wish to design a
-      tailored course to ft your needs. We will be happy to help you develop
-      the course that best suits you!"
+      content : "Scrivi a info@aliassisi.it se desideri progettare un corso 
+      su misura per le tue esigenze. Saremo felici di aiutarti a sviluppare
+      il corso più adatto a te!"
 
 
 ############################## about ##################################
