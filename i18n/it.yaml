@@ -111,3 +111,6 @@
 
 - id: daily
   translation: al giorno
+
+- id: course_directors
+  translation: Direttori dei corsi

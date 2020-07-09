@@ -10,39 +10,37 @@ funfacts:
   enable : true
 ---
 
-### All class sessions offer:
+### In tutti i nostri corsi:
 
-* Highly qualifed teachers who ensure student interaction and engagement
-* Focus on diction
+* Insegnanti qualificati, lezioni coinvolgenti e costante interazione
+* Focus sulla dizione
 
-### All courses with ALIA offer:
+### Tutti i nostri corsi offrono:
 
-* Free placement test and interview
-* Free sixty (60) minute virtual class
-* Live lessons in virtual interactive classrooms
-* Mini groups
-* E-book (In italiano. Il corso, Hoepli)
-* Virtual tours of Assisi and other Umbrian towns
-* Virtual tours of Rome and Florence
-* Interactive self-study activities through Moodle https://extra.aliassisi.it/
-  (self-study resources and additional work for approximately two hours per day)
-* Certifcate of Attendance
-* Certifcate of Evaluation
-* Preparation for the CILS, PLIDA, ROMA TRE exams
+* Test di ingresso e colloquio
+* Lezioni in presenza in aule virtuali
+* Mini gruppi
+* Ebook (In italiano. Il corso, Hoepli)
+* Visite virtuali di Assisi e altre città umbre
+* Visite virtuali di Roma e Firenze
+* Attività interattive in autoapprendimento su Moodle: https://extra.aliassisi.it/
+* Certificato di frequenza
+* Certificato di valutazione secondo i parametri europei
+* Preparazione agli esami di certificazione CILS, PLIDA, ROMA TRE
 
-### Tailored courses
+### Corsi su misura
 
-Please write to info@aliassisi.it if you wish to design a tailored course to fit
-your needs. We will be happy to help you develop the course that best suits you!
+Scrivi a info@aliassisi.it se desideri progettare un corso su misura per le tue esigenze. Saremo felici di
+aiutarti a sviluppare il corso più adatto a te!
 
-### Levels
+### Livelli
 
-![Levels](/images/info/levels.png)
+![Livelli](/images/info/levels.png)
 
-* Beginners: Develop a strong foundation to begin speaking Italian
-* A1: Interact with native speakers through basic Italian
-* A2: Improved ability to interact with native speakers with more spontaneous speech
-* B1: Become an independent speaker, now there’s much more you can do in Italian
-* B2: Learn new concepts in Italian to further your personal interests and/or professional/educational purposes
-* C1: Deepen your knowledge of content in Italian
-* C2: Achieve Italian language abilities close to those of an educated native speaker
+* Principianti: Solide basi per iniziare a parlare italiano
+* A1: Italiano di base, inizia a parlare in modo semplice
+* A2: Interagire in italiano con maggiore spontaneità
+* B1: Indipendenza, ora puoi fare molto in italiano
+* B2: Imparare nuovi concetti in italiano per crescita personale, professionale o accademica
+* C1: Approfondisci la conoscenza di contenuti in italiano
+* C2: Raggiungi un livello di competenza in italiano simile a un madrelingua
