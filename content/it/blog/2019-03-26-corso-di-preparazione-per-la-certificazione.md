@@ -17,7 +17,4 @@ Il corso unisce i vantaggi del lavoro di gruppo a quelli di un lavoro individual
 
 Contattaci per maggiori informazioni:
 
-
 info@aliassisi.it +39 075 815 281
-
-=
