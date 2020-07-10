@@ -20,7 +20,7 @@ jobs:
         env:
           HUGO_PARAMS_NOINDEX: true
         with:
-          args: -b http://${{ secrets.GCP_STAGING_BUCKET_NAME }}
+          args: -b https://${{ secrets.GCP_STAGING_BUCKET_NAME }}
 
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
