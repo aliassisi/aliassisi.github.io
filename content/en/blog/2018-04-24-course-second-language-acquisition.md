@@ -9,49 +9,9 @@ categories:
 - News
 ---
 
-[:en]
-
-
-
-
-
-
-
-[ ![P1000893](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893-768x576.jpg)
-](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893.jpg)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![P1000893](images/blog/P1000893-768x576.jpg)
 
 Keynote speaker: Susan Gass (Michigan University)
-
-
-
-
 
 	  1. Introduction
 
@@ -59,12 +19,6 @@ Keynote speaker: Susan Gass (Michigan University)
 	  * What is second language acquisition?
 	  * Perceptions and misperceptions
 	  * Why is it important?
-
-
-
-
-
-
 
 	  2. Basic principles
 
@@ -82,11 +36,6 @@ Keynote speaker: Susan Gass (Michigan University)
 	  * Salience
 
 
-
-
-
-
-
 	  3. What about individual differences?
 
 
@@ -95,12 +44,6 @@ Keynote speaker: Susan Gass (Michigan University)
 	  * Attitude
 	  * Age
 	  * Anxiety
-
-
-
-
-
-
 
 	  4. What does a classroom have to offer?
 
@@ -112,161 +55,4 @@ Keynote speaker: Susan Gass (Michigan University)
 
 
 
-**Price: 150 €
-
-**
-
-
-
-
-[Enrolment form](https://docs.google.com/forms/d/e/1FAIpQLSefDMAiS8S2AQeFcQjBgNjJFzTdkj8RZtvUh2rqrmqpjzHl2g/viewform?usp=sf_link)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[:it]
-
-
-
-
-
-
-
-[ ![P1000893](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893-768x576.jpg)
-](http://assisisummerschool.com/wp-content/uploads/2017/02/P1000893.jpg)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Keynote speaker: Susan Gass (Michigan University)
-
-
-
-
-
-	  1. Introduction
-
-
-	  * What is second language acquisition?
-	  * Perceptions and misperceptions
-	  * Why is it important?
-
-
-
-
-
-
-
-	  2. Basic principles
-
-
-	  * How are languages learned?
-	  * Interlanguage
-	  * Behaviorism/innate principles
-	  * Role of native language
-	  * Order of acquisition
-	  * Input
-	  * Interaction
-	  * Output
-	  * Role of the environment
-	  * Exemplars
-	  * Salience
-
-
-
-
-
-
-
-	  3. What about individual differences?
-
-
-	  * Aptitude
-	  * Motivation
-	  * Attitude
-	  * Age
-	  * Anxiety
-
-
-
-
-
-
-
-	  4. What does a classroom have to offer?
-
-
-	  * Does teaching=learning?
-
-
-	  5. Perceptions and misperceptions revisited
-
-
-
-**Price: 150 €
-
-**
-
-
-
-
-[Enrolment form](https://docs.google.com/forms/d/e/1FAIpQLSefDMAiS8S2AQeFcQjBgNjJFzTdkj8RZtvUh2rqrmqpjzHl2g/viewform?usp=sf_link)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[:]
+**Price: 150 €**
