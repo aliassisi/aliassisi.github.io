@@ -100,26 +100,31 @@ course:
 ########################## Call to action ############################
 cta:
   enable : true
-  subtitle : "Click to Join the Advance Workshop"
-  title : "Training In Advannce Networking"
+  subtitle : "Accedi alla nostra piattaforma di e-learning"
+  title : "ALIA Extra, la nostra piattaform di e-learning"
   button:
     enable : true
-    label : "join now"
-    link : "contact"
+    label : "Accedi"
+    link : "https://extra.aliassisi.it/"
 
 
 ######################## Success story #############################
 success_story:
   enable : true
   bg_image : "images/backgrounds/success-story.jpg"
-  title : "Success Stories"
-  content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat pariatur. Excepteur sint occaecat.
+  title : "Visita l'Accademia"
+  content : "Ogni anno studenti da ogni parte del mondo arrivano per frequentare i nostri corsi nel cuore di
+Assisi.
 
 
-  ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris"
+Lingua e cultura italiana, Lingua e cultura cinese, Dizione, Didattica delle lingue, Lingua e cultura inglese.
+Canto, lezioni di pittura, lezioni id cucina, lezioni di pianoforte.
+
+
+Ti aspettiamo, vieni a trovarci!
+"
   # video link
-  video_link : "https://www.youtube.com/watch?v=ResipmZmpDU"
+  video_link : "https://youtu.be/jmvq4KPmliA"
 
 
 ############################# event ################################
