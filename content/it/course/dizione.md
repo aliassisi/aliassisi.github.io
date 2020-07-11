@@ -9,7 +9,9 @@ description : "Corso di dizione in videoconferenza."
 # course thumbnail
 image: "images/courses/emanuela-faraglia.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "dizione"
+ - "virtuale"
 # teacher
 teacher: ""
 # duration

@@ -9,7 +9,9 @@ description : "20 hours live lessons per week."
 # course thumbnail
 image: "images/courses/part-time.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "italian"
+ - "virtual"
 # teacher
 teacher: ""
 # duration

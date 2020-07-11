@@ -9,7 +9,9 @@ description : "30 ore alla settimana con lezioni mattutine in minigruppo e lezio
 # course thumbnail
 image: "images/courses/visuals-ufK-deiLqY8-unsplash.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "italiano"
+ - "virtuale"
 # teacher
 teacher: ""
 # duration

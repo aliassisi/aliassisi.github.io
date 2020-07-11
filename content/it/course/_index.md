@@ -5,4 +5,7 @@ draft: false
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
 description : ""
+cascade:
+  categories:
+    - course
 ---

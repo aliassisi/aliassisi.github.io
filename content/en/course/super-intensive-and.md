@@ -9,7 +9,9 @@ description : "30 hours live lessons per week with morning mini group sessions a
 # course thumbnail
 image: "images/courses/manoscritto.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "italian"
+ - "virtual"
 # teacher
 teacher: ""
 # duration

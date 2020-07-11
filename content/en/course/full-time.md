@@ -9,7 +9,9 @@ description : "30 hours live lessons per week with morning and afternoon session
 # course thumbnail
 image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "italian"
+ - "virtual"
 # teacher
 teacher: ""
 # duration

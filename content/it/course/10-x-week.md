@@ -9,7 +9,9 @@ description : "10 ore alla settimana, dal Lunedì al Venerdì."
 # course thumbnail
 image: "images/courses/allie-KzUsqBRU0T4-unsplash.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "italiano"
+ - "virtuale"
 # teacher
 teacher: ""
 # duration

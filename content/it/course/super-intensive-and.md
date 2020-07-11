@@ -9,7 +9,9 @@ description : "4 ore mattutine di lezione (mini gruppo) e due ore pomeridiane di
 # course thumbnail
 image: "images/courses/manoscritto.jpg"
 # taxonomy
-category: "Italian"
+categories: 
+ - "italiano"
+ - "virtuale"
 # teacher
 teacher: ""
 # duration
