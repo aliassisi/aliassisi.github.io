@@ -9,4 +9,4 @@ categories:
 - News
 ---
 
-[flyer_Punto-it](http://aliassisi.it/wp-content/uploads/2017/03/flyer_Punto-it_chiuchiu_A4_opera_OK1.pdf)
+[flyer_Punto-it](files/flyer_Punto-it_chiuchiu_A4_opera_OK1.pdf)

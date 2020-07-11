@@ -9,19 +9,4 @@ categories:
 - News
 ---
 
-[:en]
-
-![In Italiano. Il corso Gramática contrastiva italiano-português](http://cdn2.scuolabook.it/media/catalog/product/cache/1/image/280x380/170ec19af00183b5e0368529fc2daa2f/9/7/9788820376680.jpg)
-
-
-[:it]
-
-[![In Italiano. Il corso Gramática contrastiva italiano-português](http://cdn2.scuolabook.it/media/catalog/product/cache/1/image/280x380/170ec19af00183b5e0368529fc2daa2f/9/7/9788820376680.jpg)
-](http://www.scuolabook.it/gaia-chiuchiu-angelo-chiuchiu-in-italiano-il-corso-gramatica-contrastiva-italiano-portugues-hoepli-9788820376680.html)
-
-[:ru]
-
-[![In Italiano. Il corso Gramática contrastiva italiano-português](http://cdn2.scuolabook.it/media/catalog/product/cache/1/image/280x380/170ec19af00183b5e0368529fc2daa2f/9/7/9788820376680.jpg)
-](http://www.scuolabook.it/gaia-chiuchiu-angelo-chiuchiu-in-italiano-il-corso-gramatica-contrastiva-italiano-portugues-hoepli-9788820376680.html)
-
-[:]
+![In Italiano. Il corso Gramática contrastiva italiano-português](images/blog/9788820376680.jpg)

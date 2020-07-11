@@ -238,7 +238,7 @@ Departure from Assisi station (or Perugia Airport)
 
 Italian language and culture one to one (or duo) course (15 hours), after which it is issued a certificate of attendance and evaluation. The Academy teachers have a university background and years of experience.
 
-  Books and workbooks will be distributed at the beginning of the course. The Accademia is also open outside the class schedule: a library, video library, multimedia educational materials for individual use and the wi fi are available to students for free.
+Books and workbooks will be distributed at the beginning of the course. The Accademia is also open outside the class schedule: a library, video library, multimedia educational materials for individual use and the wi fi are available to students for free.
 
 
 
@@ -252,17 +252,17 @@ Flats are in the very center of Assisi, only 2 minutes walking distance from the
 
 **The program includes:**
 
-- private language and culture course (60 minutes hours, 15 hours) 
+- private language and culture course (60 minutes hours, 15 hours)
 
 - course books
 
- - certificate of attendance
+- certificate of attendance
 
- - certificate of evaluation
+- certificate of evaluation
 
- - 4 meals with your teacher or tutor
+- 4 meals with your teacher or tutor
 
- - accommodation in independent flat (utilities included) 
+- accommodation in independent flat (utilities included)
 
 - Tours and excursions listed in the schedule above
 
@@ -543,11 +543,11 @@ Gli appartamenti sono al centro della città, a pochi minuti a piedi dall'Accade
 
 - libri
 
- - certificato di frequenza e di profitto
+- certificato di frequenza e di profitto
 
- - 4 pasti con il professore o il tutor
+- 4 pasti con il professore o il tutor
 
- - alloggio in appartamento indipendente (consumi inclusi) 
+- alloggio in appartamento indipendente (consumi inclusi)
 
 - Tours ed escursioni elencati
 
@@ -790,19 +790,19 @@ Departure from Assisi station (or Perugia Airport)
 **lessons**
 
 Italian language and culture one to one (or duo) course (15 hours), after which it is issued a certificate of attendance and evaluation. The Academy teachers have a university background and years of experience.
-books  Books and workbooks will be distributed at the beginning of the course. The Accademia is also open outside the class schedule: a library, video library, multimedia educational materials for individual use and the wi fi are available to students for free.
+booksBooks and workbooks will be distributed at the beginning of the course. The Accademia is also open outside the class schedule: a library, video library, multimedia educational materials for individual use and the wi fi are available to students for free.
 
 **accommodation**
 
 Flats are in the very center of Assisi, only 2 minutes walking distance from the Accademia. Flats are entirely furnished, self-catering with a fully equipped kitchen.
 
 **The program includes:**
-- private language and culture course (60 minutes hours, 15 hours) 
+- private language and culture course (60 minutes hours, 15 hours)
 - course books
- - certificate of attendance
- - certificate of evaluation
- - 4 meals with your teacher or tutor
- - accommodation in independent flat (utilities included) 
+- certificate of attendance
+- certificate of evaluation
+- 4 meals with your teacher or tutor
+- accommodation in independent flat (utilities included)
 - Tours and excursions listed in the schedule above
 - free wi fi in Accademia.
 

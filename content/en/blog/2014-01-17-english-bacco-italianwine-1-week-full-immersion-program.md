@@ -248,9 +248,9 @@ Flats are in the very center of Assisi, only 2 minutes walking distance from the
      
 
 **The program includes:**
-- language and culture course (60 minutes hours, 15 hours) 
+- language and culture course (60 minutes hours, 15 hours)
 - course books
- - certificate of attendance  
+- certificate of attendance 
 - certificate of evaluation
 - 4 meals with your teacher or tutor
 - accommodation in independent flat (utilities included)
@@ -509,9 +509,9 @@ Gli appartamenti sono al centro della città, a pochi minuti a piedi dall'Accade
 **Il programma include:
 **Corso individuale (o duo) di lingua e cultura italiana (60 minuti, 15 ore)
 - libri
- - certificato di frequenza e di profitto
- - 4 pasti con il professore o il tutor
- - alloggio in appartamento indipendente (consumi inclusi) 
+- certificato di frequenza e di profitto
+- 4 pasti con il professore o il tutor
+- alloggio in appartamento indipendente (consumi inclusi)
 - Tours ed escursioni elencati
 - free wi fi in Accademia.
 
@@ -762,9 +762,9 @@ Flats are in the very center of Assisi, only 2 minutes walking distance from the
      
 
 **The program includes:**
-- language and culture course (60 minutes hours, 15 hours) 
+- language and culture course (60 minutes hours, 15 hours)
 - course books
- - certificate of attendance  
+- certificate of attendance 
 - certificate of evaluation
 - 4 meals with your teacher or tutor
 - accommodation in independent flat (utilities included)

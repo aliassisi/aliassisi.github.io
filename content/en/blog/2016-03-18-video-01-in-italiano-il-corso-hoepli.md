@@ -9,16 +9,4 @@ categories:
 - News
 ---
 
-[:en]
-
 <iframe src="https://www.youtube.com/embed/oVuojk1Gn74" allowfullscreen="allowfullscreen" height="315" frameborder="0" width="560"></iframe>
-
-[:it]
-
-<iframe src="https://www.youtube.com/embed/oVuojk1Gn74" allowfullscreen="allowfullscreen" height="315" frameborder="0" width="560"></iframe>
-
-[:ru]
-
-__<iframe src="https://www.youtube.com/embed/oVuojk1Gn74" allowfullscreen="allowfullscreen" height="315" frameborder="0" width="560"></iframe>
-
-[:]

@@ -200,16 +200,16 @@ The prices of the program (course + activities + transports + accommodation) are
 
  - 40 ore di corso di lingua e cultura italiana
 - libri di testo
-- certificato di frequenza  
+- certificato di frequenza 
 - diploma
 - visita guidata di Assisi
-- visita guidata della Basilica di San Francesco  
-- visita guidata di Perugia  
+- visita guidata della Basilica di San Francesco 
+- visita guidata di Perugia 
 - visita guidata al Museo del Foro Romano
-- visita guidata all'Eremo delle Carceri 
-- visita guidata a S. Damiano 
-- 1 lezione di cucina con lo chef 
-- week end a Firenze e visita guidata (camera singola in hotel e trasporto incluso) 
+- visita guidata all'Eremo delle Carceri
+- visita guidata a S. Damiano
+- 1 lezione di cucina con lo chef
+- week end a Firenze e visita guidata (camera singola in hotel e trasporto incluso)
 - degustazione
 - alloggio al centro di Assisi (camera singola in appartamento condiviso, appartamento indipendente o hotel).
 
@@ -251,7 +251,7 @@ Costi
 
 
 
-I prezzi del programma (corso + attività + trasporti + alloggio) sono: 
+I prezzi del programma (corso + attività + trasporti + alloggio) sono:
 - 1300 Euro a persona per camera doppia in appartamento indipendente (consumi inclusi, pasti non inclusi)
 - 1450 Euro per l'appartamento indipendente (consumi inclusi, pasti non inclusi).
 - 2050 Euro per camera singola in Hotel (mezza pensione)

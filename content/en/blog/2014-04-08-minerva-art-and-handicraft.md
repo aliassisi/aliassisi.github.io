@@ -247,9 +247,9 @@ Books and workbooks will be distributed at the beginning of the course. The Acca
 Flats are in the very center of Assisi, only 2 minutes walking distance from the Accademia.  Flats are entirely furnished, self-catering with a fully equipped kitchen.
      
 **The program includes:**
-- language and culture course (60 minutes hours, 15 hours) 
+- language and culture course (60 minutes hours, 15 hours)
 - course books 
- - certificate of attendance  
+- certificate of attendance 
 - certificate of evaluation 
 - 4 meals with your teacher or tutor
 - accommodation in independent flat (utilities included) 

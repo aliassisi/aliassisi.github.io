@@ -9,7 +9,6 @@ categories:
 - News
 ---
 
-
-	  * [**DATE 2019/2020**](https://cils.unistrasi.it/public/articoli/364/Date%20esami%20Cils.pdf)
-	  * [iscrizione](https://docs.google.com/forms/d/1T5UN0I91OxP9YIY84OUNAnaZz6MNcV3RtZq17i-3yxI/viewform)
+* [**DATE 2019/2020**](https://cils.unistrasi.it/public/articoli/364/Date%20esami%20Cils.pdf)
+* [iscrizione](https://docs.google.com/forms/d/1T5UN0I91OxP9YIY84OUNAnaZz6MNcV3RtZq17i-3yxI/viewform)
 
