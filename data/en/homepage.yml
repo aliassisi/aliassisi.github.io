@@ -112,7 +112,7 @@ cta:
 ######################## Success story #############################
 success_story:
   enable : true
-  bg_image : "images/backgrounds/success-story.jpg"
+  bg_image : "images/backgrounds/success-story-img.jpg"
   title : "Visit the Accademia"
   content : "Ogni anno studenti da ogni parte del mondo arrivano per frequentare i nostri corsi nel cuore di
 Assisi.
