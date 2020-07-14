@@ -55,3 +55,18 @@ is recognized as a UNESCO World Heritage site. In addition to its architectural 
 artistic delights, it is the city of St. Francis of Assisi. Umbria s known for many
 other medieval towns including Spello, Gubbio, Spoleto, Perugia, Montefalco, Trevi,
 Bevagna, Castiglione del Lago, and Todi.
+
+### Location
+
+The location of Accademia Lingua Italiana Assisi is situated in the historic heart 
+of the town centre, at 10 via Tiberio d’Assisi, a short distance from Piazza del 
+Comune and in the vicinity of the Basilica of St. Francis and the Church of Santa 
+Chiara.
+
+This 14th century  former residence was renovated in 2006 by the architect Michele 
+Bilancia. With a great sense of respect for the history of the building,  architectural 
+changes have been made in order to enhance the functional properties of the space.
+
+The classrooms and offices are accessible from a medieval courtyard. All the classrooms 
+have air conditioning. The second floor balcony boasts a panoramic view of the entire 
+town and the Umbrian valley.

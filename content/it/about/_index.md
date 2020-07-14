@@ -40,3 +40,12 @@ artistica e è riconosciuta patrimonio dell'umanità dall'UNESCO. Assisi, oltre 
 Lago e Todi.
 Assisi è un punto strategico, al centro dell’Umbria e dell’Italia, da qui gli studenti possono raggiungere
 facilmente città come Roma e Firenze.
+
+### La sede
+
+La sede dell’Accademia Lingua Italiana Assisi si trova nel centro storico di Assisi, in via Tiberio d’Assisi, a 
+pochi passi da Piazza del Comune e nelle vicinanze  della Basilica di S. Chiara.
+
+Si tratta di una palazzina trecentesca ristrutturata con progetto dell’Architetto Michele Bilancia. Pur nel 
+rispetto della storia dell’immobile, sono stati eseguiti interventi architettonici che esaltano la funzionalità 
+della struttura. Tutte le aule sono climatizzate e dispongono di collegamenti wi-fi.
