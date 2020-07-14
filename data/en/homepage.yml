@@ -139,7 +139,7 @@ collaborations:
   enable : false
   collab_item:
     - name : "Pacific University"
-      link : ""
+      link : "https://www.pacific.edu/academics/schools-and-colleges/college-of-the-pacific/academics/departments-and-programs/modern-languages-and-literature/discover-modern-languages-and-literature/summer-immersion-programs.html"
       image : "images/collaborations/pacific.png"
 
     - name : "Neumann University"
@@ -150,14 +150,6 @@ collaborations:
       link : ""
       image : "images/collaborations/elon.png"
 
-    - name : "Grundtvig Programme"
-      link : ""
-      image : "images/collaborations/grundtvig.jpg"
-
-    - name : "Comenius Programme"
-      link : ""
-      image : "images/collaborations/comenius.png"
-
 
 ########################### recognitions ############################
 recognitions:
@@ -165,6 +157,12 @@ recognitions:
   rec_item:
     - name : "CILS"
       image : "images/recognitions/cils.png"
+    
+    - name : "PLIDA"
+      image: "images/recognitions/plida.png"
+
+    - name : "Roma TRE"
+      image: "images/recognitions/romatre.png"
 
     - name : "MIUR"
       image : "images/recognitions/miur.png"

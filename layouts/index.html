@@ -162,7 +162,7 @@
     </div>
     <div class="row justify-content-center">
       {{ range .collab_item }}
-      <div class="col-lg-2 col-sm-6 mb-lg-0 mb-5">
+      <div class="col-lg-3 col-sm-6 mb-lg-0 mb-5">
         {{ if .link }}<a href="{{ .link }}">{{ end }}
           <img class="img-fluid w-100 mb-4" src="{{ .image | relURL }}" alt="{{ .name }}">
         {{ if .link }}</a>{{ end }}
