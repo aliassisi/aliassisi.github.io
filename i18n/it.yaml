@@ -114,3 +114,9 @@
 
 - id: course_directors
   translation: Direttori dei corsi
+
+- id: collaborations
+  translation: Collaborazioni
+
+- id: recognized_by
+  translation: Riconosciuta da

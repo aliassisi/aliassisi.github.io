@@ -134,6 +134,48 @@ event:
   # event item comes from "content/**/event" folder.
 
 
+########################### collaborations ############################
+collaborations:
+  enable : false
+  collab_item:
+    - name : "Pacific University"
+      link : ""
+      image : "images/collaborations/pacific.png"
+
+    - name : "Neumann University"
+      link : "https://www.neumann.edu/geo/studyabroad/programs/Assisi.asp"
+      image : "images/collaborations/neumann.jpg"
+
+    - name : "Elon University"
+      link : ""
+      image : "images/collaborations/elon.png"
+
+    - name : "Grundtvig Programme"
+      link : ""
+      image : "images/collaborations/grundtvig.jpg"
+
+    - name : "Comenius Programme"
+      link : ""
+      image : "images/collaborations/comenius.png"
+
+
+########################### recognitions ############################
+recognitions:
+  enable : false
+  rec_item:
+    - name : "CILS"
+      image : "images/recognitions/cils.png"
+
+    - name : "MIUR"
+      image : "images/recognitions/miur.png"
+
+    - name : "UNESCO"
+      image : "images/recognitions/unesco.png"
+
+    - name : "Comune di Assisi"
+      image : "images/recognitions/assisi.png"
+
+
 ########################### funfacts ############################
 funfacts:
   enable : false

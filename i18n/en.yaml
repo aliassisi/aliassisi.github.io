@@ -114,3 +114,9 @@
 
 - id: download
   translation: Download
+
+- id: collaborations
+  translation: Collaborations
+
+- id: recognized_by
+  translation: Recognized by
