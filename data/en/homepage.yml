@@ -114,15 +114,14 @@ success_story:
   enable : true
   bg_image : "images/backgrounds/success-story-img.jpg"
   title : "Visit the Accademia"
-  content : "Ogni anno studenti da ogni parte del mondo arrivano per frequentare i nostri corsi nel cuore di
-Assisi.
+  content : "Every year students from all over the world come to attend our courses.
 
 
-Lingua e cultura italiana, Lingua e cultura cinese, Dizione, Didattica delle lingue, Lingua e cultura inglese.
-Canto, lezioni di pittura, lezioni id cucina, lezioni di pianoforte.
+Italian language and culture, Pronunciation, L2 Teachers' training. Lessons in singing,
+painting, cooking and piano in the heart of Assisi.
 
 
-Ti aspettiamo, vieni a trovarci!
+We're waiting for you, come and visit us!
 "
   # video link
   video_link : "https://youtu.be/jmvq4KPmliA"
