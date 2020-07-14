@@ -63,7 +63,8 @@ URL = "research"
 
 #################### default parameters ################################
 [params]
-logo = "images/logo.png"
+logo = "images/logo-alia.png"
+logo_footer = "images/logo-squared.png"
 # Meta data
 description = "This is meta description"
 author = "Themefisher"
