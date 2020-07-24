@@ -34,9 +34,6 @@ type: "course"
 * Gruppo: minigruppo
 * Ore di lezione al giorno: 4 ore al giorno con una pausa di 15 minuti
 * Giorni alla settimana: 5 giorni (dal Lunedì al Venerdì)
-* Durata: 4 settimane
-* Totale ore: 80 ore
-* Crediti: 4 CFU (ECTS) / 3 Neumann University Italian credits (al livello appropriato)
 * Livelli: Principianti, da A2 a C2
 
 

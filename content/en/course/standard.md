@@ -33,12 +33,9 @@ type: "course"
 * Class Size: Mini Group
 * Hours per Day: 4 hours/day with a 15 minute break
 * Days per Week: 5 days (Monday through Friday)
-* Duration: 4 weeks
-* Total Hours: 80 hours
-* Credits: 4 CFU (ECTS) / 3 Neumann University Italian credits (at appropriate level)
 * Levels: Beginners, A2 through C2
 
-Four hour lessons a day, from Monday to Friday enable you to develop your linguistic skills in a precise and 
+Four hours lessons a day, from Monday to Friday enable you to develop your linguistic skills in a precise and 
 graduated manner, leaving enough free time for individual study using all the facilities available at the 
 Accademia. Staff of the Accademia are always available to guide and help individual students. For US credits, 
 please visit the Nuemann University page. 
