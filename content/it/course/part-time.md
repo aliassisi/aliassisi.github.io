@@ -15,9 +15,9 @@ categories:
 # teacher
 teacher: ""
 # duration
-duration : "4 settimane"
-# weekly
-weekly : "20 ore"
+duration : "minimo 1 settimana"
+# intensity
+intensity : "20 ore a settimana"
 # daily
 daily: "4 ore"
 # course fee

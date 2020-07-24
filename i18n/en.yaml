@@ -120,3 +120,6 @@
 
 - id: recognized_by
   translation: Certifications and recognition
+
+- id: intensity
+  translation: Intensity

@@ -16,8 +16,8 @@ categories:
 teacher: ""
 # duration
 duration : "-"
-# weekly
-weekly : "-"
+# intensity
+intensity : "-"
 # daily
 daily: "-"
 # course fee

@@ -16,8 +16,8 @@ categories:
 teacher: ""
 # duration
 duration : "4 weeks"
-# weekly
-weekly : "5 days"
+# intensity
+intensity : "10 hours per week"
 # daily
 daily: "2 hours"
 # course fee
