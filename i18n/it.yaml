@@ -126,3 +126,6 @@
 
 - id: courses
   translation: Corsi
+
+- id: course-type
+  translation: Tipo di corso

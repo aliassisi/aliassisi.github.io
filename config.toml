@@ -144,19 +144,29 @@ URL = "course"
 weight = 2
   [[Languages.it.menu.main]]
   parent = "Corsi"
+  name = "Corsi online"
+  URL = "ctypes/virtual/"
+  weight = 10
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
+  name = "Corsi in sede"
+  URL = "ctypes/onsite/"
+  weight = 11
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
   name = "Tutti i corsi"
   URL = "course"
-  weight = 1
+  weight = 20
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "Info"
   URL = "info/course"
-  weight = 2
+  weight = 30
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "Date inizio"
   URL = "info/starting-dates"
-  weight = 3
+  weight = 40
 [[Languages.it.menu.main]]
 name = "News"
 URL = "blog"
