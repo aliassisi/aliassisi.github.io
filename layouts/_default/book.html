@@ -1,0 +1,8 @@
+<div class="card p-0 border-primary rounded-0 hover-shadow">
+  <img class="card-img-top rounded-0" src="{{ .Params.Image | relURL }}" alt="{{ .Title }}">
+  <div class="card-body">
+    <h4 class="card-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h4>
+    <p class="card-text mb-4">{{ .Description | truncate 180 }}</p>
+    <a href="{{ .Permalink }}" class="btn btn-primary btn-sm">{{ i18n "details"}}</a>
+  </div>
+</div>

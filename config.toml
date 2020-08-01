@@ -128,7 +128,7 @@ copyright = "Copyright &copy; 2020 a hugo theme by [themefisher](https://themefi
 [[Languages.it.menu.main]]
 name = "Corsi"
 URL = "course"
-weight = 2
+weight = 10
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "Corsi online"
@@ -155,17 +155,21 @@ weight = 2
   URL = "info/starting-dates"
   weight = 40
 [[Languages.it.menu.main]]
+name = "Pubblicazioni"
+URL = "book"
+weight = 20
+[[Languages.it.menu.main]]
 name = "News"
 URL = "blog"
-weight = 3
+weight = 30
 [[Languages.it.menu.main]]
 name = "Accademia"
 URL = "about"
-weight = 4
+weight = 40
 [[Languages.it.menu.main]]
 name = "Contatti"
 URL = "contact"
-weight = 5
+weight = 50
 # footer menu
 [[Languages.it.menu.footer]]
 name = "teacher"
@@ -199,7 +203,7 @@ copyright = "Copyright &copy; 2020 a hugo theme by [themefisher](https://themefi
 [[Languages.en.menu.main]]
 name = "Courses"
 URL = "course"
-weight = 2
+weight = 10
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Online courses"
@@ -226,17 +230,21 @@ weight = 2
   URL = "info/starting-dates"
   weight = 40
 [[Languages.en.menu.main]]
+name = "Books"
+URL = "book"
+weight = 20
+[[Languages.en.menu.main]]
 name = "News"
 URL = "blog"
-weight = 3
+weight = 30
 [[Languages.en.menu.main]]
 name = "About"
 URL = "about"
-weight = 4
+weight = 40
 [[Languages.en.menu.main]]
 name = "Contact"
 URL = "contact"
-weight = 5
+weight = 50
 # footer menu
 [[Languages.en.menu.footer]]
 name = "teacher"
