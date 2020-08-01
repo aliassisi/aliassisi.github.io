@@ -123,3 +123,6 @@
 
 - id: intensity
   translation: Intensità
+
+- id: courses
+  translation: Corsi

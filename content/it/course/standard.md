@@ -10,7 +10,7 @@ disposizione degli studenti che abbiamo bisogno di aiuto."
 # course thumbnail
 image: "images/courses/standard.jpg"
 # taxonomy
-categories: 
+ctypes: 
  - "italiano"
  - "onsite"
 # teacher

@@ -8,11 +8,11 @@
       <div class="col-12">
         <ul class="list-inline text-center filter-controls">
           <li class="list-inline-item m-3 text-uppercase active" data-filter="all">{{ i18n "all" }}</li>
-          {{ $categories := slice }}
+          {{ $types := slice }}
           {{ range .Data.Pages }}
-          {{ $categories = $categories | append .Params.Categories }}
+          {{ $types = $types | append .Params.Ctypes }}
           {{ end }}
-          {{ range ( $categories | uniq ) }}
+          {{ range ( $types | uniq ) }}
           <li class="list-inline-item m-3 text-uppercase" data-filter="{{ . | urlize }}">{{ . | humanize }}</li>
           {{ end }}
         </ul>
@@ -23,7 +23,7 @@
     <div class="row filtr-container">
       <!-- course item -->
       {{ range .Data.Pages }}
-      <div data-category="{{ delimit .Params.Categories ", " }}" class="col-lg-4 col-sm-6 mb-5 filtr-item">
+      <div data-category="{{ delimit .Params.Ctypes ", " }}" class="col-lg-4 col-sm-6 mb-5 filtr-item">
         {{ .Render "course" }}
       </div>
       {{ end }}

@@ -9,7 +9,7 @@ description : "Lezioni individuali da 55 minuti ciascuna."
 # course thumbnail
 image: "images/courses/elena-kloppenburg-gnhvIGlFwds-unsplash.jpg"
 # taxonomy
-categories: 
+ctypes: 
  - "italiano"
  - "virtuale"
 # teacher

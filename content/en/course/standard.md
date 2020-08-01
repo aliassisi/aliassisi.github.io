@@ -9,7 +9,7 @@ description : "Four hour lessons a day, from Monday to Friday, with the Staff of
 # course thumbnail
 image: "images/courses/standard.jpg"
 # taxonomy
-categories: 
+ctypes: 
  - "italian"
  - "onsite"
 # teacher

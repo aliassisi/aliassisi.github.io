@@ -9,7 +9,7 @@ description : "10 hours live lessons per week, Monday through Friday."
 # course thumbnail
 image: "images/courses/elena-kloppenburg-gnhvIGlFwds-unsplash.jpg"
 # taxonomy
-categories: 
+ctypes: 
  - "italian"
  - "virtual"
 # teacher

@@ -9,7 +9,7 @@ description : "30 ore alla settimana con lezioni mattutine in minigruppo e pomer
 # course thumbnail
 image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 # taxonomy
-categories: 
+ctypes: 
  - "italiano"
  - "virtuale"
 # teacher

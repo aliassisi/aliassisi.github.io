@@ -10,6 +10,10 @@ summaryLength = "10"
 DefaultContentLanguage = "en"
 languageCode = "it"
 disableLanguages = []
+[taxonomies]
+  category = "categories"
+  ctype = "ctypes"
+  tag = "tags"
 
 
 ############################# Plugins ##############################
@@ -182,19 +186,29 @@ URL = "course"
 weight = 2
   [[Languages.en.menu.main]]
   parent = "Courses"
-  name = "See all courses"
+  name = "Online courses"
+  URL = "ctypes/virtual/"
+  weight = 10
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Onsite courses"
+  URL = "ctypes/onsite/"
+  weight = 11
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Browse all"
   URL = "course"
-  weight = 1
+  weight = 20
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Info"
   URL = "info/course"
-  weight = 2
+  weight = 30
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Starting dates"
   URL = "info/starting-dates"
-  weight = 3
+  weight = 40
 [[Languages.en.menu.main]]
 name = "News"
 URL = "blog"

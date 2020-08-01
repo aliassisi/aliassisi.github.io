@@ -9,7 +9,7 @@ description : "Six hours per day courses."
 # course thumbnail
 image: "images/courses/intensive.jpg"
 # taxonomy
-categories: 
+ctypes: 
  - "italian"
  - "onsite"
 # teacher
