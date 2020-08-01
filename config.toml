@@ -10,11 +10,19 @@ summaryLength = "10"
 DefaultContentLanguage = "en"
 languageCode = "it"
 disableLanguages = []
+
 [taxonomies]
   category = "categories"
   ctype = "ctypes"
   tag = "tags"
 
+[privacy]
+  [privacy.disqus]
+    disable = true
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+  [privacy.youtube]
+    privacyEnhanced = true
 
 ############################# Plugins ##############################
 # CSS Plugins
@@ -42,27 +50,6 @@ link = "plugins/venobox/venobox.min.js"
 link = "plugins/filterizr/jquery.filterizr.min.js"
 [[params.plugins.js]]
 link = "plugins/google-map/gmap.js"
-
-# footer menu
-[[menu.footer]]
-name = "teacher"
-URL = "teacher"
-
-[[menu.footer]]
-name = "notice"
-URL = "notice"
-
-[[menu.footer]]
-name = "event"
-URL = "event"
-
-[[menu.footer]]
-name = "scholarship"
-URL = "scholarship"
-
-[[menu.footer]]
-name = "research"
-URL = "research"
 
 
 #################### default parameters ################################
@@ -179,7 +166,26 @@ weight = 4
 name = "Contatti"
 URL = "contact"
 weight = 5
+# footer menu
+[[Languages.it.menu.footer]]
+name = "teacher"
+URL = "teacher"
 
+[[Languages.it.menu.footer]]
+name = "notice"
+URL = "notice"
+
+[[Languages.it.menu.footer]]
+name = "event"
+URL = "event"
+
+[[Languages.it.menu.footer]]
+name = "scholarship"
+URL = "scholarship"
+
+[[Languages.it.menu.footer]]
+name = "research"
+URL = "research"
 
 [Languages.en]
 languageName = "En"
@@ -231,3 +237,23 @@ weight = 4
 name = "Contact"
 URL = "contact"
 weight = 5
+# footer menu
+[[Languages.en.menu.footer]]
+name = "teacher"
+URL = "teacher"
+
+[[Languages.en.menu.footer]]
+name = "notice"
+URL = "notice"
+
+[[Languages.en.menu.footer]]
+name = "event"
+URL = "event"
+
+[[Languages.en.menu.footer]]
+name = "scholarship"
+URL = "scholarship"
+
+[[Languages.en.menu.footer]]
+name = "research"
+URL = "research"
