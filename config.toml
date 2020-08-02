@@ -154,6 +154,11 @@ weight = 10
   name = "Date inizio"
   URL = "info/starting-dates"
   weight = 40
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Attività"
+  URL = "info/social-program"
+  weight = 50
 [[Languages.it.menu.main]]
 name = "Pubblicazioni"
 URL = "book"
@@ -229,6 +234,11 @@ weight = 10
   name = "Starting dates"
   URL = "info/starting-dates"
   weight = 40
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Social Program"
+  URL = "info/social-program"
+  weight = 50
 [[Languages.en.menu.main]]
 name = "Books"
 URL = "book"
