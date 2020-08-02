@@ -154,7 +154,7 @@ weight = 10
   name = "Date inizio"
   URL = "info/starting-dates"
   weight = 40
-  [[Languages.en.menu.main]]
+  [[Languages.it.menu.main]]
   parent = "Courses"
   name = "Attività"
   URL = "info/social-program"
