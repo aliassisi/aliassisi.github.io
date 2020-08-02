@@ -155,7 +155,7 @@ weight = 10
   URL = "info/starting-dates"
   weight = 40
   [[Languages.it.menu.main]]
-  parent = "Courses"
+  parent = "Corsi"
   name = "Attività"
   URL = "info/social-program"
   weight = 50
