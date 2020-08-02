@@ -39,6 +39,7 @@ type: "course"
 * Totale ore: 60 ore
 * Livelli: Principianti, da A2 a C2
 * Testi inclusi
+* [Attività incluse]({{< ref "info/social-program" >}})
 
 4 ore mattutine di lezione (lunedì/venerdì 9-13) in una classe di un corso ordinario con max 12 studenti e due 
 ore pomeridiane di letteratura italiana. Le lezioni pomeridiane sono individuali. Il corso unisce i vantaggi del 

@@ -40,7 +40,7 @@ type: "course"
 * Levels: Beginners, A2 through C2
 * Textbooks included
 
-60 hours, 2 weeks + textbooks + social program/facilities  
+60 hours, 2 weeks + textbooks + [social program]({{< ref "info/social-program" >}})
 
 Four hours lessons a day, from Monday to Friday in the morning followed by 2 hours of one-to-one focused on 
 literature. The afternoon lessons are set aside for improving the student’s language proficiency with emphasis on 
