@@ -151,6 +151,11 @@ weight = 10
   weight = 30
   [[Languages.it.menu.main]]
   parent = "Corsi"
+  name = "FAQ"
+  URL = "faq"
+  weight = 30
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
   name = "Date inizio"
   URL = "info/starting-dates"
   weight = 40
@@ -228,6 +233,11 @@ weight = 10
   parent = "Courses"
   name = "Info"
   URL = "info/course"
+  weight = 30
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "FAQ"
+  URL = "faq"
   weight = 30
   [[Languages.en.menu.main]]
   parent = "Courses"

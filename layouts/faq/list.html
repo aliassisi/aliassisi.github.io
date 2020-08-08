@@ -1,0 +1,27 @@
+{{ define "main" }}
+
+{{ $data := index .Site.Data .Site.Language.Lang }}
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex">
+                    <div class="text-center mr-4">
+                        <div class="p-4 bg-primary text-white">
+                            <span class="h2 d-block"><i class="ti-info-alt mb-xl-4 mb-lg-3 mb-4 icon-md"></i></span>
+                        </div>
+                    </div>
+                    <!-- FAQ list -->
+                    <div class="content">
+                        {{ .Content }}
+                        {{ range .Data.Pages }}
+                        {{ .Render "faq" }}
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{ end }}

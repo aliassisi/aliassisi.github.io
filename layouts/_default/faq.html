@@ -1,0 +1,8 @@
+<h3>
+    <a data-toggle="collapse" href="#{{.File.BaseFileName}}" role="button" aria-expanded="false" aria-controls="{{.File.BaseFileName}}">{{ .Title }}</a>
+</h3>
+<div class="collapse" id="{{.File.BaseFileName}}">
+    <div class="card card-body">
+      {{ .Content }}
+    </div>
+</div>
