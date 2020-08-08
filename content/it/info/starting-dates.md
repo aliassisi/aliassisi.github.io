@@ -1,5 +1,5 @@
 ---
-title: "Start Dates"
+title: "Date Inzio Corsi"
 draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
@@ -10,7 +10,7 @@ funfacts:
   enable : true
 ---
 
-### 2020 STARTING DATES
+### DATE INIZIO CORSI 2020
 
 * 04th May
 * 18th May
