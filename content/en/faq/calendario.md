@@ -1,6 +1,7 @@
 ---
 title: "What is the calendar of the courses?"
 draft: false
+type: "courses"
 ---
 
 Students can start their course in any of the dates listed on the [calendar]({{< ref "info/starting-dates" >}}).

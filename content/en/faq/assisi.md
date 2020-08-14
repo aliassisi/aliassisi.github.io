@@ -1,6 +1,7 @@
 ---
 title: "How to get to Assisi?"
 draft: false
+type: "courses"
 ---
 
 #### By train

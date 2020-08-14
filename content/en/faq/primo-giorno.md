@@ -1,6 +1,7 @@
 ---
 title: "What should I expect to do on the first day of the course?"
 draft: false
+type: "courses"
 ---
 
 We will wait for you at 9 am to complete the registration and give you some information about the facilities
