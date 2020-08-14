@@ -1,6 +1,7 @@
 ---
 title: "Come raggiungo Assisi?"
 draft: false
+type: "courses"
 ---
 
 #### In treno

@@ -14,10 +14,40 @@
                     </div>
                     <!-- FAQ list -->
                     <div class="content">
-                        {{ .Content }}
-                        {{ range .Data.Pages }}
-                        {{ .Render "faq" }}
+                        {{ if .Content }}
+                        <div class="row">
+                            <div class="col-12">
+                                {{ .Content }}
+                            </div>
+                        </div>
                         {{ end }}
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h2>{{ i18n "courses" }}</h2>
+                                {{ range where .Data.Pages "Params.type" "courses" }}
+                                {{ .Render "faq" }}
+                                {{ end }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h2>{{ i18n "housing" }}</h2>
+                                {{ range where .Data.Pages "Params.type" "housing" }}
+                                {{ .Render "faq" }}
+                                {{ end }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h2>{{ i18n "facilities" }}</h2>
+                                {{ range where .Data.Pages "Params.type" "facilities" }}
+                                {{ .Render "faq" }}
+                                {{ end }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

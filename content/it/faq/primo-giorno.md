@@ -1,6 +1,7 @@
 ---
 title: "Come si svolgerà il primo giorno del corso?"
 draft: false
+type: "courses"
 ---
 
 Dalle 9.00 completeremo la registrazione al corso e daremo alcune informazioni su Assisi e sulla facilities

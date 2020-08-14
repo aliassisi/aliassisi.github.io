@@ -132,3 +132,9 @@
 
 - id: details
   translation: Details
+
+- id: housing
+  translation: Housing
+
+- id: facilities
+  translation: Facilities
