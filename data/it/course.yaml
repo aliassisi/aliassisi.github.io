@@ -1,0 +1,9 @@
+onsite:
+  title: "Tutti i corsi con ALIA offrono:"
+  items:
+    - title: "extra item per onsite"
+
+virtual:
+  title: "Tutti i corsi virtuali con ALIA offrono:"
+  items:
+    - title: "extra item per virtuale"
