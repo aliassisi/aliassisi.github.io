@@ -82,7 +82,7 @@
       {{ if in .Params.ctypes "onsite" }}
         {{ with $data.course.onsite }}
         <div class="col-12 mb-4 content">
-          <h3>All courses with ALIA offer:</h3>
+          <h3>{{ .title }}</h3>
           <ul>
             {{ range .items }}
             <li>{{ .title }}</li>

@@ -15,19 +15,6 @@ funfacts:
 * Insegnanti qualificati, lezioni coinvolgenti e costante interazione
 * Focus sulla dizione
 
-### Tutti i nostri corsi offrono:
-
-* Test di ingresso e colloquio
-* Lezioni in presenza in aule virtuali
-* Mini gruppi
-* Ebook (In italiano. Il corso, Hoepli)
-* Visite virtuali di Assisi e altre città umbre
-* Visite virtuali di Roma e Firenze
-* Attività interattive in autoapprendimento su Moodle: https://extra.aliassisi.it/
-* Certificato di frequenza
-* Certificato di valutazione secondo i parametri europei
-* Preparazione agli esami di certificazione CILS, PLIDA, ROMA TRE
-
 ### Corsi su misura
 
 Scrivi a info@aliassisi.it se desideri progettare un corso su misura per le tue esigenze. Saremo felici di
