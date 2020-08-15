@@ -72,7 +72,7 @@
           <h3>{{ .title }}</h3>
           <ul>
             {{ range .items }}
-            <li>{{ .title }}</li>
+            <li>{{ if .link }}<a href="{{.link}}">{{end}}{{ .title }}{{ if .link }}</a>{{end}}</li>
             {{ end }}
           </ul>
         </div>
@@ -85,7 +85,7 @@
           <h3>{{ .title }}</h3>
           <ul>
             {{ range .items }}
-            <li>{{ .title }}</li>
+            <li>{{ if .link }}<a href="{{.link}}">{{end}}{{ .title }}{{ if .link }}</a>{{end}}</li>
             {{ end }}
           </ul>
         </div>

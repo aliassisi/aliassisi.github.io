@@ -3,12 +3,23 @@ onsite:
   items:
     - title: "Test di ingresso e colloquio"
     - title: "Materiali didattici (In italiano. Il corso, Hoepli)"
-    - title: "Attività interattive in autoapprendimento: https://extra.aliassisi.it/"
-    - title: "Attività in città e risorse in Accademia"
+    - title: "Attività interattive in autoapprendimento"
+      link: "https://extra.aliassisi.it/"
+    - title: Attività in città e risorse in Accademia
+      link: "/it/info/social-program/"
     - title: "Certificato di valutazione secondo i parametri europei"
     - title: "Preparazione agli esami di certificazione CILS, PLIDA, ROMA TRE"
 
 virtual:
   title: "Tutti i corsi virtuali offrono:"
   items:
-    - title: "extra item per virtuale"
+    - title: "Test di ingresso e colloquio"
+    - title: "Lezioni   faccia a faccia in aule virtuali"
+    - title: "Ebook (In italiano. Il corso, Hoepli)"
+    - title: "Visite virtuali di Assisi e altre città umbre"
+    - title: "Visite virtuali di Roma e Firenze"
+    - title: "Attività interattive in autoapprendimento (circa due ore al giorno)"
+      link: "https://extra.aliassisi.it/"
+    - title: "Certificato di frequenza"
+    - title: "Certificato di valutazione secondo i parametri europei"
+    - title: "Preparazione agli esami di certificazione CILS, PLIDA, ROMA TRE"
