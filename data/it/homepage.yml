@@ -4,38 +4,26 @@ slider:
   bg_image : "images/banner/students.jpg"
   slider_item:
     # slider item loop
-    - title : "Your bright future is our mission"
-      content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et magna aliqua. Ut enim ad minim veniam, quis nostrud exer"
+    - title : "Obiettivo: Gentilezza e lavoro di squadra"
+      content : "Un centro di lingua e cultura italiana aperto tutto l’anno che riceve studenti, studiosi e professionisti da ogni parte del mondo."
       animation_in : "left"
       animation_out : "right"
       # available animation : left, right, up, down
       button:
-        enable : true
+        enable : false
         label : "Apply now"
         link : "contact"
 
     # slider item loop
-    - title : "Your bright future is our mission"
-      content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et magna aliqua. Ut enim ad minim veniam, quis nostrud exer"
+    - title : "Impara l'italiano in un luogo Patrimonio Mondiale UNESCO"
+      content : "La scuola ha sede in una palazzina trecentesca in pieno centro ristrutturata con progetto dell’Architetto Michele Bilancia. Tutte le aule sono climatizzate e dispongono di collegamenti wi-fi."
       animation_in : "left"
       animation_out : "right"
       # available animation : left, right, up, down
       button:
-        enable : true
+        enable : false
         label : "Apply now"
         link : "contact"
-
-    # slider item loop
-    - title : "Your bright future is our mission"
-      content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et magna aliqua. Ut enim ad minim veniam, quis nostrud exer"
-      animation_in : "left"
-      animation_out : "right"
-      # available animation : left, right, up, down
-      button:
-        enable : true
-        label : "Apply now"
-        link : "contact"
-
 
 ############################### Banner feature ###############################
 banner_feature:
@@ -59,16 +47,16 @@ banner_feature:
     # feature item loop
     - name : "Un centro privato flessibile"
       icon : "ti-comments" # icon pack : https://themify.me/themify-icons
-      content : "L'Accademia modella i suoi corsi in base alle esigenze dei 
-      nostri studenti. Piccoli gruppi, corsi su misura e flessibilità sono 
-      i nostri punti di forza. Studenti e partner apprezzano l’accoglienza 
-      e la professionalità di una scuola a misura d’uomo situata in una delle 
+      content : "L'Accademia modella i suoi corsi in base alle esigenze dei
+      nostri studenti. Piccoli gruppi, corsi su misura e flessibilità sono
+      i nostri punti di forza. Studenti e partner apprezzano l’accoglienza
+      e la professionalità di una scuola a misura d’uomo situata in una delle
       zone più belle d'Italia."
 
     # feature item loop
     - name : "Crea il tuo corso"
       icon : "ti-ruler-pencil" # icon pack : https://themify.me/themify-icons
-      content : "Scrivi a info@aliassisi.it se desideri progettare un corso 
+      content : "Scrivi a info@aliassisi.it se desideri progettare un corso
       su misura per le tue esigenze. Saremo felici di aiutarti a sviluppare
       il corso più adatto a te!"
 
@@ -78,10 +66,10 @@ about:
   enable : true
   title : "Corsi disponibili estate 2020"
   image : "images/about/allie-newgpclgEZI-unsplash.jpg"
-  content : "Le nostre lezioni sono disponibili in aule virtuali. È un modo 
-  temporaneo per garantire continuità nel nostro lavoro ed evitare interruzioni 
+  content : "Le nostre lezioni sono disponibili in aule virtuali. È un modo
+  temporaneo per garantire continuità nel nostro lavoro ed evitare interruzioni
   per i numerosi studenti che hanno già iniziato i loro corsi di studio in Italia.
-  Speriamo di tornare presto ad insegnare nelle aule dell'Accademia, un luogo 
+  Speriamo di tornare presto ad insegnare nelle aule dell'Accademia, un luogo
   di incontro per studenti di tutte le nazionalità.
   "
   button:
@@ -157,7 +145,7 @@ recognitions:
   rec_item:
     - name : "CILS"
       image : "images/recognitions/cils.png"
-    
+
     - name : "PLIDA"
       image: "images/recognitions/plida.png"
 

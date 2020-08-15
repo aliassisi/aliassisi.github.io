@@ -4,35 +4,24 @@ slider:
   bg_image : "images/banner/students.jpg"
   slider_item:
     # slider item loop
-    - title : "Your bright future is our mission"
-      content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et magna aliqua. Ut enim ad minim veniam, quis nostrud exer"
+    - title : "Kindness and teamwork are our mission"
+      content : "The centre is open all year round to receive students, scholars and professionals from all over the world."
       animation_in : "left"
       animation_out : "right"
       # available animation : left, right, up, down
       button:
-        enable : true
+        enable : false
         label : "Apply now"
         link : "contact"
 
     # slider item loop
-    - title : "Your bright future is our mission"
-      content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et magna aliqua. Ut enim ad minim veniam, quis nostrud exer"
+    - title : "Learn italian in a World Heritage Site"
+      content : "The classrooms and offices are accessible from a medieval courtyard. All the classrooms have air conditioning. The second floor balcony boasts a panoramic view of the entire town and the Umbrian valley."
       animation_in : "left"
       animation_out : "right"
       # available animation : left, right, up, down
       button:
-        enable : true
-        label : "Apply now"
-        link : "contact"
-
-    # slider item loop
-    - title : "Your bright future is our mission"
-      content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et magna aliqua. Ut enim ad minim veniam, quis nostrud exer"
-      animation_in : "left"
-      animation_out : "right"
-      # available animation : left, right, up, down
-      button:
-        enable : true
+        enable : false
         label : "Apply now"
         link : "contact"
 
@@ -157,7 +146,7 @@ recognitions:
   rec_item:
     - name : "CILS"
       image : "images/recognitions/cils.png"
-    
+
     - name : "PLIDA"
       image: "images/recognitions/plida.png"
 
