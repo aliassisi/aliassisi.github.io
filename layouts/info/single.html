@@ -1,8 +1,6 @@
 {{ define "main" }}
 
 {{ $data := index .Site.Data .Site.Language.Lang }}
-
-<!-- notice details -->
 <section class="section">
     <div class="container">
         <div class="row">
@@ -10,43 +8,16 @@
                 <div class="d-flex">
                     <div class="text-center mr-4">
                         <div class="p-4 bg-primary text-white">
-
                             <span class="h2 d-block"><i class="ti-info-alt mb-xl-4 mb-lg-3 mb-4 icon-md"></i></span>
                         </div>
                     </div>
                     <!-- notice content -->
                     <div class="content">
                         {{ .Content }}
-                        {{ with .Params.Download_link }} <a href="{{ . | absURL }}"
-                            class="btn btn-primary">{{ i18n "download" }}</a>
-                        {{ end }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- /notice details -->
-
-<!-- funfacts -->
-{{ if $data.homepage.funfacts.enable }}
-{{ with $data.homepage.funfacts }}
-<section class="section-sm bg-primary">
-    <div class="container">
-        <div class="row">
-            <!-- funfacts item -->
-            {{ range .funfact_item }}
-            <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
-                <div class="text-center">
-                    <h2 class="count text-white" data-count="{{ .count }}">0</h2>
-                    <h5 class="text-white">{{ .name }}</h5>
-                </div>
-            </div>
-            {{ end }}
-        </div>
-    </div>
-</section>
-{{ end }}
-{{ end }}
-<!-- /funfacts -->
 {{ end }}
