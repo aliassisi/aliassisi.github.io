@@ -7,7 +7,7 @@ bg_image: "images/backgrounds/page-title.jpg"
 # meta description
 description : "4 ore mattutine di lezione e due ore pomeridiane di letteratura italiana."
 # course thumbnail
-image: "images/courses/letteratura_alia.jpg"
+image: "images/courses/amin-hasani-HARKOkVrl9M-unsplash.jpg"
 # taxonomy
 ctypes:
  - "italiano"

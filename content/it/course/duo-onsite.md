@@ -8,7 +8,7 @@ bg_image: "images/backgrounds/page-title.jpg"
 description : "Quattro ore di lezione al giorno, dal lunedì al venerdì, con il personale dell’Accademia a
 disposizione degli studenti che abbiamo bisogno di aiuto."
 # course thumbnail
-image: "images/courses/standard.jpg"
+image: "images/courses/duo.jpg"
 # taxonomy
 ctypes:
  - "italiano"
