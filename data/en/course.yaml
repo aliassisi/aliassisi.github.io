@@ -1,9 +1,26 @@
 onsite:
-  title: "All courses with ALIA offer:"
+  title: "All on site courses with ALIA offer:"
   items:
-    - title: "extra item for onsite"
+    - title: "A placement test and interview"
+    - title: "Textbook (In italiano. Il corso, Hoepli)"
+    - title: "Interactive self-study activities"
+      link: "https://extra.aliassisi.it/"
+    - title: Activities conducted in the city of Assisi and in the Accademia’s classrooms
+      link: "/en/info/social-program/"
+    - title: "Certificate of Attendance"
+    - title: "Certificate of Evaluation based on European standards"
+    - title: "Preparation for the CILS, PLIDA, ROMA TRE exams"
 
 virtual:
   title: "All virtual courses with ALIA offer:"
   items:
-    - title: "extra item for virtual"
+    - title: "A placement test and interview"
+    - title: "Live lessons in virtual interactive classrooms "
+    - title: "Ebook (In italiano. Il corso, Hoepli)"
+    - title: "Virtual tours of Assisi and other Umbrian towns"
+    - title: "Virtual tours of Rome and Florence"
+    - title: "Interactive self-study activities (self-study resources and additional work for approximately two 	hours per day)"
+      link: "https://extra.aliassisi.it/"
+    - title: "Certificate of Attendance"
+    - title: "Certificate of Evaluation"
+    - title: "Preparation for the CILS, PLIDA, ROMA TRE exams "
