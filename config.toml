@@ -122,8 +122,10 @@ languageCode = "it-it"
 contentDir = "content/it"
 weight = 1
 home = "Home"
+
 # copyright
 copyright = "Copyright &copy; 2020 a hugo theme by [themefisher](https://themefisher.com)"
+
 # main menu
 [[Languages.it.menu.main]]
 name = "Corsi"
@@ -146,19 +148,19 @@ weight = 10
   weight = 20
   [[Languages.it.menu.main]]
   parent = "Corsi"
-  name = "Info"
+  name = "Informazioni sui corsi"
   URL = "info/course"
   weight = 30
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "Certificazioni"
   URL = "info/certifications"
-  weight = 30
+  weight = 31
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "FAQ"
   URL = "faq"
-  weight = 30
+  weight = 32
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "Date inizio"
@@ -169,6 +171,11 @@ weight = 10
   name = "Attività"
   URL = "info/social-program"
   weight = 50
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
+  name = "Marcopolo Turandot"
+  URL = "http://cn.aliassisi.com/"
+  weight = 60
 [[Languages.it.menu.main]]
 name = "Pubblicazioni"
 URL = "book"
@@ -185,6 +192,7 @@ weight = 40
 name = "Contatti"
 URL = "contact"
 weight = 50
+
 # footer menu
 [[Languages.it.menu.footer]]
 name = "teacher"
@@ -212,8 +220,10 @@ languageCode = "en-us"
 contentDir = "content/en"
 weight = 2
 home = "Home"
+
 # copyright
 copyright = "Copyright &copy; 2020 a hugo theme by [themefisher](https://themefisher.com)"
+
 # main menu
 [[Languages.en.menu.main]]
 name = "Courses"
@@ -236,19 +246,19 @@ weight = 10
   weight = 20
   [[Languages.en.menu.main]]
   parent = "Courses"
-  name = "Info"
+  name = "Course info"
   URL = "info/course"
   weight = 30
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Certifications"
   URL = "info/certifications"
-  weight = 30
+  weight = 31
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "FAQ"
   URL = "faq"
-  weight = 30
+  weight = 32
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Starting dates"
@@ -259,6 +269,11 @@ weight = 10
   name = "Social Program"
   URL = "info/social-program"
   weight = 50
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Marcopolo Turandot"
+  URL = "http://cn.aliassisi.com/"
+  weight = 60
 [[Languages.en.menu.main]]
 name = "Books"
 URL = "book"
@@ -275,6 +290,7 @@ weight = 40
 name = "Contact"
 URL = "contact"
 weight = 50
+
 # footer menu
 [[Languages.en.menu.footer]]
 name = "teacher"
