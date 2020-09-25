@@ -10,7 +10,7 @@ funfacts:
   enable : true
 ---
 
-### All class sessions offer:
+### All class sessions offer
 
 * Highly qualifed teachers who ensure student interaction and engagement
 * Focus on diction
@@ -18,7 +18,7 @@ funfacts:
 
 ### Credits
 
-#### U.S.A.
+**U.S.A.**
 
 As we are partnered with the Neumann University, students who take our 4 weeks standard course (80 hours) are
 eligible to receive Neumann University transfer credits (3 credits). Courses offered: Italian 101, 102, 201 and
@@ -28,7 +28,7 @@ procedures to follow:
 * Please contact the registrar office of your University or College and ask whether they can grant credits for our courses directly.
 * If it is not possible, you can enrol in our courses through our partner Neumann University.
 
-#### Europe
+**Europe**
 
 Find listed below the credits issued for each kind of course:
 
