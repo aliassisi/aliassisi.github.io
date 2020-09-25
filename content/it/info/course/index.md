@@ -34,7 +34,7 @@ Rilasciamo un attestato di frequenza e un certificato sul livello di apprendimen
 
 Di seguito i dettagli sui nostri livelli:
 
-{{< imgproc levels.png Resize "680x" >}}
+{{< imgproc "img/levels.png" Resize "680x" >}}
 
 * Principianti: Solide basi per iniziare a parlare italiano
 * A1: Italiano di base, inizia a parlare in modo semplice
@@ -43,12 +43,6 @@ Di seguito i dettagli sui nostri livelli:
 * B2: Imparare nuovi concetti in italiano per crescita personale, professionale o accademica
 * C1: Approfondisci la conoscenza di contenuti in italiano
 * C2: Raggiungi un livello di competenza in italiano simile a un madrelingua
-
-### Certificazioni
-
-{{< imgproc plida.png Resize "200x" >}}
-{{< imgproc cils.png Resize "200x" >}}
-{{< imgproc romatre.png Resize "200x" >}}
 
 ### Corsi su misura
 

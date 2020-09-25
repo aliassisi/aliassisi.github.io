@@ -47,7 +47,7 @@ We issue a certificate of attendance and a proficiency certificate between A1 an
 
 More details about our course levels:
 
-{{< imgproc levels.png Resize "680x" >}}
+{{< imgproc "img/levels.png" Resize "680x" >}}
 
 * Beginners: Develop a strong foundation to begin speaking Italian
 * A1: Interact with native speakers through basic Italian
@@ -61,12 +61,6 @@ At the start of each course we ascertain the correct course level for each stude
 depends on the type (standard, intensive, combined, individual) and duration of the course. The structure of the
 course allows students to be aware of their progress, both through our regular internal assessments and finally
 through the CILS/PLIDA e ROMA TRE exams should they choose to take this exam.
-
-### Certifications
-
-{{< imgproc plida.png Resize "200x" >}}
-{{< imgproc cils.png Resize "200x" >}}
-{{< imgproc romatre.png Resize "200x" >}}
 
 ### Tailored courses
 
