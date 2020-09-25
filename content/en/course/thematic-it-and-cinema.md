@@ -1,0 +1,42 @@
+---
+title: "Themed Course: Italian and Cinema"
+date: 2019-07-06T15:27:17+06:00
+draft: false
+# page title background image
+bg_image: "images/backgrounds/page-title.jpg"
+# meta description
+description : "Six hours of lessons each day consisting of four hours of class in the morning and two intensive hours in the afternoon one-on-one lesson."
+# course thumbnail
+image: "images/courses/sorpasso.jpg"
+# taxonomy
+ctypes:
+ - "italian"
+ - "onsite"
+# teacher
+teacher: ""
+# duration
+duration : "Minimum of 1 week"
+# intensity
+intensity : "30 hours per week"
+# course fee
+fee : "Starting at 565.00€"
+# apply url
+apply_url : "#"
+---
+
+ * **Morning Class Size**: 4 - 12 students
+ * **DMorning Class Hours:**: 4 hours/morning with a 15 minute break
+ * **Afternoon Class Size**: one-on-one lesson
+ * **Afternoon Class Hours**: 2 hours
+ * **Days per Week:**: 5 days (Monday through Friday)
+ * **Levels**: Beginners, A2 through C2
+ * **Credits for a 4 weeks course:**: 4 CFU (ECTS) / 3 Neumann University Italian credits (at appropriate level)
+ * Pronunciation classes included
+
+Six hours of lessons each day consisting of four hours of class in the morning and two intensive hours in the afternoon
+one-on-one lesson.
+
+This course combines group work and individual work. The structure of the Italian and Cinema course is well-suited for
+all levels of students seeking maximum results in a short period of time. In the afternoon one-on-one sessions, teachers
+and students will discuss Italy from the perspective of the directors, actors, and characters whose work contributes to
+the Italian films we know and love!

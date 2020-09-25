@@ -1,58 +1,42 @@
 ---
-title: "Thematic: Italian & Literature"
+title: "Themed course: Italian and Literature"
 date: 2019-07-06T15:27:17+06:00
 draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "4 hours of lessons in the morning followed by 2 hours of one-to-one focused on literature."
+description : "Six hours of lessons each day consisting of four hours of class in the morning and two intensive hours in the afternoon one-on-one lesson. "
 # course thumbnail
 image: "images/courses/letteratura_alia.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italian"
  - "onsite"
 # teacher
 teacher: ""
 # duration
-duration : "2 weeks"
+duration : "Minimum of 1 week"
 # intensity
 intensity : "30 hours per week"
-# daily
-daily: "6 hours"
 # course fee
-fee : "1040,00€"
+fee : "Starting at 565.00€"
 # apply url
 apply_url : "#"
-# type
-type: "course"
 ---
 
-### About the course
+ * **Morning Class Size**: 4 - 12 students
+ * **DMorning Class Hours:**: 4 hours/morning with a 15 minute break
+ * **Afternoon Class Size**: one-on-one lesson
+ * **Afternoon Class Hours**: 2 hours
+ * **Days per Week:**: 5 days (Monday through Friday)
+ * **Levels**: Beginners, A2 through C2
+ * **Credits for a 4 weeks course:**: 4 CFU (ECTS) / 3 Neumann University Italian credits (at appropriate level)
+ * Pronunciation classes included
 
-* Morning session class size: Mini Group
-* Morning session: 4 hours/day with a 15 minute break
-* Afternoon session class size: **one-on-one**.
-* Afternoon session: 2 hours/day
-* Days per Week: 5 days (Monday through Friday)
-* Duration: 2 weeks
-* Total Hours: 60 hours
-* Levels: Beginners, A2 through C2
-* Textbooks included
+Six hours of lessons each day consisting of four hours of class in the morning and two intensive hours in
+the afternoon one-on-one lesson.
 
-60 hours, 2 weeks + textbooks + [social program]({{< ref "info/social-program" >}})
-
-Four hours lessons a day, from Monday to Friday in the morning followed by 2 hours of one-to-one focused on 
-literature. The afternoon lessons are set aside for improving the student’s language proficiency with emphasis on 
-conversation, fluency and writing skills. The course puts together the advantages of group work and individual 
-work. It is particularly suitable for students who wish to learn Italian through  literature. In the one-to-one 
-lessons students are welcome to select the authors they prefer and work on the specific topics needed for their 
-academic or professional purposes.
-
-In addition to the _Italiano in._,  _Il corso_ method and authentic literary texts, also included are textbooks 
-developed with two aims: to improve student’s understanding of literary texts and to help them to appreciate 
-their stylistic value:
-
-* Ritratti 
-* Ambienti
-* Incontri ([see studying material excerpt](/files/incontri.pdf))
+This course combines group work and individual work. The structure of the Italian Literature Course is
+well-suited for all levels of students seeking maximum results in a short period of time. Students will
+learn about Italian literary classics in the afternoon one-on-one lessons by engaging with the texts and
+discussing authors, characters, and story lines.

@@ -5,7 +5,7 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "4 ore mattutine di lezione e due ore pomeridiane di letteratura italiana."
+description : "Sei ore di lezione al giorno, quattro in una classe di un corso ordinario e due ore pomeridiane di approfondimento."
 # course thumbnail
 image: "images/courses/letteratura_alia.jpg"
 # taxonomy
