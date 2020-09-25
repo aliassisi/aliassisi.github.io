@@ -1,5 +1,5 @@
 {{ $images := .Page.Resources.ByType "image" }}
-{{ $original := $images.GetMatch (.Get 0) }}
+{{ $original := resources.Get (.Get 0) }}
 {{ $command := .Get 1 }}
 {{ $options := .Get 2 }}
 
@@ -15,5 +15,3 @@
 
 {{ $image := .Scratch.Get "image" }}
 <img class="img-fluid mx-4" src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
-
-
