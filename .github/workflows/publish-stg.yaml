@@ -16,7 +16,7 @@ jobs:
           submodules: true
 
       - name: Build site
-        uses: jakejarvis/hugo-build-action@v0.72.0
+        uses: aliassisi/hugo-build-action@v0.72.0
         env:
           HUGO_PARAMS_NOINDEX: true
         with:
