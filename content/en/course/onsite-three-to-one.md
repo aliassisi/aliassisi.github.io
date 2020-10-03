@@ -15,9 +15,9 @@ ctypes:
 # teacher
 teacher: ""
 # duration
-duration : "dependent on the students’ needs"
+duration : "flexible"
 # intensity
-intensity : "dependent on the students’ needs"
+intensity : "dep. on student's needs"
 # course fee
 fee : "Starting at 66,00€"
 # apply url
