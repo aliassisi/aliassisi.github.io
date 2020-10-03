@@ -9,7 +9,7 @@ description : "30 hours live lessons per week with morning and afternoon session
 # course thumbnail
 image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italian"
  - "virtual"
 # teacher
@@ -21,7 +21,7 @@ intensity : "30 hours per week"
 # daily
 daily: "6 hours"
 # course fee
-fee : "1.620,00€"
+fee : "Starting at 450,00€"
 # apply url
 apply_url : "#"
 # type

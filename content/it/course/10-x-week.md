@@ -9,7 +9,7 @@ description : "10 ore alla settimana, dal Lunedì al Venerdì."
 # course thumbnail
 image: "images/courses/allie-KzUsqBRU0T4-unsplash.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italiano"
  - "virtuale"
 # teacher
@@ -21,7 +21,7 @@ intensity : "10 ore a settimana"
 # daily
 daily: "2 ore"
 # course fee
-fee : "270,00€"
+fee : "380,00€"
 # apply url
 apply_url : "#"
 # type

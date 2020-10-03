@@ -9,7 +9,7 @@ description : "30 ore alla settimana con lezioni mattutine in minigruppo e pomer
 # course thumbnail
 image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italiano"
  - "virtuale"
 # teacher
@@ -21,7 +21,7 @@ intensity : "30 ore a settimana"
 # daily
 daily: "6 ore"
 # course fee
-fee : "1.620,00€"
+fee : "Da 450,00€"
 # apply url
 apply_url : "#"
 # type
