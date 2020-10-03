@@ -23,7 +23,7 @@ daily: "6 hours"
 # course fee
 fee : "Starting at 450,00€"
 # apply url
-apply_url : "#"
+apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+Full+Time"
 # type
 type: "course"
 ---

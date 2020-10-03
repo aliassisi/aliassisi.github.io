@@ -23,7 +23,7 @@ daily: "2 ore"
 # course fee
 fee : "180,00€"
 # apply url
-apply_url : "#"
+apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+Dizione+in+gruppo"
 # type
 type: "course"
 ---

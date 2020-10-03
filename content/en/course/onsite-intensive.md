@@ -9,7 +9,7 @@ description : "Six hours per day courses."
 # course thumbnail
 image: "images/courses/intensive.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italian"
  - "onsite"
 # teacher
@@ -23,7 +23,7 @@ daily: "6 hours"
 # course fee
 fee : "From 450,00€"
 # apply url
-apply_url : "#"
+apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONSITE+-+Intensivo+/+Intensive"
 # type
 type: "course"
 ---

@@ -21,7 +21,7 @@ intensity : "dependent on the students’ needs"
 # course fee
 fee : "Starting at 66,00€"
 # apply url
-apply_url : "#"
+apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONSITE+-+Tre+a+Uno+/+Lessons+for+Three"
 ---
 
  * **Class size**: 3

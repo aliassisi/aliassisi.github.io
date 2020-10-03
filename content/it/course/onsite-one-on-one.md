@@ -22,7 +22,7 @@ intensity : "flessibile"
 # course fee
 fee : "Da 35,00€"
 # apply url
-apply_url : "#"
+apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONSITE+-+Lezioni+individuali+/+One-on-one+lessons"
 ---
 
  * **Participanti**: individuale

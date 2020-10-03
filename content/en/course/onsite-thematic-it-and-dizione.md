@@ -21,7 +21,7 @@ intensity : "30 hours per week"
 # course fee
 fee : "Starting at 565.00€"
 # apply url
-apply_url : "#"
+apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONSITE+-+Intensivo+tematico+dizione+/+Super+Intensive+Thematic+Diction"
 ---
 
  * **Morning Class Size**: 4 - 12 students
