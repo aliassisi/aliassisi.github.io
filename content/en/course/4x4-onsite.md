@@ -11,7 +11,7 @@ disposizione degli studenti che abbiamo bisogno di aiuto."
 image: "images/courses/standard.jpg"
 # taxonomy
 ctypes:
- - "italiano"
+ - "italian"
  - "onsite"
 # teacher
 teacher: ""

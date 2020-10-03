@@ -9,9 +9,9 @@ description : "30 hours live lessons per week with morning mini group sessions a
 # course thumbnail
 image: "images/courses/manoscritto.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italian"
- - "virtual"
+ - "online"
 # teacher
 teacher: ""
 # duration
@@ -64,4 +64,3 @@ One to one diction classes are an excellent way for students to improve their pr
 * Expression and interpretation: students learn how to properly express their thoughts in conversation through the use of tone, volume, intensity, rhythm and pause
 * Breathing: students learn how to improve their diagphragmatic breathing capacity
 * Articulation: students learn how to properly form the unique sounds and rhythms that comprise the Italian language.
-

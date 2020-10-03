@@ -5,13 +5,12 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "Quattro ore di lezione al giorno, dal lunedì al venerdì, con il personale dell’Accademia a
-disposizione degli studenti che abbiamo bisogno di aiuto."
+description : "Lessons for three provide students with tailored classes specifically addressing their needs."
 # course thumbnail
 image: "images/courses/trio.jpg"
 # taxonomy
 ctypes:
- - "italiano"
+ - "italian"
  - "onsite"
 # teacher
 teacher: ""

@@ -9,9 +9,9 @@ description : "30 hours live lessons per week with morning mini group sessions a
 # course thumbnail
 image: "images/courses/visuals-ufK-deiLqY8-unsplash.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italian"
- - "virtual"
+ - "online"
 # teacher
 teacher: ""
 # duration

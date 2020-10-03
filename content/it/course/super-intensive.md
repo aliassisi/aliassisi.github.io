@@ -11,7 +11,7 @@ image: "images/courses/visuals-ufK-deiLqY8-unsplash.jpg"
 # taxonomy
 ctypes:
  - "italiano"
- - "virtuale"
+ - "online"
 # teacher
 teacher: ""
 # duration

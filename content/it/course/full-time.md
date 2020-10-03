@@ -11,7 +11,7 @@ image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 # taxonomy
 ctypes:
  - "italiano"
- - "virtuale"
+ - "online"
 # teacher
 teacher: ""
 # duration

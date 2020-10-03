@@ -9,9 +9,9 @@ description : "4 ore mattutine di lezione (mini gruppo) e due ore pomeridiane di
 # course thumbnail
 image: "images/courses/manoscritto.jpg"
 # taxonomy
-ctypes: 
+ctypes:
  - "italiano"
- - "virtuale"
+ - "online"
 # teacher
 teacher: ""
 # duration
@@ -45,15 +45,15 @@ type: "course"
 
 #### Italian&literature
 
-Nelle lezioni pomerdiane si studieranno o approfondiranno classici della letteratura italiana, per esigenze accademiche o per interessi personali. 
+Nelle lezioni pomerdiane si studieranno o approfondiranno classici della letteratura italiana, per esigenze accademiche o per interessi personali.
 
 #### Italian&cinema
 
-Il programma è pensato per studenti che vogliono approfondire al lingua italiana attraverso la filmografia italiana e i suoi autori o le sue correnti più significative (Neorealismo, Fellini, Visconti, Bene, Pasolini) 
+Il programma è pensato per studenti che vogliono approfondire al lingua italiana attraverso la filmografia italiana e i suoi autori o le sue correnti più significative (Neorealismo, Fellini, Visconti, Bene, Pasolini)
 
 #### Italian&History of the art
 
-Per studenti che vogliono  studiare l’italiano attraverso i capolavori della storia dell’arte italiana. 
+Per studenti che vogliono  studiare l’italiano attraverso i capolavori della storia dell’arte italiana.
 
 #### Italian&Diction
 

@@ -134,7 +134,7 @@ weight = 10
   [[Languages.it.menu.main]]
   parent = "Corsi"
   name = "Corsi online"
-  URL = "ctypes/virtual/"
+  URL = "ctypes/online/"
   weight = 10
   [[Languages.it.menu.main]]
   parent = "Corsi"
@@ -232,7 +232,7 @@ weight = 10
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Online courses"
-  URL = "ctypes/virtual/"
+  URL = "ctypes/online/"
   weight = 10
   [[Languages.en.menu.main]]
   parent = "Courses"
