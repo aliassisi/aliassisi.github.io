@@ -15,10 +15,16 @@ jobs:
         with:
           submodules: true
 
+      - name: Set current date as env variable NOW
+        run: echo "::set-env name=NOW::$(date +'%Y-%m-%dT%H:%M:%S')"
+
       - name: Build site
         uses: aliassisi/hugo-build-action@v0.72.0
         env:
+          SHA8: ${GITHUB_SHA::8}
           HUGO_PARAMS_NOINDEX: true
+          HUGO_PARAMS_VERSION: v$(NOW)-${SHA8}
+          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/${SHA8}
         with:
           args: -b https://${{ secrets.GCP_STAGING_BUCKET_NAME }}
 

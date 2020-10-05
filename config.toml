@@ -71,6 +71,9 @@ google_analitycs_id = "" # your id
 top_header = true
 # disable SEO indexing
 noindex = false
+# site version
+version = "v00000000-local"
+versionURL = "https://github.com/aliassisi/aliassisi.it"
 
 # Preloader
 [params.preloader]
