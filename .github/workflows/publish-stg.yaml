@@ -15,15 +15,17 @@ jobs:
         with:
           submodules: true
 
-      - name: Set current date as env variable NOW
-        run: echo "::set-env name=NOW::$(date +'%Y-%m-%d')"
+      - name: Compute version bits
+        run: |
+          echo ::set-env name=NOW::$(date +'%Y-%m-%d')
+          echo ::set-env name=SHA7::$(git rev-parse --short ${{ github.sha }})
 
       - name: Build site
         uses: aliassisi/hugo-build-action@v0.72.0
         env:
           HUGO_PARAMS_NOINDEX: true
-          HUGO_PARAMS_VERSION: v${{env.NOW}}-${GITHUB_SHA::8}
-          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/${GITHUB_SHA::8}
+          HUGO_PARAMS_VERSION: v${{env.NOW}}-${{env.SHA7}}
+          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/${{env.SHA7}}
         with:
           args: -b https://${{ secrets.GCP_STAGING_BUCKET_NAME }}
 
