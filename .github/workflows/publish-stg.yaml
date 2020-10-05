@@ -23,8 +23,8 @@ jobs:
         env:
           SHA8: ${GITHUB_SHA::8}
           HUGO_PARAMS_NOINDEX: true
-          HUGO_PARAMS_VERSION: v$NOW-$SHA8
-          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/$SHA8
+          HUGO_PARAMS_VERSION: v${{env.NOW}}-${{env.SHA8}}
+          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/${{env.SHA8}}
         with:
           args: -b https://${{ secrets.GCP_STAGING_BUCKET_NAME }}
 
