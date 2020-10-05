@@ -5,9 +5,6 @@ on:
     branch:
       - 'master'
 
-env:
-  SHA8: ${GITHUB_SHA::8}
-
 jobs:
   publish-site:
     runs-on: ubuntu-latest
@@ -25,8 +22,8 @@ jobs:
         uses: aliassisi/hugo-build-action@v0.72.0
         env:
           HUGO_PARAMS_NOINDEX: true
-          HUGO_PARAMS_VERSION: v${{env.NOW}}-${{env.SHA8}}
-          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/${{env.SHA8}}
+          HUGO_PARAMS_VERSION: v${{env.NOW}}-${GITHUB_SHA::8}
+          HUGO_PARAMS_VERSIONURL: https://github.com/aliassisi/aliassisi.it/tree/${GITHUB_SHA::8}
         with:
           args: -b https://${{ secrets.GCP_STAGING_BUCKET_NAME }}
 
