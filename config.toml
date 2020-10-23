@@ -65,6 +65,7 @@ mobile = "+39075815281"
 email = "info@aliassisi.it"
 # contact form action
 contact_form_action = "#" # contact form works with https://formspree.io
+reCAPTCHAKey = "6LdbLtgZAAAAALqfmRKzrH-wlWmfJzyZUaGkzB9A"
 # Google Analitycs
 google_analitycs_id = "" # your id
 # top header
