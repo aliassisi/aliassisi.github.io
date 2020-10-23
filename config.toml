@@ -64,7 +64,7 @@ address = "Via Tiberio d'Assisi, 10 - 06081 Assisi, Italy"
 mobile = "+39075815281"
 email = "info@aliassisi.it"
 # contact form action
-contact_form_action = "#" # contact form works with https://formspree.io
+contact_form_action = "https://us-east1-alia-infrastructure.cloudfunctions.net/aliassisi_it_contact_form"
 reCAPTCHAKey = "6LdbLtgZAAAAALqfmRKzrH-wlWmfJzyZUaGkzB9A"
 # Google Analitycs
 google_analitycs_id = "" # your id
