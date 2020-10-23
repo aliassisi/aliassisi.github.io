@@ -17,8 +17,8 @@ jobs:
 
       - name: Compute version bits
         run: |
-          echo ::set-env name=NOW::$(date +'%Y-%m-%d')
-          echo ::set-env name=SHA7::$(git rev-parse --short ${{ github.sha }})
+          echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "SHA7=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Build site
         uses: aliassisi/hugo-build-action@v0.72.0
