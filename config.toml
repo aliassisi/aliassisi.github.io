@@ -61,7 +61,7 @@ description = "This is meta description"
 author = "Themefisher"
 # contact info
 address = "Via Tiberio d'Assisi, 10 - 06081 Assisi, Italy"
-mobile = "+39075815281"
+mobile = "+39 075 815281"
 email = "info@aliassisi.it"
 # contact form action
 contact_form_action = "https://us-east1-alia-infrastructure.cloudfunctions.net/aliassisi_it_contact_form"
