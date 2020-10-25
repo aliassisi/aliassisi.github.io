@@ -138,3 +138,15 @@
 
 - id: facilities
   translation: Facilities
+
+- id: please-fill-form
+  translation: Please fill all the form fields
+
+- id: name
+  translation: Name
+
+- id: subject
+  translation: Subject
+
+- id: message
+  translation: Message

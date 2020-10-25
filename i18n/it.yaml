@@ -132,3 +132,15 @@
 
 - id: details
   translation: Dettagli
+
+- id: please-fill-form
+  translation: Per favore riempi tutti i campi
+
+- id: name
+  translation: Nome
+
+- id: subject
+  translation: Oggetto
+
+- id: message
+  translation: Messaggio
