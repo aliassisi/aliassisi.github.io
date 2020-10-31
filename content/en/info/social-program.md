@@ -22,7 +22,7 @@ funfacts:
 
 ### Facilities at the Accadamia available to any student
 
-* free wi fi and internet point
+* free wi fi
 * music room with piano for pianists and singers
 * video library with classics of cinema and documentaries
 * library (Italian language textbooks and literary classics)
@@ -38,3 +38,4 @@ funfacts:
 * meetings with sculptors and painters in their working environments.
 * lectures concerts, meetings with writers and poets.
 * outings to well-known Umbrian towns such as Todi, Gubbio, Perugia, Deruta, Spoleto.
+* proofreading

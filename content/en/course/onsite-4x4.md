@@ -5,8 +5,7 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "Quattro ore di lezione al giorno, dal lunedì al venerdì, con il personale dell’Accademia a
-disposizione degli studenti che abbiamo bisogno di aiuto."
+description : "Four hours of classes each weekday in a small group of 4 students."
 # course thumbnail
 image: "images/courses/standard.jpg"
 # taxonomy
@@ -16,26 +15,25 @@ ctypes:
 # teacher
 teacher: ""
 # duration
-duration : "minimo 2 settimane"
+duration : "2 weeks min."
 # intensity
-intensity : "20 ore a settimana"
+intensity : "20 hours per week"
 # course fee
-fee : "Da 720,00€"
+fee : "From 720,00€"
 # apply url
 apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONSITE+-+4x4"
 ---
 
- * **Participanti**: max 4
- * **Ore di lezione al giorno**: 4 ore al giorno, con una pausa di 15 minuti.
- * **Giorni alla settimana**: 5 giorni (dal lunedì al venerdì)
- * **Livelli**: Principianti, da A2 a C2
- * **Crediti**: 4 CFU (ECTS) / 3 Neumann University Italian credits (al livello appropriato)
- * Lezioni di dizione incluse
+ * Class size: maximum of 4 students
+ * Hours per Day: 4 hours/day with a 15 minute break
+ * Days per Week: 5 days (Monday through Friday)
+ * Credits for a 4 week course: 4 CFU (ECTS) / 3 Neumann University Italian credits (at appropriate level)
+ * Levels: Beginners, A2 through C2
+ * Pronunciation classes included
 
+Four hours of classes each weekday in a small group of four (4) students designed to improve the students’
+Italian language capabilities using our proven methods of instruction and assessment.
 
-Quattro ore di lezione al giorno in un piccolo gruppo di 4 persone, dal lunedì al venerdì per sviluppare in modo
-puntuale e graduato tutte le competenze linguistiche.
-
-Il corso lascia molto tempo libero per le escursioni in città o per lo studio individuale da svolgere in
-Accademia, dove il personale resta a disposizione degli studenti oltre l’orario delle lezioni. Il corso include
-attività gratuite e lezioni di dizione.
+Our courses provide sufficient time for excursions in the city and/or for individual study in the
+Accademia. Our teachers also remain available to students beyond class hours. Additional activities and
+pronunciation classes are included in the cost of tuition for the 4x4 class package.

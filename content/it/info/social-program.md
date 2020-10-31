@@ -22,7 +22,7 @@ funfacts:
 
 ### A disposizione dei nostri studenti
 
-* connessione wi-fi gratuita e internet point
+* connessione wi-fi gratuita
 * una sala-musica con pianoforte per pianisti e cantanti
 * una videoteca con classici del cinema e documentari
 * una biblioteca (testi didattici e classici della letteratura)
@@ -36,4 +36,5 @@ funfacts:
 * visite guidate a musei, monumenti e luoghi caratteristici della città
 * incontri con artigiani della ceramica, pittori e scultori, nei rispettivi laboratori
 * seminari a tema e concerti, incontri con scrittori e poeti
-* gite in note città umbre quali Todi, Gubbio, Perugia, Deruta, Spoleto, Montefalco, Trevi, Spello.
+* gite in note città umbre quali Todi, Gubbio, Perugia, Deruta, Spoleto, Montefalco, Trevi, Spello
+* revisione e correzione testi
