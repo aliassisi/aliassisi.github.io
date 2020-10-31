@@ -12,6 +12,7 @@ image: "images/courses/emanuela-faraglia.jpg"
 ctypes:
  - "dizione"
  - "online"
+keywords: []
 # teacher
 teacher: ""
 # duration

@@ -13,6 +13,7 @@ image: "images/courses/annie-spratt-fvaB1MK6NxM-unsplash.jpg"
 ctypes:
  - "italian"
  - "onsite"
+keywords: []
 # teacher
 teacher: ""
 # duration

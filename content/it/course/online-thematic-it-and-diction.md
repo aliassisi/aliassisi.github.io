@@ -12,6 +12,7 @@ image: "images/courses/amin-hasani-HARKOkVrl9M-unsplash.jpg"
 ctypes:
  - "italiano"
  - "online"
+keywords: []
 # teacher
 teacher: ""
 # duration

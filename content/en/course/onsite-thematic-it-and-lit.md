@@ -12,6 +12,7 @@ image: "images/courses/letteratura_alia.jpg"
 ctypes:
  - "italian"
  - "onsite"
+keywords: []
 # teacher
 teacher: ""
 # duration

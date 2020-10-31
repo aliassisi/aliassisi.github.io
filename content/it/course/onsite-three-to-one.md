@@ -13,6 +13,7 @@ image: "images/courses/trio.jpg"
 ctypes:
  - "italiano"
  - "onsite"
+keywords: []
 # teacher
 teacher: ""
 # duration

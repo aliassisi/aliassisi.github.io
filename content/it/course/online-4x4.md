@@ -12,6 +12,7 @@ image: "images/courses/wes-hicks-4-EeTnaC1S4-unsplash.jpg"
 ctypes:
  - "italiano"
  - "online"
+keywords: []
 # teacher
 teacher: ""
 # duration

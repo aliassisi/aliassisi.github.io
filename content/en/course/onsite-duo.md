@@ -12,6 +12,7 @@ image: "images/courses/duo.jpg"
 ctypes:
  - "italian"
  - "onsite"
+keywords: []
 # teacher
 teacher: ""
 # duration

@@ -12,6 +12,7 @@ image: "images/courses/letteratura_alia.jpg"
 ctypes:
  - "italian"
  - "online"
+keywords: []
 # teacher
 teacher: ""
 # duration

@@ -12,6 +12,7 @@ image: "images/courses/part-time.jpg"
 ctypes:
  - "italian"
  - "online"
+keywords: []
 # teacher
 teacher: ""
 # duration

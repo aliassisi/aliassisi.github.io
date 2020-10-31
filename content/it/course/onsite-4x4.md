@@ -13,6 +13,7 @@ image: "images/courses/4x4.jpg"
 ctypes:
  - "italiano"
  - "onsite"
+keywords: []
 # teacher
 teacher: ""
 # duration
