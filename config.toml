@@ -180,6 +180,11 @@ weight = 10
   name = "Marcopolo Turandot"
   URL = "http://cn.aliassisi.com/"
   weight = 60
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
+  name = "ビデオ通話レッスン開催中︕"
+  URL = "../files/ALIA_jp.pdf"
+  weight = 70
 [[Languages.it.menu.main]]
 name = "Pubblicazioni"
 URL = "book"
@@ -278,6 +283,12 @@ weight = 10
   name = "Marcopolo Turandot"
   URL = "http://cn.aliassisi.com/"
   weight = 60
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "ビデオ通話レッスン開催中︕"
+  URL = "/files/ALIA_jp.pdf"
+  weight = 70
+
 [[Languages.en.menu.main]]
 name = "Books"
 URL = "book"
