@@ -12,7 +12,9 @@ image: "images/courses/italian_art.jpg"
 ctypes:
  - "italian"
  - "online"
-keywords: []
+ctags:
+ - "thematic"
+ - "individual"
 # teacher
 teacher: ""
 # duration

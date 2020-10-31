@@ -12,7 +12,9 @@ image: "images/courses/amin-hasani-HARKOkVrl9M-unsplash.jpg"
 ctypes:
  - "italian"
  - "onsite"
-keywords: []
+ctags:
+ - "thematic"
+ - "individual"
 # teacher
 teacher: ""
 # duration

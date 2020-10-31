@@ -12,7 +12,7 @@ image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 ctypes:
  - "italiano"
  - "online"
-keywords: []
+ctags: []
 # teacher
 teacher: ""
 # duration

@@ -12,7 +12,7 @@ image: "images/courses/intensive.jpg"
 ctypes:
  - "italian"
  - "onsite"
-keywords: []
+ctags: []
 # teacher
 teacher: ""
 # duration

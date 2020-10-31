@@ -12,7 +12,8 @@ image: "images/courses/elena-kloppenburg-gnhvIGlFwds-unsplash.jpg"
 ctypes:
  - "italiano"
  - "online"
-keywords: []
+ctags:
+ - "individual"
 # teacher
 teacher: ""
 # duration

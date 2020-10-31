@@ -12,7 +12,7 @@ image: "images/courses/visuals-ufK-deiLqY8-unsplash.jpg"
 ctypes:
  - "italiano"
  - "online"
-keywords: []
+ctags: []
 # teacher
 teacher: ""
 # duration

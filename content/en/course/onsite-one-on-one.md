@@ -12,7 +12,8 @@ image: "images/courses/individual.jpg"
 ctypes:
  - "italian"
  - "onsite"
-keywords: []
+ctags:
+ - "individual"
 # teacher
 teacher: ""
 # duration

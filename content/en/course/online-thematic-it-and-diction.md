@@ -12,7 +12,9 @@ image: "images/courses/amin-hasani-HARKOkVrl9M-unsplash.jpg"
 ctypes:
  - "italian"
  - "online"
-keywords: []
+ctags:
+ - "thematic"
+ - "individual"
 # teacher
 teacher: ""
 # duration
@@ -29,7 +31,7 @@ apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKa
 ---
 
  * **Morning Class Size**: 4 - 12 students
- * **DMorning Class Hours:**: 4 hours/morning with a 15 minute break
+ * **Morning Class Hours:**: 4 hours/morning with a 15 minute break
  * **Afternoon Class Size**: one-on-one lesson
  * **Afternoon Class Hours**: 2 hours
  * **Days per Week:**: 5 days (Monday through Friday)

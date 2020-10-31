@@ -12,7 +12,9 @@ image: "images/courses/italian_art.jpg"
 ctypes:
  - "italiano"
  - "onsite"
-keywords: []
+ctags:
+ - "thematic"
+ - "individual"
 # teacher
 teacher: ""
 # duration

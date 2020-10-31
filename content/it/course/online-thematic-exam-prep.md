@@ -12,7 +12,9 @@ image: "images/courses/annie-spratt-fvaB1MK6NxM-unsplash.jpg"
 ctypes:
  - "italiano"
  - "online"
-keywords: []
+ctags:
+ - "thematic"
+ - "individual"
 # teacher
 teacher: ""
 # duration

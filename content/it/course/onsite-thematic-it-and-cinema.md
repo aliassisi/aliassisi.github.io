@@ -12,7 +12,9 @@ image: "images/courses/sorpasso.jpg"
 ctypes:
  - "italiano"
  - "onsite"
-keywords: []
+ctags:
+ - "thematic"
+ - "individual"
 # teacher
 teacher: ""
 # duration
