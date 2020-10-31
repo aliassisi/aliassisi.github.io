@@ -16,6 +16,17 @@ disableLanguages = []
   ctype = "ctypes"
   tag = "tags"
 
+[related]
+  includeNewer = true
+  threshold = 100
+  toLower = false
+  [[related.indices]]
+    name = "intensity"
+    weight = 80
+  [[related.indices]]
+    name = "ctags"
+    weight = 100
+
 [privacy]
   [privacy.disqus]
     disable = true
