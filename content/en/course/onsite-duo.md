@@ -2,6 +2,7 @@
 title: "Lesson for Two"
 date: 2019-07-06T15:27:17+06:00
 draft: false
+weight: 60
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
