@@ -213,27 +213,6 @@ name = "Contatti"
 URL = "contact"
 weight = 50
 
-# footer menu
-[[Languages.it.menu.footer]]
-name = "teacher"
-URL = "teacher"
-
-[[Languages.it.menu.footer]]
-name = "notice"
-URL = "notice"
-
-[[Languages.it.menu.footer]]
-name = "event"
-URL = "event"
-
-[[Languages.it.menu.footer]]
-name = "scholarship"
-URL = "scholarship"
-
-[[Languages.it.menu.footer]]
-name = "research"
-URL = "research"
-
 [Languages.en]
 languageName = "En"
 languageCode = "en-us"
@@ -316,24 +295,3 @@ weight = 40
 name = "Contact"
 URL = "contact"
 weight = 50
-
-# footer menu
-[[Languages.en.menu.footer]]
-name = "teacher"
-URL = "teacher"
-
-[[Languages.en.menu.footer]]
-name = "notice"
-URL = "notice"
-
-[[Languages.en.menu.footer]]
-name = "event"
-URL = "event"
-
-[[Languages.en.menu.footer]]
-name = "scholarship"
-URL = "scholarship"
-
-[[Languages.en.menu.footer]]
-name = "research"
-URL = "research"
