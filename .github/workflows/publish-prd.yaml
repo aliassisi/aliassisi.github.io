@@ -6,6 +6,7 @@ on:
       - "prd"
     paths-ignore:
       - README.md
+      - .forestry/*
 
 jobs:
   publish-site:
