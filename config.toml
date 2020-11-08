@@ -188,6 +188,11 @@ weight = 10
   weight = 50
   [[Languages.it.menu.main]]
   parent = "Corsi"
+  name = "Alloggi"
+  URL = "info/accommodations"
+  weight = 55
+  [[Languages.it.menu.main]]
+  parent = "Corsi"
   name = "Marcopolo Turandot"
   URL = "http://cn.aliassisi.com/"
   weight = 60
@@ -268,6 +273,11 @@ weight = 10
   name = "Social Program"
   URL = "info/social-program"
   weight = 50
+  [[Languages.en.menu.main]]
+  parent = "Courses"
+  name = "Accommodations"
+  URL = "info/accommodations"
+  weight = 55
   [[Languages.en.menu.main]]
   parent = "Courses"
   name = "Marcopolo Turandot"
