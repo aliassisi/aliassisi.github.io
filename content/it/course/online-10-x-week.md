@@ -5,35 +5,32 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "10 ore alla settimana, dal Lunedì al Venerdì."
+description: "10 ore alla settimana, dal Lunedì al Venerdì."
 # course thumbnail
 image: "images/courses/allie-KzUsqBRU0T4-unsplash.jpg"
 # taxonomy
 ctypes:
- - "italiano"
- - "online"
+  - "italiano"
+  - "online"
 ctags: []
 # teacher
 teacher: ""
 # duration
-duration : "4 settimane"
+duration: "4 settimane"
 # intensity
-intensity : "10 ore a settimana"
+intensity: "10 ore a settimana"
 # daily
 daily: "2 ore"
 # course fee
-fee : "380,00€"
+fee: "380,00€"
 # apply url
-apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+10+ore+alla+settimana+/+10+hours+per+week"
-
+apply_url: "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+10+ore+alla+settimana+/+10+hours+per+week"
 ---
 
-### Dettagli del corso
-
-* Gruppo: minigruppo
-* Ore di lezione al giorno: 2 ore al giorno
-* Giorni alla settimana: 5 giorni (dal Lunedì al Venerdì)
-* Durata: 4 settimane
-* Totale ore: 40 ore
-* Crediti: 2 CFU (ECTS)
-* Livelli: Principianti, da A2 a C2
+- Gruppo: minigruppo
+- Ore di lezione al giorno: 2 ore al giorno
+- Giorni alla settimana: 5 giorni (dal Lunedì al Venerdì)
+- Durata: 4 settimane
+- Totale ore: 40 ore
+- Crediti: 2 CFU (ECTS)
+- Livelli: Principianti, da A2 a C2

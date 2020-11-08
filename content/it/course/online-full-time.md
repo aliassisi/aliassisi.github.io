@@ -5,38 +5,35 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "30 ore alla settimana con lezioni mattutine in minigruppo e pomeridiane max 4 studenti."
+description: "30 ore alla settimana con lezioni mattutine in minigruppo e pomeridiane max 4 studenti."
 # course thumbnail
 image: "images/courses/chris-montgomery-smgTvepind4-unsplash.jpg"
 # taxonomy
 ctypes:
- - "italiano"
- - "online"
+  - "italiano"
+  - "online"
 ctags: []
 # teacher
 teacher: ""
 # duration
-duration : "minimo 1 settimana"
+duration: "minimo 1 settimana"
 # intensity
-intensity : "30 ore a settimana"
+intensity: "30 ore a settimana"
 # daily
 daily: "6 ore"
 # course fee
-fee : "Da 450,00€"
+fee: "Da 450,00€"
 # apply url
-apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+Full+Time"
-
+apply_url: "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+Full+Time"
 ---
 
-### Dettagli del corso
-
-* Gruppo - lezione mattutina: minigruppo
-* Durata lezione mattutina: 4 ore, con una pausa di 15 minuti.
-* Gruppo - lezione pomeridiana: max 4 studenti
-* Durata lezione pomeridiana: 2 ore
-* Giorni alla settimana: 5 giorni (da lunedì a venerdì)
-* Durata: 4 settimane
-* Totale ore: 120 ore
-* Crediti: 8 CFU (ECTS)
-* Livelli: Principianti, da A2 a C2
-* Lezioni di dizione incluse
+- Gruppo - lezione mattutina: minigruppo
+- Durata lezione mattutina: 4 ore, con una pausa di 15 minuti.
+- Gruppo - lezione pomeridiana: max 4 studenti
+- Durata lezione pomeridiana: 2 ore
+- Giorni alla settimana: 5 giorni (da lunedì a venerdì)
+- Durata: 4 settimane
+- Totale ore: 120 ore
+- Crediti: 8 CFU (ECTS)
+- Livelli: Principianti, da A2 a C2
+- Lezioni di dizione incluse

@@ -26,8 +26,6 @@ fee: "540,00€"
 apply_url: ""
 ---
 
-### Dettagli del corso
-
 - Gruppo: minigruppo
 - Ore di lezione al giorno: 2 ore al giorno
 - Giorni alla settimana: 1 giorno
