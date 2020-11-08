@@ -8,7 +8,7 @@ description: "Organize your staying in Assisi."
 layout: "info.html"
 ---
 
-## Sistemazione in appartamento
+## Apartments
 
 At walking distance from the Accademia, fully-furnished apartments with two sets of bed linens, bath
 towels, self-catering with a fully equipped kitchen and wi-fi.
