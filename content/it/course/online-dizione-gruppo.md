@@ -5,46 +5,43 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "Corso di dizione in videoconferenza."
+description: "Corso di dizione in videoconferenza."
 # course thumbnail
 image: "images/courses/emanuela-faraglia.jpg"
 # taxonomy
 ctypes:
- - "dizione"
- - "online"
+  - "dizione"
+  - "online"
 ctags: []
 # teacher
 teacher: ""
 # duration
-duration : "5 settimane"
-# weekly
-weekly : "2 ore"
-# daily
-daily: "2 ore"
+duration: "5 settimane"
+# intensity
+intensity: "2 ore"
 # course fee
-fee : "180,00€"
+fee: "180,00€"
 # apply url
-apply_url : "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+Dizione+in+gruppo"
-
+apply_url: "https://docs.google.com/forms/d/e/1FAIpQLSeEr3_zrTy6D8SA88Ku5xclUKaSIV8STDkxs0-hJ8qrEjje9Q/viewform?usp=pp_url&entry.1665104245=ONLINE+-+Dizione+in+gruppo"
 ---
 
-* Numero studenti: 4
-* Ore al giorno: 2
-* Giorni alla settimana: 1 (Giovedì dalle 16 alle 18)
-* Durata: 5 settimane
-* Ore totali: 10 ore
-* Crediti: 1 CFU (ECTS)
+- Numero studenti: 4
+- Ore al giorno: 2
+- Giorni alla settimana: 1 (Giovedì dalle 16 alle 18)
+- Durata: 5 settimane
+- Ore totali: 10 ore
+- Crediti: 1 CFU (ECTS)
 
 ![](/images/blog/CdC.jpg)
 Codice corso: 29497
 
 ### Programma
 
-* Espressione ed interpretazione: come essere più incisivi e catturare l’attenzione dell’interlocutore tramite l’utilizzo del colore, del tono, del volume, dell’intensità, del ritmo e delle pause.
-* Respirazione: migliorare la capacità respiratoria con la respirazione diaframmatica.
-* Articolazione: eliminazione di eventuali difetti di pronuncia (per chi parla velocemente o si “mangia” le sillabe delle parole, per chi ha difetti di pronuncia).
-* Corretta accentazione della parola: vocali “aperte” e “chiuse”, S-Z, la corretta pronuncia.
-* Tecniche di pulizia: riduzione o eliminazione della cantilena, dell’accento regionale, dei modi di dire e delle ripetizioni.
+- Espressione ed interpretazione: come essere più incisivi e catturare l’attenzione dell’interlocutore tramite l’utilizzo del colore, del tono, del volume, dell’intensità, del ritmo e delle pause.
+- Respirazione: migliorare la capacità respiratoria con la respirazione diaframmatica.
+- Articolazione: eliminazione di eventuali difetti di pronuncia (per chi parla velocemente o si “mangia” le sillabe delle parole, per chi ha difetti di pronuncia).
+- Corretta accentazione della parola: vocali “aperte” e “chiuse”, S-Z, la corretta pronuncia.
+- Tecniche di pulizia: riduzione o eliminazione della cantilena, dell’accento regionale, dei modi di dire e delle ripetizioni.
 
 ### Docente
 
