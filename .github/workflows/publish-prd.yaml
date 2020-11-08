@@ -3,7 +3,9 @@ name: publish production
 on:
   push:
     branch:
-      - 'prd'
+      - "prd"
+    paths-ignore:
+      - README.md
 
 jobs:
   publish-site:

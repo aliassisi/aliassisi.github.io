@@ -3,7 +3,9 @@ name: publish staging
 on:
   push:
     branch:
-      - 'master'
+      - "master"
+    paths-ignore:
+      - README.md
 
 jobs:
   publish-site:
