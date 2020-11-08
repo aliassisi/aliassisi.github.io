@@ -23,7 +23,7 @@ jobs:
           echo "SHA7=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Build site
-        uses: aliassisi/hugo-build-action@v0.72.0
+        uses: jakejarvis/hugo-build-action@v0.78.1
         env:
           HUGO_PARAMS_NOINDEX: true
           HUGO_PARAMS_VERSION: v${{env.NOW}}-${{env.SHA7}}
