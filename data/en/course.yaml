@@ -6,10 +6,12 @@ onsite:
     - title: "Interactive self-study activities"
       link: "https://extra.aliassisi.it/"
     - title: Activities conducted in the city of Assisi and in the Accademia’s classrooms
-      link: "/en/info/social-program/"
+      link: "/info/social-program/"
     - title: "Certificate of Attendance"
     - title: "Certificate of Evaluation based on European standards"
     - title: "Preparation for the CILS, PLIDA, ROMA TRE exams"
+    - title: "Accommodations Service"
+      link: "/info/accommodations/"
 
 virtual:
   title: "All virtual courses with ALIA offer:"
