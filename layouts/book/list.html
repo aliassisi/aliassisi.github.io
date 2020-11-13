@@ -22,13 +22,13 @@
           {{ range $paginator.Pages }}
           <div class="col-lg-4 col-sm-6 mb-5 filtr-item">
             {{ .Render "book" }}
-          </div>          
+          </div>
           {{ end }}
           <div class="col-12 mt-4">
             {{ template "_internal/pagination.html" . }}
           </div>
         </div>
-      </div>      
+      </div>
     </div>
   </div>
 </section>

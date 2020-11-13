@@ -1,15 +1,16 @@
 {{ define "main" }}
 
 {{ $data := index .Site.Data .Site.Language.Lang }}
-
 <section class="section">
   <div class="container">
     <div class="row">
       <div class="col-12">
         {{ with .Params.Image }}
-        <img class="img-fluid w-100 mb-4" src="{{ . | relURL }}" alt="about image">
+        <img class="img-fluid w-10 mb-4" src="{{ . | relURL }}" alt="about image">
         {{ end }}
+        <div class="content">
         {{ .Content }}
+        </div>
       </div>
     </div>
   </div>
