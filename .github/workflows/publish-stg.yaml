@@ -2,7 +2,7 @@ name: publish staging
 
 on:
   push:
-    branch:
+    branches:
       - "master"
     paths-ignore:
       - README.md

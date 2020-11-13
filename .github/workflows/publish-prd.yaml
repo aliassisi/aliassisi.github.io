@@ -2,7 +2,7 @@ name: publish production
 
 on:
   push:
-    branch:
+    branches:
       - "prd"
     paths-ignore:
       - README.md
