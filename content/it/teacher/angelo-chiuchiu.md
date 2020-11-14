@@ -8,7 +8,7 @@ description: ""
 # teacher portrait
 image: "images/teachers/angelo.jpeg"
 # course
-course: "Course Director"
+course: "Direttore dei corsi"
 # biography
 bio: ""
 
