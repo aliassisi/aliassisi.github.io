@@ -4,9 +4,9 @@ draft: false
 # page title background image
 bg_image: "images/backgrounds/page-title.jpg"
 # meta description
-description : "Course Director"
+description: "Course Director"
 # teacher portrait
-image: "images/teachers/teacher-2.jpg"
+image: "images/teachers/lorenzo.jpg"
 # course
 course: "Course Director"
 # biography
@@ -18,14 +18,14 @@ bio: ""
 # contact info
 contact:
   # contact item loop
-  - name : "info@aliassisi.it"
-    icon : "ti-email" # icon pack : https://themify.me/themify-icons
-    link : "mailto:info@aliassisi.it"
+  - name: "info@aliassisi.it"
+    icon: "ti-email" # icon pack : https://themify.me/themify-icons
+    link: "mailto:info@aliassisi.it"
 
   # contact item loop
-  - name : "+39 075 815281"
-    icon : "ti-mobile" # icon pack : https://themify.me/themify-icons
-    link : "tel:+39075815281"
+  - name: "+39 075 815281"
+    icon: "ti-mobile" # icon pack : https://themify.me/themify-icons
+    link: "tel:+39075815281"
 
 # type
 type: "teacher"
