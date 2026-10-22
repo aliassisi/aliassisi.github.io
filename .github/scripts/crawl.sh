@@ -50,6 +50,7 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 python3 -I "$repo/.github/scripts/cleanup.py" "$raw/$host" "$pmap" "$tmp/site" "$host"
 python3 -I "$repo/.github/scripts/postprocess.py" "$tmp/site"
+python3 -I "$repo/.github/scripts/prune_plugins.py" "$tmp/site"
 
 # 4. Put the result in place. Keep git, workflows, agent files.
 dest=${out:-$repo}

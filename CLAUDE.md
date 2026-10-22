@@ -9,7 +9,7 @@ root. English pages are under `en/`. There is no backend.
 - Files: `assets/plugins`, `assets/themes`, `assets/uploads`, `assets/core`
   (they were `wp-content/*` and `wp-includes`).
 - `pagefind/`: search index. Deploy rebuilds it. Do not edit it.
-- `.github/scripts/`: the build and check scripts. `.github/crawl/`: the URL lists.
+- `.github/scripts/`: the build and check scripts (`cleanup.py`, `postprocess.py`, `prune_plugins.py`, `check_links.py`, `runtime_check.py`). `.github/crawl/`: the URL lists.
 
 ## How changes ship
 1. Branch, edit, open a PR.
