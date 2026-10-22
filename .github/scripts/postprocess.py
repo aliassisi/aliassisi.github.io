@@ -108,7 +108,8 @@ def fix_links(text, here):
         new = OLD_MAP.get(path)
         if new is None:
             unmapped_old[path] = unmapped_old.get(path, 0) + 1
-            return m.group(0)
+            # The evonove host is dead. Keep the path, use the real domain.
+            return "https://aliassisi.it" + path if "evonove" in m.group(0) else m.group(0)
         return posixpath.relpath(new, here)
 
     return OLD_SITE.sub(old, ATTR.sub(fix, text))
@@ -218,8 +219,11 @@ if os.path.isdir(leftover):
     os.rmdir(leftover)
 MOVE_RES = []
 for old, new in MOVES:
-    MOVE_RES.append((re.compile(re.escape(old)), new))
-    MOVE_RES.append((re.compile(re.escape(old).replace("/", r"\\/")), new.replace("/", r"\/")))
+    # Skip links to the old site. Its files still live under wp-content.
+    MOVE_RES.append((re.compile(r"(?<!aliassisi\.it/)" + re.escape(old)), new))
+    MOVE_RES.append(
+        (re.compile(r"(?<!aliassisi\.it\\/)" + re.escape(old).replace("/", r"\\/")), new.replace("/", r"\/"))
+    )
 for path in text_files():
     text = read(path)
     new_text = text
@@ -243,12 +247,14 @@ for base in ("assets/core", "assets/plugins/woocommerce"):
 print(f"removed {removed} unused files ({size // 1024} KB)")
 
 # 8. Report what is left.
-left = {k: 0 for k in ("wp-content", "wp-includes", "wp-json", "admin-ajax", "aliassisi.it")}
+left = {k: 0 for k in ("wp-content", "wp-includes", "wp-json", "admin-ajax", "aliassisi.it", "evonove")}
 for path in text_files():
     text = read(path)
     for k in left:
         left[k] += text.count(k)
 print("left over:", left)
+if left["evonove"]:
+    sys.exit("the evonove host must not appear in the site")
 if unmapped_old:
     print("old-site links with no page here (left as is):")
     for p, n in sorted(unmapped_old.items(), key=lambda x: -x[1]):
