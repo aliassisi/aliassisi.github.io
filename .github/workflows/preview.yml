@@ -1,0 +1,46 @@
+name: PR preview
+
+# Builds a preview of each pull request and posts the link on the PR.
+# The preview is removed when the PR is closed.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One writer at a time. The deploy workflow uses the same group.
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  preview:
+    # Fork PRs get a read-only token, so they cannot publish a preview.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build the preview
+        if: github.event.action != 'closed'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          PR_NUMBER: ${{ github.event.number }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          git diff --name-only "origin/${BASE_REF}...HEAD" > "$RUNNER_TEMP/changed.txt"
+          python3 -I .github/scripts/build_preview.py . _preview "/pr-preview/pr-${PR_NUMBER}/" \
+            --prod-url "https://${OWNER}.github.io" \
+            --changed-file "$RUNNER_TEMP/changed.txt"
+          npx --yes pagefind@1.5.2 --site _preview
+
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: _preview
+          pages-base-url: ${{ github.repository_owner }}.github.io
