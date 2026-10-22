@@ -1,0 +1,37 @@
+name: Deploy production
+
+# Publishes main to the gh-pages branch. GitHub Pages serves that branch.
+# PR previews live in gh-pages/pr-preview/ and are kept by clean-exclude.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One writer at a time. The preview workflow uses the same group.
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble the site
+        run: |
+          mkdir _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
+
+      - name: Rebuild the search index
+        run: npx --yes pagefind@1.5.2 --site _site
+
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: _site
+          clean-exclude: pr-preview/
