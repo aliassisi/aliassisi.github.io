@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search</title>
+<link href="../../pagefind/pagefind-ui.css" rel="stylesheet">
+<style>body{font-family:sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem}</style>
+</head>
+<body data-pagefind-ignore>
+<p><a href="../home/index.html">&larr; Back to home</a></p>
+<h1>Search</h1>
+<div id="search"></div>
+<script src="../../pagefind/pagefind-ui.js"></script>
+<script>
+window.addEventListener("DOMContentLoaded", function () {
+  var ui = new PagefindUI({ element: "#search", showSubResults: true, autofocus: true });
+  var q = new URLSearchParams(location.search).get("s");
+  if (q) ui.triggerSearch(q);
+});
+</script>
+</body>
+</html>
