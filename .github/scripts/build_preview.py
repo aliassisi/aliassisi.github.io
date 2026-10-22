@@ -35,7 +35,7 @@ base_esc = base.replace("/", "\\/")
 prod = args.prod_url.rstrip("/")
 prod_esc = prod.replace("/", "\\/")
 UPLOADS = "assets/uploads"
-SKIP_TOP = {".git", ".github", "_site", "_preview"}
+SKIP_TOP = {".git", ".github", ".claude", "_site", "_preview", "CLAUDE.md"}
 
 changed = {
     line.strip()
@@ -51,6 +51,8 @@ for dirpath, dirnames, filenames in os.walk(src):
     if rel_dir == ".":
         dirnames[:] = [d for d in dirnames if d not in SKIP_TOP]
     for name in filenames:
+        if rel_dir == "." and name in SKIP_TOP:
+            continue
         rel = os.path.normpath(os.path.join(rel_dir, name))
         in_uploads = rel.startswith(UPLOADS + os.sep)
         if in_uploads and rel not in changed:
