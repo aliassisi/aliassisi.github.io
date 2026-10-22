@@ -78,8 +78,9 @@ TOP = "|".join(re.escape(os.path.splitext(n)[0] if n.endswith(".html") else n) f
 
 # A media reference: optional "../" steps or a leading slash, then
 # wp-content/uploads/<path>. The path ends at a quote, space, ? # ) or comma.
+# The lookbehind skips URLs that already point at production.
 MEDIA = re.compile(
-    r"(?:(?:\.\./)+|/)?wp-content/uploads/([^\"'\s)?#<>,\\]+)"
+    r"(?<![\w:/.])(?:(?:\.\./)+|/)?wp-content/uploads/([^\"'\s)?#<>,\\]+)"
 )
 MEDIA_ESC = re.compile(
     r"(?:(?:\.\.(?:\\/|/))+|\\/)?wp-content\\/uploads\\/"
@@ -110,6 +111,28 @@ def media_esc(m):
     return f"{prod_esc}\\/wp-content\\/uploads\\/{m.group(1)}"
 
 
+# A relative url() in a stylesheet, e.g. url("../../2026/10/a.jpg").
+CSS_REL = re.compile(r"""url\(\s*(["']?)(?![a-z][a-z0-9+.-]*:|/|#|data:)([^"')]+?)\1\s*\)""", re.I)
+
+
+def css_relative(css_path):
+    """Send relative urls to omitted uploads to production.
+
+    The browser resolves these against the stylesheet. If the target is in
+    uploads and was not copied, the preview would answer 404.
+    """
+    css_dir = os.path.relpath(os.path.dirname(css_path), dst)
+
+    def fix(m):
+        ref = m.group(2)
+        target = os.path.normpath(os.path.join(css_dir, unquote(re.split(r"[?#]", ref)[0])))
+        if target.startswith(UPLOADS + os.sep) and not os.path.isfile(os.path.join(dst, target)):
+            return f'url("{prod}/{target}")'
+        return m.group(0)
+
+    return fix
+
+
 rewritten = 0
 for dirpath, _, filenames in os.walk(dst):
     for name in filenames:
@@ -117,7 +140,10 @@ for dirpath, _, filenames in os.walk(dst):
             continue
         path = os.path.join(dirpath, name)
         text = open(path, encoding="utf-8", errors="surrogateescape").read()
-        new = MEDIA_ESC.sub(media_esc, text)
+        new = text
+        if name.endswith(".css"):
+            new = CSS_REL.sub(css_relative(path), new)
+        new = MEDIA_ESC.sub(media_esc, new)
         new = MEDIA.sub(media, new)
         new = ROOT_ESC.sub(lambda m: base_esc, new)
         new = ROOT.sub(lambda m: base, new)
