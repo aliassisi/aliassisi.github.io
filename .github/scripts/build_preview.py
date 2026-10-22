@@ -7,8 +7,8 @@ Usage:
 
 BASE is the folder the preview is served from, e.g. /pr-preview/pr-12/
 
-The site uses paths that start at the domain root ("/wp-content/..."). In a
-preview these must start at BASE instead. Media in wp-content/uploads is large,
+The site uses paths that start at the domain root ("/assets/..."). In a
+preview these must start at BASE instead. Media in assets/uploads is large,
 so the preview only copies the files the PR changed. Every other media file is
 loaded from production.
 
@@ -34,7 +34,7 @@ base = "/" + args.base.strip("/") + "/"
 base_esc = base.replace("/", "\\/")
 prod = args.prod_url.rstrip("/")
 prod_esc = prod.replace("/", "\\/")
-UPLOADS = "wp-content/uploads"
+UPLOADS = "assets/uploads"
 SKIP_TOP = {".git", ".github", "_site", "_preview"}
 
 changed = {
@@ -70,20 +70,20 @@ tops = sorted(
         for n in os.listdir(dst)
         if not n.startswith(".") and n not in ("CNAME",)
     }
-    | {"wp-content", "wp-includes"},
+    | {"assets"},
     key=len,
     reverse=True,
 )
 TOP = "|".join(re.escape(os.path.splitext(n)[0] if n.endswith(".html") else n) for n in tops)
 
 # A media reference: optional "../" steps or a leading slash, then
-# wp-content/uploads/<path>. The path ends at a quote, space, ? # ) or comma.
+# assets/uploads/<path>. The path ends at a quote, space, ? # ) or comma.
 # The lookbehind skips URLs that already point at production.
 MEDIA = re.compile(
-    r"(?<![\w:/.])(?:(?:\.\./)+|/)?wp-content/uploads/([^\"'\s)?#<>,\\]+)"
+    r"(?<![\w:/.])(?:(?:\.\./)+|/)?assets/uploads/([^\"'\s)?#<>,\\]+)"
 )
 MEDIA_ESC = re.compile(
-    r"(?:(?:\.\.(?:\\/|/))+|\\/)?wp-content\\/uploads\\/"
+    r"(?:(?:\.\.(?:\\/|/))+|\\/)?assets\\/uploads\\/"
     r"([^\"'\s)?#<>,\\]+(?:\\/[^\"'\s)?#<>,\\]+)*)"
 )
 # Root-relative paths: after a quote or "(", and the escaped form in JSON.
@@ -108,7 +108,7 @@ def media_esc(m):
     path = m.group(1).replace("\\/", "/")
     if exists(path):
         return m.group(0)
-    return f"{prod_esc}\\/wp-content\\/uploads\\/{m.group(1)}"
+    return f"{prod_esc}\\/assets\\/uploads\\/{m.group(1)}"
 
 
 # A relative url() in a stylesheet, e.g. url("../../2026/10/a.jpg").
@@ -156,7 +156,7 @@ for dirpath, _, filenames in os.walk(dst):
 print(f"rewrote {rewritten} file(s)")
 
 # 2. Fail if a page still points at the domain root for site files.
-LEFT = re.compile(r"(?<=[\"'(])/wp-(?:content|includes)/|(?<=\")\\/wp-(?:content|includes)\\/")
+LEFT = re.compile(r"(?<=[\"'(])/assets/|(?<=\")\\/assets\\/")
 bad = []
 for dirpath, _, filenames in os.walk(dst):
     for name in filenames:
