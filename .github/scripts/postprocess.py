@@ -63,10 +63,11 @@ MERGE = {
 }
 
 # 3. Old links to the WordPress site that still have a page here.
-OLD_SITE = re.compile(r"https?://(?:www\.)?aliassisi\.it(/[^\s\"'<>)\\]*)?")
+OLD_SITE = re.compile(r"https?://(?:(?:www\.)?aliassisi\.it|alia\.evonove\.webfactional\.com)(/[^\s\"'<>)\\]*)?")
 OLD_MAP = {
     "/en/method/": "en/method/index.html",
     "/angelo-chiuchiu/": "method/index.html",
+    "/method/": "method/index.html",
     "/courses/italian-language-courses/angelo-chiuchiu/": "method/index.html",
     "/en/angelo-chiuchiu/": "en/method/index.html",
     "/en/courses/italian-language-courses/faq/": "en/faq/index.html",
@@ -93,6 +94,9 @@ def fix_links(text, here):
         target = posixpath.normpath(posixpath.join(here, value))
         if value.endswith("/"):
             target += "/index.html"
+        if target == "angelo-chiuchiu/index.html":
+            new = "en/method/index.html" if here.split("/")[0] == "en" else "method/index.html"
+            return f'{attr}="{posixpath.relpath(new, here)}{tail}"'
         if target in MERGE:
             return f'{attr}="{posixpath.relpath(MERGE[target], here)}{tail}"'
         if attr == "href" and dropped(target):
