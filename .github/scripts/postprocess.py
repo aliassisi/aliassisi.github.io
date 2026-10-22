@@ -66,6 +66,9 @@ MERGE = {
 OLD_SITE = re.compile(r"https?://(?:www\.)?aliassisi\.it(/[^\s\"'<>)\\]*)?")
 OLD_MAP = {
     "/en/method/": "en/method/index.html",
+    "/angelo-chiuchiu/": "method/index.html",
+    "/courses/italian-language-courses/angelo-chiuchiu/": "method/index.html",
+    "/en/angelo-chiuchiu/": "en/method/index.html",
     "/en/courses/italian-language-courses/faq/": "en/faq/index.html",
     "/en/courses/italian-language-courses/credits/": "en/certifications-exams-credits-levels/index.html",
     "/en/courses/italian-language-courses/activities/": "en/school-activity/index.html",
