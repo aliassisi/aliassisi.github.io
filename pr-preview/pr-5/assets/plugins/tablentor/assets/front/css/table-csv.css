@@ -1,0 +1,36 @@
+.tablentor-table-csv-container:not(.data-table-initialized, .no-data-table) {
+    overflow: hidden;
+}
+
+.tablentor-table-csv-container div.dt-container div.dt-layout-row {
+    overflow: scroll;
+}
+
+.tablentor-table-csv-container .dt-search{
+    margin-right: 5px;
+}
+.tablentor-table-csv-container.hide-table-length .dt-length {
+    display: none;
+}
+
+.tablentor-table-csv-container.hide-table-heading .dt-container .dt-layout-row:first-child,
+.tablentor-table-csv-container.hide-table-heading .dt-container .dt-layout-row:last-child {
+    display: none;
+}
+
+.tablentor-table-csv-container .dt-container .dt-layout-row:first-child {
+    margin-top: 0;
+}
+.tablentor-table-csv-container .dt-container .dt-layout-row:last-child {
+    margin-bottom: 0;
+}
+
+/* style for edit mode */
+.elementor-element-edit-mode .tablentor-table-csv-container .dt-container .dt-layout-row:last-child {
+    display: none;
+}
+.elementor-element-edit-mode .tablentor-dumy-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
