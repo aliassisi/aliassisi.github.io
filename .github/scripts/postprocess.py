@@ -80,7 +80,11 @@ OLD_MAP = {
 }
 
 # Pages that are gone for good. Keep the text, drop the link.
-UNLINK = re.compile(r'<a\b[^>]*\bhref="[^"]*/gaia-chiuchiu/(?:index\.html)?"[^>]*>(.*?)</a>', re.S)
+UNLINK = re.compile(
+    r'<a\b[^>]*\bhref="(?:[^"]*/)?(?:gaia-chiuchiu|experience-qrc-queenstown|intensivi-tematici'
+    r'|calendar-courses|en/courses/italian-language-courses/standard)/(?:index\.html)?"[^>]*>(.*?)</a>',
+    re.S,
+)
 
 ATTR = re.compile(r'\b(href|src)="([^"#?]*)([#?][^"]*)?"')
 
