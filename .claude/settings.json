@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -m http.server:*)",
+      "Bash(python3 -I .github/scripts/check_links.py:*)",
+      "Bash(python3 -I .github/scripts/cleanup.py:*)",
+      "Bash(python3 -I .github/scripts/postprocess.py:*)",
+      "Bash(python3 -I .github/scripts/build_preview.py:*)",
+      "Bash(bash .github/scripts/crawl.sh:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(curl -s:*)",
+      "Bash(curl -sI:*)",
+      "Bash(/Applications/Google Chrome.app/Contents/MacOS/Google Chrome --headless:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I \"$CLAUDE_PROJECT_DIR/.github/scripts/check_links.py\" \"$CLAUDE_PROJECT_DIR\" --hook"
+          }
+        ]
+      }
+    ]
+  }
+}
