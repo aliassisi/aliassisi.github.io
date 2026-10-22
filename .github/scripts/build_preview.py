@@ -84,11 +84,11 @@ MEDIA = re.compile(
 )
 MEDIA_ESC = re.compile(
     r"(?:(?:\.\.(?:\\/|/))+|\\/)?assets\\/uploads\\/"
-    r"([^\"'\s)?#<>,\\]+(?:\\/[^\"'\s)?#<>,\\]+)*)"
+    r"([^\"'\s)?#<>,&\\]+(?:\\/[^\"'\s)?#<>,&\\]+)*)"
 )
 # Root-relative paths: after a quote or "(", and the escaped form in JSON.
 ROOT = re.compile(r"(?<=[\"'(])/(?=(?:%s)(?:[/\"'?#)]|$))" % TOP)
-ROOT_ESC = re.compile(r"(?<=\")\\/(?=(?:%s)(?:\\/|/|\"))" % TOP)
+ROOT_ESC = re.compile(r"(?<=[\";])\\/(?=(?:%s)(?:\\/|/|\"))" % TOP)
 HEAD = re.compile(r"<head\b[^>]*>", re.I)
 NOINDEX = '<meta name="robots" content="noindex">'
 
