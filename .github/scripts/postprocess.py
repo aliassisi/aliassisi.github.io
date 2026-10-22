@@ -79,6 +79,9 @@ OLD_MAP = {
     "/courses/italian-language-courses/activities/": "attivita-facilities-e-laboratori/index.html",
 }
 
+# Pages that are gone for good. Keep the text, drop the link.
+UNLINK = re.compile(r'<a\b[^>]*\bhref="[^"]*/gaia-chiuchiu/(?:index\.html)?"[^>]*>(.*?)</a>', re.S)
+
 ATTR = re.compile(r'\b(href|src)="([^"#?]*)([#?][^"]*)?"')
 
 
@@ -191,6 +194,7 @@ for path in text_files():
     text = SOURCE_URL.sub("", text)
     text = CART_LINK.sub(clean_cart_link, text)
     text = clean_config(text)
+    text = UNLINK.sub(r"\1", text)
     text = fix_links(text, here)
     write(path, text)
 
