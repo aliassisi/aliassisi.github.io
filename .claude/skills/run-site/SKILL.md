@@ -41,3 +41,11 @@ The hook runs it after each HTML or CSS edit.
 - Production: `https://aliassisi.github.io/`. Deploy runs on push to `main`.
 - `gh pr checks N` shows the preview run.
 - Check media by URL: `curl -sI URL | head -1`.
+
+## Check what the browser really loads
+    python3 -I .github/scripts/runtime_check.py . /tmp/after.json
+    python3 -I .github/scripts/runtime_check.py --compare before.json after.json
+
+It opens every page at 1280 and 420 px wide and lists files that returned 404 under
+`/assets/`. Take a `before.json` first. Use it after any change that deletes or moves files.
+Static scans miss files that scripts load at run time.
