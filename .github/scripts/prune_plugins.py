@@ -8,6 +8,7 @@ Steps:
 1. Delete plugins no page uses.
 2. Keep one font format (woff2) in plugin CSS. Delete the other font files.
 3. Delete script chunks for widgets no page uses, and editor-only chunks.
+4. Delete WooCommerce files only the admin or the checkout page needs.
 
 Check the result with runtime_check.py. Static scans miss files that scripts
 load at run time.
@@ -41,6 +42,13 @@ DENY_CHUNKS = {
         "woocommerce-my-account", "woocommerce-notices", "woocommerce-purchase-summary",
     ],
 }
+# WooCommerce files the site has no use for: the admin script, and the card
+# icons that only checkout styles use. Paths are under assets/plugins.
+DROP_FILES = [
+    "woocommerce/assets/client/admin/sanitize/index.js",
+]
+DROP_DIRS = ["woocommerce/assets/images/icons/credit-cards"]
+CARD_RULE = re.compile(r"[^{}]*\{[^{}]*credit-cards/[^{}]*\}")
 CHUNK = re.compile(r"^(?P<name>.+)\.[0-9a-f]{20}\.bundle\.min\.js$")
 FONT_FACE = re.compile(r"@font-face\s*\{[^}]*\}")
 SRC_DECL = re.compile(r"\bsrc\s*:[^;}]*;?", re.I)
@@ -120,6 +128,25 @@ for plugin, names in DENY_CHUNKS.items():
         m = CHUNK.match(f)
         if m and m.group("name") in names:
             drop(os.path.join(folder, f), plugin)
+
+# 4. WooCommerce admin and checkout leftovers.
+for rel in DROP_FILES:
+    path = os.path.join(plugins, rel)
+    if os.path.isfile(path):
+        drop(path, rel.split("/")[0])
+for rel in DROP_DIRS:
+    for dp, _, files in os.walk(os.path.join(plugins, rel)):
+        for f in files:
+            drop(os.path.join(dp, f), rel.split("/")[0])
+
+# Drop the CSS rules that point at the deleted card icons, so no link is left dangling.
+wc_css = os.path.join(plugins, "woocommerce", "assets", "css", "woocommerce.css")
+if os.path.isfile(wc_css):
+    text = open(wc_css, encoding="utf-8", errors="surrogateescape").read()
+    new = CARD_RULE.sub("", text)
+    if new != text:
+        with open(wc_css, "w", encoding="utf-8", errors="surrogateescape") as out:
+            out.write(new)
 
 total = sum(saved.values())
 for plugin, size in sorted(saved.items(), key=lambda x: -x[1]):
