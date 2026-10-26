@@ -211,7 +211,8 @@ for old in MERGE:
 # courses. Courses are matched by the slug in their link. Every card gets the
 # same body: the lessons per week, then the group and one-on-one lessons.
 GROUPS_CSS = """<style id="intensivi-groups">
-.elementor-widget .intensivi-group-title{color:#2c3a7c !important;margin:2.5rem 0 1.25rem;font-size:2rem}
+.elementor-widget .intensivi-group-title{color:#2c3a7c !important;margin:2.5rem 0 .5rem;font-size:2rem}
+.intensivi-group-subtitle{color:#2c3a7c;margin:0 0 1.25rem;font-size:1.1rem}
 .elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,1fr);align-items:stretch}
 .elementor-widget-woocommerce-products ul.products li.product{display:flex;flex-direction:column}
 .elementor-widget-woocommerce-products ul.products li.product>a{flex:1}
@@ -247,19 +248,19 @@ EN_SLUGS_26 = [
     "super-intensive-italian", "super-intensive-certification-exam-preparation-cours",
     "religious-student-program-28", "thematic-26",
 ]
-# (group title, week line, detail line, slugs)
+# (group title, subtitle, card week line, card detail line, slugs)
 COURSE_GROUPS = {
     "product-category/intensivi/index.html": [
-        ("Corsi intensivi · 22 ore", "22 lezioni alla settimana",
-         "18 lezioni di gruppo + 4 lezioni individuali", IT_SLUGS_22),
-        ("Corsi superintensivi · 26 ore", "26 lezioni alla settimana",
-         "18 lezioni di gruppo + 8 lezioni individuali", IT_SLUGS_26),
+        ("Corsi intensivi · 22 ore", "22 lezioni a settimana: 18 di gruppo al mattino e 4 individuali al pomeriggio",
+         "22 lezioni alla settimana", "18 lezioni di gruppo + 4 lezioni individuali", IT_SLUGS_22),
+        ("Corsi superintensivi · 26 ore", "26 lezioni a settimana: 18 di gruppo al mattino e 8 individuali al pomeriggio",
+         "26 lezioni alla settimana", "18 lezioni di gruppo + 8 lezioni individuali", IT_SLUGS_26),
     ],
     "product-category/intensive-en/index.html": [
-        ("Intensive courses · 22 hours", "22 lessons per week",
-         "18 group lessons + 4 one-on-one lessons", EN_SLUGS_22),
-        ("Super intensive courses · 26 hours", "26 lessons per week",
-         "18 group lessons + 8 one-on-one lessons", EN_SLUGS_26),
+        ("Intensive courses · 22 hours", "22 lessons per week: 18 group lessons in the morning and 4 one-on-one lessons in the afternoon",
+         "22 lessons per week", "18 group lessons + 4 one-on-one lessons", EN_SLUGS_22),
+        ("Super intensive courses · 26 hours", "26 lessons per week: 18 group lessons in the morning and 8 one-on-one lessons in the afternoon",
+         "26 lessons per week", "18 group lessons + 8 one-on-one lessons", EN_SLUGS_26),
     ],
 }
 
@@ -285,9 +286,10 @@ def split_courses(text, groups):
     if sorted(chunks) != sorted(wanted):
         sys.exit(f"course list: courses do not match the groups: {sorted(chunks)}")
     html = ""
-    for title, week, detail, slugs in groups:
+    for title, subtitle, week, detail, slugs in groups:
         body_html = CARD_BODY.format(week=week, detail=detail)
         html += f'<h2 class="elementor-heading-title elementor-size-default intensivi-group-title">{title}</h2>\n'
+        html += f'<p class="intensivi-group-subtitle">{subtitle}</p>\n'
         html += PRODUCT_LIST + "\n"
         for slug in slugs:
             if not PRICE_LIST.search(chunks[slug]):
