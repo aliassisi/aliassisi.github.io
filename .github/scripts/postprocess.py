@@ -457,6 +457,42 @@ if os.path.exists(path):
     else:
         print("method/index.html: c40-150x150.gif cover not found")
 
+# 7g. English method page, "In Italiano": in WordPress the gallery of covers is
+# missing, leaving an empty paragraph after "The components of ... are:". Copy
+# the Italian gallery there (after 7f, so it has the whole first cover). The
+# English page is one folder deeper. Its title (4b4ff8c8) is set to 42px, the
+# other toggle titles to 24px: make it 24px too.
+GALLERY_EN_SPOT = re.compile(r"(The components of the multimedia method\s*<em>In italiano</em>\s*are:</p>)<p></p>")
+it_path = os.path.join(site, "method/index.html")
+en_path = os.path.join(site, "en/method/index.html")
+if os.path.exists(it_path) and os.path.exists(en_path):
+    it_text = read(it_path)
+    start = it_text.find("<div id='gallery-1'")
+    end = depth = 0
+    if start >= 0:
+        for m in re.finditer(r"<div\b|</div>", it_text[start:]):
+            depth += 1 if m.group(0) == "<div" else -1
+            if not depth:
+                end = start + m.end()
+                break
+    if end:
+        gallery = it_text[start:end].replace('"../assets/', '"../../assets/')
+        text, n = GALLERY_EN_SPOT.subn(lambda m: m.group(1) + "<p>" + gallery + "\n</p>", read(en_path), count=1)
+        if n:
+            write(en_path, text)
+        else:
+            print("en/method/index.html: spot for the In Italiano gallery not found")
+    else:
+        print("method/index.html: In Italiano gallery not found")
+path = os.path.join(site, "assets/uploads/elementor/css/post-994812.css")
+if os.path.exists(path):
+    old = '.elementor-element-4b4ff8c8 .elementor-toggle-title{font-family:"Cormorant Garamond", Sans-serif;font-size:42px;'
+    text = read(path)
+    if old in text:
+        write(path, text.replace(old, old.replace("42px", "24px")))
+    else:
+        print("post-994812.css: 42px In Italiano title not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
