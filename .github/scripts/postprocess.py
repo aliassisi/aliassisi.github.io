@@ -411,8 +411,12 @@ for path in text_files():
     if not path.endswith(".html"):
         continue
     text = read(path)
-    if 'data-id="435ec0d"' in text and 'id="address-map"' not in text:
-        write(path, text.replace("</head>", MAP_CSS + "</head>", 1))
+    if 'data-id="435ec0d"' not in text:
+        continue
+    if 'id="address-map"' not in text:
+        text = text.replace("</head>", MAP_CSS + "</head>", 1)
+    # The Italian address box says "Rose , 10".
+    write(path, text.replace("Santa Maria delle Rose , ", "Santa Maria delle Rose, "))
 
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
