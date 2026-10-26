@@ -517,6 +517,79 @@ if os.path.exists(path):
     else:
         print("en/faq/index.html: old FAQ lists not found")
 
+# 7f. The footer (995424, in Italian 311) has two versions: one for desktop and
+# an older one for tablet and mobile (975343b, 9e6616c, 0b39a43, 2ab78d6). Drop
+# the older one and show the desktop version at every width. Below 1025px its five-column
+# rows get their own layout: no empty columns, the contact form on its own
+# row, the course, contact and social lists side by side on tablet.
+OLD_FOOTER = re.compile(
+    r'[ \t]*<(?:section|div) class="elementor-section elementor-inner-section [^>]*data-id="975343b".*?'
+    r'(?=[ \t]*<(?:section|div) class="elementor-section elementor-inner-section [^>]*data-id="868692e")',
+    re.S,
+)
+FOOTER_HIDDEN = re.compile(
+    r'(<(?:section|div) class="[^"]*elementor-element-(?:868692e|a31bb48|045bb98|c77ad4f)[^"]*?)'
+    r' elementor-hidden-tablet elementor-hidden-mobile'
+)
+FOOTER_CSS = """<style id="footer-narrow">
+@media(max-width:1024px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-b81e2fe{padding:20px 0 0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-868692e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a31bb48,
+.elementor.elementor-location-footer .elementor-element.elementor-element-045bb98,
+.elementor.elementor-location-footer .elementor-element.elementor-element-c77ad4f{margin:0;padding:0 30px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-b88c1ac,
+.elementor.elementor-location-footer .elementor-element.elementor-element-4b38fc2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-67f41b2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-5ab1ac8,
+.elementor.elementor-location-footer .elementor-element.elementor-element-e7544db{display:none}
+.elementor.elementor-location-footer .elementor-element.elementor-element-7d37781,
+.elementor.elementor-location-footer .elementor-element.elementor-element-796acb0,
+.elementor.elementor-location-footer .elementor-element.elementor-element-2af153d{width:100%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c9c2626 > .elementor-widget-container{margin:30px 0 20px;padding:0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c9c2626 img{width:320px;max-width:100%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-2af153d > .elementor-element-populated{border-width:1px 0 0;margin-top:40px;padding:20px 0 40px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-8af0632 .elementor-heading-title{font-size:40px}
+.elementor.elementor-location-footer .elementor-element-2af153d .elementor-element.elementor-widget-form{width:100%;max-width:560px;margin:0 auto}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c77ad4f > .elementor-container{padding:15px 0}
+}
+@media(min-width:768px) and (max-width:1024px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-2535570,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a0ae208{width:33.333%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-2535570 > .elementor-element-populated,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 > .elementor-element-populated,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a0ae208 > .elementor-element-populated{margin:0;--e-column-margin-left:0;padding:40px 20px 0 0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c23143b{width:40%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-f3d334e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-b1b10e2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-4df85b2{width:20%}
+}
+@media(max-width:767px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-868692e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a31bb48,
+.elementor.elementor-location-footer .elementor-element.elementor-element-045bb98,
+.elementor.elementor-location-footer .elementor-element.elementor-element-c77ad4f{padding:0 20px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-f3d334e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-b1b10e2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-4df85b2{width:33.333%}
+}
+</style>
+"""
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if 'data-id="868692e"' not in text:
+        continue
+    text, n = OLD_FOOTER.subn("", text, count=1)
+    text, m = FOOTER_HIDDEN.subn(r"\1", text)
+    if n != 1 or m != 4:
+        print(f"{path}: footer has {n} of 1 old part, {m} of 4 hidden parts")
+    if 'id="footer-narrow"' not in text:
+        text = text.replace("</head>", FOOTER_CSS + "</head>", 1)
+    write(path, text)
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
