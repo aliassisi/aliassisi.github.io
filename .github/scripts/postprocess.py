@@ -312,7 +312,11 @@ def split_courses(text, groups):
 for page, groups in COURSE_GROUPS.items():
     path = os.path.join(site, page)
     if os.path.exists(path):
-        write(path, split_courses(read(path), groups))
+        # The page no longer lists thematic courses apart: drop it from the title.
+        new_text = split_courses(read(path), groups).replace(
+            "Intensivi, Super Intensivi, Tematici", "Intensivi, Super Intensivi"
+        )
+        write(path, new_text)
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
