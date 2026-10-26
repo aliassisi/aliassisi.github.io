@@ -369,10 +369,12 @@ HOME_SECTION_VIDEO = (
     "\n\t\t\t\t\t\t\t\t\t\t\t</div>"
 )
 # main-video1.mp4 has a few black rows at the top and bottom: zoom it a little
-# so they fall outside the section. The news bar under it (2c917f6) drops its
+# so they fall outside the section. Elementor centers the video with
+# translate(-50%,-50%), so the zoom goes in the same transform: the "scale"
+# property alone would zoom around another point and push the video up. The news bar under it (2c917f6) drops its
 # side padding to be as wide as the video.
 HOME_CSS = """<style id="home-hero">
-.elementor-section.elementor-element-24dca05 .elementor-background-video-hosted{scale:1.015}
+.elementor-section.elementor-element-24dca05 .elementor-background-video-hosted{transform:translate(-50%,-50%) scale(1.02)}
 .elementor-section.elementor-element-2c917f6{padding-left:0;padding-right:0}
 </style>
 """
