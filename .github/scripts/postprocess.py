@@ -400,7 +400,7 @@ for page in ("index.html", "en/home/index.html"):
 CORSO_IMG = re.compile(r'<p>(<img [^>]*df335cb4-d762-4ee5-9da3-a04124bfb1eb[^>]*/>)(Il corso si articola)')
 path = os.path.join(site, "method/index.html")
 if os.path.exists(path):
-    text, n = CORSO_IMG.subn(r'<p style="margin-bottom:1.5em">\1</p><p>\2', read(path))
+    text, n = CORSO_IMG.subn(r'<p style="clear:left;margin-bottom:1.5em">\1</p><p>\2', read(path))
     if n:
         write(path, text)
     else:
