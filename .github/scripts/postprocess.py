@@ -394,9 +394,22 @@ for page in ("index.html", "en/home/index.html"):
         print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
     write(path, text)
 
+# 7a. Method page, "In italiano. Il corso": the covers image sits in the same
+# line as the text that follows it. Put the text in its own paragraph under
+# the image, with some space between them.
+CORSO_IMG = re.compile(r'<p>(<img [^>]*df335cb4-d762-4ee5-9da3-a04124bfb1eb[^>]*/>)(Il corso si articola)')
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text, n = CORSO_IMG.subn(r'<p style="clear:left;margin-bottom:1.5em">\1</p><p>\2', read(path))
+    if n:
+        write(path, text)
+    else:
+        print('method/index.html: "In italiano. Il corso" image not found')
+
 # 7b. The address block (effb67e) has the map at a fixed 610px, taller than
 # the blue address box next to it. On desktop stretch both columns to the
-# same height and let the map fill its column.
+# same height and let the map fill its column. On phones the map column
+# (e39b086) is hidden: show it under the address box, 350px tall.
 MAP_CSS = """<style id="address-map">
 @media(min-width:1025px){
 .elementor .elementor-section.elementor-element.elementor-element-effb67e > .elementor-container{align-items:stretch;min-height:0}
@@ -405,14 +418,22 @@ MAP_CSS = """<style id="address-map">
 .elementor-section.elementor-element-effb67e .elementor-element-435ec0d .elementor-custom-embed{height:100%}
 .elementor-section.elementor-element-effb67e .elementor-element.elementor-element-435ec0d iframe{height:100%;min-height:400px;display:block}
 }
+@media(max-width:767px){
+.elementor-section.elementor-element-effb67e .elementor-element.elementor-element-435ec0d iframe{height:350px;display:block}
+}
 </style>
 """
+MAP_COLUMN_HIDDEN = re.compile(r'(class="[^"]*elementor-element-e39b086) elementor-hidden-phone')
 for path in text_files():
     if not path.endswith(".html"):
         continue
     text = read(path)
-    if 'data-id="435ec0d"' in text and 'id="address-map"' not in text:
-        write(path, text.replace("</head>", MAP_CSS + "</head>", 1))
+    if 'data-id="435ec0d"' not in text:
+        continue
+    text = MAP_COLUMN_HIDDEN.sub(r"\1", text)
+    if 'id="address-map"' not in text:
+        text = text.replace("</head>", MAP_CSS + "</head>", 1)
+    write(path, text)
 
 # 7c. The address is Via Santa Maria delle Rose, 17 - 06081 Assisi. Via Tiberio
 # d'Assisi, 10 stays only in the "© ... | p.iva" footer line.
@@ -435,7 +456,150 @@ for path in text_files():
     if new != text:
         write(path, new)
 
-# 7e. Files the crawl host does not have live in .github/files, at their path
+# 7d. Method page: the other books have a heading widget (like 9aadea0, ".it
+# Italy To go") above a toggle with an empty title. Yidali has no heading: its
+# toggle title holds the name and the course description. Give it a copy of
+# that heading with "Yidali《译大利》", empty the toggle title and open the toggle
+# text with the description.
+YIDALI_HEADING = re.compile(
+    r'[ \t]*<div class="elementor-element elementor-element-9aadea0 .*?</h2>\s*</div>\s*</div>\n', re.S
+)
+YIDALI_TOGGLE = re.compile(
+    r'([ \t]*<div class="elementor-element elementor-element-(\w+) elementor-widget elementor-widget-toggle"'
+    r'(?:(?!elementor-widget-toggle).)*?<a class="elementor-toggle-title" tabindex="0">)'
+    r'Yidali《译大利》(Corso di lingua[^<]*)<br><br>\s*([^<]*)'
+    r'(</a>.*?<div [^>]*class="elementor-tab-content[^"]*"[^>]*>)',
+    re.S,
+)
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text = read(path)
+    heading = YIDALI_HEADING.search(text)
+    toggle = YIDALI_TOGGLE.search(text)
+    if heading and toggle:
+        new_heading = re.sub(r'data-id="9aadea0"', f'data-id="{toggle.group(2)}h"', heading.group(0))
+        new_heading = re.sub(r"(<h2 [^>]*>).*?(</h2>)", r"\1Yidali《译大利》\2", new_heading, flags=re.S)
+        text = (
+            text[: toggle.start()]
+            + new_heading
+            + toggle.group(1)
+            + toggle.group(5)
+            + "<p>" + toggle.group(3).strip() + "<br>" + toggle.group(4).strip() + "</p>"
+            + text[toggle.end():]
+        )
+        write(path, text)
+    else:
+        print("method/index.html: Yidali heading or toggle not found")
+# The English page keeps every title in its toggle: there, shorten the title
+# to "Yidali《译大利》" (it lacks the closing 》) and move the description.
+YIDALI_TOGGLE_EN = re.compile(
+    r'(<a class="elementor-toggle-title" tabindex="0">)Yidali《译大利》?\.?\s*(Corso di lingua[^<]*)<br><br>\s*([^<]*)'
+    r'(</a>.*?<div [^>]*class="elementor-tab-content[^"]*"[^>]*>)',
+    re.S,
+)
+path = os.path.join(site, "en/method/index.html")
+if os.path.exists(path):
+    text, n = YIDALI_TOGGLE_EN.subn(
+        lambda m: m.group(1) + "Yidali《译大利》" + m.group(4)
+        + "<p>" + m.group(2).strip() + "<br>" + m.group(3).strip() + "</p>",
+        read(path),
+        count=1,
+    )
+    if n:
+        write(path, text)
+    else:
+        print("en/method/index.html: Yidali toggle title not found")
+
+# 7e. English FAQ page: drop the old toggle lists under the FAQ block (83ae875).
+# They are six sections, a heading and a list each (Courses, Housing,
+# Activities), from 229e665 up to the address section e80c5ba.
+OLD_FAQ = re.compile(
+    r'[ \t]*<section class="elementor-section elementor-top-section [^>]*data-id="229e665".*?'
+    r'(?=[ \t]*<section class="elementor-section elementor-top-section [^>]*data-id="e80c5ba")',
+    re.S,
+)
+path = os.path.join(site, "en/faq/index.html")
+if os.path.exists(path):
+    text, n = OLD_FAQ.subn("", read(path), count=1)
+    if n:
+        write(path, text)
+    else:
+        print("en/faq/index.html: old FAQ lists not found")
+
+# 7f. The footer (995424, in Italian 311) has two versions: one for desktop and
+# an older one for tablet and mobile (975343b, 9e6616c, 0b39a43, 2ab78d6). Drop
+# the older one and show the desktop version at every width. Below 1025px its five-column
+# rows get their own layout: no empty columns, the contact form on its own
+# row, the course, contact and social lists side by side on tablet.
+OLD_FOOTER = re.compile(
+    r'[ \t]*<(?:section|div) class="elementor-section elementor-inner-section [^>]*data-id="975343b".*?'
+    r'(?=[ \t]*<(?:section|div) class="elementor-section elementor-inner-section [^>]*data-id="868692e")',
+    re.S,
+)
+FOOTER_HIDDEN = re.compile(
+    r'(<(?:section|div) class="[^"]*elementor-element-(?:868692e|a31bb48|045bb98|c77ad4f)[^"]*?)'
+    r' elementor-hidden-tablet elementor-hidden-mobile'
+)
+FOOTER_CSS = """<style id="footer-narrow">
+@media(max-width:1024px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-b81e2fe{padding:20px 0 0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-868692e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a31bb48,
+.elementor.elementor-location-footer .elementor-element.elementor-element-045bb98,
+.elementor.elementor-location-footer .elementor-element.elementor-element-c77ad4f{margin:0;padding:0 30px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-b88c1ac,
+.elementor.elementor-location-footer .elementor-element.elementor-element-4b38fc2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-67f41b2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-5ab1ac8,
+.elementor.elementor-location-footer .elementor-element.elementor-element-e7544db{display:none}
+.elementor.elementor-location-footer .elementor-element.elementor-element-7d37781,
+.elementor.elementor-location-footer .elementor-element.elementor-element-796acb0,
+.elementor.elementor-location-footer .elementor-element.elementor-element-2af153d{width:100%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c9c2626 > .elementor-widget-container{margin:30px 0 20px;padding:0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c9c2626 img{width:320px;max-width:100%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-2af153d > .elementor-element-populated{border-width:1px 0 0;margin-top:40px;padding:20px 0 40px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-8af0632 .elementor-heading-title{font-size:40px}
+.elementor.elementor-location-footer .elementor-element-2af153d .elementor-element.elementor-widget-form{width:100%;max-width:560px;margin:0 auto}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c77ad4f > .elementor-container{padding:15px 0}
+}
+@media(min-width:768px) and (max-width:1024px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-2535570,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a0ae208{width:33.333%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-2535570 > .elementor-element-populated,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 > .elementor-element-populated,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a0ae208 > .elementor-element-populated{margin:0;--e-column-margin-left:0;padding:40px 20px 0 0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c23143b{width:40%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-f3d334e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-b1b10e2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-4df85b2{width:20%}
+}
+@media(max-width:767px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-868692e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a31bb48,
+.elementor.elementor-location-footer .elementor-element.elementor-element-045bb98,
+.elementor.elementor-location-footer .elementor-element.elementor-element-c77ad4f{padding:0 20px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-f3d334e,
+.elementor.elementor-location-footer .elementor-element.elementor-element-b1b10e2,
+.elementor.elementor-location-footer .elementor-element.elementor-element-4df85b2{width:33.333%}
+}
+</style>
+"""
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if 'data-id="868692e"' not in text:
+        continue
+    text, n = OLD_FOOTER.subn("", text, count=1)
+    text, m = FOOTER_HIDDEN.subn(r"\1", text)
+    if n != 1 or m != 4:
+        print(f"{path}: footer has {n} of 1 old part, {m} of 4 hidden parts")
+    if 'id="footer-narrow"' not in text:
+        text = text.replace("</head>", FOOTER_CSS + "</head>", 1)
+    write(path, text)
+
+# 7g. Files the crawl host does not have live in .github/files, at their path
 # in the site. Copy them in.
 extra = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "files")
 for dirpath, _, files in os.walk(extra):
@@ -445,7 +609,7 @@ for dirpath, _, files in os.walk(extra):
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         shutil.copyfile(src, dst)
 
-# 7f. Method page, "In italiano" gallery: the first cover is a 150x150 square
+# 7h. Method page, "In italiano" gallery: the first cover is a 150x150 square
 # crop, bigger than the others and cut. Use the whole cover (c40.gif, from
 # .github/files) at the others' height.
 C40_IMG = re.compile(r'width="150" height="150" src="([^"]*/)c40-150x150\.gif"')
@@ -457,9 +621,9 @@ if os.path.exists(path):
     else:
         print("method/index.html: c40-150x150.gif cover not found")
 
-# 7g. English method page, "In Italiano": in WordPress the gallery of covers is
+# 7i. English method page, "In Italiano": in WordPress the gallery of covers is
 # missing, leaving an empty paragraph after "The components of ... are:". Copy
-# the Italian gallery there (after 7f, so it has the whole first cover). The
+# the Italian gallery there (after 7h, so it has the whole first cover). The
 # English page is one folder deeper. Its title (4b4ff8c8) is set to 42px, the
 # other toggle titles to 24px: make it 24px too.
 GALLERY_EN_SPOT = re.compile(r"(The components of the multimedia method\s*<em>In italiano</em>\s*are:</p>)<p></p>")
