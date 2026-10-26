@@ -332,13 +332,18 @@ padding-right: 30px;
 </style>
 <style id="intensivi-groups">
 .elementor-widget .intensivi-group-title{color:#2c3a7c !important;margin:2.5rem 0 .5rem;font-size:2rem}
+html{scroll-behavior:smooth}
+.intensivi-menu{display:flex;gap:1rem;margin:0 0 1rem}
+.intensivi-menu a.button{min-width:0}
+.elementor-widget .intensivi-menu a.button{flex:1;text-align:center;padding:.9rem 1rem;background:#2c3a7c;color:#fff;text-decoration:none}
+.intensivi-group-title{scroll-margin-top:7rem}
 .intensivi-group-subtitle{color:#2c3a7c;margin:0 0 1.25rem;font-size:1.1rem}
-.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,1fr);align-items:stretch}
+.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
 .elementor-widget-woocommerce-products ul.products li.product{display:flex;flex-direction:column}
 .elementor-widget-woocommerce-products ul.products li.product>a{flex:1}
 .elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:7.2em !important}
-@media(max-width:1024px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:1fr}.elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:0}}
+@media(max-width:1024px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.elementor-widget .intensivi-menu{gap:.5rem}.elementor-widget .intensivi-menu a.button{padding:.8rem .4rem;font-size:.9rem}.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:minmax(0,1fr)}.elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:0}}
 </style>
 </head>
 <body class="archive tax-product_cat term-intensive-en term-195 wp-custom-logo wp-embed-responsive wp-theme-scuola wp-child-theme-scuola-child theme-scuola woocommerce woocommerce-page woocommerce-no-js full header-layout-logo-menu has-page-header no-middle-header responsive-layout vamtam-is-elementor elementor-active elementor-pro-active vamtam-wc-cart-empty layout-full elementor-page-3986 elementor-default elementor-template-full-width elementor-kit-7354">
@@ -595,7 +600,8 @@ padding-right: 30px;
 				</div>
 				<div class="elementor-element elementor-element-e3f7a76 elementor-grid-3 elementor-product-loop-item--align-left vamtam-has-title-min-height vamtam-scuola-el-products-short-desc elementor-grid-mobile-1 elementor-grid-tablet-3 elementor-products-grid elementor-wc-products elementor-widget elementor-widget-woocommerce-products" data-id="e3f7a76" data-element_type="widget" data-e-type="widget" data-widget_type="woocommerce-products.default">
 				<div class="elementor-widget-container">
-					<div class="woocommerce columns-3 "><h2 class="elementor-heading-title elementor-size-default intensivi-group-title">Intensive courses · 22 hours</h2>
+					<div class="woocommerce columns-3 "><nav class="intensivi-menu"><a class="button" href="#intensive-courses">Intensive courses</a><a class="button" href="#super-intensive-courses">Super intensive courses</a></nav>
+<h2 id="intensive-courses" class="elementor-heading-title elementor-size-default intensivi-group-title">Intensive courses · 22 hours</h2>
 <p class="intensivi-group-subtitle">22 lessons per week: 18 group lessons in the morning and 4 one-on-one lessons in the afternoon</p>
 <ul class="products elementor-grid vamtam-wc columns-3">
 <li class="product type-product post-995014 status-publish first instock product_cat-intensive-en product_tag-italian has-post-thumbnail virtual sold-individually purchasable product-type-booking">
@@ -755,7 +761,7 @@ padding-right: 30px;
 			</span>
 </li>
 </ul>
-<h2 class="elementor-heading-title elementor-size-default intensivi-group-title">Super intensive courses · 26 hours</h2>
+<h2 id="super-intensive-courses" class="elementor-heading-title elementor-size-default intensivi-group-title">Super intensive courses · 26 hours</h2>
 <p class="intensivi-group-subtitle">26 lessons per week: 18 group lessons in the morning and 8 one-on-one lessons in the afternoon</p>
 <ul class="products elementor-grid vamtam-wc columns-3">
 <li class="product type-product post-995024 status-publish last instock product_cat-intensive-en product_tag-italian has-post-thumbnail virtual sold-individually purchasable product-type-booking">
