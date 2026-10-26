@@ -208,31 +208,58 @@ for old in MERGE:
         os.remove(p)
 
 # 5b. Split the course lists into 22 and 26 hour groups. Each group has four
-# courses. Courses are matched by the slug in their link.
+# courses. Courses are matched by the slug in their link. Every card gets the
+# same body: the lessons per week, then the group and one-on-one lessons.
 GROUPS_CSS = """<style id="intensivi-groups">
 .elementor-widget .intensivi-group-title{color:#2c3a7c !important;margin:2.5rem 0 1.25rem;font-size:2rem}
-.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,1fr)}
+.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,1fr);align-items:stretch}
+.elementor-widget-woocommerce-products ul.products li.product{display:flex;flex-direction:column}
+.elementor-widget-woocommerce-products ul.products li.product>a{flex:1}
+.elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:7.2em !important}
 @media(max-width:1024px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:1fr}.elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:0}}
 </style>
 """
 PRODUCT_LIST = '<ul class="products elementor-grid vamtam-wc columns-3">'
+PRICE_LIST = re.compile(r'<ul class="elementor-price-list">.*?</ul>', re.S)
+CARD_BODY = (
+    '<ul class="elementor-price-list">\n'
+    '<li class="elementor-price-list-item">\n<div class="elementor-price-list-text">\n'
+    '<div class="elementor-price-list-header">\n'
+    '<span class="elementor-price-list-title">{week}</span>\n'
+    '<span class="elementor-price-list-separator"></span>\n</div>\n'
+    '<p class="elementor-price-list-description">{detail}</p>\n'
+    '</div>\n</li>\n</ul>'
+)
+IT_SLUGS_22 = [
+    "corsi-di-preparazione-per-la-certificazione", "intensive-italian",
+    "religious-student-program-24", "thematic-24",
+]
+IT_SLUGS_26 = [
+    "super-intensive-certification-exam-preparation-cours", "super-intensive-italian",
+    "religious-student-program-28", "thematic-28",
+]
+EN_SLUGS_22 = [
+    "intensive-italian", "corsi-di-preparazione-per-la-certificazione",
+    "religious-student-program-22", "thematic-22",
+]
+EN_SLUGS_26 = [
+    "super-intensive-italian", "super-intensive-certification-exam-preparation-cours",
+    "religious-student-program-28", "thematic-26",
+]
+# (group title, week line, detail line, slugs)
 COURSE_GROUPS = {
     "product-category/intensivi/index.html": [
-        ("Corsi intensivi · 22 ore", [
-            "corsi-di-preparazione-per-la-certificazione", "intensive-italian",
-            "religious-student-program-24", "thematic-24"]),
-        ("Corsi superintensivi · 26 ore", [
-            "super-intensive-certification-exam-preparation-cours", "super-intensive-italian",
-            "religious-student-program-28", "thematic-28"]),
+        ("Corsi intensivi · 22 ore", "22 lezioni alla settimana",
+         "18 lezioni di gruppo + 4 lezioni individuali", IT_SLUGS_22),
+        ("Corsi superintensivi · 26 ore", "26 lezioni alla settimana",
+         "18 lezioni di gruppo + 8 lezioni individuali", IT_SLUGS_26),
     ],
     "product-category/intensive-en/index.html": [
-        ("Intensive courses · 22 hours", [
-            "intensive-italian", "corsi-di-preparazione-per-la-certificazione",
-            "religious-student-program-22", "thematic-22"]),
-        ("Super intensive courses · 26 hours", [
-            "super-intensive-italian", "super-intensive-certification-exam-preparation-cours",
-            "religious-student-program-28", "thematic-26"]),
+        ("Intensive courses · 22 hours", "22 lessons per week",
+         "18 group lessons + 4 one-on-one lessons", EN_SLUGS_22),
+        ("Super intensive courses · 26 hours", "26 lessons per week",
+         "18 group lessons + 8 one-on-one lessons", EN_SLUGS_26),
     ],
 }
 
@@ -243,24 +270,30 @@ def split_courses(text, groups):
     start = text.index(PRODUCT_LIST)
     body = start + len(PRODUCT_LIST)
     starts = [body + m.start() for m in re.finditer(r'<li class="product ', text[body:])]
-    # The list closes with the first </ul> after the last course. Nested
-    # lists inside a course end before it.
-    last_li_end = text.index("</li>", starts[-1])
-    close = text.index("</ul>", last_li_end)
-    end_li = text.rindex("</li>", 0, close) + 5
+    # The last course ends with its hidden "describedby" span, then </li>.
+    # Course bodies hold lists too, so do not stop at the first </ul>.
+    tail = re.compile(r'screen-reader-text">.*?</span>\s*</li>', re.S).search(text, starts[-1])
+    end_li = tail.end()
+    close = text.index("</ul>", end_li)
     if text[end_li:close].strip():
         sys.exit("course list: unexpected markup before </ul>")
     chunks = {}
     for a, z in zip(starts, starts[1:] + [end_li]):
         slug = re.search(r'href="[^"]*/product/([^/"]+)/', text[a:z]).group(1)
         chunks[slug] = text[a:z].rstrip() + "\n"
-    wanted = [slug for _, slugs in groups for slug in slugs]
+    wanted = [slug for *_, slugs in groups for slug in slugs]
     if sorted(chunks) != sorted(wanted):
         sys.exit(f"course list: courses do not match the groups: {sorted(chunks)}")
     html = ""
-    for title, slugs in groups:
+    for title, week, detail, slugs in groups:
+        body_html = CARD_BODY.format(week=week, detail=detail)
         html += f'<h2 class="elementor-heading-title elementor-size-default intensivi-group-title">{title}</h2>\n'
-        html += PRODUCT_LIST + "\n" + "".join(chunks[s] for s in slugs) + "</ul>\n"
+        html += PRODUCT_LIST + "\n"
+        for slug in slugs:
+            if not PRICE_LIST.search(chunks[slug]):
+                sys.exit(f"course list: no price list in {slug}")
+            html += PRICE_LIST.sub(lambda _m: body_html, chunks[slug], count=1)
+        html += "</ul>\n"
     text = text[:start] + html.rstrip("\n") + text[close + 5:]
     return text.replace("</head>", GROUPS_CSS + "</head>", 1)
 
