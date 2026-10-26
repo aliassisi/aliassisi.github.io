@@ -394,6 +394,47 @@ for page in ("index.html", "en/home/index.html"):
         print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
     write(path, text)
 
+# 7b. The address block (effb67e) has the map at a fixed 610px, taller than
+# the blue address box next to it. On desktop stretch both columns to the
+# same height and let the map fill its column.
+MAP_CSS = """<style id="address-map">
+@media(min-width:1025px){
+.elementor .elementor-section.elementor-element.elementor-element-effb67e > .elementor-container{align-items:stretch;min-height:0}
+.elementor-section.elementor-element-effb67e .elementor-element.elementor-element-435ec0d,
+.elementor-section.elementor-element-effb67e .elementor-element-435ec0d > .elementor-widget-container,
+.elementor-section.elementor-element-effb67e .elementor-element-435ec0d .elementor-custom-embed{height:100%}
+.elementor-section.elementor-element-effb67e .elementor-element.elementor-element-435ec0d iframe{height:100%;min-height:400px;display:block}
+}
+</style>
+"""
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if 'data-id="435ec0d"' in text and 'id="address-map"' not in text:
+        write(path, text.replace("</head>", MAP_CSS + "</head>", 1))
+
+# 7c. The address is Via Santa Maria delle Rose, 17 - 06081 Assisi. Via Tiberio
+# d'Assisi, 10 stays only in the "© ... | p.iva" footer line.
+ADDRESS_FIXES = [
+    ("Santa Maria delle Rose , 10 ", "Santa Maria delle Rose, 17 "),
+    ("Rose, 17<br> 06181 Assisi", "Rose, 17<br> 06081 Assisi"),
+    ("Sede sociale: Via Tiberio d’Assisi, 10. Ingresso e segreteria: Via Santa Maria", "Via Santa Maria"),
+    (">Via Tiberio d'Assisi, 10 - 06081 Assisi Italy<", ">Via Santa Maria delle Rose, 17 - 06081 Assisi Italy<"),
+    ("Via%20Tiberio%20d%27Assisis%2010%2005081", "Via%20Santa%20Maria%20delle%20Rose%2017%2006081"),
+    ("Via Tiberio d&#039;Assisis 10 05081", "Via Santa Maria delle Rose 17 06081"),
+    ("in via Tiberio d’Assisi, 10,", "in via Santa Maria delle Rose, 17,"),
+    ("at 10 via Tiberio d’Assisi,", "at 17 via Santa Maria delle Rose,"),
+]
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = new = read(path)
+    for old, fixed in ADDRESS_FIXES:
+        new = new.replace(old, fixed)
+    if new != text:
+        write(path, new)
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
