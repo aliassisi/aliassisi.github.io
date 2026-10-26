@@ -435,6 +435,60 @@ for path in text_files():
     if new != text:
         write(path, new)
 
+# 7d. Method page: the other books have a heading widget (like 9aadea0, ".it
+# Italy To go") above a toggle with an empty title. Yidali has no heading: its
+# toggle title holds the name and the course description. Give it a copy of
+# that heading with "Yidali《译大利》", empty the toggle title and open the toggle
+# text with the description.
+YIDALI_HEADING = re.compile(
+    r'[ \t]*<div class="elementor-element elementor-element-9aadea0 .*?</h2>\s*</div>\s*</div>\n', re.S
+)
+YIDALI_TOGGLE = re.compile(
+    r'([ \t]*<div class="elementor-element elementor-element-(\w+) elementor-widget elementor-widget-toggle"'
+    r'(?:(?!elementor-widget-toggle).)*?<a class="elementor-toggle-title" tabindex="0">)'
+    r'Yidali《译大利》(Corso di lingua[^<]*)<br><br>\s*([^<]*)'
+    r'(</a>.*?<div [^>]*class="elementor-tab-content[^"]*"[^>]*>)',
+    re.S,
+)
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text = read(path)
+    heading = YIDALI_HEADING.search(text)
+    toggle = YIDALI_TOGGLE.search(text)
+    if heading and toggle:
+        new_heading = re.sub(r'data-id="9aadea0"', f'data-id="{toggle.group(2)}h"', heading.group(0))
+        new_heading = re.sub(r"(<h2 [^>]*>).*?(</h2>)", r"\1Yidali《译大利》\2", new_heading, flags=re.S)
+        text = (
+            text[: toggle.start()]
+            + new_heading
+            + toggle.group(1)
+            + toggle.group(5)
+            + "<p>" + toggle.group(3).strip() + "<br>" + toggle.group(4).strip() + "</p>"
+            + text[toggle.end():]
+        )
+        write(path, text)
+    else:
+        print("method/index.html: Yidali heading or toggle not found")
+# The English page keeps every title in its toggle: there, shorten the title
+# to "Yidali《译大利》" (it lacks the closing 》) and move the description.
+YIDALI_TOGGLE_EN = re.compile(
+    r'(<a class="elementor-toggle-title" tabindex="0">)Yidali《译大利》?\.?\s*(Corso di lingua[^<]*)<br><br>\s*([^<]*)'
+    r'(</a>.*?<div [^>]*class="elementor-tab-content[^"]*"[^>]*>)',
+    re.S,
+)
+path = os.path.join(site, "en/method/index.html")
+if os.path.exists(path):
+    text, n = YIDALI_TOGGLE_EN.subn(
+        lambda m: m.group(1) + "Yidali《译大利》" + m.group(4)
+        + "<p>" + m.group(2).strip() + "<br>" + m.group(3).strip() + "</p>",
+        read(path),
+        count=1,
+    )
+    if n:
+        write(path, text)
+    else:
+        print("en/method/index.html: Yidali toggle title not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
