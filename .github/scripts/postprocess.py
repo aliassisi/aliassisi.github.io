@@ -408,7 +408,8 @@ if os.path.exists(path):
 
 # 7b. The address block (effb67e) has the map at a fixed 610px, taller than
 # the blue address box next to it. On desktop stretch both columns to the
-# same height and let the map fill its column.
+# same height and let the map fill its column. On phones the map column
+# (e39b086) is hidden: show it under the address box, 350px tall.
 MAP_CSS = """<style id="address-map">
 @media(min-width:1025px){
 .elementor .elementor-section.elementor-element.elementor-element-effb67e > .elementor-container{align-items:stretch;min-height:0}
@@ -417,14 +418,22 @@ MAP_CSS = """<style id="address-map">
 .elementor-section.elementor-element-effb67e .elementor-element-435ec0d .elementor-custom-embed{height:100%}
 .elementor-section.elementor-element-effb67e .elementor-element.elementor-element-435ec0d iframe{height:100%;min-height:400px;display:block}
 }
+@media(max-width:767px){
+.elementor-section.elementor-element-effb67e .elementor-element.elementor-element-435ec0d iframe{height:350px;display:block}
+}
 </style>
 """
+MAP_COLUMN_HIDDEN = re.compile(r'(class="[^"]*elementor-element-e39b086) elementor-hidden-phone')
 for path in text_files():
     if not path.endswith(".html"):
         continue
     text = read(path)
-    if 'data-id="435ec0d"' in text and 'id="address-map"' not in text:
-        write(path, text.replace("</head>", MAP_CSS + "</head>", 1))
+    if 'data-id="435ec0d"' not in text:
+        continue
+    text = MAP_COLUMN_HIDDEN.sub(r"\1", text)
+    if 'id="address-map"' not in text:
+        text = text.replace("</head>", MAP_CSS + "</head>", 1)
+    write(path, text)
 
 # 7c. The address is Via Santa Maria delle Rose, 17 - 06081 Assisi. Via Tiberio
 # d'Assisi, 10 stays only in the "© ... | p.iva" footer line.
