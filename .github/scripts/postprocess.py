@@ -215,7 +215,8 @@ GROUPS_CSS = """<style id="intensivi-groups">
 html{scroll-behavior:smooth}
 .intensivi-menu{display:flex;justify-content:center;gap:1rem;margin:0 0 1rem}
 .intensivi-menu a.button{min-width:0}
-.elementor-widget .intensivi-menu a.button{flex:0 1 14rem;text-align:center;padding:.7rem 1rem;border-radius:999px;background:#2c3a7c;color:#fff;text-decoration:none}
+.elementor-widget .intensivi-menu a.button{flex:0 1 14rem;text-align:center;padding:.7rem 1rem;border:2px solid #2c3a7c;border-radius:999px;background:transparent;color:#2c3a7c;text-decoration:none;transition:background .2s,color .2s}
+.elementor-widget .intensivi-menu a.button:hover,.elementor-widget .intensivi-menu a.button:focus-visible{background:#2c3a7c;color:#fff}
 .intensivi-group-title{scroll-margin-top:7rem}
 .intensivi-group-subtitle{color:#2c3a7c;margin:0 0 1.25rem;font-size:1.1rem}
 .elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
