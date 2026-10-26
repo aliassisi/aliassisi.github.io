@@ -411,12 +411,29 @@ for path in text_files():
     if not path.endswith(".html"):
         continue
     text = read(path)
-    if 'data-id="435ec0d"' not in text:
+    if 'data-id="435ec0d"' in text and 'id="address-map"' not in text:
+        write(path, text.replace("</head>", MAP_CSS + "</head>", 1))
+
+# 7c. The address is Via Santa Maria delle Rose, 17 - 06081 Assisi. Via Tiberio
+# d'Assisi, 10 stays only in the "© ... | p.iva" footer line.
+ADDRESS_FIXES = [
+    ("Santa Maria delle Rose , 10 ", "Santa Maria delle Rose, 17 "),
+    ("Rose, 17<br> 06181 Assisi", "Rose, 17<br> 06081 Assisi"),
+    ("Sede sociale: Via Tiberio d’Assisi, 10. Ingresso e segreteria: Via Santa Maria", "Via Santa Maria"),
+    (">Via Tiberio d'Assisi, 10 - 06081 Assisi Italy<", ">Via Santa Maria delle Rose, 17 - 06081 Assisi Italy<"),
+    ("Via%20Tiberio%20d%27Assisis%2010%2005081", "Via%20Santa%20Maria%20delle%20Rose%2017%2006081"),
+    ("Via Tiberio d&#039;Assisis 10 05081", "Via Santa Maria delle Rose 17 06081"),
+    ("in via Tiberio d’Assisi, 10,", "in via Santa Maria delle Rose, 17,"),
+    ("at 10 via Tiberio d’Assisi,", "at 17 via Santa Maria delle Rose,"),
+]
+for path in text_files():
+    if not path.endswith(".html"):
         continue
-    if 'id="address-map"' not in text:
-        text = text.replace("</head>", MAP_CSS + "</head>", 1)
-    # The Italian address box says "Rose , 10".
-    write(path, text.replace("Santa Maria delle Rose , ", "Santa Maria delle Rose, "))
+    text = new = read(path)
+    for old, fixed in ADDRESS_FIXES:
+        new = new.replace(old, fixed)
+    if new != text:
+        write(path, new)
 
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
