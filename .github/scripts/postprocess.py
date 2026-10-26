@@ -435,6 +435,28 @@ for path in text_files():
     if new != text:
         write(path, new)
 
+# 7e. Files the crawl host does not have live in .github/files, at their path
+# in the site. Copy them in.
+extra = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "files")
+for dirpath, _, files in os.walk(extra):
+    for name in files:
+        src = os.path.join(dirpath, name)
+        dst = os.path.join(site, os.path.relpath(src, extra))
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copyfile(src, dst)
+
+# 7f. Method page, "In italiano" gallery: the first cover is a 150x150 square
+# crop, bigger than the others and cut. Use the whole cover (c40.gif, from
+# .github/files) at the others' height.
+C40_IMG = re.compile(r'width="150" height="150" src="([^"]*/)c40-150x150\.gif"')
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text, n = C40_IMG.subn(r'width="107" height="150" src="\1c40.gif"', read(path))
+    if n:
+        write(path, text)
+    else:
+        print("method/index.html: c40-150x150.gif cover not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
