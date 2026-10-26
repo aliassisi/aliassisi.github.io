@@ -5,7 +5,7 @@ Usage: python3 -I .github/scripts/postprocess.py SITE_DIR
 
 Run it after cleanup.py, on the folder cleanup.py wrote. It edits SITE_DIR in
 place. Steps: drop junk pages, merge wget duplicates, remove backend-only
-scripts, scrub WordPress config, map old links, move wp-content and
+scripts, scrub WordPress config, map old links, split the course lists, move wp-content and
 wp-includes under assets/, and delete files nothing uses.
 """
 import os
@@ -206,6 +206,117 @@ for old in MERGE:
     p = os.path.join(site, old)
     if os.path.exists(p):
         os.remove(p)
+
+# 5b. Split the course lists into 22 and 26 hour groups. Each group has four
+# courses. Courses are matched by the slug in their link. Every card gets the
+# same body: the lessons per week, then the group and one-on-one lessons.
+GROUPS_CSS = """<style id="intensivi-groups">
+.elementor-widget .intensivi-group-title{color:#2c3a7c !important;margin:2.5rem 0 .5rem;font-size:2rem}
+html{scroll-behavior:smooth}
+.elementor-3986 .elementor-element.elementor-element-e1ce8d4{--spacer-size:0px !important}
+.elementor-3986 .elementor-element.elementor-element-4aecc96{margin-top:1.5rem !important}
+.intensivi-menu{display:flex;justify-content:center;gap:1rem;margin:0 0 1rem}
+.intensivi-menu a.button{min-width:0}
+.elementor-widget .intensivi-menu a.button{flex:0 1 14rem;text-align:center;padding:.7rem 1rem;border:2px solid #2c3a7c;border-radius:999px;background:transparent;color:#2c3a7c;text-decoration:none;transition:background .2s,color .2s}
+.elementor-widget .intensivi-menu a.button:hover,.elementor-widget .intensivi-menu a.button:focus-visible{background:#2c3a7c !important;color:#fff !important}
+.intensivi-group-title{scroll-margin-top:7rem}
+.intensivi-group-subtitle{color:#2c3a7c;margin:0 0 1.25rem;font-size:1.1rem}
+.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
+.elementor-widget-woocommerce-products ul.products li.product{display:flex;flex-direction:column}
+.elementor-widget-woocommerce-products ul.products li.product>a{flex:1}
+.elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:7.2em !important}
+@media(max-width:1024px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.elementor-widget .intensivi-menu{gap:.5rem}.elementor-widget .intensivi-menu a.button{padding:.8rem .4rem;font-size:.9rem}.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:minmax(0,1fr)}.elementor-widget-woocommerce-products ul.products li.product .woocommerce-loop-product__title{min-height:0}}
+</style>
+"""
+PRODUCT_LIST = '<ul class="products elementor-grid vamtam-wc columns-3">'
+PRICE_LIST = re.compile(r'<ul class="elementor-price-list">.*?</ul>', re.S)
+CARD_BODY = (
+    '<ul class="elementor-price-list">\n'
+    '<li class="elementor-price-list-item">\n<div class="elementor-price-list-text">\n'
+    '<div class="elementor-price-list-header">\n'
+    '<span class="elementor-price-list-title">{week}</span>\n'
+    '<span class="elementor-price-list-separator"></span>\n</div>\n'
+    '<p class="elementor-price-list-description">{detail}</p>\n'
+    '</div>\n</li>\n</ul>'
+)
+IT_SLUGS_22 = [
+    "corsi-di-preparazione-per-la-certificazione", "intensive-italian",
+    "religious-student-program-24", "thematic-24",
+]
+IT_SLUGS_26 = [
+    "super-intensive-certification-exam-preparation-cours", "super-intensive-italian",
+    "religious-student-program-28", "thematic-28",
+]
+EN_SLUGS_22 = [
+    "intensive-italian", "corsi-di-preparazione-per-la-certificazione",
+    "religious-student-program-22", "thematic-22",
+]
+EN_SLUGS_26 = [
+    "super-intensive-italian", "super-intensive-certification-exam-preparation-cours",
+    "religious-student-program-28", "thematic-26",
+]
+# (anchor id, menu label, group title, subtitle, card week line, card detail line, slugs)
+COURSE_GROUPS = {
+    "product-category/intensivi/index.html": [
+        ("corsi-intensivi", "Corsi intensivi", "Corsi intensivi · 22 ore", "22 lezioni a settimana: 18 di gruppo al mattino e 4 individuali al pomeriggio",
+         "22 lezioni alla settimana", "18 lezioni di gruppo + 4 lezioni individuali", IT_SLUGS_22),
+        ("corsi-superintensivi", "Corsi superintensivi", "Corsi superintensivi · 26 ore", "26 lezioni a settimana: 18 di gruppo al mattino e 8 individuali al pomeriggio",
+         "26 lezioni alla settimana", "18 lezioni di gruppo + 8 lezioni individuali", IT_SLUGS_26),
+    ],
+    "product-category/intensive-en/index.html": [
+        ("intensive-courses", "Intensive courses", "Intensive courses · 22 hours", "22 lessons per week: 18 group lessons in the morning and 4 one-on-one lessons in the afternoon",
+         "22 lessons per week", "18 group lessons + 4 one-on-one lessons", EN_SLUGS_22),
+        ("super-intensive-courses", "Super intensive courses", "Super intensive courses · 26 hours", "26 lessons per week: 18 group lessons in the morning and 8 one-on-one lessons in the afternoon",
+         "26 lessons per week", "18 group lessons + 8 one-on-one lessons", EN_SLUGS_26),
+    ],
+}
+
+
+def split_courses(text, groups):
+    if PRODUCT_LIST not in text or "intensivi-group-title" in text:
+        return text
+    start = text.index(PRODUCT_LIST)
+    body = start + len(PRODUCT_LIST)
+    starts = [body + m.start() for m in re.finditer(r'<li class="product ', text[body:])]
+    # The last course ends with its hidden "describedby" span, then </li>.
+    # Course bodies hold lists too, so do not stop at the first </ul>.
+    tail = re.compile(r'screen-reader-text">.*?</span>\s*</li>', re.S).search(text, starts[-1])
+    end_li = tail.end()
+    close = text.index("</ul>", end_li)
+    if text[end_li:close].strip():
+        sys.exit("course list: unexpected markup before </ul>")
+    chunks = {}
+    for a, z in zip(starts, starts[1:] + [end_li]):
+        slug = re.search(r'href="[^"]*/product/([^/"]+)/', text[a:z]).group(1)
+        chunks[slug] = text[a:z].rstrip() + "\n"
+    wanted = [slug for *_, slugs in groups for slug in slugs]
+    if sorted(chunks) != sorted(wanted):
+        sys.exit(f"course list: courses do not match the groups: {sorted(chunks)}")
+    menu = "".join(f'<a class="button" href="#{gid}">{label}</a>' for gid, label, *_ in groups)
+    html = f'<nav class="intensivi-menu">{menu}</nav>\n'
+    for gid, _label, title, subtitle, week, detail, slugs in groups:
+        body_html = CARD_BODY.format(week=week, detail=detail)
+        html += f'<h2 id="{gid}" class="elementor-heading-title elementor-size-default intensivi-group-title">{title}</h2>\n'
+        html += f'<p class="intensivi-group-subtitle">{subtitle}</p>\n'
+        html += PRODUCT_LIST + "\n"
+        for slug in slugs:
+            if not PRICE_LIST.search(chunks[slug]):
+                sys.exit(f"course list: no price list in {slug}")
+            html += PRICE_LIST.sub(lambda _m: body_html, chunks[slug], count=1)
+        html += "</ul>\n"
+    text = text[:start] + html.rstrip("\n") + text[close + 5:]
+    return text.replace("</head>", GROUPS_CSS + "</head>", 1)
+
+
+for page, groups in COURSE_GROUPS.items():
+    path = os.path.join(site, page)
+    if os.path.exists(path):
+        # The page no longer lists thematic courses apart: drop it from the title.
+        new_text = split_courses(read(path), groups).replace(
+            "Intensivi, Super Intensivi, Tematici", "Intensivi, Super Intensivi"
+        )
+        write(path, new_text)
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
