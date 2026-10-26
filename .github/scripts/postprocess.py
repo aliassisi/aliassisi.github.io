@@ -5,7 +5,7 @@ Usage: python3 -I .github/scripts/postprocess.py SITE_DIR
 
 Run it after cleanup.py, on the folder cleanup.py wrote. It edits SITE_DIR in
 place. Steps: drop junk pages, merge wget duplicates, remove backend-only
-scripts, scrub WordPress config, map old links, move wp-content and
+scripts, scrub WordPress config, map old links, split the course lists, move wp-content and
 wp-includes under assets/, and delete files nothing uses.
 """
 import os
@@ -206,6 +206,69 @@ for old in MERGE:
     p = os.path.join(site, old)
     if os.path.exists(p):
         os.remove(p)
+
+# 5b. Split the course lists into 22 and 26 hour groups. Each group has four
+# courses. Courses are matched by the slug in their link.
+GROUPS_CSS = """<style id="intensivi-groups">
+.elementor-widget .intensivi-group-title{color:#2c3a7c !important;margin:2.5rem 0 1.25rem;font-size:2rem}
+.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1024px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.elementor-widget-woocommerce-products ul.products.elementor-grid{grid-template-columns:1fr}}
+</style>
+"""
+PRODUCT_LIST = '<ul class="products elementor-grid vamtam-wc columns-3">'
+COURSE_GROUPS = {
+    "product-category/intensivi/index.html": [
+        ("Corsi intensivi · 22 ore", [
+            "corsi-di-preparazione-per-la-certificazione", "intensive-italian",
+            "religious-student-program-24", "thematic-24"]),
+        ("Corsi superintensivi · 26 ore", [
+            "super-intensive-certification-exam-preparation-cours", "super-intensive-italian",
+            "religious-student-program-28", "thematic-28"]),
+    ],
+    "product-category/intensive-en/index.html": [
+        ("Intensive courses · 22 hours", [
+            "intensive-italian", "corsi-di-preparazione-per-la-certificazione",
+            "religious-student-program-22", "thematic-22"]),
+        ("Super intensive courses · 26 hours", [
+            "super-intensive-italian", "super-intensive-certification-exam-preparation-cours",
+            "religious-student-program-28", "thematic-26"]),
+    ],
+}
+
+
+def split_courses(text, groups):
+    if PRODUCT_LIST not in text or "intensivi-group-title" in text:
+        return text
+    start = text.index(PRODUCT_LIST)
+    body = start + len(PRODUCT_LIST)
+    starts = [body + m.start() for m in re.finditer(r'<li class="product ', text[body:])]
+    # The list closes with the first </ul> after the last course. Nested
+    # lists inside a course end before it.
+    last_li_end = text.index("</li>", starts[-1])
+    close = text.index("</ul>", last_li_end)
+    end_li = text.rindex("</li>", 0, close) + 5
+    if text[end_li:close].strip():
+        sys.exit("course list: unexpected markup before </ul>")
+    chunks = {}
+    for a, z in zip(starts, starts[1:] + [end_li]):
+        slug = re.search(r'href="[^"]*/product/([^/"]+)/', text[a:z]).group(1)
+        chunks[slug] = text[a:z].rstrip() + "\n"
+    wanted = [slug for _, slugs in groups for slug in slugs]
+    if sorted(chunks) != sorted(wanted):
+        sys.exit(f"course list: courses do not match the groups: {sorted(chunks)}")
+    html = ""
+    for title, slugs in groups:
+        html += f'<h2 class="elementor-heading-title elementor-size-default intensivi-group-title">{title}</h2>\n'
+        html += PRODUCT_LIST + "\n" + "".join(chunks[s] for s in slugs) + "</ul>\n"
+    text = text[:start] + html.rstrip("\n") + text[close + 5:]
+    return text.replace("</head>", GROUPS_CSS + "</head>", 1)
+
+
+for page, groups in COURSE_GROUPS.items():
+    path = os.path.join(site, page)
+    if os.path.exists(path):
+        write(path, split_courses(read(path), groups))
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
