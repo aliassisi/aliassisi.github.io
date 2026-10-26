@@ -501,6 +501,22 @@ if os.path.exists(path):
     else:
         print("en/method/index.html: Yidali toggle title not found")
 
+# 7e. English FAQ page: drop the old toggle lists under the FAQ block (83ae875).
+# They are six sections, a heading and a list each (Courses, Housing,
+# Activities), from 229e665 up to the address section e80c5ba.
+OLD_FAQ = re.compile(
+    r'[ \t]*<section class="elementor-section elementor-top-section [^>]*data-id="229e665".*?'
+    r'(?=[ \t]*<section class="elementor-section elementor-top-section [^>]*data-id="e80c5ba")',
+    re.S,
+)
+path = os.path.join(site, "en/faq/index.html")
+if os.path.exists(path):
+    text, n = OLD_FAQ.subn("", read(path), count=1)
+    if n:
+        write(path, text)
+    else:
+        print("en/faq/index.html: old FAQ lists not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
