@@ -414,6 +414,31 @@ for path in text_files():
     if 'data-id="435ec0d"' in text and 'id="address-map"' not in text:
         write(path, text.replace("</head>", MAP_CSS + "</head>", 1))
 
+# 7b2. Header: every menu item grows to fill the row, so the two flags spread
+# far apart, and the search icon sits lower than the menu. Keep the flags
+# small and together at the right end of the last row (the English flag takes
+# no width of its own: it sits in padding reserved on the Italian one, so the
+# two always wrap together). Put the icon and its underline level with that row.
+HEADER_CSS = """<style id="header-align">
+@media(min-width:1025px){
+.elementor-location-header .elementor-element.elementor-element-985225e .elementor-nav-menu--main .elementor-nav-menu > li.lang-item{flex-grow:0}
+.elementor-location-header .elementor-element.elementor-element-985225e .elementor-nav-menu--main .lang-item > .elementor-item{padding-left:6px;padding-right:6px}
+.elementor-location-header .elementor-element.elementor-element-985225e .elementor-nav-menu--main .elementor-nav-menu > li.lang-item-first{margin-left:auto}
+.elementor-location-header .elementor-element.elementor-element-985225e .elementor-nav-menu--main .lang-item-first > .elementor-item{padding-right:34px}
+.elementor-location-header .elementor-element.elementor-element-985225e .elementor-nav-menu--main .elementor-nav-menu > li.lang-item:not(.lang-item-first){margin-left:-28px}
+.elementor-location-header .elementor-element.elementor-element-b422771.elementor-widget{align-self:flex-end}
+.elementor-location-header .elementor-element.elementor-element-b422771 > .elementor-widget-container{margin-bottom:50px}
+.elementor-location-header .elementor-element.elementor-element-474e8e0.elementor-sticky--effects .elementor-element.elementor-element-b422771.elementor-widget > .elementor-widget-container{margin-bottom:20px}
+}
+</style>
+"""
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if 'data-id="985225e"' in text and 'id="header-align"' not in text:
+        write(path, text.replace("</head>", HEADER_CSS + "</head>", 1))
+
 # 7c. The address is Via Santa Maria delle Rose, 17 - 06081 Assisi. Via Tiberio
 # d'Assisi, 10 stays only in the "© ... | p.iva" footer line.
 ADDRESS_FIXES = [
