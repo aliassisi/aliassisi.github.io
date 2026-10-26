@@ -6,6 +6,7 @@
 # CRAWL_DIR holds the raw wget copy. It is outside the repo.
 # It defaults to ../aliassisi-crawl.
 # Set LIMIT=N to crawl only the first N URLs (a quick test).
+# Set SKIP_PAGES=1 to reuse the pages already in CRAWL_DIR/raw (skip step 1).
 # Set OUT=DIR to write the result there instead of into the repo.
 #
 # Direct edits to pages are lost by this script. Put them in postprocess.py.
@@ -27,12 +28,16 @@ wget_opts=(--force-directories --page-requisites --adjust-extension --convert-li
            --no-verbose --timeout=30 --tries=3 -e robots=off --directory-prefix="$raw")
 
 # 1. The pages and everything they need.
-echo "crawling $(wc -l < "$list") URLs from $host"
-rm -rf "$raw"
-wget "${wget_opts[@]}" --input-file="$list" 2>&1 | tail -n 3 || true
+if [ -z "${SKIP_PAGES:-}" ]; then
+  echo "crawling $(wc -l < "$list") URLs from $host"
+  rm -rf "$raw"
+  wget "${wget_opts[@]}" --input-file="$list" 2>&1 | tail -n 3 || true
+fi
 
 # 2. Short links (/?p=ID). Pages link to them. Save each one, and record
 # where the server sends it.
+# Pages only: step 1 already fetched the assets.
+short_opts=("${wget_opts[@]/--page-requisites/--no-verbose}")
 ids=$(grep -rhoE '[?&]p=[0-9]+' "$raw/$host" --include='*.html' 2>/dev/null | grep -oE '[0-9]+' | sort -un || true)
 pmap=$crawl/pmap.tsv
 : > "$pmap"
@@ -41,7 +46,7 @@ for id in $ids; do
   status=$(printf '%s' "$head" | head -n1 | awk '{print $2}')
   where=$(printf '%s' "$head" | tr -d '\r' | awk 'tolower($1)=="location:"{print $2}')
   printf '%s\t%s %s\n' "$id" "${status:-000}" "$where" >> "$pmap"
-  wget "${wget_opts[@]}" "https://$host/?p=$id" >/dev/null 2>&1 || true
+  wget "${short_opts[@]}" "https://$host/?p=$id" >/dev/null 2>&1 || true
 done
 echo "short links: $(wc -l < "$pmap")"
 
