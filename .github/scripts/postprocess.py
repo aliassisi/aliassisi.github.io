@@ -394,6 +394,18 @@ for page in ("index.html", "en/home/index.html"):
         print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
     write(path, text)
 
+# 7a. Method page, "In italiano. Il corso": the covers image sits in the same
+# line as the text that follows it. Put the text in its own paragraph under
+# the image, with some space between them.
+CORSO_IMG = re.compile(r'<p>(<img [^>]*df335cb4-d762-4ee5-9da3-a04124bfb1eb[^>]*/>)(Il corso si articola)')
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text, n = CORSO_IMG.subn(r'<p style="clear:left;margin-bottom:1.5em">\1</p><p>\2', read(path))
+    if n:
+        write(path, text)
+    else:
+        print('method/index.html: "In italiano. Il corso" image not found')
+
 # 7b. The address block (effb67e) has the map at a fixed 610px, taller than
 # the blue address box next to it. On desktop stretch both columns to the
 # same height and let the map fill its column.
