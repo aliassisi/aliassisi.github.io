@@ -351,7 +351,37 @@ for path in text_files():
     if new_text != text:
         write(path, new_text)
 
-# 7. Delete files nothing names. Elementor loads chunks at run time, so
+# 7. Both homes play one video, main-video1.mp4. On desktop the section behind
+# the slider (24dca05) plays it, so the slides lose their own videos and the
+# carousel runs over it. The English section has no video set: add it. The
+# mobile slider has no such section: its slides play main-video1.mp4 themselves.
+HOME_MP4 = "/assets/uploads/2026/10/main-video1.mp4"
+HOME_VIDEO = re.compile(r'(<rs-bgvideo\b[^>]*?data-mp4=")[^"]*(")', re.S)
+HOME_BGVIDEO = re.compile(r"[ \t]*<rs-bgvideo\b[^>]*>\s*</rs-bgvideo>\n?")
+HOME_DESKTOP = re.compile(r"<!-- START Home desktop .*?<!-- END REVOLUTION SLIDER -->", re.S)
+HOME_SECTION = re.compile(
+    r'(<section\b[^>]*data-id="24dca05"[^>]*data-settings="\{&quot;background_background&quot;:&quot;video&quot;)(\}">)'
+)
+HOME_SECTION_VIDEO = (
+    r"\1,&quot;background_video_link&quot;:&quot;" + HOME_MP4.replace("/", r"\\/") + r"&quot;\2"
+    "\n\t\t\t\t\t\t\t\t<div class=\"elementor-background-video-container elementor-hidden-mobile\">"
+    "\n\t\t\t\t\t\t\t\t\t\t\t\t\t<video class=\"elementor-background-video-hosted\" role=\"presentation\" autoplay muted playsinline loop></video>"
+    "\n\t\t\t\t\t\t\t\t\t\t\t</div>"
+)
+for page in ("index.html", "en/home/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = HOME_SECTION.sub(lambda m: m.expand(HOME_SECTION_VIDEO), read(path), count=1)
+    if "background_video_link&quot;:&quot;" + HOME_MP4.replace("/", "\\/") not in text:
+        print(f"{page}: main-video1.mp4 is not the desktop section background")
+    text = HOME_DESKTOP.sub(lambda m: HOME_BGVIDEO.sub("", m.group(0)), text, count=1)
+    text, n = HOME_VIDEO.subn(lambda m: m.group(1) + HOME_MP4 + m.group(2), text)
+    if not n:
+        print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
+    write(path, text)
+
+# 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
 removed = size = 0
@@ -365,7 +395,7 @@ for base in ("assets/core", "assets/plugins/woocommerce"):
                 removed += 1
 print(f"removed {removed} unused files ({size // 1024} KB)")
 
-# 8. Report what is left.
+# 9. Report what is left.
 left = {k: 0 for k in ("wp-content", "wp-includes", "wp-json", "admin-ajax", "aliassisi.it", "evonove")}
 for path in text_files():
     text = read(path)
