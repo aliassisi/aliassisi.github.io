@@ -368,11 +368,24 @@ HOME_SECTION_VIDEO = (
     "\n\t\t\t\t\t\t\t\t\t\t\t\t\t<video class=\"elementor-background-video-hosted\" role=\"presentation\" autoplay muted playsinline loop></video>"
     "\n\t\t\t\t\t\t\t\t\t\t\t</div>"
 )
+# main-video1.mp4 has a few black rows at the top and bottom: zoom it a little
+# so they fall outside the section. Elementor centers the video with
+# translate(-50%,-50%), so the zoom goes in the same transform: the "scale"
+# property alone would zoom around another point and push the video up. The news bar under it (2c917f6) drops its
+# side padding to be as wide as the video.
+HOME_CSS = """<style id="home-hero">
+.elementor-section.elementor-element-24dca05 .elementor-background-video-hosted{transform:translate(-50%,-50%) scale(1.02)}
+.elementor-section.elementor-element-2c917f6{padding-left:0;padding-right:0}
+</style>
+"""
 for page in ("index.html", "en/home/index.html"):
     path = os.path.join(site, page)
     if not os.path.exists(path):
         continue
-    text = HOME_SECTION.sub(lambda m: m.expand(HOME_SECTION_VIDEO), read(path), count=1)
+    text = read(path)
+    if 'id="home-hero"' not in text:
+        text = text.replace("</head>", HOME_CSS + "</head>", 1)
+    text = HOME_SECTION.sub(lambda m: m.expand(HOME_SECTION_VIDEO), text, count=1)
     if "background_video_link&quot;:&quot;" + HOME_MP4.replace("/", "\\/") not in text:
         print(f"{page}: main-video1.mp4 is not the desktop section background")
     text = HOME_DESKTOP.sub(lambda m: HOME_BGVIDEO.sub("", m.group(0)), text, count=1)
