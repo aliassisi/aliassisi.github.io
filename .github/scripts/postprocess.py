@@ -706,16 +706,18 @@ for page in ("index.html", "en/home/index.html"):
         text = text.replace("</head>", HOME_CARDS_CSS + "</head>", 1)
         write(path, text)
 
-# 7l. English Accommodation page: drop the old text with the flat prices
+# 7l. Accommodation pages: drop the old text with the flat prices
 # (section 1ef42f6). The price table under it stays.
-path = os.path.join(site, "en/accommodation/index.html")
-if os.path.exists(path):
+for page in ("accommodation/index.html", "en/accommodation/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
     text = read(path)
-    m = re.search(r'[ 	]*<section class="[^"]*elementor-element-1ef42f6 ', text)
+    m = re.search(r'[ \t]*<section class="[^"]*elementor-element-1ef42f6 ', text)
     if m:
-        write(path, text[:m.start()] + text[section_end(text, m.start(), "en/accommodation/index.html"):])
+        write(path, text[:m.start()] + text[section_end(text, m.start(), page):])
     else:
-        print("en/accommodation/index.html: section 1ef42f6 not found")
+        print(f"{page}: section 1ef42f6 not found")
 
 # 7l. English home: the guestbook heading has a typo in WordPress ("GUESTBOOKG").
 path = os.path.join(site, "en/home/index.html")
