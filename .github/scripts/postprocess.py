@@ -717,6 +717,13 @@ if os.path.exists(path):
     else:
         print("en/accommodation/index.html: section 1ef42f6 not found")
 
+# 7l. English home: the guestbook heading has a typo in WordPress ("GUESTBOOKG").
+path = os.path.join(site, "en/home/index.html")
+if os.path.exists(path):
+    text = read(path)
+    if ">GUESTBOOKG</h2>" in text:
+        write(path, text.replace(">GUESTBOOKG</h2>", ">GUESTBOOK</h2>"))
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
