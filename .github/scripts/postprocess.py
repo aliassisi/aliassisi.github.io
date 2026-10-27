@@ -247,18 +247,21 @@ for page, snippet in COURSE_CARDS.items():
         text = text[:m.start()] + cards + text[section_end(text, m.start(), page):]
     write(path, text)
 
-# 5d. English Accademia page: the team cards in .github/snippets replace the
-# "Meet Our Team" sections, from the heading (525cf6a) to the last person
-# (a63c49f). The photos are in .github/files.
+# 5d. English Accademia page and Italian Location page: the team cards in
+# .github/snippets replace the "Meet Our Team" sections, from the heading
+# (525cf6a) to the last person (a63c49f). Both pages had the same English
+# block. The photos are in .github/files.
 TEAM_CARDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "snippets", "team-en.html")
-path = os.path.join(site, "en/accademia/index.html")
-if os.path.exists(path):
+for page in ["en/accademia/index.html", "location/index.html"]:
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
     text = read(path)
     if 'class="ali-team"' not in text:
         m = re.search(r'<section class="[^"]*elementor-element-525cf6a ', text)
         last = re.search(r'<section class="[^"]*elementor-element-a63c49f ', text)
         if not m or not last:
-            sys.exit("en/accademia: team sections 525cf6a..a63c49f not found")
+            sys.exit(f"{page}: team sections 525cf6a..a63c49f not found")
         text = text[:m.start()] + read(TEAM_CARDS) + text[section_end(text, last.start()):]
         write(path, text)
 
@@ -660,7 +663,61 @@ if os.path.exists(path):
     else:
         print("post-994812.css: 42px In Italiano title not found")
 
-# 7j. Guestbook page (994884) and both testimonials pages (341): on desktop
+# 7j. English home and Method: new captions under the Group and Group&Private boxes.
+HOME_EN_CAPTIONS = {
+    "Group Italian course held every morning the classic way to build a strong foundation fast or deepening what you already know":
+        "Italian in a small group, every morning — to build a solid foundation or deepen what you already know.",
+    "The courses combines the advantages of group and individual work":
+        "Small-group work combined with individual lessons.",
+}
+for page in ("en/home/index.html", "en/method/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = read(path)
+    for old, new in HOME_EN_CAPTIONS.items():
+        if old in text:
+            text = text.replace(old, new)
+        elif new not in text:
+            print(f"{page}: caption not found: {old[:40]}")
+    write(path, text)
+
+# 7k. Home course boxes (rows 7332770 and 9605fca): the white boxes end at
+# different heights because their captions have different lengths, and the
+# configurator frame (4469e26) is shorter and sits 10px lower. Stretch the boxes
+# and the frame to the full row height, so they all start and end together.
+# The plus buttons line up at the bottom. Phones keep one box per row.
+HOME_CARDS_CSS = """<style id="home-cards">
+@media(min-width:768px){
+:is(.elementor-element-7332770,.elementor-element-9605fca) > .elementor-container > .elementor-column > .elementor-widget-wrap{flex-direction:column;flex-wrap:nowrap;padding:0}
+:is(.elementor-element-7332770,.elementor-element-9605fca) :is(.elementor-widget-image-box,.elementor-widget-call-to-action){flex-grow:1;display:flex;flex-direction:column}
+:is(.elementor-element-7332770,.elementor-element-9605fca) :is(.elementor-widget-image-box,.elementor-widget-call-to-action) > .elementor-widget-container{flex-grow:1}
+}
+</style>
+"""
+for page in ("index.html", "en/home/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = read(path)
+    if "elementor-element-9605fca " not in text:
+        print(f"{page}: course box row 9605fca not found")
+    if 'id="home-cards"' not in text:
+        text = text.replace("</head>", HOME_CARDS_CSS + "</head>", 1)
+        write(path, text)
+
+# 7l. English Accommodation page: drop the old text with the flat prices
+# (section 1ef42f6). The price table under it stays.
+path = os.path.join(site, "en/accommodation/index.html")
+if os.path.exists(path):
+    text = read(path)
+    m = re.search(r'[ 	]*<section class="[^"]*elementor-element-1ef42f6 ', text)
+    if m:
+        write(path, text[:m.start()] + text[section_end(text, m.start(), "en/accommodation/index.html"):])
+    else:
+        print("en/accommodation/index.html: section 1ef42f6 not found")
+
+# 7m. Guestbook page (994884) and both testimonials pages (341): on desktop
 # the empty section under the guestbook (c944fe1) has margin-top -491px, so
 # the address and map block slide up over the guestbook. Use the tablet
 # margins (0 and 70px) on desktop too.
