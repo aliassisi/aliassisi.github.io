@@ -235,7 +235,9 @@ for page, snippet in COURSE_CARDS.items():
     if not os.path.exists(path):
         continue
     # The page no longer lists thematic courses apart: drop it from the title.
+    # The English banner names both course groups, like the Italian one.
     text = read(path).replace("Intensivi, Super Intensivi, Tematici", "Intensivi, Super Intensivi")
+    text = text.replace('elementor-size-default">Intensive</h1>', 'elementor-size-default">Intensive, Superintensive</h1>')
     if 'class="ali-int"' not in text:
         m = COURSE_LIST.search(text)
         if not m:
