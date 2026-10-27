@@ -334,6 +334,21 @@ if os.path.exists(path):
         text = text[:m.start()] + read(INTENSIVI_CARDS) + text[section_end(text, m.start()):]
     write(path, text)
 
+# 5d. English Accademia page: the team cards in .github/snippets replace the
+# "Meet Our Team" sections, from the heading (525cf6a) to the last person
+# (a63c49f). The photos are in .github/files.
+TEAM_CARDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "snippets", "team-en.html")
+path = os.path.join(site, "en/accademia/index.html")
+if os.path.exists(path):
+    text = read(path)
+    if 'class="ali-team"' not in text:
+        m = re.search(r'<section class="[^"]*elementor-element-525cf6a ', text)
+        last = re.search(r'<section class="[^"]*elementor-element-a63c49f ', text)
+        if not m or not last:
+            sys.exit("en/accademia: team sections 525cf6a..a63c49f not found")
+        text = text[:m.start()] + read(TEAM_CARDS) + text[section_end(text, last.start()):]
+        write(path, text)
+
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
 MOVES = [
