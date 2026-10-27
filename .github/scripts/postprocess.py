@@ -207,7 +207,7 @@ for old in MERGE:
     if os.path.exists(p):
         os.remove(p)
 
-# 5b. Split the course lists into 22 and 26 hour groups. Each group has four
+# 5b. English intensive page: split the course lists into 22 and 26 hour groups. Each group has four
 # courses. Courses are matched by the slug in their link. Every card gets the
 # same body: the lessons per week, then the group and one-on-one lessons.
 GROUPS_CSS = """<style id="intensivi-groups">
@@ -240,14 +240,6 @@ CARD_BODY = (
     '<p class="elementor-price-list-description">{detail}</p>\n'
     '</div>\n</li>\n</ul>'
 )
-IT_SLUGS_22 = [
-    "corsi-di-preparazione-per-la-certificazione", "intensive-italian",
-    "religious-student-program-24", "thematic-24",
-]
-IT_SLUGS_26 = [
-    "super-intensive-certification-exam-preparation-cours", "super-intensive-italian",
-    "religious-student-program-28", "thematic-28",
-]
 EN_SLUGS_22 = [
     "intensive-italian", "corsi-di-preparazione-per-la-certificazione",
     "religious-student-program-22", "thematic-22",
@@ -258,12 +250,6 @@ EN_SLUGS_26 = [
 ]
 # (anchor id, menu label, group title, subtitle, card week line, card detail line, slugs)
 COURSE_GROUPS = {
-    "product-category/intensivi/index.html": [
-        ("corsi-intensivi", "Corsi intensivi", "Corsi intensivi · 22 ore", "22 lezioni a settimana: 18 di gruppo al mattino e 4 individuali al pomeriggio",
-         "22 lezioni alla settimana", "18 lezioni di gruppo + 4 lezioni individuali", IT_SLUGS_22),
-        ("corsi-superintensivi", "Corsi superintensivi", "Corsi superintensivi · 26 ore", "26 lezioni a settimana: 18 di gruppo al mattino e 8 individuali al pomeriggio",
-         "26 lezioni alla settimana", "18 lezioni di gruppo + 8 lezioni individuali", IT_SLUGS_26),
-    ],
     "product-category/intensive-en/index.html": [
         ("intensive-courses", "Intensive courses", "Intensive courses · 22 hours", "22 lessons per week: 18 group lessons in the morning and 4 one-on-one lessons in the afternoon",
          "22 lessons per week", "18 group lessons + 4 one-on-one lessons", EN_SLUGS_22),
@@ -317,6 +303,36 @@ for page, groups in COURSE_GROUPS.items():
             "Intensivi, Super Intensivi, Tematici", "Intensivi, Super Intensivi"
         )
         write(path, new_text)
+
+# 5c. Italian intensivi page: the course cards in .github/snippets replace the
+# course list section (4aecc96: a spacer and the WooCommerce products). The
+# title banner above it stays.
+INTENSIVI_CARDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "snippets", "intensivi-cards.html")
+INTENSIVI_LIST = re.compile(r'<section class="[^"]*elementor-element-4aecc96 ')
+SECTION_TAG = re.compile(r"<(/?)section\b")
+
+
+def section_end(text, start):
+    # Course cards hold Elementor templates with sections of their own:
+    # count open and close tags to find the end of this one.
+    depth = 0
+    for m in SECTION_TAG.finditer(text, start):
+        depth += -1 if m.group(1) else 1
+        if not depth:
+            return text.index(">", m.end()) + 1
+    sys.exit("intensivi: section 4aecc96 is not closed")
+
+
+path = os.path.join(site, "product-category/intensivi/index.html")
+if os.path.exists(path):
+    # The page no longer lists thematic courses apart: drop it from the title.
+    text = read(path).replace("Intensivi, Super Intensivi, Tematici", "Intensivi, Super Intensivi")
+    if 'class="ali-int"' not in text:
+        m = INTENSIVI_LIST.search(text)
+        if not m:
+            sys.exit("intensivi: course list section 4aecc96 not found")
+        text = text[:m.start()] + read(INTENSIVI_CARDS) + text[section_end(text, m.start()):]
+    write(path, text)
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
