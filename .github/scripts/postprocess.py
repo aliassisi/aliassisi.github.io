@@ -219,7 +219,7 @@ COURSE_LIST = re.compile(r'<section class="[^"]*elementor-element-4aecc96 ')
 SECTION_TAG = re.compile(r"<(/?)section\b")
 
 
-def section_end(text, start, page):
+def section_end(text, start, page="page"):
     # Course cards hold Elementor templates with sections of their own:
     # count open and close tags to find the end of this one.
     depth = 0
@@ -227,7 +227,7 @@ def section_end(text, start, page):
         depth += -1 if m.group(1) else 1
         if not depth:
             return text.index(">", m.end()) + 1
-    sys.exit(f"{page}: section 4aecc96 is not closed")
+    sys.exit(f"{page}: a section is not closed")
 
 
 for page, snippet in COURSE_CARDS.items():
@@ -261,6 +261,25 @@ if os.path.exists(path):
             sys.exit("en/accademia: team sections 525cf6a..a63c49f not found")
         text = text[:m.start()] + read(TEAM_CARDS) + text[section_end(text, last.start()):]
         write(path, text)
+
+# 5e. Programmi page: the program cards in .github/snippets replace the
+# 1, 2 and 4 week lists (f61fa66). The "Caratteristiche del corso" section
+# (c2174f0) goes away, with the spacer under it (8e69e7b): the spacer above
+# is enough.
+PROGRAM_CARDS = os.path.join(SNIPPETS, "programmi-cards.html")
+path = os.path.join(site, "product/programs/index.html")
+if os.path.exists(path):
+    text = read(path)
+    if 'id="prog-1"' not in text:
+        m = re.search(r'<section class="[^"]*elementor-element-f61fa66 ', text)
+        if not m:
+            sys.exit("product/programs: program section f61fa66 not found")
+        text = text[:m.start()] + read(PROGRAM_CARDS) + text[section_end(text, m.start()):]
+    for gone in ("c2174f0", "8e69e7b"):
+        m = re.search(r'<section class="[^"]*elementor-element-' + gone + " ", text)
+        if m:
+            text = text[:m.start()] + text[section_end(text, m.start()):]
+    write(path, text)
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
