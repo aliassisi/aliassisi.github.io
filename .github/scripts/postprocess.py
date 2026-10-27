@@ -284,6 +284,8 @@ for page, snippet in PROGRAM_CARDS.items():
         m = re.search(r'<section class="[^"]*elementor-element-' + gone + " ", text)
         if m:
             text = text[:m.start()] + text[section_end(text, m.start(), page):]
+    # The English banner text lost the "I" of "Italian".
+    text = re.sub(r"(\s)talian language courses", r"\1Italian language courses", text)
     write(path, text)
 
 # 5f. Neumann University runs a summer program, not four weeks: fix the
