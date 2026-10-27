@@ -660,6 +660,18 @@ if os.path.exists(path):
     else:
         print("post-994812.css: 42px In Italiano title not found")
 
+# 7j. Guestbook page: on desktop the empty section under the guestbook
+# (c944fe1) has margin-top -491px, so the address and map block slide up over
+# the guestbook. Use the tablet margins (0 and 70px) on desktop too.
+path = os.path.join(site, "assets/uploads/elementor/css/post-994884.css")
+if os.path.exists(path):
+    old = ".elementor-994884 .elementor-element.elementor-element-c944fe1{margin-top:-491px;margin-bottom:150px;"
+    text = read(path)
+    if old in text:
+        write(path, text.replace(old, old.replace("-491px;margin-bottom:150px", "0px;margin-bottom:70px")))
+    else:
+        print("post-994884.css: guestbook c944fe1 margin not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
