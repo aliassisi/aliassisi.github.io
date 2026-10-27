@@ -373,6 +373,25 @@ for page in ("index.html", "en/home/index.html"):
         print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
     write(path, text)
 
+# 6b. English home and Method: new captions under the Group and Group&Private boxes.
+HOME_EN_CAPTIONS = {
+    "Group Italian course held every morning the classic way to build a strong foundation fast or deepening what you already know":
+        "Italian in a small group, every morning — to build a solid foundation or deepen what you already know.",
+    "The courses combines the advantages of group and individual work":
+        "Small-group work combined with individual lessons.",
+}
+for page in ("en/home/index.html", "en/method/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = read(path)
+    for old, new in HOME_EN_CAPTIONS.items():
+        if old in text:
+            text = text.replace(old, new)
+        elif new not in text:
+            print(f"{page}: caption not found: {old[:40]}")
+    write(path, text)
+
 # 7a. Method page, "In italiano. Il corso": the covers image sits in the same
 # line as the text that follows it. Put the text in its own paragraph under
 # the image, with some space between them.
