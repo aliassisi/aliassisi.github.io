@@ -264,8 +264,8 @@ if os.path.exists(path):
 
 # 5e. Programmi page: the program cards in .github/snippets replace the
 # 1, 2 and 4 week lists (f61fa66). The "Caratteristiche del corso" section
-# (c2174f0) goes away, with the spacer under it (8e69e7b): the spacer above
-# is enough.
+# (c2174f0) goes away, with the spacers above and below it (fc18919,
+# 8e69e7b): the cards set their own top space.
 PROGRAM_CARDS = os.path.join(SNIPPETS, "programmi-cards.html")
 path = os.path.join(site, "product/programs/index.html")
 if os.path.exists(path):
@@ -275,11 +275,20 @@ if os.path.exists(path):
         if not m:
             sys.exit("product/programs: program section f61fa66 not found")
         text = text[:m.start()] + read(PROGRAM_CARDS) + text[section_end(text, m.start()):]
-    for gone in ("c2174f0", "8e69e7b"):
+    for gone in ("fc18919", "c2174f0", "8e69e7b"):
         m = re.search(r'<section class="[^"]*elementor-element-' + gone + " ", text)
         if m:
             text = text[:m.start()] + text[section_end(text, m.start()):]
     write(path, text)
+
+# 5f. Neumann University runs a summer program, not four weeks: fix the
+# caption of its logo box on the programs and packages pages.
+for page in ("product/programs", "product/packages", "en/product/programs", "en/product/packages"):
+    path = os.path.join(site, page, "index.html")
+    if os.path.exists(path):
+        text = read(path)
+        write(path, text.replace(
+            'description">Four weeks in Italy</p>', 'description">Summer Immersion Program</p>'))
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
