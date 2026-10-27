@@ -238,6 +238,7 @@ for page, snippet in COURSE_CARDS.items():
     # The English banner names both course groups, like the Italian one.
     text = read(path).replace("Intensivi, Super Intensivi, Tematici", "Intensivi, Super Intensivi")
     text = text.replace('elementor-size-default">Intensive</h1>', 'elementor-size-default">Intensive, Superintensive</h1>')
+    text = text.replace("<title>Intensive &#8211;", "<title>Intensive, Superintensive &#8211;")
     if 'class="ali-int"' not in text:
         m = COURSE_LIST.search(text)
         if not m:
