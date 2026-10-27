@@ -247,18 +247,21 @@ for page, snippet in COURSE_CARDS.items():
         text = text[:m.start()] + cards + text[section_end(text, m.start(), page):]
     write(path, text)
 
-# 5d. English Accademia page: the team cards in .github/snippets replace the
-# "Meet Our Team" sections, from the heading (525cf6a) to the last person
-# (a63c49f). The photos are in .github/files.
+# 5d. English Accademia page and Italian Location page: the team cards in
+# .github/snippets replace the "Meet Our Team" sections, from the heading
+# (525cf6a) to the last person (a63c49f). Both pages had the same English
+# block. The photos are in .github/files.
 TEAM_CARDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "snippets", "team-en.html")
-path = os.path.join(site, "en/accademia/index.html")
-if os.path.exists(path):
+for page in ["en/accademia/index.html", "location/index.html"]:
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
     text = read(path)
     if 'class="ali-team"' not in text:
         m = re.search(r'<section class="[^"]*elementor-element-525cf6a ', text)
         last = re.search(r'<section class="[^"]*elementor-element-a63c49f ', text)
         if not m or not last:
-            sys.exit("en/accademia: team sections 525cf6a..a63c49f not found")
+            sys.exit(f"{page}: team sections 525cf6a..a63c49f not found")
         text = text[:m.start()] + read(TEAM_CARDS) + text[section_end(text, last.start()):]
         write(path, text)
 
