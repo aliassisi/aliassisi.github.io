@@ -466,6 +466,27 @@ for path in text_files():
         text = text.replace("</head>", MAP_CSS + "</head>", 1)
     write(path, text)
 
+# 7b2. English Accademia page (994819), "The Location": size the photo
+# (carousel 7c69c22) like the carousel at the top of the page. Mirror its
+# column: 80px (30px on tablets) between text and photo, and no spacer
+# (c3275f7) above the photo, so it starts level with the text.
+LOCATION_CSS = """<style id="location-photo">
+@media(min-width:768px){
+.elementor-994819 .elementor-element.elementor-element-c3275f7{display:none}
+.elementor-994819 .elementor-element.elementor-element-2f629cb > .elementor-element-populated{padding-inline-start:30px}
+}
+@media(min-width:1025px){
+.elementor-994819 .elementor-element.elementor-element-8a05863 > .elementor-element-populated{margin-inline-end:0}
+.elementor-994819 .elementor-element.elementor-element-2f629cb > .elementor-element-populated{padding-inline-start:80px}
+}
+</style>
+"""
+path = os.path.join(site, "en/accademia/index.html")
+if os.path.exists(path):
+    text = read(path)
+    if 'id="location-photo"' not in text:
+        write(path, text.replace("</head>", LOCATION_CSS + "</head>", 1))
+
 # 7c. The address is Via Santa Maria delle Rose, 17 - 06081 Assisi. Via Tiberio
 # d'Assisi, 10 stays only in the "© ... | p.iva" footer line.
 ADDRESS_FIXES = [
