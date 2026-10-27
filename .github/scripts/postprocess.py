@@ -706,6 +706,17 @@ for page in ("index.html", "en/home/index.html"):
         text = text.replace("</head>", HOME_CARDS_CSS + "</head>", 1)
         write(path, text)
 
+# 7l. English Accommodation page: drop the old text with the flat prices
+# (section 1ef42f6). The price table under it stays.
+path = os.path.join(site, "en/accommodation/index.html")
+if os.path.exists(path):
+    text = read(path)
+    m = re.search(r'[ 	]*<section class="[^"]*elementor-element-1ef42f6 ', text)
+    if m:
+        write(path, text[:m.start()] + text[section_end(text, m.start(), "en/accommodation/index.html"):])
+    else:
+        print("en/accommodation/index.html: section 1ef42f6 not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
