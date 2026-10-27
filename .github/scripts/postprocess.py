@@ -373,25 +373,6 @@ for page in ("index.html", "en/home/index.html"):
         print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
     write(path, text)
 
-# 6b. English home and Method: new captions under the Group and Group&Private boxes.
-HOME_EN_CAPTIONS = {
-    "Group Italian course held every morning the classic way to build a strong foundation fast or deepening what you already know":
-        "Italian in a small group, every morning — to build a solid foundation or deepen what you already know.",
-    "The courses combines the advantages of group and individual work":
-        "Small-group work combined with individual lessons.",
-}
-for page in ("en/home/index.html", "en/method/index.html"):
-    path = os.path.join(site, page)
-    if not os.path.exists(path):
-        continue
-    text = read(path)
-    for old, new in HOME_EN_CAPTIONS.items():
-        if old in text:
-            text = text.replace(old, new)
-        elif new not in text:
-            print(f"{page}: caption not found: {old[:40]}")
-    write(path, text)
-
 # 7a. Method page, "In italiano. Il corso": the covers image sits in the same
 # line as the text that follows it. Put the text in its own paragraph under
 # the image, with some space between them.
@@ -678,6 +659,49 @@ if os.path.exists(path):
         write(path, text.replace(old, old.replace("42px", "24px")))
     else:
         print("post-994812.css: 42px In Italiano title not found")
+
+# 7j. English home and Method: new captions under the Group and Group&Private boxes.
+HOME_EN_CAPTIONS = {
+    "Group Italian course held every morning the classic way to build a strong foundation fast or deepening what you already know":
+        "Italian in a small group, every morning — to build a solid foundation or deepen what you already know.",
+    "The courses combines the advantages of group and individual work":
+        "Small-group work combined with individual lessons.",
+}
+for page in ("en/home/index.html", "en/method/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = read(path)
+    for old, new in HOME_EN_CAPTIONS.items():
+        if old in text:
+            text = text.replace(old, new)
+        elif new not in text:
+            print(f"{page}: caption not found: {old[:40]}")
+    write(path, text)
+
+# 7k. Home course boxes (rows 7332770 and 9605fca): the white boxes end at
+# different heights because their captions have different lengths, and the
+# configurator frame (4469e26) is shorter and sits 10px lower. Stretch the boxes
+# and the frame to the full row height, so they all start and end together.
+# The plus buttons line up at the bottom. Phones keep one box per row.
+HOME_CARDS_CSS = """<style id="home-cards">
+@media(min-width:768px){
+:is(.elementor-element-7332770,.elementor-element-9605fca) > .elementor-container > .elementor-column > .elementor-widget-wrap{flex-direction:column;flex-wrap:nowrap;padding:0}
+:is(.elementor-element-7332770,.elementor-element-9605fca) :is(.elementor-widget-image-box,.elementor-widget-call-to-action){flex-grow:1;display:flex;flex-direction:column}
+:is(.elementor-element-7332770,.elementor-element-9605fca) :is(.elementor-widget-image-box,.elementor-widget-call-to-action) > .elementor-widget-container{flex-grow:1}
+}
+</style>
+"""
+for page in ("index.html", "en/home/index.html"):
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = read(path)
+    if "elementor-element-9605fca " not in text:
+        print(f"{page}: course box row 9605fca not found")
+    if 'id="home-cards"' not in text:
+        text = text.replace("</head>", HOME_CARDS_CSS + "</head>", 1)
+        write(path, text)
 
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
