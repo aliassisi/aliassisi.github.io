@@ -262,23 +262,28 @@ if os.path.exists(path):
         text = text[:m.start()] + read(TEAM_CARDS) + text[section_end(text, last.start()):]
         write(path, text)
 
-# 5e. Programmi page: the program cards in .github/snippets replace the
+# 5e. Programs pages: the program cards in .github/snippets replace the
 # 1, 2 and 4 week lists (f61fa66). The "Caratteristiche del corso" section
-# (c2174f0) goes away, with the spacers above and below it (fc18919,
-# 8e69e7b): the cards set their own top space.
-PROGRAM_CARDS = os.path.join(SNIPPETS, "programmi-cards.html")
-path = os.path.join(site, "product/programs/index.html")
-if os.path.exists(path):
+# (c2174f0, a2ccb96 in English) goes away, with the spacers above and below
+# it (fc18919, 8e69e7b): the cards set their own top space.
+PROGRAM_CARDS = {
+    "product/programs/index.html": "programmi-cards.html",
+    "en/product/programs/index.html": "programs-en-cards.html",
+}
+for page, snippet in PROGRAM_CARDS.items():
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
     text = read(path)
     if 'id="prog-1"' not in text:
         m = re.search(r'<section class="[^"]*elementor-element-f61fa66 ', text)
         if not m:
-            sys.exit("product/programs: program section f61fa66 not found")
-        text = text[:m.start()] + read(PROGRAM_CARDS) + text[section_end(text, m.start()):]
-    for gone in ("fc18919", "c2174f0", "8e69e7b"):
+            sys.exit(f"{page}: program section f61fa66 not found")
+        text = text[:m.start()] + read(os.path.join(SNIPPETS, snippet)) + text[section_end(text, m.start(), page):]
+    for gone in ("fc18919", "c2174f0", "a2ccb96", "8e69e7b"):
         m = re.search(r'<section class="[^"]*elementor-element-' + gone + " ", text)
         if m:
-            text = text[:m.start()] + text[section_end(text, m.start()):]
+            text = text[:m.start()] + text[section_end(text, m.start(), page):]
     write(path, text)
 
 # 5f. Neumann University runs a summer program, not four weeks: fix the
