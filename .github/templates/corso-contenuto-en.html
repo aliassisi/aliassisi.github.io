@@ -1,0 +1,154 @@
+<!--
+English main content of a course page, for use inside its WordPress page.
+.github/scripts/build_corsi.py fills each {{name}} from data/ali.json and puts
+the result in place of the content of the page's <div id="main">. Styles are in
+ali-course.css, linked from the page head. This comment does not appear in the pages.
+-->
+<div class="ali-course">
+<div class="hero">
+    <div class="wrap">
+      <h1>{{nome}}</h1>
+      <p>{{hero}}</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>Course features</h2>
+      <dl class="facts">
+        <div><dt>Duration</dt><dd>{{ore}} lessons a week<small>{{durata_nota}}</small></dd></div>
+        <div><dt>Levels</dt><dd>{{livelli}}</dd></div>
+        <div><dt>Students</dt><dd>min. {{studenti_min}}, max. {{studenti_max}}<small>{{studenti_media}} on average</small></dd></div>
+        <div><dt>Course materials included</dt><dd>{{materiale}}<small>{{materiale_nota}}</small></dd></div>
+      </dl>
+      <div class="week" role="table" aria-label="A typical week: {{ore}} lessons of 50 minutes">
+        <div role="row" style="display:contents"><div class="rl"></div><div class="wd" role="columnheader"><span class="long">Monday</span><span class="short">Mon</span></div><div class="wd" role="columnheader"><span class="long">Tuesday</span><span class="short">Tue</span></div><div class="wd" role="columnheader"><span class="long">Wednesday</span><span class="short">Wed</span></div><div class="wd" role="columnheader"><span class="long">Thursday</span><span class="short">Thu</span></div><div class="wd" role="columnheader"><span class="long">Friday</span><span class="short">Fri</span></div></div>
+        <div role="row" style="display:contents"><div class="rl">Morning</div>{{riga_mattina}}</div>
+        <div role="row" style="display:contents"><div class="rl">Afternoon</div>{{riga_pomeriggio}}</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold">
+        <summary><h2>Details</h2></summary>
+        <div class="fold-body narrow-l">
+{{dettagli}}
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>The fee includes</h2></summary>
+      <ul class="cols fold-body">
+        <li>Online placement test before the course starts</li>
+        <li>Certificate of attendance</li>
+        <li>{{ore}} lessons a week
+          <small>Italian lessons · lessons outside the classroom (conversation, visits) · Italian design and craft workshops · pronunciation lessons</small></li>
+        <li>Certificate of evaluation based on the European framework, with credits</li>
+        <li><a class="inl" href="https://aliassisi.github.io/en/method/index.html">Course materials</a> and access to the Moodle platform</li>
+        <li>Preparation for the CILS and Roma Tre certification exams</li>
+        <li>Activities, workshops and facilities: <a class="inl" href="#student-life">see Student life</a></li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section id="student-life">
+    <div class="wrap">
+      <h2>Student life</h2>
+      <p class="narrow-l"><strong>The course fee also includes activities, facilities and visits</strong></p>
+      <div class="rhythm">
+        <div>
+          <h3>Every week</h3>
+          <ul>
+            <li>A lesson outside the classroom: conversation and guided visits in Assisi</li>
+            <li>A pronunciation lesson</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Every two weeks</h3>
+          <ul>
+            <li>A workshop of your choice: manuscripts and illumination, bookbinding, Italian design and craft, cooking</li>
+          </ul>
+        </div>
+        <div>
+          <h3>At the Academy</h3>
+          <ul>
+            <li>Music room with piano, video library, library</li>
+            <li>Academy card: discounts in restaurants and shops, free entry to 4 museums in Assisi</li>
+            <li>Free wi-fi</li>
+            <li>Help with visas and accommodation</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:22px"><a class="inl" href="https://aliassisi.github.io/en/school-activity/index.html">All scheduled activities and workshops</a></p>
+    </div>
+  </section>
+
+  <section id="calendario">
+    <div class="wrap">
+      <h2>Start dates</h2>
+      <p class="narrow-l">Courses start on a Monday, for all levels. These are the start dates.</p>
+      <div class="cal">
+        <div>
+{{date_inizio}}
+        </div>
+        <div>
+          <details class="fold sub">
+          <summary><h3>Closing days</h3></summary>
+          <dl class="closed fold-body">
+{{chiusure}}
+          </dl>
+          </details>
+        </div>
+      </div>
+      <p style="margin-top:20px;font-size:.95rem">Want to start on a Monday that is not listed? <a class="inl" href="mailto:info@aliassisi.it">Write to us</a>. The placement test and the interview take place online, before the course starts.</p>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Fees</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr><th rowspan="2">Lessons a week</th><th class="grp" colspan="{{n_tariffe}}">Price per week</th><th rowspan="2">Enrol</th></tr>
+          <tr>{{intestazione_prezzi}}</tr></thead>
+          <tbody><tr>
+            <td>{{ore}} lessons<small>{{nota_prezzi}}</small></td>
+            {{celle_prezzi}}
+            <td><a class="btn small" href="{{iscrizione}}">Enrol</a></td>
+          </tr></tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:.9rem">There are no hidden fees, and books are included.</p>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="https://aliassisi.github.io/en/configuratore/index.html">Work out dates and total cost</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="{{iscrizione}}">Enrolment form</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="stay" style="margin-top:0">
+        <h3>Need accommodation?</h3>
+        <p>We can help you find a flat, a monastery or a hotel a short walk from the Academy.</p>
+        <a class="inl" href="https://aliassisi.github.io/en/accommodation/index.html">See how we can help</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Other courses</h2>
+      <ul class="others">
+{{altri_corsi}}
+      </ul>
+    </div>
+  </section>
+</div>

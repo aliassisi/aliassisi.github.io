@@ -6,9 +6,13 @@ Usage:
 
 Each course page keeps its crawled WordPress page: header, menu, footer,
 language links, global CSS and JS. Only the content of <div id="main"> is
-replaced, with .github/templates/corso-contenuto.html filled from the
-course's block in SITE_DIR/data/ali.json. The page head gets a link to
-assets/ali/ali-course.css (source: .github/templates/ali-course.css).
+replaced, with a template filled from the course's block in
+SITE_DIR/data/ali.json:
+  Italian pages ("pagine"):       .github/templates/corso-contenuto.html
+  English pages ("en"."pagine"):  .github/templates/corso-contenuto-en.html
+Fields in a course's "en" block replace the Italian ones for English pages.
+The page head gets a link to assets/ali/ali-course.css
+(source: .github/templates/ali-course.css).
 
 Start dates before today are left out, and so are closures that have ended.
 --oggi sets "today", for tests.
@@ -28,12 +32,38 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES = os.path.join(HERE, "..", "templates")
 CSS_OUT = os.path.join("assets", "ali", "ali-course.css")
 INIZIO, FINE = "<!-- ali-course -->", "<!-- /ali-course -->"
-
-MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
-        "agosto", "settembre", "ottobre", "novembre", "dicembre"]
-GIORNI = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì"]
-NUMERI = {1: "una", 2: "due", 3: "tre", 4: "quattro", 5: "cinque", 6: "sei"}
 SLOT_MATTINA = 4
+
+LINGUE = {
+    "it": {
+        "modello": "corso-contenuto.html",
+        "mesi": ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
+                 "agosto", "settembre", "ottobre", "novembre", "dicembre"],
+        "giorni": ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì"],
+        "lezione": "lezione", "lezioni": "lezioni",
+        "libero": "libero", "mattina": "mattina", "pomeriggio": "pomeriggio",
+        "al_mattino": " al mattino", "ind_pomeriggio": " individuali al pomeriggio",
+        "mix": "{g} di gruppo + {i} individuali",
+        "durata": "ogni lezione dura 50 minuti", "durata_mix": "{mix}, da 50 minuti",
+        "prezzi": "di gruppo · 50 minuti ciascuna", "prezzi_mix": "{mix} · 50 minuti ciascuna",
+        "sett": "sett.", "sett_plur": "sett.",
+        "nessuna_data": "Nuove date in arrivo. Scrivici per sapere quando inizia il prossimo corso.",
+    },
+    "en": {
+        "modello": "corso-contenuto-en.html",
+        "mesi": ["January", "February", "March", "April", "May", "June", "July",
+                 "August", "September", "October", "November", "December"],
+        "giorni": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "lezione": "lesson", "lezioni": "lessons",
+        "libero": "free", "mattina": "morning", "pomeriggio": "afternoon",
+        "al_mattino": " in the morning", "ind_pomeriggio": " one-to-one in the afternoon",
+        "mix": "{g} group + {i} one-to-one",
+        "durata": "each lesson lasts 50 minutes", "durata_mix": "{mix}, 50 minutes each",
+        "prezzi": "group · 50 minutes each", "prezzi_mix": "{mix} · 50 minutes each",
+        "sett": "wk", "sett_plur": "wks",
+        "nessuna_data": "New dates coming soon. Write to us to find out when the next course starts.",
+    },
+}
 
 
 def esc(s):
@@ -44,45 +74,34 @@ def data(s):
     return datetime.date.fromisoformat(s)
 
 
-def lezioni(n):
-    return f"{n} lezione" if n == 1 else f"{n} lezioni"
+def lezioni(n, L):
+    return f"{n} {L['lezione'] if n == 1 else L['lezioni']}"
 
 
-def cella(giorno, n, slot, quando):
+def cella(giorno, n, slot, quando, L):
     if not n:
-        return (f'<div class="pm" role="cell" aria-label="{giorno.capitalize()}: '
-                f'{quando} libero">libero</div>')
+        return (f'<div class="pm" role="cell" aria-label="{giorno[0].upper() + giorno[1:]}: '
+                f'{L[quando]} {L["libero"]}">{L["libero"]}</div>')
     bars = '<i class="on"></i>' * n + "<i></i>" * (slot - n)
-    tipo = " al mattino" if quando == "mattina" else " individuali al pomeriggio"
-    return (f'<div class="am" role="cell" aria-label="{giorno.capitalize()}: '
-            f'{lezioni(n)}{tipo}"><span class="bars">{bars}</span>'
-            f'<span class="n">{lezioni(n)}</span></div>')
+    tipo = L["al_mattino"] if quando == "mattina" else L["ind_pomeriggio"]
+    return (f'<div class="am" role="cell" aria-label="{giorno[0].upper() + giorno[1:]}: '
+            f'{lezioni(n, L)}{tipo}"><span class="bars">{bars}</span>'
+            f'<span class="n">{lezioni(n, L)}</span></div>')
 
 
-def riga(conti, quando):
+def riga(conti, quando, L):
     slot = max([SLOT_MATTINA if quando == "mattina" else 0] + conti)
-    return "".join(cella(g, n, slot, quando) for g, n in zip(GIORNI, conti))
+    return "".join(cella(g, n, slot, quando, L) for g, n in zip(L["giorni"], conti))
 
 
-def giorni_frase(conti):
-    """[4,4,4,4,2] -> 'quattro al giorno da lunedì a giovedì, due il venerdì'"""
-    parti = []
-    for n in dict.fromkeys(c for c in conti if c):
-        idx = [i for i, c in enumerate(conti) if c == n]
-        if len(idx) > 1 and idx == list(range(idx[0], idx[-1] + 1)):
-            parti.append(f"{NUMERI[n]} al giorno da {GIORNI[idx[0]]} a {GIORNI[idx[-1]]}")
-        else:
-            parti.append(NUMERI[n] + " " + " e ".join("il " + GIORNI[i] for i in idx))
-    return ", ".join(parti)
 
-
-def date_inizio(date, oggi):
+def date_inizio(date, oggi, L):
     anni = {}
     for d in date:
         if d >= oggi:
-            anni.setdefault(d.year, []).append(f"<li>{d.day} {MESI[d.month - 1]}</li>")
+            anni.setdefault(d.year, []).append(f"<li>{d.day} {L['mesi'][d.month - 1]}</li>")
     if not anni:
-        return '          <p>Nuove date in arrivo. Scrivici per sapere quando inizia il prossimo corso.</p>'
+        return f"          <p>{L['nessuna_data']}</p>"
     righe = []
     for anno, li in anni.items():
         righe.append(f"          <h3>{anno}</h3>")
@@ -96,22 +115,24 @@ def date_inizio(date, oggi):
     return "\n".join(righe)
 
 
-def periodo(a, b):
+def periodo(a, b, L):
+    M = L["mesi"]
     if a == b:
-        return f"{a.day} {MESI[a.month - 1]}"
+        return f"{a.day} {M[a.month - 1]}"
     if (a.year, a.month) == (b.year, b.month):
-        return f"{a.day}–{b.day} {MESI[a.month - 1]}"
+        return f"{a.day}–{b.day} {M[a.month - 1]}"
     if a.year == b.year:
-        return f"{a.day} {MESI[a.month - 1]} – {b.day} {MESI[b.month - 1]}"
-    return f"{a.day} {MESI[a.month - 1]} {a.year} – {b.day} {MESI[b.month - 1]} {b.year}"
+        return f"{a.day} {M[a.month - 1]} – {b.day} {M[b.month - 1]}"
+    return f"{a.day} {M[a.month - 1]} {a.year} – {b.day} {M[b.month - 1]} {b.year}"
 
 
-def chiusure(lista, oggi):
+def chiusure(lista, oggi, lingua):
+    L = LINGUE[lingua]
     anni = {}
     for c in lista:
         a, b = data(c["dal"]), data(c["al"])
         if b >= oggi:
-            anni.setdefault(a.year, []).append(f"{periodo(a, b)}, {esc(c['it'])}")
+            anni.setdefault(a.year, []).append(f"{periodo(a, b, L)}, {esc(c[lingua])}")
     righe = []
     for anno, voci in anni.items():
         righe.append(f"            <dt>{anno}</dt>")
@@ -119,46 +140,44 @@ def chiusure(lista, oggi):
     return "\n".join(righe)
 
 
-def contenuto(modello, ali, c, oggi):
+def contenuto(modello, ali, c, oggi, lingua):
+    L = LINGUE[lingua]
     if sum(c["mattina"]) + sum(c["pomeriggio"]) != c["ore"]:
         sys.exit(f"{c['id']}: ore = {c['ore']}, ma mattina + pomeriggio fanno "
                  f"{sum(c['mattina']) + sum(c['pomeriggio'])}")
     tariffe = ali["tariffe"][c["tariffa"]]
     ind = sum(c["pomeriggio"])
-    mix = f"{sum(c['mattina'])} di gruppo + {ind} individuali" if ind else ""
-    nota = f"{lezioni(c['ore'])} da 50 minuti: {giorni_frase(c['mattina'])}"
-    if mix:
-        nota = (f"{sum(c['mattina'])} lezioni di gruppo al mattino: {giorni_frase(c['mattina'])}. "
-                f"{ind} lezioni individuali al pomeriggio: "
-                f"{giorni_frase(c['pomeriggio'])}. Ogni lezione dura 50 minuti")
+    mix = L["mix"].format(g=sum(c["mattina"]), i=ind) if ind else ""
+    altri = [{**o, **o.get(lingua, {})} if lingua != "it" else o for o in ali["altri_corsi"]]
     valori = {
         "nome": esc(c["nome"]),
         "hero": esc(c["hero"]),
         "ore": str(c["ore"]),
-        "durata_nota": f"{mix}, da 50 minuti" if mix else "ogni lezione dura 50 minuti",
+        "durata_nota": L["durata_mix"].format(mix=mix) if mix else L["durata"],
         "livelli": esc(c["livelli"]),
         "studenti_min": str(c["studenti_min"]),
         "studenti_max": str(c["studenti_max"]),
         "studenti_media": esc(c["studenti_media"]),
         "materiale": esc(c["materiale"]),
         "materiale_nota": esc(c["materiale_nota"]),
-        "riga_mattina": riga(c["mattina"], "mattina"),
-        "riga_pomeriggio": riga(c["pomeriggio"], "pomeriggio"),
-        "nota_settimana": nota + ".",
+        "riga_mattina": riga(c["mattina"], "mattina", L),
+        "riga_pomeriggio": riga(c["pomeriggio"], "pomeriggio", L),
         "dettagli": "\n".join(f"          <p>{esc(p)}</p>" for p in c["dettagli"]),
-        "date_inizio": date_inizio(sorted(data(d) for d in ali["date_inizio"]), oggi),
-        "chiusure": chiusure(ali["chiusure"], oggi),
+        "date_inizio": date_inizio(sorted(data(d) for d in ali["date_inizio"]), oggi, L),
+        "chiusure": chiusure(ali["chiusure"], oggi, lingua),
         "intestazione_prezzi": "".join(
-            f'<th class="num">{t["from"]}{"" if t["from"] == t["to"] else "–" + str(t["to"])} sett.</th>'
+            f'<th class="num">{t["from"]}{"" if t["from"] == t["to"] else "–" + str(t["to"])} '
+            f'{L["sett"] if t["to"] == 1 else L["sett_plur"]}</th>'
             for t in tariffe),
-        "nota_prezzi": f"{mix} · 50 minuti ciascuna" if mix else "di gruppo · 50 minuti ciascuna",
+        "n_tariffe": str(len(tariffe)),
+        "nota_prezzi": L["prezzi_mix"].format(mix=mix) if mix else L["prezzi"],
         "celle_prezzi": "".join(f'<td class="num">{t["ppw"]} €</td>' for t in tariffe),
         # One address, used by both enrolment buttons.
         "iscrizione": ali["modulo_iscrizione"] + quote(c["voce_modulo"], safe=""),
         "altri_corsi": "\n".join(
             f'        <li><a href="https://aliassisi.github.io/{o["url"]}/index.html">'
             f'<b>{esc(o["nome"])}</b><small>{"<br>".join(esc(x) for x in o["nota"])}</small></a></li>'
-            for o in ali["altri_corsi"]),
+            for o in altri),
     }
     return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
 
@@ -180,6 +199,12 @@ def in_wordpress(s, blocco_html, css_href, p):
     return s
 
 
+def leggi_modello(nome):
+    with open(os.path.join(TEMPLATES, nome), encoding="utf-8") as f:
+        # The template starts with a comment for editors. Leave it out of the pages.
+        return re.sub(r"\A<!--.*?-->\n", "", f.read(), flags=re.S)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("site")
@@ -188,9 +213,7 @@ def main():
 
     with open(os.path.join(args.site, "data", "ali.json"), encoding="utf-8") as f:
         ali = json.load(f)
-    with open(os.path.join(TEMPLATES, "corso-contenuto.html"), encoding="utf-8") as f:
-        # The template starts with a comment for editors. Leave it out of the pages.
-        modello = re.sub(r"\A<!--.*?-->\n", "", f.read(), flags=re.S)
+    modelli = {lingua: leggi_modello(L["modello"]) for lingua, L in LINGUE.items()}
 
     css = os.path.join(args.site, CSS_OUT)
     os.makedirs(os.path.dirname(css), exist_ok=True)
@@ -200,15 +223,19 @@ def main():
         f.write(testo)
 
     for c in ali["corsi"]:
-        blocco = contenuto(modello, ali, c, args.oggi)
-        for p in c["pagine"]:
-            dest = os.path.join(args.site, p, "index.html")
-            with open(dest, encoding="utf-8") as f:
-                s = f.read()
-            href = os.path.relpath(css, os.path.dirname(dest)).replace(os.sep, "/")
-            with open(dest, "w", encoding="utf-8", newline="\n") as f:
-                f.write(in_wordpress(s, blocco, href, p))
-            print(f"wrote {p}/index.html")
+        versioni = [("it", c)]
+        if "en" in c:
+            versioni.append(("en", {**c, **c["en"]}))
+        for lingua, corso in versioni:
+            blocco = contenuto(modelli[lingua], ali, corso, args.oggi, lingua)
+            for p in corso["pagine"]:
+                dest = os.path.join(args.site, p, "index.html")
+                with open(dest, encoding="utf-8") as f:
+                    s = f.read()
+                href = os.path.relpath(css, os.path.dirname(dest)).replace(os.sep, "/")
+                with open(dest, "w", encoding="utf-8", newline="\n") as f:
+                    f.write(in_wordpress(s, blocco, href, p))
+                print(f"wrote {p}/index.html ({lingua})")
 
 
 if __name__ == "__main__":
