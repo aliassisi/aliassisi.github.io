@@ -17,12 +17,12 @@ EN = "en/method/index.html"
 
 
 def read(path):
-    with open(path, encoding="utf-8", errors="surrogateescape") as f:
+    with open(path, encoding="utf-8", errors="surrogateescape", newline="") as f:
         return f.read()
 
 
 def write(path, text):
-    with open(path, "w", encoding="utf-8", errors="surrogateescape") as f:
+    with open(path, "w", encoding="utf-8", errors="surrogateescape", newline="") as f:
         f.write(text)
 
 
@@ -119,7 +119,8 @@ for rel, names in CAPTIONS.items():
     pages[rel] = text
 
 for rel, text in pages.items():
-    write(os.path.join(site, rel), text)
+    if text != read(os.path.join(site, rel)):
+        write(os.path.join(site, rel), text)
 
 changed = 0
 for dirpath, _, files in os.walk(site):
