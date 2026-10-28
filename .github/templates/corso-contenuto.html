@@ -26,7 +26,6 @@ ali-course.css, linked from the page head. This comment does not appear in the p
         <div role="row" style="display:contents"><div class="rl">Mattina</div>{{riga_mattina}}</div>
         <div role="row" style="display:contents"><div class="rl">Pomeriggio</div>{{riga_pomeriggio}}</div>
       </div>
-      <p class="weeknote">{{nota_settimana}}</p>
     </div>
   </section>
 
@@ -117,7 +116,8 @@ ali-course.css, linked from the page head. This comment does not appear in the p
       <h2>Costi</h2>
       <div class="tablewrap">
         <table class="prices">
-          <thead><tr><th>Lezioni a settimana</th>{{intestazione_prezzi}}<th>Iscriviti</th></tr></thead>
+          <thead><tr><th rowspan="2">Lezioni a settimana</th><th class="grp" colspan="{{n_tariffe}}">Prezzo per settimana</th><th rowspan="2">Iscriviti</th></tr>
+          <tr>{{intestazione_prezzi}}</tr></thead>
           <tbody><tr>
             <td>{{ore}} lezioni<small>{{nota_prezzi}}</small></td>
             {{celle_prezzi}}
@@ -125,7 +125,7 @@ ali-course.css, linked from the page head. This comment does not appear in the p
           </tr></tbody>
         </table>
       </div>
-      <p style="margin-top:14px;font-size:.9rem">Prezzi per settimana. Non ci sono tasse nascoste e i libri sono inclusi.</p>
+      <p style="margin-top:14px;font-size:.9rem">Non ci sono tasse nascoste e i libri sono inclusi.</p>
       <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
         <a class="btn" href="https://aliassisi.github.io/configuratore/index.html">Calcola date e costo totale</a>
         <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="{{iscrizione}}">Modulo d’iscrizione</a>

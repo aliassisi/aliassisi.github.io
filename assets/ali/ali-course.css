@@ -55,13 +55,15 @@
 .ali-course .week .bars i.on{background:var(--gold);border-color:var(--gold)}
 .ali-course .week .n{font-size:.85rem}
 .ali-course .week .pm{border:1px dashed var(--ink);padding:12px 8px;text-align:center;font-size:.85rem;opacity:.9;display:flex;align-items:center;justify-content:center}
-.ali-course .weeknote{margin:10px 0 0;font-size:.9rem}
-@media(max-width:620px){.ali-course .week{grid-template-columns:4.6rem repeat(5,1fr);gap:4px}
+@media(max-width:620px){.ali-course .week{grid-template-columns:4.6rem repeat(5,minmax(0,1fr));gap:4px}
+.ali-course .week .am,.ali-course .week .pm{padding-left:4px;padding-right:4px}
 .ali-course .week .wd .long{display:none}
 .ali-course .week .wd .short{display:inline}
 .ali-course .week .n{font-size:.75rem}
 .ali-course .week .rl{font-size:1rem}
 .ali-course .week .pm{font-size:.75rem}}
+@media(max-width:420px){.ali-course .week .am,.ali-course .week .pm{padding-left:2px;padding-right:2px}
+.ali-course .week .n,.ali-course .week .pm{font-size:.65rem}}
 .ali-course .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--deep);border-bottom:1px solid var(--line);margin:0}
 .ali-course .facts div{padding:18px 20px 18px 0}
 .ali-course .facts dt{font-size:.85rem;opacity:.8}
@@ -94,6 +96,8 @@
 .ali-course .fold.sub .fold-body{margin-top:14px}
 .ali-course .narrow-l{max-width:860px}
 .ali-course .prices th.num,.ali-course .prices td.num{font-size:1.05rem}
+.ali-course .prices th.grp{text-align:center;border-bottom:1px solid var(--line);padding-bottom:6px}
+.ali-course .prices thead th[rowspan]{vertical-align:bottom}
 .ali-course .cta{margin-top:28px}
 .ali-course .stay{margin-top:48px;padding-top:24px;border-top:2px solid var(--deep);max-width:860px}
 .ali-course .stay h3{font-size:1.7rem;font-weight:400}

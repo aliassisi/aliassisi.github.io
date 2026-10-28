@@ -38,6 +38,8 @@ root. English pages are under `en/`. There is no backend.
   `product/corso-di-inglese-standard`) comes from `data/ali.json` and
   `.github/templates/corso-contenuto.html`. Header, menu and footer stay
   WordPress. Run `python3 -I .github/scripts/build_corsi.py .` after editing.
+- English: `en/product/standard-italian-course` uses `corso-contenuto-en.html`.
+  The course's `"en"` block in `data/ali.json` holds the English texts and pages.
 - Styles: `.github/templates/ali-course.css`, copied to `assets/ali/`, limited to
   `.ali-course`. Its reset block undoes theme rules on tables, `dt`, `small`, links.
 
