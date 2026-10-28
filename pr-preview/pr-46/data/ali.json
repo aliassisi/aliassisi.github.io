@@ -96,6 +96,7 @@
       "studenti_max": 12,
       "studenti_media": "6–8",
       "pagine": ["product/super-intensive-italian"],
+      "contenitore": "wordpress",
       "url_it": "product/super-intensive-italian",
       "url_en": "en/product/super-intensive-italian",
       "menu": "intensivi",
