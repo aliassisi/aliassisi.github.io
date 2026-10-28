@@ -60,6 +60,9 @@ MERGE = {
     "product/private.html": "product/private/index.html",
     "en/product/private.html": "en/product/private/index.html",
     "product-category/intensivi.html": "product-category/intensivi/index.html",
+    # An old copy of the English intensive list, without the course cards.
+    # The English menus link to it.
+    "product-category/intensive-en/index.html": "en/product-category/intensive-en/index.html",
 }
 
 # 3. Old links to the WordPress site that still have a page here.
@@ -314,6 +317,37 @@ for page, snippet in METHOD_OVERVIEW.items():
             sys.exit(f"{page}: section 4ef78e6c not found")
         text = text[:m.start()] + read(os.path.join(SNIPPETS, snippet)) + text[m.start():]
         write(path, text)
+
+# 5g. How to apply pages: WordPress has the two step blocks the wrong way
+# round (English text on the Italian page). The blocks in .github/snippets
+# replace them. The old toggles and their photo (e5c35fa) and the subtitle
+# under the banner title (2f06002) go away.
+APPLY = {"how-to-apply/index.html": "how-to-apply-it.html", "en/how-to-apply/index.html": "how-to-apply-en.html"}
+APPLY_BLOCK = re.compile(r'<div class="apply">.*?</style>\s*</div>', re.S)
+APPLY_SUBTITLE = re.compile(
+    r'<div class="elementor-element elementor-element-2f06002 .*?</h2>\s*</div>\s*</div>\s*', re.S
+)
+for page, snippet in APPLY.items():
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
+    text = read(path)
+    if "<!-- ALI Assisi · " not in text:
+        text, n = APPLY_BLOCK.subn(lambda _m, s=snippet: read(os.path.join(SNIPPETS, s)).strip(), text, count=1)
+        if not n:
+            sys.exit(f"{page}: step block (class apply) not found")
+    m = re.search(r'<section class="[^"]*elementor-element-e5c35fa ', text)
+    if m:
+        text = text[:m.start()] + text[section_end(text, m.start(), page):]
+    text = APPLY_SUBTITLE.sub("", text, count=1)
+    text = text.replace("How to apply How to apply", "How to apply")
+    write(path, text)
+
+# 5h. Programs page: typo in the call to action.
+for page in ("product/packages/index.html", "en/product/packages/index.html"):
+    path = os.path.join(site, page)
+    if os.path.exists(path):
+        write(path, read(path).replace("PALIAMO DEL TUO PROGRAMMA", "PARLIAMO DEL TUO PROGRAMMA"))
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
