@@ -1,0 +1,61 @@
+<!-- ALI Assisi · Widget Metodo (EN) -->
+<style>
+.ali-met{--navy:#3b4a8a;--giallo:#ffbf00;--linea:#cfc8bd;color:var(--navy);max-width:1320px;margin:0 auto;padding:56px 30px 24px;line-height:1.65}
+.ali-met *{box-sizing:border-box}
+.ali-met p{margin:0}
+.ali-met h2,.ali-met h3{color:var(--navy);font-weight:400;margin:0}
+.ali-met .motto{font-size:clamp(26px,4vw,34px);line-height:1.25;margin:0 0 18px}
+.ali-met .motto em{font-style:italic;border-bottom:3px solid var(--giallo)}
+.ali-met .intro{font-size:1.1em;max-width:720px;margin:0 0 44px}
+.ali-met .steps{margin:0 0 44px;padding:0;counter-reset:st}
+.ali-met details{position:relative;counter-increment:st;padding:0 0 0 68px}
+.ali-met details:not(:last-child)::after{content:"";position:absolute;left:21px;top:46px;bottom:-2px;width:2px;background:var(--linea)}
+.ali-met summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;min-height:44px;padding:0 0 28px}
+.ali-met summary::-webkit-details-marker{display:none}
+.ali-met summary::before{content:counter(st);position:absolute;left:0;top:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:2px solid var(--navy);border-radius:50%;font-size:18px;font-weight:600;background:transparent;transition:.2s}
+.ali-met details[open] summary::before{background:var(--navy);color:#fff}
+.ali-met summary h3{flex:1;font-size:1.3em;line-height:1.3}
+.ali-met .tg{flex:0 0 34px;height:34px;border-radius:50%;border:1px solid var(--navy);display:flex;align-items:center;justify-content:center;transition:.2s}
+.ali-met .tg::before{content:"+";font-size:20px;line-height:1;transition:transform .2s}
+.ali-met summary:hover .tg{background:var(--giallo);border-color:var(--giallo)}
+.ali-met details[open] .tg{background:var(--giallo);border-color:var(--giallo)}
+.ali-met details[open] .tg::before{transform:rotate(45deg)}
+.ali-met summary:focus-visible{outline:2px solid var(--giallo);outline-offset:4px}
+.ali-met .bd{margin:-14px 0 0;padding:0 50px 30px 0}
+.ali-met .bd p{max-width:720px}
+.ali-met .end{background:#fff;border-left:4px solid var(--giallo);padding:24px 28px;font-size:1.08em}
+.ali-met .end a{color:var(--navy);text-decoration:underline;text-decoration-color:var(--giallo);text-decoration-thickness:2px;text-underline-offset:3px}
+.ali-met .end a:hover{color:var(--navy);background:rgba(255,191,0,.18)}
+@media(max-width:767px){.ali-met{padding:40px 20px 24px}.ali-met details{padding-left:56px}.ali-met summary::before{width:38px;height:38px;font-size:16px}.ali-met details:not(:last-child)::after{left:18px;top:40px}.ali-met .bd{padding-right:0}}
+</style>
+<div class="ali-met">
+  <h2 class="motto"><em>Learning a language is a science; speaking it is an art</em>.</h2>
+  <p class="intro">Every book we use in class was written by us. They grew out of research in applied linguistics and out of our lessons in Assisi: from students' mistakes, from the questions that have kept coming back for more than thirty years. The course we use today, <em>In italiano. Il corso</em>, is published by Hoepli.</p>
+  <div class="steps">
+    <details>
+      <summary><h3>Start from the situation</h3><span class="tg" aria-hidden="true"></span></summary>
+      <div class="bd"><p>You learn a language by using it to do something: introducing yourself, asking, telling, arguing. Grammar is part of the communicative process: not the condition for speaking, but the tool for saying more. This is why our approach is communicative and situational: every unit starts from a real context and turns it into competence.</p></div>
+    </details>
+    <details>
+      <summary><h3>Few structures, many sentences</h3><span class="tg" aria-hidden="true"></span></summary>
+      <div class="bd"><p>Grammar follows a principle of generativity: a few structures, presented in their natural order, from which many others follow.</p></div>
+    </details>
+    <details>
+      <summary><h3>First the words you use</h3><span class="tg" aria-hidden="true"></span></summary>
+      <div class="bd"><p>Vocabulary is chosen by frequency of use, so you learn first what you will actually use.</p></div>
+    </details>
+    <details>
+      <summary><h3>Pronunciation has its own space</h3><span class="tg" aria-hidden="true"></span></summary>
+      <div class="bd"><p>Dedicated exercises on the sounds that are hardest to hear and to produce, with pronunciation lessons every week.</p></div>
+    </details>
+    <details>
+      <summary><h3>Contrastive grammars</h3><span class="tg" aria-hidden="true"></span></summary>
+      <div class="bd"><p>Lessons are taught in Italian. For individual study, contrastive grammars are available in fifteen languages, from English to Chinese, from Russian to Arabic, comparing the structures of Italian with those of your mother tongue.</p></div>
+    </details>
+    <details>
+      <summary><h3>Texts for specific needs</h3><span class="tg" aria-hidden="true"></span></summary>
+      <div class="bd"><p>Alongside the course there are texts for specific needs: 19th- and 20th-century literature, graded tests for certification, and <em>Italiano in chiesa</em> for seminarians and religious.</p></div>
+    </details>
+  </div>
+  <p class="end">The authors of the method, <a href="../accademia/index.html#angelo-chiuchiu">Angelo</a> and <a href="../accademia/index.html#gaia-chiuchiu">Gaia Chiuchiù</a>, direct the courses: they design the programmes and follow the work in class. Studying here means studying with the people who wrote the books and who test them every day in the classroom.</p>
+</div>

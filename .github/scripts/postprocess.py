@@ -300,16 +300,19 @@ for page in ("product/programs", "product/packages", "en/product/programs", "en/
         write(path, text.replace(
             'description">Four weeks in Italy</p>', 'description">Summer Immersion Program</p>'))
 
-# 5d. Italian Metodo page: the method overview in .github/snippets goes
-# between the title banner and the first book ("In Italiano", 4ef78e6c).
-path = os.path.join(site, "method/index.html")
-if os.path.exists(path):
+# 5d. Metodo pages: the method overview in .github/snippets goes between the
+# title banner and the first book ("In Italiano", 4ef78e6c).
+METHOD_OVERVIEW = {"method/index.html": "metodo-it.html", "en/method/index.html": "method-en.html"}
+for page, snippet in METHOD_OVERVIEW.items():
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
     text = read(path)
     if 'class="ali-met"' not in text:
         m = re.search(r'<section class="[^"]*elementor-element-4ef78e6c ', text)
         if not m:
-            sys.exit("method/index.html: section 4ef78e6c not found")
-        text = text[:m.start()] + read(os.path.join(SNIPPETS, "metodo-it.html")) + text[m.start():]
+            sys.exit(f"{page}: section 4ef78e6c not found")
+        text = text[:m.start()] + read(os.path.join(SNIPPETS, snippet)) + text[m.start():]
         write(path, text)
 
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
@@ -738,41 +741,59 @@ if os.path.exists(path):
     if ">GUESTBOOKG</h2>" in text:
         write(path, text.replace(">GUESTBOOKG</h2>", ">GUESTBOOK</h2>"))
 
-# 7m. Italian Metodo page: the book cards in .github/snippets replace the
-# section of book toggles (4ef78e6c). Each card opens a dialog with the text
-# of its toggle, found by the heading above it. Runs after 7d (it gives Yidali
-# its heading), 7h and 7i (they read and fix the In Italiano gallery).
-path = os.path.join(site, "method/index.html")
-if os.path.exists(path):
+# 7m. Metodo pages: the book cards in .github/snippets replace the section of
+# book toggles (4ef78e6c). Each card opens a dialog with the text of its
+# toggle. A book's name is the toggle title; the Italian toggle titles are
+# empty, so there it is the heading above. Runs after 7d (it names Yidali),
+# 7h and 7i (they read and fix the In Italiano gallery).
+BOOK_CARDS = {"method/index.html": "metodo-libri-it.html", "en/method/index.html": "method-books-en.html"}
+BOOK_NAME = re.compile(
+    r'<h2 class="elementor-heading-title[^"]*">([^<]*)</h2>'
+    r'|<a class="elementor-toggle-title"[^>]*>([^<]*)</a>'
+    r'|<div id="elementor-tab-content-\d+" class="elementor-tab-content[^"]*"[^>]*>'
+)
+DIV_TAG = re.compile(r"<(/?)div\b")
+for page, snippet in BOOK_CARDS.items():
+    path = os.path.join(site, page)
+    if not os.path.exists(path):
+        continue
     text = read(path)
-    if 'class="ali-lib"' not in text:
-        m = re.search(r'<section class="[^"]*elementor-element-4ef78e6c ', text)
-        if not m:
-            sys.exit("method/index.html: book section 4ef78e6c not found")
-        end = section_end(text, m.start(), "method/index.html")
-        books = {}
-        tab = re.compile(r'<h2 class="elementor-heading-title[^"]*">([^<]*)</h2>.*?'
-                         r'<div id="elementor-tab-content-\d+" class="elementor-tab-content[^"]*"[^>]*>', re.S)
-        div = re.compile(r"<(/?)div\b")
-        for b in tab.finditer(text, m.start(), end):
+    if 'class="ali-lib"' in text:
+        continue
+    m = re.search(r'<section class="[^"]*elementor-element-4ef78e6c ', text)
+    if not m:
+        sys.exit(f"{page}: book section 4ef78e6c not found")
+    end = section_end(text, m.start(), page)
+    books, heading, title, pos = {}, "", "", m.start()
+    while True:
+        b = BOOK_NAME.search(text, pos, end)
+        if not b:
+            break
+        pos = b.end()
+        if b.group(1) is not None:
+            heading = b.group(1).strip()
+        elif b.group(2) is not None:
+            title = b.group(2).strip()
+        else:
             depth = 1
-            for d in div.finditer(text, b.end()):
+            for d in DIV_TAG.finditer(text, b.end()):
                 depth += -1 if d.group(1) else 1
                 if not depth:
-                    books[b.group(1).strip()] = text[b.end():d.start()].strip()
+                    books[title or heading] = text[b.end():d.start()].strip()
+                    pos = d.end()
                     break
-        cards = read(os.path.join(SNIPPETS, "metodo-libri-it.html"))
+            title = ""
+    cards = read(os.path.join(SNIPPETS, snippet))
 
-        def fill(t):
-            if t.group(1) not in books:
-                sys.exit(f"method/index.html: no toggle for book {t.group(1)!r}")
-            return books.pop(t.group(1))
+    def fill(t):
+        if t.group(1) not in books:
+            sys.exit(f"{page}: no toggle for book {t.group(1)!r}")
+        return books.pop(t.group(1))
 
-        cards = re.sub(r"<!--toggle:(.*?)-->", fill, cards)
-        if books:
-            sys.exit(f"method/index.html: toggles without a card: {sorted(books)}")
-        text = text[:m.start()] + cards + text[end:]
-        write(path, text)
+    cards = re.sub(r"<!--toggle:(.*?)-->", fill, cards)
+    if books:
+        sys.exit(f"{page}: toggles without a card: {sorted(books)}")
+    write(path, text[:m.start()] + cards + text[end:])
 
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
