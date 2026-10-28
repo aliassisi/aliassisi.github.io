@@ -812,9 +812,9 @@ padding-right: 30px;
 /* ---------- PREZZI ---------- */
 function tieredPPW(tiers,w){for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.from&&w<=t.to)return t.ppw;}return tiers[tiers.length-1].ppw;}
 function tierLabel(tiers,w){for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.from&&w<=t.to){if(t.from===t.to)return t.from+' week';if(t.to===48)return t.from+'+ weeks rate';return t.from+'–'+t.to+' weeks rate';}}return '';}
-var TIER_STD=[{from:1,to:1,ppw:420},{from:2,to:2,ppw:360},{from:3,to:7,ppw:320},{from:8,to:48,ppw:300}];
-var TIER_INT=[{from:1,to:1,ppw:620},{from:2,to:2,ppw:560},{from:3,to:7,ppw:480},{from:8,to:48,ppw:460}];
-var TIER_SINT=[{from:1,to:1,ppw:820},{from:2,to:2,ppw:680},{from:3,to:7,ppw:640},{from:8,to:48,ppw:620}];
+var TIER_STD=[{from:1,to:1,ppw:390},{from:2,to:2,ppw:360},{from:3,to:7,ppw:320},{from:8,to:48,ppw:300}];
+var TIER_INT=[{from:1,to:1,ppw:550},{from:2,to:2,ppw:520},{from:3,to:7,ppw:480},{from:8,to:48,ppw:460}];
+var TIER_SINT=[{from:1,to:1,ppw:710},{from:2,to:2,ppw:680},{from:3,to:7,ppw:640},{from:8,to:48,ppw:620}];
 var MIX22='(18 group lessons + 4 one-on-one lessons)';
 var MIX26='(18 group lessons + 8 one-on-one lessons)';
 var THEMES='Choose from: Italian for Religious Life · Literature · Art · Cinema · Archaeology';
