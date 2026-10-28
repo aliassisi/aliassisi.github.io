@@ -35,6 +35,7 @@ jobs:
           OWNER: ${{ github.repository_owner }}
         run: |
           git diff --name-only "origin/${BASE_REF}...HEAD" > "$RUNNER_TEMP/changed.txt"
+          python3 -I .github/scripts/build_corsi.py .
           python3 -I .github/scripts/build_preview.py . _preview "/pr-preview/pr-${PR_NUMBER}/" \
             --prod-url "https://${OWNER}.github.io" \
             --changed-file "$RUNNER_TEMP/changed.txt"

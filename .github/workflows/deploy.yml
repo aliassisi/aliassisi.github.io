@@ -2,11 +2,14 @@ name: Deploy production
 
 # Publishes main to the gh-pages branch. GitHub Pages serves that branch.
 # PR previews live in gh-pages/pr-preview/ and are kept by clean-exclude.
+# It also runs every night, so the course pages drop start dates that have passed.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "30 1 * * *"
 
 permissions:
   contents: write
@@ -27,6 +30,9 @@ jobs:
         run: |
           mkdir _site
           rsync -a --exclude '.git' --exclude '.github' --exclude '.claude' --exclude 'CLAUDE.md' --exclude '_site' ./ _site/
+
+      - name: Build the course pages from data/ali.json
+        run: python3 -I .github/scripts/build_corsi.py _site
 
       - name: Rebuild the search index
         run: npx --yes pagefind@1.5.2 --site _site

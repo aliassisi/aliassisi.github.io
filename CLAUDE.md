@@ -27,6 +27,15 @@ root. English pages are under `en/`. There is no backend.
   Prefer the rule. Run it as `python3 -I .github/scripts/postprocess.py SITE_DIR`
   on a fresh `cleanup.py` output, never twice on the same folder.
 
+## Course pages and data
+- Standard, Intensivo and Super intensivo are built from `data/ali.json` and
+  `.github/templates/corso-gruppo.html` by `.github/scripts/build_corsi.py`.
+  Do not edit those pages by hand. Change the data or the template and run
+  `python3 -I .github/scripts/build_corsi.py .`
+- `data/ali.json` holds prices, start dates, closures and the enrolment form.
+  Both configurators read it at runtime. The build patches them to do so.
+- Deploy runs the build every night, so past start dates drop off.
+
 ## Check your work
 - `python3 -I .github/scripts/check_links.py .` finds missing link targets.
   Known misses are in `.github/scripts/known_broken.txt`. A hook runs it after edits.

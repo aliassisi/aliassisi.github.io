@@ -732,19 +732,6 @@ padding-right: 30px;
         <label for="cfg-startsel">Scheduled intake</label>
         <select id="cfg-startsel">
           <option value="">— Select —</option>
-          <option value="2026-11-02">November 2nd, 2026</option>
-          <option value="2026-11-30">November 30th, 2026</option>
-          <option value="2027-02-01">February 1st, 2027</option>
-          <option value="2027-03-01">March 1st, 2027</option>
-          <option value="2027-04-05">April 5th, 2027</option>
-          <option value="2027-05-03">May 3rd, 2027</option>
-          <option value="2027-05-31">May 31st, 2027</option>
-          <option value="2027-06-28">June 28th, 2027</option>
-          <option value="2027-07-26">July 26th, 2027</option>
-          <option value="2027-08-23">August 23rd, 2027</option>
-          <option value="2027-09-20">September 20th, 2027</option>
-          <option value="2027-10-18">October 18th, 2027</option>
-          <option value="2027-11-15">November 15th, 2027</option>
           <option value="custom">Different date…</option>
         </select>
       </div>
@@ -808,13 +795,13 @@ padding-right: 30px;
 </div>
 
 <script>
-(function(){
+fetch('../data/ali.json').then(function(r){return r.json();}).then(function(ALI){
 /* ---------- PREZZI ---------- */
 function tieredPPW(tiers,w){for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.from&&w<=t.to)return t.ppw;}return tiers[tiers.length-1].ppw;}
 function tierLabel(tiers,w){for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.from&&w<=t.to){if(t.from===t.to)return t.from+' week';if(t.to===48)return t.from+'+ weeks rate';return t.from+'–'+t.to+' weeks rate';}}return '';}
-var TIER_STD=[{from:1,to:1,ppw:390},{from:2,to:2,ppw:360},{from:3,to:7,ppw:320},{from:8,to:48,ppw:300}];
-var TIER_INT=[{from:1,to:1,ppw:550},{from:2,to:2,ppw:520},{from:3,to:7,ppw:480},{from:8,to:48,ppw:460}];
-var TIER_SINT=[{from:1,to:1,ppw:710},{from:2,to:2,ppw:680},{from:3,to:7,ppw:640},{from:8,to:48,ppw:620}];
+var TIER_STD=ALI.tariffe.standard;
+var TIER_INT=ALI.tariffe.intensivo;
+var TIER_SINT=ALI.tariffe.super_intensivo;
 var MIX22='(18 group lessons + 4 one-on-one lessons)';
 var MIX26='(18 group lessons + 8 one-on-one lessons)';
 var THEMES='Choose from: Italian for Religious Life · Literature · Art · Cinema · Archaeology';
@@ -869,13 +856,7 @@ var WEEKLY=[
 ];
 
 /* ---------- CALENDARIO / CHIUSURE (solo informative) ---------- */
-var CL=[
-  {label:'Christmas Holidays',from:[2027,1,1],to:[2027,1,9]},
-  {label:'Easter Holidays',from:[2027,3,26],to:[2027,4,2]},
-  {label:'Republic Day',from:[2027,6,2],to:[2027,6,2]},
-  {label:'Immaculate Conception',from:[2027,12,8],to:[2027,12,8]},
-  {label:'Christmas Holidays',from:[2027,12,20],to:[2027,12,31]}
-];
+var CL=ALI.chiusure.map(function(c){var f=c.dal.split('-'),t=c.al.split('-');return {label:c.en,from:[+f[0],+f[1],+f[2]],to:[+t[0],+t[1],+t[2]]};});
 var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 var WD=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function md(y,m,d){return new Date(y,m-1,d);}
@@ -885,6 +866,7 @@ function fmtD(d){return fmtS(d)+', '+d.getFullYear();}
 function iso(d){var m=d.getMonth()+1,day=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day;}
 function fromIso(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
 function sameDay(a,b){return iso(a)===iso(b);}
+(function(){var oggi=iso(new Date()),sel=document.getElementById('cfg-startsel'),altra=sel.querySelector('option[value=\"custom\"]');ALI.date_inizio.forEach(function(s){if(s<oggi)return;var o=document.createElement('option');o.value=s;o.textContent=fmtD(fromIso(s));sel.insertBefore(o,altra);});})();
 
 /* Fine corso = venerdì dell'ultima settimana (lun-ven). Le chiusure NON spostano la data. */
 function calcPeriod(start,weeks){
@@ -1142,7 +1124,7 @@ $('cfg-cta').addEventListener('click',function(){
 
 $('cfg-dur').addEventListener('input',cfgUpdate);
 cfgUpdate();
-})();
+});
 </script>				</div>
 				</div>
 					</div>
