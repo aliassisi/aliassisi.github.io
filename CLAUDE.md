@@ -35,6 +35,12 @@ root. English pages are under `en/`. There is no backend.
 - `data/ali.json` holds prices, start dates, closures and the enrolment form.
   Both configurators read it at runtime. The build patches them to do so.
 - Deploy runs the build every night, so past start dates drop off.
+- A course with `"contenitore": "wordpress"` (now Super intensivo) keeps the
+  crawled WordPress page. The build replaces only the content of
+  `<div id="main">` with `.github/templates/corso-contenuto.html` and links
+  `assets/ali/ali-course.css` (source: `.github/templates/ali-course.css`).
+  Its styles are limited to `.ali-course`; the reset block at the top undoes
+  theme rules on tables, `dt`, `small`, `figcaption` and links.
 
 ## Check your work
 - `python3 -I .github/scripts/check_links.py .` finds missing link targets.

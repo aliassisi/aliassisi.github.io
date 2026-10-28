@@ -6,6 +6,10 @@ Usage:
 
 SITE_DIR holds data/ali.json. For each course in it, the script fills
 .github/templates/corso-gruppo.html and writes SITE_DIR/<page>/index.html.
+A course with "contenitore": "wordpress" keeps the crawled WordPress page
+(header, menu, footer, global CSS and JS). Only the content of its
+<div id="main"> is replaced, with corso-contenuto.html, and the page head
+links assets/ali/ali-course.css.
 Start dates before today are left out, and so are closures that have ended.
 --oggi sets "today", for tests.
 
@@ -25,7 +29,9 @@ import sys
 from urllib.parse import quote
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE = os.path.join(HERE, "..", "templates", "corso-gruppo.html")
+TEMPLATES = os.path.join(HERE, "..", "templates")
+CSS_OUT = os.path.join("assets", "ali", "ali-course.css")
+INIZIO, FINE = "<!-- ali-course -->", "<!-- /ali-course -->"
 
 MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
         "agosto", "settembre", "ottobre", "novembre", "dicembre"]
@@ -176,6 +182,29 @@ def pagina(modello, ali, c, oggi):
     return out
 
 
+def in_wordpress(s, contenuto, css_href, p):
+    """Put contenuto in the WordPress page s, between header and footer.
+    Safe to run again: later runs replace what is between the markers."""
+    blocco = f"{INIZIO}\n{contenuto}{FINE}\n"
+    if INIZIO in s:
+        s = re.sub(re.escape(INIZIO) + r".*?" + re.escape(FINE) + r"\n",
+                   lambda m: blocco, s, count=1, flags=re.S)
+    else:
+        s, n = re.subn(r'(<div id="main" role="main"[^>]*>\n).*?(?=</div><!-- #main -->)',
+                       lambda m: m.group(1) + blocco, s, count=1, flags=re.S)
+        if n != 1:
+            sys.exit(f'{p}: no <div id="main"> found. Is it the crawled WordPress page?')
+    if 'id="ali-course-css"' not in s:
+        s = s.replace("</head>", f'<link rel="stylesheet" id="ali-course-css" href="{css_href}">\n</head>', 1)
+    return s
+
+
+def leggi_modello(nome):
+    with open(os.path.join(TEMPLATES, nome), encoding="utf-8") as f:
+        # The template starts with a comment for editors. Leave it out of the pages.
+        return re.sub(r"\A<!--.*?-->\n", "", f.read(), flags=re.S)
+
+
 # --- configurator -----------------------------------------------------------
 
 def configuratore(s, radice):
@@ -216,19 +245,32 @@ def main():
 
     with open(os.path.join(args.site, "data", "ali.json"), encoding="utf-8") as f:
         ali = json.load(f)
-    with open(TEMPLATE, encoding="utf-8") as f:
-        modello = f.read()
-    # The template starts with a comment for editors. Leave it out of the pages.
-    modello = re.sub(r"\A<!--.*?-->\n", "", modello, flags=re.S)
+    modelli = {"pagina": leggi_modello("corso-gruppo.html"),
+               "wordpress": leggi_modello("corso-contenuto.html")}
+
+    css = os.path.join(args.site, CSS_OUT)
+    os.makedirs(os.path.dirname(css), exist_ok=True)
+    with open(os.path.join(TEMPLATES, "ali-course.css"), encoding="utf-8") as f:
+        testo = f.read()
+    with open(css, "w", encoding="utf-8", newline="\n") as f:
+        f.write(testo)
 
     for c in ali["corsi"]:
-        out = pagina(modello, ali, c, args.oggi)
+        contenitore = c.get("contenitore", "pagina")
+        out = pagina(modelli[contenitore], ali, c, args.oggi)
         for p in c["pagine"]:
             dest = os.path.join(args.site, p, "index.html")
-            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            if contenitore == "wordpress":
+                with open(dest, encoding="utf-8") as f:
+                    wp = f.read()
+                href = os.path.relpath(css, os.path.dirname(dest)).replace(os.sep, "/")
+                scritto = in_wordpress(wp, out, href, p)
+            else:
+                os.makedirs(os.path.dirname(dest), exist_ok=True)
+                scritto = out
             with open(dest, "w", encoding="utf-8", newline="\n") as f:
-                f.write(out)
-            print(f"wrote {p}/index.html")
+                f.write(scritto)
+            print(f"wrote {p}/index.html ({contenitore})")
 
     for p, radice in (("configuratore", "../"), ("en/configuratore", "../../")):
         dest = os.path.join(args.site, p, "index.html")
