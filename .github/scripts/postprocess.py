@@ -844,6 +844,12 @@ for post in ("994884", "341"):
     else:
         print(f"post-{post}.css: guestbook c944fe1 margin not found")
 
+# 7n. Text fixes: typos, English labels and stray old-site links on the Metodo
+# pages, and the WhatsApp / Address typos in the footer. The list is in
+# text_fixes.py, which can also run alone on a site already built.
+import subprocess
+subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(os.path.abspath(__file__)), "text_fixes.py"), site], check=True)
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
