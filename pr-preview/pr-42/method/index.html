@@ -660,7 +660,7 @@ padding-right: 30px;
 .ali-met p{margin:0}
 .ali-met h2,.ali-met h3{color:var(--navy);font-weight:400;margin:0}
 .ali-met .motto{font-size:clamp(26px,4vw,34px);line-height:1.25;margin:0 0 18px}
-.ali-met .motto em{font-style:normal;border-bottom:3px solid var(--giallo)}
+.ali-met .motto em{font-style:italic;border-bottom:3px solid var(--giallo)}
 .ali-met .intro{font-size:1.1em;max-width:720px;margin:0 0 44px}
 .ali-met .steps{margin:0 0 44px;padding:0;counter-reset:st}
 .ali-met details{position:relative;counter-increment:st;padding:0 0 0 68px}
@@ -678,13 +678,13 @@ padding-right: 30px;
 .ali-met summary:focus-visible{outline:2px solid var(--giallo);outline-offset:4px}
 .ali-met .bd{margin:-14px 0 0;padding:0 50px 30px 0}
 .ali-met .bd p{max-width:720px}
-.ali-met .end{max-width:860px;background:#fff;border-left:4px solid var(--giallo);padding:24px 28px;font-size:1.08em}
+.ali-met .end{background:#fff;border-left:4px solid var(--giallo);padding:24px 28px;font-size:1.08em}
 .ali-met .end a{color:var(--navy);text-decoration:underline;text-decoration-color:var(--giallo);text-decoration-thickness:2px;text-underline-offset:3px}
 .ali-met .end a:hover{color:var(--navy);background:rgba(255,191,0,.18)}
 @media(max-width:767px){.ali-met{padding:40px 20px 24px}.ali-met details{padding-left:56px}.ali-met summary::before{width:38px;height:38px;font-size:16px}.ali-met details:not(:last-child)::after{left:18px;top:40px}.ali-met .bd{padding-right:0}}
 </style>
 <div class="ali-met">
-  <h2 class="motto">Imparare una lingua è una scienza, <em>parlarla è un'arte</em>.</h2>
+  <h2 class="motto"><em>Imparare una lingua è una scienza, parlarla è un'arte</em>.</h2>
   <p class="intro">Tutti i libri che usiamo in classe li abbiamo scritti noi. Sono nati dalla ricerca in linguistica applicata e dalle lezioni ad Assisi: dagli errori degli studenti, dalle domande che tornano da più di trent'anni. Il corso che usiamo oggi, <em>In italiano. Il corso</em>, è pubblicato da Hoepli.</p>
   <div class="steps">
     <details>
@@ -727,6 +727,8 @@ padding-right: 30px;
 .ali-lib .cv{height:230px;display:flex;align-items:center;justify-content:center;padding:22px;background:#f7f4ef}
 .ali-lib .cv img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 4px 12px rgba(0,0,0,.12)}
 .ali-lib .card.wide .cv img{box-shadow:none}
+.ali-lib .cv.full{padding:0;background:#fff;overflow:hidden}
+.ali-lib .cv.full img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:50% 70%;box-shadow:none}
 .ali-lib .cv.fan img{max-height:82%;max-width:42%}
 .ali-lib .cv.fan img+img{margin-left:-14%}
 .ali-lib .cv.fan img:nth-child(1){transform:rotate(-6deg) translateY(6px)}
@@ -755,10 +757,10 @@ padding-right: 30px;
 <div class="ali-lib" id="libri">
   <h2 class="hd">I libri del metodo</h2>
   <div class="grid">
-    <button type="button" class="card wide" data-book="lib-1" aria-haspopup="dialog"><span class="cv"><img src="https://aliassisi.github.io/assets/uploads/2026/09/df335cb4-d762-4ee5-9da3-a04124bfb1eb-768x346.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Il corso di oggi</span><span class="tt">In italiano. Il corso</span><span class="ln">Il corso che usiamo oggi: tre volumi, dall'A1 al C1. Edito da Hoepli.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
-    <button type="button" class="card" data-book="lib-2" aria-haspopup="dialog"><span class="cv fan"><img src="https://aliassisi.github.io/assets/uploads/2023/09/inglese.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/francese.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/c1.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Manuale</span><span class="tt">In Italiano</span><span class="ln">Il classico dell'approccio comunicativo-situazionale, con grammatiche contrastive in quindici lingue.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card wide" data-book="lib-1" aria-haspopup="dialog"><span class="cv"><img src="https://aliassisi.github.io/assets/uploads/2026/09/df335cb4-d762-4ee5-9da3-a04124bfb1eb-768x346.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Il nuovo metodo</span><span class="tt">In italiano. Il corso</span><span class="ln">Il corso che usiamo oggi: tre volumi, dall'A1 al C1. Edito da Hoepli.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-2" aria-haspopup="dialog"><span class="cv fan"><img src="https://aliassisi.github.io/assets/uploads/2023/09/inglese.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/francese.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/c1.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Il metodo</span><span class="tt">In Italiano</span><span class="ln">Il classico dell'approccio comunicativo-situazionale, con grammatiche contrastive in quindici lingue.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
     <button type="button" class="card" data-book="lib-3" aria-haspopup="dialog"><span class="cv"><img src="https://aliassisi.github.io/assets/uploads/2023/09/comunicare_in_italiano.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Grammatica</span><span class="tt">Comunicare in italiano</span><span class="ln">La grammatica in 21 capitoli, con esercizi, soluzioni e fonetica.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
-    <button type="button" class="card" data-book="lib-4" aria-haspopup="dialog"><span class="cv"><img src="https://aliassisi.github.io/assets/uploads/2023/09/ipad_multiplo_chiuchiu_montaggio_punto_itcopia-768x953.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Ebook</span><span class="tt">.it Italy to go</span><span class="ln">Ebook con video, audio ed esercizi, per chi parla inglese. A1–A2.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-4" aria-haspopup="dialog"><span class="cv full"><img src="https://aliassisi.github.io/assets/uploads/2023/09/ipad_multiplo_chiuchiu_montaggio_punto_itcopia-768x953.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Ebook</span><span class="tt">.it Italy to go</span><span class="ln">Ebook con video, audio ed esercizi.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
     <button type="button" class="card" data-book="lib-5" aria-haspopup="dialog"><span class="cv fan"><img src="https://aliassisi.github.io/assets/uploads/2023/09/chiucchiu_vol1_400-225x300-1.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/chiucchiu_vol2_400-225x300-1.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/chiucchiu_vol3_400-225x300-1.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Ebook</span><span class="tt">Yidali《译大利》</span><span class="ln">Corso in ebook per studenti cinesi, in sette volumi.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
     <button type="button" class="card" data-book="lib-6" aria-haspopup="dialog"><span class="cv"><img src="https://aliassisi.github.io/assets/uploads/2023/09/A1nrmrUQKxL._SL1500_-630x897.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Bambini</span><span class="tt">Viva l'Italiano</span><span class="ln">Per bambini dai 5 anni: quattro libri e la guida per l'insegnante.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
     <button type="button" class="card" data-book="lib-7" aria-haspopup="dialog"><span class="cv fan"><img src="https://aliassisi.github.io/assets/uploads/2023/09/it_in_vol_1_1-1.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/italiano-in-vol2-1.jpg" alt="" loading="lazy"><img src="https://aliassisi.github.io/assets/uploads/2023/09/italiano-in-vol3-3.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Serie</span><span class="tt">Arte e Metodo</span><span class="ln">La serie: Italiano in, Grammatica e comunicazione, Incontri, Ritratti, Italiano in chiesa.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
