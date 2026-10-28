@@ -300,6 +300,18 @@ for page in ("product/programs", "product/packages", "en/product/programs", "en/
         write(path, text.replace(
             'description">Four weeks in Italy</p>', 'description">Summer Immersion Program</p>'))
 
+# 5d. Italian Metodo page: the method overview in .github/snippets goes
+# between the title banner and the first book ("In Italiano", 4ef78e6c).
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text = read(path)
+    if 'class="ali-met"' not in text:
+        m = re.search(r'<section class="[^"]*elementor-element-4ef78e6c ', text)
+        if not m:
+            sys.exit("method/index.html: section 4ef78e6c not found")
+        text = text[:m.start()] + read(os.path.join(SNIPPETS, "metodo-it.html")) + text[m.start():]
+        write(path, text)
+
 # 6. Move wp-content and wp-includes under assets/. Each path shows up in
 # three forms: plain, JSON-escaped ("\/") and inside HTML-escaped JSON.
 MOVES = [
