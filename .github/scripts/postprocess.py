@@ -214,6 +214,8 @@ SNIPPETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "snipp
 COURSE_CARDS = {
     "product-category/intensivi/index.html": "intensivi-cards.html",
     "en/product-category/intensive-en/index.html": "intensive-en-cards.html",
+    # The English menu links to this copy, outside en/.
+    "product-category/intensive-en/index.html": "intensive-en-cards.html",
 }
 COURSE_LIST = re.compile(r'<section class="[^"]*elementor-element-4aecc96 ')
 SECTION_TAG = re.compile(r"<(/?)section\b")
