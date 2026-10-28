@@ -829,6 +829,21 @@ for page, snippet in BOOK_CARDS.items():
         sys.exit(f"{page}: toggles without a card: {sorted(books)}")
     write(path, text[:m.start()] + cards + text[end:])
 
+# 7m. Guestbook page (994884) and both testimonials pages (341): on desktop
+# the empty section under the guestbook (c944fe1) has margin-top -491px, so
+# the address and map block slide up over the guestbook. Use the tablet
+# margins (0 and 70px) on desktop too.
+for post in ("994884", "341"):
+    path = os.path.join(site, f"assets/uploads/elementor/css/post-{post}.css")
+    if not os.path.exists(path):
+        continue
+    old = f".elementor-{post} .elementor-element.elementor-element-c944fe1{{margin-top:-491px;margin-bottom:150px;"
+    text = read(path)
+    if old in text:
+        write(path, text.replace(old, old.replace("-491px;margin-bottom:150px", "0px;margin-bottom:70px")))
+    else:
+        print(f"post-{post}.css: guestbook c944fe1 margin not found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
