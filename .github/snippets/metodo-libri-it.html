@@ -1,0 +1,68 @@
+<!-- ALI Assisi · Libri del metodo (IT). postprocess.py (7m) puts each book's toggle text in its dialog, at the toggle:TITLE comment. -->
+<style>
+.ali-lib{--navy:#3b4a8a;--giallo:#ffbf00;--linea:#cfc8bd;color:var(--navy);max-width:1320px;margin:0 auto;padding:40px 30px 64px;line-height:1.6}
+.ali-lib *{box-sizing:border-box}
+.ali-lib .hd{color:var(--navy);font-weight:400;font-size:clamp(26px,4vw,34px);line-height:1.25;margin:0 0 28px}
+.ali-lib .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.ali-lib .card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;background:#fff;cursor:pointer;border-bottom:3px solid transparent;transition:border-color .2s,transform .2s,box-shadow .2s}
+.ali-lib .card:hover{border-bottom-color:var(--giallo);transform:translateY(-3px);box-shadow:0 10px 24px rgba(59,74,138,.10)}
+.ali-lib .card:focus-visible{outline:2px solid var(--giallo);outline-offset:4px}
+.ali-lib .card.wide{grid-column:span 2}
+.ali-lib .cv{height:230px;display:flex;align-items:center;justify-content:center;padding:22px;background:#f7f4ef}
+.ali-lib .cv img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.ali-lib .card.wide .cv img{box-shadow:none}
+.ali-lib .cv.full{padding:14px;background:#fff}
+.ali-lib .cv.full img{box-shadow:none}
+.ali-lib .cv.fan img{max-height:82%;max-width:42%}
+.ali-lib .cv.fan img+img{margin-left:-14%}
+.ali-lib .cv.fan img:nth-child(1){transform:rotate(-6deg) translateY(6px)}
+.ali-lib .cv.fan img:nth-child(2){position:relative;z-index:1}
+.ali-lib .cv.fan img:nth-child(3){transform:rotate(6deg) translateY(6px)}
+.ali-lib .tx{display:flex;flex-direction:column;gap:6px;padding:18px 20px 20px;flex:1}
+.ali-lib .chip{align-self:flex-start;font-size:12px;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid var(--giallo)}
+.ali-lib .tt{font-family:"Cormorant Garamond",serif;font-size:1.45em;line-height:1.2}
+.ali-lib .ln{font-size:.95em;flex:1}
+.ali-lib .more{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.95em}
+.ali-lib .tg{width:30px;height:30px;border-radius:50%;border:1px solid var(--navy);display:flex;align-items:center;justify-content:center;transition:.2s}
+.ali-lib .tg::before{content:"+";font-size:18px;line-height:1}
+.ali-lib .card:hover .tg{background:var(--giallo);border-color:var(--giallo)}
+.ali-lib dialog{width:min(920px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:0;color:var(--navy);background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.ali-lib dialog::backdrop{background:rgba(30,36,70,.55)}
+.ali-lib .dh{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:16px;padding:20px 28px;background:#fff;border-bottom:3px solid var(--giallo)}
+.ali-lib .dh h3{flex:1;margin:0;color:var(--navy);font-weight:400;font-size:1.7em;line-height:1.2}
+.ali-lib .x{all:unset;flex:0 0 38px;height:38px;border-radius:50%;border:1px solid var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ali-lib .x::before{content:"+";font-size:24px;line-height:1;transform:rotate(45deg)}
+.ali-lib .x:hover,.ali-lib .x:focus-visible{background:var(--giallo);border-color:var(--giallo)}
+.ali-lib .db{padding:24px 28px 32px}
+.ali-lib .db img{max-width:100%;height:auto}
+@media(max-width:1024px){.ali-lib .grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:767px){.ali-lib{padding:32px 20px 48px}.ali-lib .grid{grid-template-columns:1fr;gap:20px}.ali-lib .card.wide{grid-column:auto}.ali-lib .cv{height:200px}.ali-lib .dh{padding:16px 18px}.ali-lib .db{padding:18px 18px 24px}}
+</style>
+<div class="ali-lib" id="libri">
+  <h2 class="hd">I libri del metodo</h2>
+  <div class="grid">
+    <button type="button" class="card wide" data-book="lib-1" aria-haspopup="dialog"><span class="cv"><img src="../assets/uploads/2026/09/df335cb4-d762-4ee5-9da3-a04124bfb1eb-768x346.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Il nuovo metodo</span><span class="tt">In italiano. Il corso</span><span class="ln">Il corso che usiamo oggi: tre volumi, dall'A1 al C1. Edito da Hoepli.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-2" aria-haspopup="dialog"><span class="cv fan"><img src="../assets/uploads/2023/09/inglese.jpg" alt="" loading="lazy"><img src="../assets/uploads/2023/09/francese.jpg" alt="" loading="lazy"><img src="../assets/uploads/2023/09/c1.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Il metodo</span><span class="tt">In Italiano</span><span class="ln">Il classico dell'approccio comunicativo-situazionale, con grammatiche contrastive in quindici lingue.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-3" aria-haspopup="dialog"><span class="cv"><img src="../assets/uploads/2023/09/comunicare_in_italiano.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Grammatica</span><span class="tt">Comunicare in italiano</span><span class="ln">La grammatica in 21 capitoli, con esercizi, soluzioni e fonetica.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-4" aria-haspopup="dialog"><span class="cv full"><img src="../assets/uploads/2023/09/ipad_multiplo_chiuchiu_montaggio_punto_itcopia-768x953.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Ebook</span><span class="tt">.it Italy to go</span><span class="ln">Ebook con video, audio ed esercizi.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-5" aria-haspopup="dialog"><span class="cv fan"><img src="../assets/uploads/2023/09/chiucchiu_vol1_400-225x300-1.jpg" alt="" loading="lazy"><img src="../assets/uploads/2023/09/chiucchiu_vol2_400-225x300-1.jpg" alt="" loading="lazy"><img src="../assets/uploads/2023/09/chiucchiu_vol3_400-225x300-1.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Ebook</span><span class="tt">Yidali《译大利》</span><span class="ln">Corso in ebook per studenti cinesi, in sette volumi.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-6" aria-haspopup="dialog"><span class="cv"><img src="../assets/uploads/2026/10/viva-litaliano-2.webp" alt="" loading="lazy"></span><span class="tx"><span class="chip">Bambini</span><span class="tt">Viva l'Italiano</span><span class="ln">Per bambini dai 5 anni: quattro libri e la guida per l'insegnante.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+    <button type="button" class="card" data-book="lib-7" aria-haspopup="dialog"><span class="cv fan"><img src="../assets/uploads/2023/09/it_in_vol_1_1-1.jpg" alt="" loading="lazy"><img src="../assets/uploads/2023/09/italiano-in-vol2-1.jpg" alt="" loading="lazy"><img src="../assets/uploads/2023/09/italiano-in-vol3-3.jpg" alt="" loading="lazy"></span><span class="tx"><span class="chip">Serie</span><span class="tt">Arte e Metodo</span><span class="ln">La serie: Italiano in, Grammatica e comunicazione, Incontri, Ritratti, Italiano in chiesa.</span><span class="more">Scopri<span class="tg" aria-hidden="true"></span></span></span></button>
+  </div>
+  <dialog id="lib-1" aria-labelledby="lib-1-t"><div class="dh"><h3 id="lib-1-t">In italiano. Il corso</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:In italiano. Il corso--></div></dialog>
+  <dialog id="lib-2" aria-labelledby="lib-2-t"><div class="dh"><h3 id="lib-2-t">In Italiano</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:In Italiano--></div></dialog>
+  <dialog id="lib-3" aria-labelledby="lib-3-t"><div class="dh"><h3 id="lib-3-t">Comunicare in italiano</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:Comunicare in italiano--></div></dialog>
+  <dialog id="lib-4" aria-labelledby="lib-4-t"><div class="dh"><h3 id="lib-4-t">.it Italy to go</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:.it Italy To go--></div></dialog>
+  <dialog id="lib-5" aria-labelledby="lib-5-t"><div class="dh"><h3 id="lib-5-t">Yidali《译大利》</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:Yidali《译大利》--></div></dialog>
+  <dialog id="lib-6" aria-labelledby="lib-6-t"><div class="dh"><h3 id="lib-6-t">Viva l'Italiano</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:Viva l'Italiano (for children)--></div></dialog>
+  <dialog id="lib-7" aria-labelledby="lib-7-t"><div class="dh"><h3 id="lib-7-t">Arte e Metodo</h3><button type="button" class="x" aria-label="Chiudi"></button></div><div class="db"><!--toggle:Arte e Metodo--></div></dialog>
+</div>
+<script>
+document.querySelectorAll('.ali-lib .card').forEach(function (c) {
+  c.addEventListener('click', function () { document.getElementById(c.dataset.book).showModal(); });
+});
+document.querySelectorAll('.ali-lib dialog').forEach(function (d) {
+  d.querySelector('.x').addEventListener('click', function () { d.close(); });
+  d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+});
+</script>

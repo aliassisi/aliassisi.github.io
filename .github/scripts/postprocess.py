@@ -738,6 +738,42 @@ if os.path.exists(path):
     if ">GUESTBOOKG</h2>" in text:
         write(path, text.replace(">GUESTBOOKG</h2>", ">GUESTBOOK</h2>"))
 
+# 7m. Italian Metodo page: the book cards in .github/snippets replace the
+# section of book toggles (4ef78e6c). Each card opens a dialog with the text
+# of its toggle, found by the heading above it. Runs after 7d (it gives Yidali
+# its heading), 7h and 7i (they read and fix the In Italiano gallery).
+path = os.path.join(site, "method/index.html")
+if os.path.exists(path):
+    text = read(path)
+    if 'class="ali-lib"' not in text:
+        m = re.search(r'<section class="[^"]*elementor-element-4ef78e6c ', text)
+        if not m:
+            sys.exit("method/index.html: book section 4ef78e6c not found")
+        end = section_end(text, m.start(), "method/index.html")
+        books = {}
+        tab = re.compile(r'<h2 class="elementor-heading-title[^"]*">([^<]*)</h2>.*?'
+                         r'<div id="elementor-tab-content-\d+" class="elementor-tab-content[^"]*"[^>]*>', re.S)
+        div = re.compile(r"<(/?)div\b")
+        for b in tab.finditer(text, m.start(), end):
+            depth = 1
+            for d in div.finditer(text, b.end()):
+                depth += -1 if d.group(1) else 1
+                if not depth:
+                    books[b.group(1).strip()] = text[b.end():d.start()].strip()
+                    break
+        cards = read(os.path.join(SNIPPETS, "metodo-libri-it.html"))
+
+        def fill(t):
+            if t.group(1) not in books:
+                sys.exit(f"method/index.html: no toggle for book {t.group(1)!r}")
+            return books.pop(t.group(1))
+
+        cards = re.sub(r"<!--toggle:(.*?)-->", fill, cards)
+        if books:
+            sys.exit(f"method/index.html: toggles without a card: {sorted(books)}")
+        text = text[:m.start()] + cards + text[end:]
+        write(path, text)
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
