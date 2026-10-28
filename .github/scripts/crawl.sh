@@ -57,12 +57,15 @@ python3 -I "$repo/.github/scripts/cleanup.py" "$raw/$host" "$pmap" "$tmp/site" "
 python3 -I "$repo/.github/scripts/postprocess.py" "$tmp/site"
 python3 -I "$repo/.github/scripts/prune_plugins.py" "$tmp/site"
 
-# 4. Put the result in place. Keep git, workflows, agent files.
+# 4. Put the result in place. Keep git, workflows, agent files, course data.
 dest=${out:-$repo}
 mkdir -p "$dest"
 rsync -a --delete --exclude .git --exclude .github --exclude .claude --exclude CLAUDE.md --exclude pagefind \
-  "$tmp/site/" "$dest/"
+  --exclude data "$tmp/site/" "$dest/"
 
-# 5. Check links. The search index is rebuilt by the deploy workflow.
+# 5. Fill the course pages' main content from data/ali.json.
+python3 -I "$repo/.github/scripts/build_corsi.py" "$dest"
+
+# 6. Check links. The search index is rebuilt by the deploy workflow.
 python3 -I "$repo/.github/scripts/check_links.py" "$dest"
 echo "done. Review with: git -C $repo status"

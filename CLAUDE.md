@@ -33,6 +33,14 @@ root. English pages are under `en/`. There is no backend.
 - Run the site and look at it: use the `run-site` skill. Do not call a change done
   until you have looked at the page.
 
+## Course pages
+- The main content of the Standard pages (`product/standard`,
+  `product/corso-di-inglese-standard`) comes from `data/ali.json` and
+  `.github/templates/corso-contenuto.html`. Header, menu and footer stay
+  WordPress. Run `python3 -I .github/scripts/build_corsi.py .` after editing.
+- Styles: `.github/templates/ali-course.css`, copied to `assets/ali/`, limited to
+  `.ali-course`. Its reset block undoes theme rules on tables, `dt`, `small`, links.
+
 ## Gotchas
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.
