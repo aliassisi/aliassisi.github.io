@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="it">
+<head><meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Super intensivo – Accademia Lingua Italiana Assisi</title>
+<meta name="description" content="Corso super intensivo di italiano ad Assisi: 18 lezioni di gruppo e 8 individuali a settimana, livelli da principianti a C2. Date di inizio, costi e attività incluse.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#F0EAE5; --sand2:#E7DED6; --ink:#3F4D82; --deep:#2B3A7A; --gold:#FEC15F;
+  --line:#D9D0C8; --white:#fff;
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:Inter,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--sand);color:var(--ink);font:300 16px/1.7 var(--sans);letter-spacing:.2px}
+a{color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 30px}
+.narrow{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--serif);font-weight:300;margin:0;line-height:1.25;letter-spacing:.2px}
+h2{font-size:clamp(2rem,4vw,2.5rem);color:var(--deep);margin-bottom:.5em}
+h3{font-size:1.5rem;font-weight:600;color:var(--deep);margin-bottom:.3em}
+p{margin:0 0 1em}
+strong{font-weight:600}
+
+/* header */
+header{background:var(--sand);position:sticky;top:0;z-index:50}
+header .wrap{display:flex;align-items:center;justify-content:space-between;min-height:104px;gap:24px}
+header .logo img{height:80px;width:auto}
+.menu>summary{display:none}
+nav ul{list-style:none;margin:0;padding:0;display:flex;gap:6px}
+nav li{position:relative}
+nav a{display:block;padding:10px 12px;font:300 18px/1.1 var(--serif);text-transform:uppercase;text-decoration:none;color:var(--ink)}
+nav a:hover,nav a[aria-current]{color:var(--deep);box-shadow:inset 0 -2px 0 var(--gold)}
+nav li ul{display:none;position:absolute;left:0;top:100%;min-width:300px;background:var(--sand);border:1px solid var(--line);padding:8px 0;flex-direction:column;gap:0;box-shadow:0 12px 30px rgba(43,58,122,.12)}
+nav li:hover>ul,nav li:focus-within>ul{display:flex}
+nav li ul a{font-size:16px;padding:9px 18px;box-shadow:none}
+nav li ul a:hover{background:var(--sand2);box-shadow:none}
+.lang a{font-family:var(--sans);font-size:13px;text-transform:none;padding:10px 6px}
+@media(max-width:1020px){
+  .menu>summary{display:block;list-style:none;cursor:pointer;width:44px;height:40px;background:#AEB4D2;border-radius:2px;position:relative}
+  .menu>summary::-webkit-details-marker{display:none}
+  .menu>summary::before{content:"";position:absolute;left:11px;right:11px;top:12px;height:2px;background:var(--white);box-shadow:0 7px 0 var(--white),0 14px 0 var(--white)}
+  .menu nav{position:absolute;left:0;right:0;top:100%;background:var(--sand);border-bottom:1px solid var(--line);padding:10px 30px 24px;max-height:75vh;overflow:auto}
+  nav ul{flex-direction:column;gap:0}
+  nav li ul{display:flex;position:static;border:0;box-shadow:none;padding:0 0 6px 16px;min-width:0}
+}
+
+/* hero */
+.hero{position:relative;color:var(--white);min-height:420px;display:flex;align-items:center;
+  background:linear-gradient(90deg,rgba(43,58,122,.92) 0%,rgba(63,77,130,.7) 45%,rgba(63,77,130,.12) 100%),
+  url("https://aliassisi.github.io/assets/uploads/2026/10/Gruppo-1024x683.jpg") center/cover,var(--deep)}
+.hero .wrap{width:100%;padding-top:70px;padding-bottom:70px}
+.hero h1{font-size:clamp(2.4rem,5vw,3.4rem);color:var(--gold);margin-bottom:.4em}
+.hero p{font:300 clamp(1.25rem,2.4vw,1.65rem)/1.5 var(--serif);max-width:640px;margin:0}
+
+/* tabelle, come in Calendario e Costi */
+.tablewrap{overflow-x:auto;background:rgba(255,255,255,.35);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{padding:12px;text-align:left;font-weight:400}
+th{font-weight:600;color:var(--deep);border-bottom:2px solid var(--deep)}
+td{border-bottom:1px solid var(--line)}
+td small{display:block;color:var(--ink);opacity:.8;font-size:.85em}
+.num{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.btn{display:inline-block;font:300 19px/1.2 var(--serif);text-decoration:none;color:var(--ink);background:var(--gold);padding:14px 30px;border-radius:2px;transition:background .2s}
+.btn:hover{background:#f6b13f}
+.btn.small{font:400 14px/1 var(--sans);background:transparent;border:1px solid var(--ink);border-radius:6px;padding:6px 10px;white-space:nowrap}
+.btn.small:hover{background:var(--ink);color:var(--white)}
+a.inl{text-decoration:underline;text-underline-offset:3px}
+
+section{padding:72px 0}
+section+section{padding-top:0}
+.week{display:grid;grid-template-columns:6.5rem repeat(5,1fr);gap:6px;margin-top:24px;align-items:stretch}
+.week .rl{align-self:center;font:400 1.15rem/1.2 var(--serif);color:var(--deep)}
+.week .wd{text-align:center;font-weight:600;color:var(--deep);font-size:.9rem;padding-bottom:2px}
+.week .wd .short{display:none}
+.week .am{background:var(--deep);color:var(--white);padding:12px 8px;text-align:center;border-radius:2px;display:flex;flex-direction:column;gap:8px;align-items:center}
+.week .bars{display:flex;gap:4px;width:100%}
+.week .bars i{flex:1;height:10px;border:1px solid rgba(255,255,255,.55);border-radius:1px}
+.week .bars i.on{background:var(--gold);border-color:var(--gold)}
+.week .n{font-size:.85rem}
+.week .pm{border:1px dashed var(--ink);padding:12px 8px;text-align:center;font-size:.85rem;opacity:.9;display:flex;align-items:center;justify-content:center}
+.weeknote{margin:10px 0 0;font-size:.9rem}
+@media(max-width:620px){.week{grid-template-columns:4.6rem repeat(5,1fr);gap:4px}.week .wd .long{display:none}.week .wd .short{display:inline}.week .n{font-size:.75rem}.week .rl{font-size:1rem}.week .pm{font-size:.75rem}}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--deep);border-bottom:1px solid var(--line);margin:0}
+.facts div{padding:18px 20px 18px 0}
+.facts dt{font-size:.85rem;opacity:.8}
+.facts dd{margin:0;font:400 1.6rem/1.2 var(--serif);color:var(--deep)}
+.facts dd small{display:block;margin-top:6px;font:300 .85rem/1.45 var(--sans);color:var(--ink);opacity:.9}
+@media(max-width:900px){.facts{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.facts{grid-template-columns:1fr}}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px 48px;padding:0;margin:0;list-style:none}
+.cols li{padding:12px 0;border-bottom:1px solid var(--line)}
+.cols small{display:block;font-size:.88rem;opacity:.85;line-height:1.5;margin-top:2px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+
+/* calendario */
+.cal{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;margin-top:24px}
+.cal h3{font-size:1.6rem;margin:0 0 .4em}
+.cal>div>h3:not(:first-child){margin-top:1.2em}
+.dates{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.dates li{border:1px solid var(--deep);padding:7px 14px;font-weight:400;color:var(--deep);border-radius:2px;background:rgba(255,255,255,.45)}
+.closed{margin:0}
+.closed dt{font-weight:600;color:var(--deep);margin-top:6px}
+.closed dd{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line);line-height:1.8}
+@media(max-width:800px){.cal{grid-template-columns:1fr}}
+/* sezioni collassabili */
+.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:2px solid var(--deep);padding-bottom:6px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary h2{margin:0}
+.fold>summary::after{content:"+";font:300 2.2rem/1 var(--serif);color:var(--deep);transition:transform .2s}
+.fold[open]>summary::after{content:"–"}
+.fold-body{margin-top:22px}
+.fold.sub>summary{border-bottom:1px solid var(--line)}
+.fold.sub>summary h3{margin:0 0 .3em}
+.fold.sub>summary::after{font-size:1.8rem}
+.fold.sub .fold-body{margin-top:14px}
+.narrow-l{max-width:860px}
+.prices th.num,.prices td.num{font-size:1.05rem}
+.cta{margin-top:28px}
+
+.gal{margin:24px 0 36px;max-width:860px}
+.gal #galmain{width:100%;aspect-ratio:3/2;object-fit:cover;background:var(--sand2)}
+.gal figcaption{font-size:.9rem;margin:8px 0 12px}
+.ths{display:flex;gap:10px}
+.th{padding:0;border:2px solid transparent;background:none;cursor:pointer;width:96px;opacity:.7}
+.th img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.th[aria-pressed="true"]{border-color:var(--gold);opacity:1}
+.th:hover{opacity:1}
+.stay{margin-top:48px;padding-top:24px;border-top:2px solid var(--deep);max-width:860px}
+.stay h3{font-size:1.7rem;font-weight:400}
+.rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:28px}
+.rhythm>div{border-top:2px solid var(--deep);padding-top:14px}
+.rhythm h3{font-size:1.7rem;font-weight:400}
+.rhythm ul{margin:0;padding:0;list-style:none}
+.rhythm li{padding:8px 0;border-bottom:1px solid var(--line)}
+@media(max-width:800px){.rhythm{grid-template-columns:1fr}}
+
+.others{list-style:none;margin:0;padding:0}
+.others a{display:flex;justify-content:space-between;gap:20px;text-decoration:none;padding:18px 0;border-top:1px solid var(--line)}
+.others li:last-child a{border-bottom:1px solid var(--line)}
+.others b{font:400 1.6rem/1.2 var(--serif);color:var(--deep)}
+.others a:hover b{text-decoration:underline;text-underline-offset:4px}
+.others small{text-align:right;align-self:center}
+
+/* footer */
+footer{background:var(--sand2);padding:56px 0 32px;font-size:.95rem}
+footer .grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:40px}
+footer h4{font:600 1.4rem/1.2 var(--serif);color:var(--deep);margin:0 0 .5em}
+footer p{margin:0 0 .5em}
+footer img{height:70px;width:auto;margin-bottom:14px}
+footer .legal{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:.82rem;opacity:.85}
+@media(max-width:760px){footer .grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="https://aliassisi.github.io/index.html" aria-label="Accademia Lingua Italiana Assisi"><img src="https://aliassisi.github.io/assets/uploads/2020/02/logo-school-ok-2.png" alt="Accademia Lingua Italiana Assisi"></a>
+    <details class="menu" id="menu" open>
+      <summary aria-label="Menu"></summary>
+      <nav aria-label="Principale">
+        <ul>
+          <li><a href="#" aria-current="page">Corsi</a>
+            <ul>
+              <li><a href="https://aliassisi.github.io/product/corso-di-inglese-standard/index.html">Standard</a></li>
+              <li><a href="https://aliassisi.github.io/product-category/intensivi/index.html" aria-current="page">Intensivi, superintensivi</a></li>
+              <li><a href="https://aliassisi.github.io/product/private/index.html">Privati</a></li>
+              <li><a href="https://aliassisi.github.io/product/online-italian/index.html">Online</a></li>
+              <li><a href="https://aliassisi.github.io/product/packages/index.html">Programmi</a></li>
+              <li><a href="https://aliassisi.github.io/configuratore/index.html">Configurator</a></li>
+            </ul></li>
+          <li><a href="https://aliassisi.github.io/location/index.html">Accademia</a></li>
+          <li><a href="https://aliassisi.github.io/method/index.html">Metodo</a></li>
+          <li><a href="#">Student life</a>
+            <ul>
+              <li><a href="https://aliassisi.github.io/attivita-facilities-e-laboratori/index.html">Attività, facilities e laboratori</a></li>
+              <li><a href="https://aliassisi.github.io/accommodation/index.html">Alloggio</a></li>
+              <li><a href="https://aliassisi.github.io/guestbook/index.html">Guestbook</a></li>
+            </ul></li>
+          <li><a href="#">Iscrizione</a>
+            <ul>
+              <li><a href="https://aliassisi.github.io/calendar-and-fees/index.html">Calendario e costi</a></li>
+              <li><a href="https://aliassisi.github.io/how-to-apply/index.html">Come iscriversi</a></li>
+              <li><a href="https://aliassisi.github.io/visa-information/index.html">Informazioni visto</a></li>
+              <li><a href="https://aliassisi.github.io/esami-di-certificazione-crediti-livelli/index.html">Esami di certificazione, crediti, livelli</a></li>
+            </ul></li>
+          <li><a href="https://aliassisi.github.io/frequently-asked-questions/index.html">FAQ</a></li>
+          <li><a href="https://aliassisi.github.io/news/index.html">News</a></li>
+          <li class="lang"><a href="https://aliassisi.github.io/product/super-intensive-italian/index.html" lang="it">Italiano</a></li>
+          <li class="lang"><a href="https://aliassisi.github.io/en/product/super-intensive-italian/index.html" lang="en">English</a></li>
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <h1>Super intensivo</h1>
+      <p>Lezioni di gruppo la mattina e lezioni individuali quasi tutti i pomeriggi. Il modo più rapido per imparare l’italiano ad Assisi.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>Caratteristiche del corso</h2>
+      <dl class="facts">
+        <div><dt>Durata</dt><dd>26 lezioni a settimana<small>18 di gruppo + 8 individuali, da 50 minuti</small></dd></div>
+        <div><dt>Livelli</dt><dd>Da principianti a C2</dd></div>
+        <div><dt>Studenti</dt><dd>min. 5, max. 12<small>in media 6–8</small></dd></div>
+        <div><dt>Materiale didattico incluso</dt><dd>Libri cartacei e digitali<small>più l’accesso alla piattaforma Moodle</small></dd></div>
+      </dl>
+      <div class="week" role="table" aria-label="La settimana tipo: 26 lezioni da 50 minuti">
+        <div role="row" style="display:contents"><div class="rl"></div><div class="wd" role="columnheader"><span class="long">Lunedì</span><span class="short">Lun</span></div><div class="wd" role="columnheader"><span class="long">Martedì</span><span class="short">Mar</span></div><div class="wd" role="columnheader"><span class="long">Mercoledì</span><span class="short">Mer</span></div><div class="wd" role="columnheader"><span class="long">Giovedì</span><span class="short">Gio</span></div><div class="wd" role="columnheader"><span class="long">Venerdì</span><span class="short">Ven</span></div></div>
+        <div role="row" style="display:contents"><div class="rl">Mattina</div><div class="am" role="cell" aria-label="Lunedì: 4 lezioni al mattino"><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="n">4 lezioni</span></div><div class="am" role="cell" aria-label="Martedì: 4 lezioni al mattino"><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="n">4 lezioni</span></div><div class="am" role="cell" aria-label="Mercoledì: 4 lezioni al mattino"><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="n">4 lezioni</span></div><div class="am" role="cell" aria-label="Giovedì: 4 lezioni al mattino"><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="n">4 lezioni</span></div><div class="am" role="cell" aria-label="Venerdì: 2 lezioni al mattino"><span class="bars"><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="n">2 lezioni</span></div></div>
+        <div role="row" style="display:contents"><div class="rl">Pomeriggio</div><div class="am" role="cell" aria-label="Lunedì: 2 lezioni individuali al pomeriggio"><span class="bars"><i class="on"></i><i class="on"></i></span><span class="n">2 lezioni</span></div><div class="am" role="cell" aria-label="Martedì: 2 lezioni individuali al pomeriggio"><span class="bars"><i class="on"></i><i class="on"></i></span><span class="n">2 lezioni</span></div><div class="am" role="cell" aria-label="Mercoledì: 2 lezioni individuali al pomeriggio"><span class="bars"><i class="on"></i><i class="on"></i></span><span class="n">2 lezioni</span></div><div class="am" role="cell" aria-label="Giovedì: 2 lezioni individuali al pomeriggio"><span class="bars"><i class="on"></i><i class="on"></i></span><span class="n">2 lezioni</span></div><div class="pm" role="cell" aria-label="Venerdì: pomeriggio libero">libero</div></div>
+      </div>
+      <p class="weeknote">18 lezioni di gruppo al mattino: quattro al giorno da lunedì a giovedì, due il venerdì. 8 lezioni individuali al pomeriggio: due al giorno da lunedì a giovedì. Ogni lezione dura 50 minuti.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold">
+        <summary><h2>Dettagli</h2></summary>
+        <div class="fold-body narrow-l">
+          <p>Il corso unisce i vantaggi del lavoro di gruppo a quelli del lavoro individuale. È adatto a chi vuole approfondire l’italiano in poco tempo, per esigenze personali, di lavoro o di studio.</p>
+          <p>Gli studenti di livello intermedio e avanzato equilibrano le varie competenze linguistiche. I principianti ottengono i migliori risultati nel più breve tempo possibile.</p>
+          <p>I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>L’iscrizione comprende</h2></summary>
+      <ul class="cols fold-body">
+        <li>Test d’ingresso online prima dell’inizio del corso</li>
+        <li>Attestato di frequenza</li>
+        <li>26 lezioni settimanali
+          <small>Lezioni di italiano · lezioni itineranti (conversazione, visite) · laboratori di design e artigianato italiano · lezioni di pronuncia</small></li>
+        <li>Certificato di valutazione secondo i parametri europei, con attribuzione di crediti</li>
+        <li><a class="inl" href="https://aliassisi.github.io/method/index.html">Materiale didattico</a> e accesso alla piattaforma Moodle</li>
+        <li>Preparazione agli esami di certificazione CILS e Roma Tre</li>
+        <li>Attività, laboratori e facilities: <a class="inl" href="#student-life">vedi Student life</a></li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section id="student-life">
+    <div class="wrap">
+      <h2>Student life</h2>
+      <figure class="gal">
+        <img id="galmain" src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-24-768x512.jpg" alt="Studenti e insegnanti in una lezione itinerante per le strade di Assisi">
+        <figcaption id="galcap">Una lezione itinerante per Assisi</figcaption>
+        <div class="ths"><button type="button" class="th" data-src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-24-768x512.jpg" data-alt="Studenti e insegnanti in una lezione itinerante per le strade di Assisi" data-cap="Una lezione itinerante per Assisi" aria-label="Una lezione itinerante per Assisi" aria-pressed="true"><img src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-24-768x512.jpg" alt="" loading="lazy"></button><button type="button" class="th" data-src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-29-2-768x512.jpg" data-alt="Studenti che guardano un manoscritto miniato durante un laboratorio" data-cap="Laboratorio sui manoscritti miniati" aria-label="Laboratorio sui manoscritti miniati" aria-pressed="false"><img src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-29-2-768x512.jpg" alt="" loading="lazy"></button><button type="button" class="th" data-src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-26-1-768x512.jpg" data-alt="Una lezione in una sala con scaffali di libri" data-cap="Una lezione in Accademia" aria-label="Una lezione in Accademia" aria-pressed="false"><img src="https://aliassisi.github.io/assets/uploads/2026/10/acc-ling-ita-ass-26-1-768x512.jpg" alt="" loading="lazy"></button></div>
+      </figure>
+      <p class="narrow-l"><strong>L’iscrizione al corso include anche una serie di attività, facilities e visite:</strong></p>
+      <div class="rhythm">
+        <div>
+          <h3>Ogni settimana</h3>
+          <ul>
+            <li>Una lezione itinerante: conversazione e visite guidate ad Assisi</li>
+            <li>Una lezione di pronuncia</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Ogni due settimane</h3>
+          <ul>
+            <li>Un laboratorio a scelta: manoscritti e miniature, legatoria, design e artigianato italiano, cucina</li>
+          </ul>
+        </div>
+        <div>
+          <h3>In Accademia</h3>
+          <ul>
+            <li>Sala-musica con pianoforte, videoteca, biblioteca</li>
+            <li>Tessera dell’Accademia: riduzioni in ristoranti e negozi, ingresso gratuito in 4 musei di Assisi</li>
+            <li>Wi-fi gratuito</li>
+            <li>Assistenza per visto e alloggio</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:22px"><a class="inl" href="https://aliassisi.github.io/attivita-facilities-e-laboratori/index.html">Tutte le attività e i laboratori in programma</a></p>
+    </div>
+  </section>
+
+  <section id="calendario">
+    <div class="wrap">
+      <h2>Date di inizio</h2>
+      <p class="narrow-l">Il corso inizia di lunedì, per tutti i livelli. Le date di inizio sono queste.</p>
+      <div class="cal">
+        <div>
+          <h3>2026</h3>
+          <ul class="dates">
+            <li>2 novembre</li><li>30 novembre</li>
+          </ul>
+          <h3>2027</h3>
+          <ul class="dates">
+            <li>1 febbraio</li><li>1 marzo</li><li>5 aprile</li><li>3 maggio</li><li>31 maggio</li><li>28 giugno</li>
+            <li>26 luglio</li><li>23 agosto</li><li>20 settembre</li><li>18 ottobre</li><li>15 novembre</li>
+          </ul>
+        </div>
+        <div>
+          <details class="fold sub">
+          <summary><h3>Giorni di chiusura</h3></summary>
+          <dl class="closed fold-body">
+            <dt>2026</dt>
+            <dd>8 dicembre, Immacolata Concezione<br>21–31 dicembre, vacanze di Natale</dd>
+            <dt>2027</dt>
+            <dd>1–9 gennaio, vacanze di Natale<br>26 marzo – 2 aprile, vacanze di Pasqua<br>2 giugno, Festa nazionale<br>4 ottobre, festa di S. Francesco<br>8 dicembre, Immacolata Concezione<br>20–31 dicembre, vacanze di Natale</dd>
+          </dl>
+          </details>
+        </div>
+      </div>
+      <p style="margin-top:20px;font-size:.95rem">Vuoi iniziare di lunedì in una data che non è in elenco? <a class="inl" href="mailto:info@aliassisi.it">Scrivici</a>. Il test di livello e l’intervista si fanno online, prima dell’inizio del corso.</p>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Costi</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr><th>Lezioni a settimana</th><th class="num">1 sett.</th><th class="num">2 sett.</th><th class="num">3–7 sett.</th><th class="num">8–48 sett.</th><th>Iscriviti</th></tr></thead>
+          <tbody><tr>
+            <td>26 lezioni<small>18 di gruppo + 8 individuali · 50 minuti ciascuna</small></td>
+            <td class="num">710 €</td><td class="num">680 €</td><td class="num">640 €</td><td class="num">620 €</td>
+            <td><a class="btn small" href="https://docs.google.com/forms/d/e/1FAIpQLSfe9CdrKQ0ZjvSQioXBHZLDy6AqqZqgstdyp6IGgci7OpfopA/viewform?usp=pp_url&entry.266111784=Onsite%20%2F%20In%20presenza%20ad%20Assisi&entry.719657308=Super%20intensivo%20%2828%20lezioni%20settimanali%29%2F%20Super%20intensive%20%2828%20weekly%20lessons%29">Iscriviti</a></td>
+          </tr></tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:.9rem">Prezzi per settimana. Non ci sono tasse nascoste e i libri sono inclusi.</p>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="https://aliassisi.github.io/configuratore/index.html">Calcola date e costo totale</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="https://docs.google.com/forms/d/e/1FAIpQLSfe9CdrKQ0ZjvSQioXBHZLDy6AqqZqgstdyp6IGgci7OpfopA/viewform?usp=pp_url&entry.266111784=Onsite%20%2F%20In%20presenza%20ad%20Assisi&entry.719657308=Super%20intensivo%20%2828%20lezioni%20settimanali%29%2F%20Super%20intensive%20%2828%20weekly%20lessons%29">Modulo d’iscrizione</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="stay" style="margin-top:0">
+        <h3>Ti serve un alloggio?</h3>
+        <p>Possiamo aiutarti a trovare un appartamento, un monastero o un hotel a pochi passi dall’Accademia.</p>
+        <a class="inl" href="https://aliassisi.github.io/accommodation/index.html">Scopri come possiamo aiutarti</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Altri corsi</h2>
+      <ul class="others">
+        <li><a href="https://aliassisi.github.io/product/standard/index.html"><b>Standard</b><small>18 lezioni a settimana<br>di gruppo</small></a></li>
+        <li><a href="https://aliassisi.github.io/product/intensive-italian/index.html"><b>Intensivo</b><small>22 lezioni a settimana<br>18 di gruppo + 4 individuali</small></a></li>
+        <li><a href="https://aliassisi.github.io/product/italiancookingfood/index.html"><b>Italian &amp; cooking &amp; food</b><small>Livelli A1–C2 · 09:00–12:00</small></a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <img src="https://aliassisi.github.io/assets/uploads/2026/03/logo-school-ok.png" alt="Accademia Lingua Italiana Assisi">
+        <p>Sede Esami CILS e Roma Tre CERT IT<br>Presa d’Atto Ministero dell’Istruzione<br>Ente accreditato MIUR per la formazione del personale della scuola<br>Ente accreditato per le attività formative della Regione Umbria<br>Patrocinio del Comune di Assisi e del Consiglio Regionale dell’Umbria</p>
+      </div>
+      <div>
+        <h4>Corsi</h4>
+        <p><a href="https://aliassisi.github.io/product/corso-di-inglese-standard/index.html">Standard</a><br><a href="https://aliassisi.github.io/product-category/intensivi/index.html">Intensivi, superintensivi</a><br><a href="https://aliassisi.github.io/product/private/index.html">Privati</a><br><a href="https://aliassisi.github.io/product/online-italian/index.html">Online</a><br><a href="https://aliassisi.github.io/product/packages/index.html">Programmi</a></p>
+      </div>
+      <div>
+        <h4>Contatti</h4>
+        <p>Via Santa Maria delle Rose, 17<br>06081 Assisi (PG)</p>
+        <p>Telefono +39 075 815 281<br>WhatsApp +39 351 553 7976<br><a href="mailto:info@aliassisi.it">info@aliassisi.it</a></p>
+        <p><a href="https://www.facebook.com/aliassisi">Facebook</a> · <a href="https://www.instagram.com/accademialinguaitalianassisi/">Instagram</a></p>
+      </div>
+    </div>
+    <div class="legal">© 2026 Accademia Lingua Italiana Assisi | Sede sociale: Via Tiberio d’Assisi, 10. Ingresso e segreteria: Via Santa Maria delle Rose, 17 – 06081 Assisi (PG) | p.iva: 00780430542</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var d=document.getElementById('menu'),mq=window.matchMedia('(min-width:1021px)');
+  function sync(){d.open=mq.matches}
+  sync();
+  (mq.addEventListener?mq.addEventListener('change',sync):mq.addListener(sync));
+})();
+
+(function(){
+  var m=document.getElementById('galmain'),c=document.getElementById('galcap'),b=document.querySelectorAll('.th');
+  b.forEach(function(x){x.addEventListener('click',function(){
+    m.src=x.dataset.src;m.alt=x.dataset.alt;c.textContent=x.dataset.cap;
+    b.forEach(function(y){y.setAttribute('aria-pressed',y===x?'true':'false')});
+  })});
+})();
+</script>
+</body>
+</html>
