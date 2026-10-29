@@ -1,0 +1,93 @@
+<!--
+Main content of the English private lessons page, for use inside its WordPress page.
+.github/scripts/build_corsi.py fills each {{name}} from the "privati" block of
+data/ali.json (its "en" block replaces the Italian fields). Styles are in
+ali-course.css. This comment does not appear in the pages.
+-->
+<div class="ali-course">
+  <section>
+    <div class="wrap">
+      <h2>Course features</h2>
+      <dl class="facts">
+        <div><dt>Lessons</dt><dd>50 minutes<small>on the days and at the times you prefer</small></dd></div>
+        <div><dt>Levels</dt><dd>All<small>thematic courses from B1 to C2</small></dd></div>
+        <div><dt>Students</dt><dd>1 to 9<small>one-to-one, duo, three-to-one or mini group</small></dd></div>
+        <div><dt>Calendar {{anno}}</dt><dd>{{periodo}}<small>lessons can take place in this period</small></dd></div>
+      </dl>
+      <p class="narrow-l" style="margin-top:28px">Private tuition helps you improve your Italian with a qualified teacher. It suits students who want to reach their goals in a short time, with flexible hours.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>What you can study</h2>
+      <div class="themes">
+        <div>
+          <h3>General Italian</h3>
+          <p><strong>All levels.</strong> General Italian, diction, preparation for the CILS and Roma Tre certification exams.</p>
+        </div>
+        <div>
+          <h3>Thematic courses</h3>
+          <p><strong>Levels B1–C2.</strong> Literature, theology and philosophy, cinema, art history, cities of art.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>The fee includes</h2></summary>
+      <ul class="cols fold-body">
+        <li>Each set of 10 lessons: 9 lessons of general Italian or a thematic course and 1 pronunciation lesson</li>
+        <li>Self-study activities, with feedback from the teacher</li>
+        <li>Online placement test and interview before the course starts</li>
+        <li>Certificate of attendance</li>
+        <li>Certificate of evaluation based on the European framework, with credits</li>
+        <li>Preparation for the CILS and Roma Tre certification exams</li>
+        <li>Academy card: discounts in restaurants and shops, free entry to 4 museums in Assisi</li>
+        <li>Free wi-fi</li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Fees</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr><th>Format</th><th class="num">1 lesson</th><th class="num">10 lessons</th><th>Enrol</th></tr></thead>
+          <tbody>
+{{righe_prezzi}}
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:.9rem">Lessons last 50 minutes. Prices are per lesson, not per student.</p>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="{{iscrizione}}">Enrolment form</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="mailto:info@aliassisi.it">Write to us</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="stay" style="margin-top:0">
+        <h3>Do you need accommodation?</h3>
+        <p>We can help you find a flat, a monastery or a hotel a short walk from the Academy.</p>
+        <a class="inl" href="https://aliassisi.github.io/en/accommodation/index.html">Find out how we can help</a>
+      </div>
+      <p style="margin-top:22px"><a class="inl" href="https://aliassisi.github.io/en/school-activity/index.html">The Academy’s activities, facilities and workshops</a></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Other courses</h2>
+      <ul class="others">
+{{altri_corsi}}
+      </ul>
+    </div>
+  </section>
+</div>

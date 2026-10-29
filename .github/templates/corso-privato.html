@@ -1,0 +1,92 @@
+<!--
+Main content of the private lessons page, for use inside its WordPress page.
+.github/scripts/build_corsi.py fills each {{name}} from the "privati" block of
+data/ali.json. Styles are in ali-course.css. This comment does not appear in the pages.
+-->
+<div class="ali-course">
+  <section>
+    <div class="wrap">
+      <h2>Caratteristiche del corso</h2>
+      <dl class="facts">
+        <div><dt>Lezioni</dt><dd>50 minuti<small>nei giorni e negli orari che preferisci</small></dd></div>
+        <div><dt>Livelli</dt><dd>Tutti<small>i percorsi tematici da B1 a C2</small></dd></div>
+        <div><dt>Studenti</dt><dd>Da 1 a 9<small>individuali, duo, tre-a-uno o mini gruppo</small></dd></div>
+        <div><dt>Calendario {{anno}}</dt><dd>{{periodo}}<small>le lezioni sono possibili in questo periodo</small></dd></div>
+      </dl>
+      <p class="narrow-l" style="margin-top:28px">Un programma privato permette di migliorare il tuo italiano con un professore qualificato. È adatto a chi vuole raggiungere i propri obiettivi in poco tempo e con orari flessibili.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Cosa puoi studiare</h2>
+      <div class="themes">
+        <div>
+          <h3>Italiano generale</h3>
+          <p><strong>Tutti i livelli.</strong> Italiano generale, dizione, preparazione agli esami di certificazione CILS e Roma Tre.</p>
+        </div>
+        <div>
+          <h3>Percorsi tematici</h3>
+          <p><strong>Livelli B1–C2.</strong> Letteratura, teologia e filosofia, cinema, storia dell’arte, città d’arte.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>L’iscrizione comprende</h2></summary>
+      <ul class="cols fold-body">
+        <li>Ogni pacchetto di 10 lezioni: 9 lezioni di italiano generale o di un percorso tematico e 1 lezione di pronuncia</li>
+        <li>Attività in autoapprendimento, con il feedback dell’insegnante</li>
+        <li>Test d’ingresso online prima dell’inizio del corso</li>
+        <li>Attestato di frequenza</li>
+        <li>Certificato di valutazione secondo i parametri europei, con attribuzione di crediti</li>
+        <li>Preparazione agli esami di certificazione CILS e Roma Tre</li>
+        <li>Tessera dell’Accademia: riduzioni in ristoranti e negozi, ingresso gratuito in 4 musei di Assisi</li>
+        <li>Wi-fi gratuito</li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Costi</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr><th>Formula</th><th class="num">1 lezione</th><th class="num">10 lezioni</th><th>Iscriviti</th></tr></thead>
+          <tbody>
+{{righe_prezzi}}
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:.9rem">Lezioni da 50 minuti. Il prezzo è per lezione, non per studente.</p>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="{{iscrizione}}">Modulo d’iscrizione</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="mailto:info@aliassisi.it">Scrivici</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="stay" style="margin-top:0">
+        <h3>Ti serve un alloggio?</h3>
+        <p>Possiamo aiutarti a trovare un appartamento, un monastero o un hotel a pochi passi dall’Accademia.</p>
+        <a class="inl" href="https://aliassisi.github.io/accommodation/index.html">Scopri come possiamo aiutarti</a>
+      </div>
+      <p style="margin-top:22px"><a class="inl" href="https://aliassisi.github.io/attivita-facilities-e-laboratori/index.html">Attività, facilities e laboratori dell’Accademia</a></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Altri corsi</h2>
+      <ul class="others">
+{{altri_corsi}}
+      </ul>
+    </div>
+  </section>
+</div>
