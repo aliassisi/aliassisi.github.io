@@ -149,6 +149,41 @@
         "materiale": "Printed and digital books",
         "materiale_nota": "plus access to the Moodle platform"
       }
+    },
+    {
+      "id": "esame_intensivo",
+      "nome": "Intensivo per la certificazione",
+      "tariffa": "intensivo",
+      "pagine": ["product/corsi-di-preparazione-per-la-certificazione"],
+      "hero": "Per chi vuole sostenere gli esami di certificazione universitari CILS e Roma Tre.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da A1 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo per la CERTIFICAZIONE (24 lezioni settimanali)/Intensive Certification Exam Preparation (24 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e le lezioni individuali al pomeriggio, dedicate alla preparazione dell’esame di certificazione, per tutti i livelli da A1 a C2.",
+        "Con l’insegnante scopri com’è fatto l’esame, che cosa chiede ogni prova e come affrontarla. L’Accademia è sede d’esame CILS e Roma Tre, certificazioni riconosciute per la cittadinanza italiana (B1) e per il permesso di soggiorno (A2).",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/corsi-di-preparazione-per-la-certificazione"],
+        "nome": "Intensive certification exam preparation",
+        "hero": "For those who want to take the CILS and Roma Tre university certification exams.",
+        "livelli": "A1 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons in the afternoon, focused on preparing for the certification exam, at every level from A1 to C2.",
+          "With your teacher you learn how the exam is built, what each part asks and how to handle it. The Academy is an exam centre for CILS and Roma Tre, certificates recognised for Italian citizenship (B1) and for a residence permit (A2).",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
     }
   ],
   "altri_corsi": [

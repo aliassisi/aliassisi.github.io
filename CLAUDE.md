@@ -34,8 +34,8 @@ root. English pages are under `en/`. There is no backend.
   until you have looked at the page.
 
 ## Course pages
-- The main content of the Standard, Intensivo and Super intensivo pages comes
-  from `data/ali.json` (one block per course, its `"pagine"` list the files) and
+- The main content of the course pages (Standard, Intensivo, Super intensivo,
+  Intensivo per la certificazione) comes from `data/ali.json` (one block per course, its `"pagine"` list the files) and
   `.github/templates/corso-contenuto.html`. Header, menu, footer and the page's
   top section (title over the background video) stay as they are; only the line
   under the title comes from the course's `"hero"`. Do not replace that section.
