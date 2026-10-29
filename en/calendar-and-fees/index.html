@@ -696,11 +696,28 @@ padding-right: 30px;
   .ali-nota a { color: #2b3a7a; text-decoration: underline; }
 </style>
 
+<style>
+  .ali-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 32px; }
+  .ali-nav a { display: inline-block; padding: 6px 14px; border: 1px solid #2b3a7a; border-radius: 999px; color: #2b3a7a; text-decoration: none; font-size: 0.9em; line-height: 1.4; white-space: nowrap; }
+  .ali-nav a:hover, .ali-nav a:focus { background: #2b3a7a; color: #fff; }
+  .ali-ancora, #dw-wrap { scroll-margin-top: 120px; }
+  details.ali-chiusure summary { cursor: pointer; color: #2b3a7a; text-decoration: underline; list-style: revert; margin-bottom: 8px; }
+  details.ali-chiusure[open] summary { margin-bottom: 12px; }
+</style>
+<nav class="ali-nav" aria-label="Go to">
+  <a href="#corsi-gruppo">Group courses</a>
+  <a href="#gruppo-privati">Group &amp; private</a>
+  <a href="#calendario">Calendar</a>
+  <a href="#dw-wrap">Cost calculator</a>
+  <a href="#corsi-privati">Private courses</a>
+  <a href="#informazioni">Information</a>
+</nav>
+
 <div class="ali-wrap">
 
   <!-- GROUP COURSES -->
   <div class="ali-sez">
-    <h3>Group courses</h3>
+    <h3 id="corsi-gruppo" class="ali-ancora">Group courses</h3>
     <p class="ali-sub">18 morning group lessons per week.</p>
     <table class="ali-t">
       <thead>
@@ -726,7 +743,7 @@ padding-right: 30px;
 
   <!-- GROUP & PRIVATE COURSES -->
   <div class="ali-sez">
-    <h3>Group &amp; private courses</h3>
+    <h3 id="gruppo-privati" class="ali-ancora">Group &amp; private courses</h3>
     <p class="ali-sub">18 morning group lessons + afternoon one-on-one lessons.</p>
     <table class="ali-t">
       <thead>
@@ -808,7 +825,7 @@ padding-right: 30px;
 				<div class="elementor-widget-container">
 							<div class="elementor-template">
 					<div data-elementor-type="page" data-elementor-id="995247" class="elementor elementor-995247" data-elementor-post-type="elementor_library">
-						<section class="elementor-section elementor-top-section elementor-element elementor-element-ab5cc7e elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="ab5cc7e" data-element_type="section" data-e-type="section">
+						<section class="elementor-section elementor-top-section elementor-element elementor-element-ab5cc7e ali-ancora elementor-section-boxed elementor-section-height-default elementor-section-height-default" id="calendario" data-id="ab5cc7e" data-element_type="section" data-e-type="section">
 						<div class="elementor-container elementor-column-gap-default">
 					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-94f44ff" data-id="94f44ff" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">
@@ -831,7 +848,7 @@ padding-right: 30px;
 				</div>
 				<div class="elementor-element elementor-element-2fee9cf elementor-widget elementor-widget-text-editor" data-id="2fee9cf" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p><strong>Starting dates for all levels </strong><br /><strong>2026</strong><br />November 2nd | November 30th<br /><strong>2027<br /></strong>(from March 1st to Dec. 17th)<br />March 1st | April 5th | May 3rd | May 31st | June 28th | July 26th | August | 23rd September 20th | October 18th | November 15th</p>								</div>
+									<p><strong>Starting dates for all levels </strong><br /><strong>2026</strong><br />November 2nd | November 30th<br /><strong>2027<br /></strong>(from February 1st to Dec. 17th)<br />February 1st | March 1st | April 5th | May 3rd | May 31st | June 28th | July 26th | August 23rd | September 20th | October 18th | November 15th</p>								</div>
 				</div>
 				<div class="elementor-element elementor-element-753fd00 elementor-widget elementor-widget-text-editor" data-id="753fd00" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
@@ -871,7 +888,7 @@ padding-right: 30px;
 				</div>
 				<div class="elementor-element elementor-element-e84b234 elementor-widget elementor-widget-text-editor" data-id="e84b234" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p><strong>2026</strong> <br />from October 28th to November 1st – December 8th, Immaculate conception –  Christmas Holidays: from December 16th to January 19th 2025.<br /><strong>2027</strong><br />from January 1st to 9th, Christmas Holidays – from March 26th to April 2nd,  Easter Holidays – June 2nd, Republic Day – December 8th, Immaculate conception –   from December 20th to 31th, Christmas Holidays.<strong><br /></strong></p>								</div>
+									<details class="ali-chiusure"><summary>Show closing dates</summary><p><strong>2026</strong> <br />from October 28th to November 1st – December 8th, Immaculate conception –  Christmas Holidays: from December 16th to January 19th 2025.<br /><strong>2027</strong><br />from January 1st to 9th, Christmas Holidays – from March 26th to April 2nd,  Easter Holidays – June 2nd, Republic Day – December 8th, Immaculate conception –   from December 20th to 31th, Christmas Holidays.<strong><br /></strong></p></details>								</div>
 				</div>
 					</div>
 		</div>
@@ -908,7 +925,8 @@ padding-right: 30px;
 .dw-field label{font-size:13px;opacity:.75}
 .dw-field select,.dw-field input[type=number],.dw-field input[type=date]{width:100%;padding:8px 10px;border:1px solid #d9d4cc;border-radius:6px;font-size:14px;font-family:inherit;color:#1a1a1a !important;background:#fff !important;outline:none;cursor:pointer;-webkit-appearance:auto;appearance:auto}
 .dw-field select:focus,.dw-field input:focus{border-color:#2b3a7a}
-.dw-toggle{display:flex;gap:8px;flex-wrap:wrap}
+.dw-toggle{display:flex;gap:8px}
+.dw-toggle .dw-tbtn{flex:1 1 0;min-width:0;padding:9px 10px !important}
 .dw-tbtn{padding:9px 18px !important;border-radius:6px !important;border:1px solid #d9d4cc !important;background:#fff !important;font-family:inherit !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;color:#2b3a7a !important;transition:all .12s !important;display:inline-block !important;line-height:1.4 !important;text-transform:none !important;letter-spacing:0 !important}
 .dw-tbtn:hover{border-color:#2b3a7a !important;background:rgba(43,58,122,.06) !important}
 .dw-tbtn.act{border-color:#2b3a7a !important;background:#2b3a7a !important;color:#fff !important}
@@ -951,6 +969,8 @@ padding-right: 30px;
           <label>Scheduled intake</label>
           <select id="dw-startsel" onchange="onSS()">
             <option value="">— Select —</option>
+            <option value="2026-11-02">November 2nd, 2026</option>
+            <option value="2026-11-30">November 30th, 2026</option>
             <option value="2027-02-01">February 1st, 2027</option>
             <option value="2027-03-01">March 1st, 2027</option>
             <option value="2027-04-05">April 5th, 2027</option>
@@ -983,11 +1003,11 @@ padding-right: 30px;
     </div>
 
     <div class="dw-sec">
-      <span class="dw-lbl">Lessons per week</span>
+      <span class="dw-lbl">Lessons per week and course</span>
       <div class="dw-toggle">
-        <button class="dw-tbtn" id="dwbtn18" onclick="selL(18)">18 lessons/wk<br><small style="font-size:10px;font-weight:400">Group</small></button>
-        <button class="dw-tbtn" id="dwbtn22" onclick="selL(22)">22 lessons/wk<br><small style="font-size:10px;font-weight:400">Group + private</small></button>
-        <button class="dw-tbtn" id="dwbtn26" onclick="selL(26)">26 lessons/wk<br><small style="font-size:10px;font-weight:400">Group + private</small></button>
+        <button class="dw-tbtn" id="dwbtn18" onclick="selL(18)">18 lessons/wk<br><small style="font-size:11px;font-weight:400">Standard</small></button>
+        <button class="dw-tbtn" id="dwbtn22" onclick="selL(22)">22 lessons/wk<br><small style="font-size:11px;font-weight:400">Intensive · Exam · Thematic · Religious</small></button>
+        <button class="dw-tbtn" id="dwbtn26" onclick="selL(26)">26 lessons/wk<br><small style="font-size:11px;font-weight:400">Super Intensive · Exam · Thematic · Religious</small></button>
       </div>
       <div class="dw-sub-opts" id="sub22" style="display:none">
         <span class="dw-sub-lbl">Course type — 22 lessons/wk</span>
@@ -1030,6 +1050,8 @@ var TS=[{f:1,t:1,p:390},{f:2,t:2,p:360},{f:3,t:7,p:320},{f:8,t:48,p:300}];
 var TI=[{f:1,t:1,p:550},{f:2,t:2,p:520},{f:3,t:7,p:480},{f:8,t:48,p:460}];
 var TSI=[{f:1,t:1,p:710},{f:2,t:2,p:680},{f:3,t:7,p:640},{f:8,t:48,p:620}];
 var CL=[
+  {label:'Immaculate Conception',from:[2026,12,8],to:[2026,12,8]},
+  {label:'Christmas Holidays',from:[2026,12,21],to:[2026,12,31]},
   {label:'Christmas Holidays',from:[2027,1,1],to:[2027,1,9]},
   {label:'Easter Holidays',from:[2027,3,26],to:[2027,4,2]},
   {label:'Republic Day',from:[2027,6,2],to:[2027,6,2]},
@@ -1171,7 +1193,7 @@ document.getElementById('dw-weeks').addEventListener('input',onCalc);
 
   <!-- PRIVATE COURSES -->
   <div class="ali-sez" id="private-lessons">
-    <h3>Private courses</h3>
+    <h3 id="corsi-privati" class="ali-ancora">Private courses</h3>
     <!-- DA INSERIRE: link della pagina inglese delle lezioni private -->
     <p class="ali-sub">Available from Monday to Friday. 2026: from 12 January to 18 December · 2027: from 11 January to 17 December. <a class="ali-info" href="#">Discover private lessons</a></p>
     <table class="ali-t">
@@ -1211,7 +1233,7 @@ document.getElementById('dw-weeks').addEventListener('input',onCalc);
 		</div>
 					</div>
 		</section>
-				<section class="elementor-section elementor-top-section elementor-element elementor-element-610c647 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="610c647" data-element_type="section" data-e-type="section">
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-610c647 ali-ancora elementor-section-boxed elementor-section-height-default elementor-section-height-default" id="informazioni" data-id="610c647" data-element_type="section" data-e-type="section">
 						<div class="elementor-container elementor-column-gap-default">
 					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-13679ee" data-id="13679ee" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">
