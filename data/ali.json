@@ -562,6 +562,32 @@
       }
     }
   ],
+  "privati": {
+    "pagine": ["product/private"],
+    "hero": "Corsi privati per studiare o approfondire con un insegnante qualificato.",
+    "dal": "2027-01-12",
+    "al": "2027-12-18",
+    "formule": [
+      {"nome": "Individuali", "nota": "1 studente", "una": 50, "dieci": 400,
+       "voce_modulo": "Lezioni private / One-on-one lessons"},
+      {"nome": "Duo", "nota": "2 studenti", "una": 55, "dieci": 500,
+       "voce_modulo": "Duo / Two-to-one lessons"},
+      {"nome": "Tre-a-uno", "nota": "3 studenti", "una": 66, "dieci": 600,
+       "voce_modulo": "Tre a uno / Three-to-one lessons"},
+      {"nome": "Mini gruppo", "nota": "da 4 a 9 studenti", "una": 89, "dieci": 830,
+       "voce_modulo": "PRIVATO: Mini gruppo (MIN 4 - MAX 9) / mini group private tuition"}
+    ],
+    "en": {
+      "pagine": ["en/product/private"],
+      "hero": "Private tuition to study or go deeper with a qualified teacher.",
+      "formule": [
+        {"nome": "One-to-one", "nota": "1 student"},
+        {"nome": "Duo", "nota": "2 students"},
+        {"nome": "Three-to-one", "nota": "3 students"},
+        {"nome": "Mini group", "nota": "4 to 9 students"}
+      ]
+    }
+  },
   "altri_corsi": [
     {
       "nome": "Standard",
