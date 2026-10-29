@@ -14,8 +14,9 @@ Fields in a course's "en" block replace the Italian ones for English pages.
 The private and online lessons pages come from the "privati" and "online"
 blocks. Their "modello" names the template: corso-privato.html and
 corso-privato-en.html, corso-online.html and corso-online-en.html.
-The Italian&Calendimaggio page comes from the "calendimaggio" block and
-corso-calendimaggio-en.html. A language with no "pagine" is skipped.
+The Italian&Calendimaggio pages come from the "calendimaggio" block and
+corso-calendimaggio.html, corso-calendimaggio-en.html. A language with no
+"pagine" is skipped.
 The "Altri corsi" boxes come from SITE_DIR/data/related-courses.json
 (see build_related.py).
 The page head gets a link to assets/ali/ali-course.css

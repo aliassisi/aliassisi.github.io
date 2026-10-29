@@ -611,7 +611,8 @@
   },
   "calendimaggio": {
     "modello": "corso-calendimaggio",
-    "pagine": [],
+    "pagine": ["product/italiancalendimaggio-medieval-festival"],
+    "hero": "Impara l’italiano ad Assisi durante il Calendimaggio, la sua festa medievale di primavera.",
     "dal": "2026-04-13",
     "al": "2026-05-10",
     "prezzo": 1280,
