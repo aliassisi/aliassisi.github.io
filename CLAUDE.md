@@ -35,11 +35,13 @@ root. English pages are under `en/`. There is no backend.
 
 ## Course pages
 - The main content of the course pages (every course in `data/ali.json`:
-  Standard, intensive, exam prep, religious students) comes from `data/ali.json` (one block per course, its `"pagine"` list the files) and
+  Standard, intensive, exam prep, religious students, thematic) comes from `data/ali.json` (one block per course, its `"pagine"` list the files) and
   `.github/templates/corso-contenuto.html`. Header, menu, footer and the page's
   top section (title over the background video) stay as they are; only the line
   under the title comes from the course's `"hero"`. Do not replace that section.
   Run `python3 -I .github/scripts/build_corsi.py .` after editing.
+- Optional blocks: `"libro"` (a course book section) and `"temi"` (a list of themes,
+  each with its own enrolment link if it has `"voce_modulo"`).
 - English pages use `corso-contenuto-en.html`. Each course's `"en"` block in
   `data/ali.json` holds the English texts and pages.
 - Styles: `.github/templates/ali-course.css`, copied to `assets/ali/`, limited to

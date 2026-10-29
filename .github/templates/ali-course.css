@@ -106,6 +106,10 @@
 .ali-course .rhythm ul{margin:0;padding:0;list-style:none}
 .ali-course .rhythm li{padding:8px 0;border-bottom:1px solid var(--line)}
 @media(max-width:800px){.ali-course .rhythm{grid-template-columns:1fr}}
+.ali-course .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px;margin-top:28px}
+.ali-course .themes>div{border-top:2px solid var(--deep);padding-top:14px}
+.ali-course .themes h3{font-size:1.7rem;font-weight:400}
+.ali-course .themes p{margin:0 0 .8em}
 .ali-course .others{list-style:none;margin:0;padding:0}
 .ali-course .others a{display:flex;justify-content:space-between;gap:20px;text-decoration:none;padding:18px 0;border-top:1px solid var(--line)}
 .ali-course .others li:last-child a{border-bottom:1px solid var(--line)}
