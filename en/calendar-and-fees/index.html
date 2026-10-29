@@ -696,11 +696,28 @@ padding-right: 30px;
   .ali-nota a { color: #2b3a7a; text-decoration: underline; }
 </style>
 
+<style>
+  .ali-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 32px; }
+  .ali-nav a { display: inline-block; padding: 6px 14px; border: 1px solid #2b3a7a; border-radius: 999px; color: #2b3a7a; text-decoration: none; font-size: 0.9em; line-height: 1.4; white-space: nowrap; }
+  .ali-nav a:hover, .ali-nav a:focus { background: #2b3a7a; color: #fff; }
+  .ali-ancora, #dw-wrap { scroll-margin-top: 120px; }
+  details.ali-chiusure summary { cursor: pointer; color: #2b3a7a; text-decoration: underline; list-style: revert; margin-bottom: 8px; }
+  details.ali-chiusure[open] summary { margin-bottom: 12px; }
+</style>
+<nav class="ali-nav" aria-label="Go to">
+  <a href="#corsi-gruppo">Group courses</a>
+  <a href="#gruppo-privati">Group &amp; private</a>
+  <a href="#calendario">Calendar</a>
+  <a href="#dw-wrap">Cost calculator</a>
+  <a href="#corsi-privati">Private courses</a>
+  <a href="#informazioni">Information</a>
+</nav>
+
 <div class="ali-wrap">
 
   <!-- GROUP COURSES -->
   <div class="ali-sez">
-    <h3>Group courses</h3>
+    <h3 id="corsi-gruppo" class="ali-ancora">Group courses</h3>
     <p class="ali-sub">18 morning group lessons per week.</p>
     <table class="ali-t">
       <thead>
@@ -726,7 +743,7 @@ padding-right: 30px;
 
   <!-- GROUP & PRIVATE COURSES -->
   <div class="ali-sez">
-    <h3>Group &amp; private courses</h3>
+    <h3 id="gruppo-privati" class="ali-ancora">Group &amp; private courses</h3>
     <p class="ali-sub">18 morning group lessons + afternoon one-on-one lessons.</p>
     <table class="ali-t">
       <thead>
@@ -808,7 +825,7 @@ padding-right: 30px;
 				<div class="elementor-widget-container">
 							<div class="elementor-template">
 					<div data-elementor-type="page" data-elementor-id="995247" class="elementor elementor-995247" data-elementor-post-type="elementor_library">
-						<section class="elementor-section elementor-top-section elementor-element elementor-element-ab5cc7e elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="ab5cc7e" data-element_type="section" data-e-type="section">
+						<section class="elementor-section elementor-top-section elementor-element elementor-element-ab5cc7e ali-ancora elementor-section-boxed elementor-section-height-default elementor-section-height-default" id="calendario" data-id="ab5cc7e" data-element_type="section" data-e-type="section">
 						<div class="elementor-container elementor-column-gap-default">
 					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-94f44ff" data-id="94f44ff" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">
@@ -871,7 +888,7 @@ padding-right: 30px;
 				</div>
 				<div class="elementor-element elementor-element-e84b234 elementor-widget elementor-widget-text-editor" data-id="e84b234" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p><strong>2026</strong> <br />from October 28th to November 1st – December 8th, Immaculate conception –  Christmas Holidays: from December 16th to January 19th 2025.<br /><strong>2027</strong><br />from January 1st to 9th, Christmas Holidays – from March 26th to April 2nd,  Easter Holidays – June 2nd, Republic Day – December 8th, Immaculate conception –   from December 20th to 31th, Christmas Holidays.<strong><br /></strong></p>								</div>
+									<details class="ali-chiusure"><summary>Show closing dates</summary><p><strong>2026</strong> <br />from October 28th to November 1st – December 8th, Immaculate conception –  Christmas Holidays: from December 16th to January 19th 2025.<br /><strong>2027</strong><br />from January 1st to 9th, Christmas Holidays – from March 26th to April 2nd,  Easter Holidays – June 2nd, Republic Day – December 8th, Immaculate conception –   from December 20th to 31th, Christmas Holidays.<strong><br /></strong></p></details>								</div>
 				</div>
 					</div>
 		</div>
@@ -1171,7 +1188,7 @@ document.getElementById('dw-weeks').addEventListener('input',onCalc);
 
   <!-- PRIVATE COURSES -->
   <div class="ali-sez" id="private-lessons">
-    <h3>Private courses</h3>
+    <h3 id="corsi-privati" class="ali-ancora">Private courses</h3>
     <!-- DA INSERIRE: link della pagina inglese delle lezioni private -->
     <p class="ali-sub">Available from Monday to Friday. 2026: from 12 January to 18 December · 2027: from 11 January to 17 December. <a class="ali-info" href="#">Discover private lessons</a></p>
     <table class="ali-t">
@@ -1211,7 +1228,7 @@ document.getElementById('dw-weeks').addEventListener('input',onCalc);
 		</div>
 					</div>
 		</section>
-				<section class="elementor-section elementor-top-section elementor-element elementor-element-610c647 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="610c647" data-element_type="section" data-e-type="section">
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-610c647 ali-ancora elementor-section-boxed elementor-section-height-default elementor-section-height-default" id="informazioni" data-id="610c647" data-element_type="section" data-e-type="section">
 						<div class="elementor-container elementor-column-gap-default">
 					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-13679ee" data-id="13679ee" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">
