@@ -1,0 +1,102 @@
+<!--
+Main content of the online lessons page, for use inside its WordPress page.
+.github/scripts/build_corsi.py fills each {{name}} from the "online" block of
+data/ali.json. Styles are in ali-course.css. This comment does not appear in the pages.
+-->
+<div class="ali-course">
+  <section>
+    <div class="wrap">
+      <h2>Caratteristiche del corso</h2>
+      <dl class="facts">
+        <div><dt>Lezioni</dt><dd>50 minuti<small>nei giorni e negli orari che preferisci</small></dd></div>
+        <div><dt>Livelli</dt><dd>Da A1 a C2<small>anche per principianti</small></dd></div>
+        <div><dt>Studenti</dt><dd>Da 1 a 3<small>individuali, duo o tre-a-uno</small></dd></div>
+        <div><dt>Dove</dt><dd>Online<small>classe virtuale su Zoom e piattaforma Moodle</small></dd></div>
+      </dl>
+      <div class="narrow-l" style="margin-top:28px">
+        <p>Le lezioni online ti permettono di migliorare il tuo italiano con un professore qualificato, nei giorni e negli orari per te migliori. Sono previste ore di dizione per perfezionare la pronuncia.</p>
+        <p>Oltre a Zoom usiamo Moodle e Google per condividere audio e video e per gli esercizi online. Puoi anche prepararti agli esami di certificazione CILS e Roma Tre.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>Ogni pacchetto di 10 lezioni comprende</h2></summary>
+      <ul class="cols fold-body">
+        <li>9 lezioni di italiano</li>
+        <li>1 lezione di pronuncia</li>
+        <li>Attività in autoapprendimento, con il feedback dell’insegnante</li>
+        <li>Materiale didattico e accesso alla piattaforma Moodle</li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Organizza il tuo corso</h2>
+      <div class="themes steps">
+        <div>
+          <h3>1. Parliamone</h3>
+          <p>Prenota un meeting online per parlare del tuo corso.</p>
+        </div>
+        <div>
+          <h3>2. Il test</h3>
+          <p>Se non sei principiante, chiedi il test d’ingresso.</p>
+        </div>
+        <div>
+          <h3>3. Gli orari</h3>
+          <p>Scegli i giorni e gli orari migliori per te. Faremo del nostro meglio per organizzarci.</p>
+        </div>
+        <div>
+          <h3>4. Si comincia</h3>
+          <p>Ricevi il calendario delle lezioni, il link per la classe virtuale, il materiale didattico e i codici per Moodle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Costi</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr>{{intestazione_prezzi}}</tr></thead>
+          <tbody>
+{{righe_prezzi}}
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:.9rem">Lezioni da 50 minuti. Il prezzo è per lezione, non per studente.</p>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="{{iscrizione}}">Prenota un meeting online</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="mailto:info@aliassisi.it">Scrivici</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold">
+        <summary><h2>Iscrizione e cancellazioni</h2></summary>
+        <div class="fold-body narrow-l">
+          <p>Prenota il tuo corso con il <a class="inl" href="{{iscrizione}}">modulo</a>. Ti contatteremo entro 1 giorno lavorativo. Il corso inizia dopo la conferma dell’iscrizione, quando abbiamo concordato gli orari.</p>
+          <p>Gli orari sono in ora italiana. Ti consigliamo di collegarti almeno cinque minuti prima dell’inizio della lezione.</p>
+          <p>Per cancellare una lezione prenotata scrivi a <a class="inl" href="mailto:info@aliassisi.it">info@aliassisi.it</a> almeno 24 ore prima dell’inizio. Le lezioni cancellate più tardi non si possono spostare.</p>
+          <p>Le lezioni prenotate vanno completate entro 12 mesi.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Altri corsi</h2>
+      <ul class="others">
+{{altri_corsi}}
+      </ul>
+    </div>
+  </section>
+</div>

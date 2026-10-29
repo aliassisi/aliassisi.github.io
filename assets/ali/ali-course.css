@@ -110,6 +110,9 @@
 .ali-course .themes>div{border-top:2px solid var(--deep);padding-top:14px}
 .ali-course .themes h3{font-size:1.7rem;font-weight:400}
 .ali-course .themes p{margin:0 0 .8em}
+.ali-course .themes.steps{grid-template-columns:repeat(4,1fr);gap:24px}
+@media(max-width:900px){.ali-course .themes.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.ali-course .themes.steps{grid-template-columns:1fr}}
 .ali-course .others{list-style:none;margin:0;padding:0}
 .ali-course .others a{display:flex;justify-content:space-between;gap:20px;text-decoration:none;padding:18px 0;border-top:1px solid var(--line)}
 .ali-course .others li:last-child a{border-bottom:1px solid var(--line)}

@@ -1,0 +1,103 @@
+<!--
+Main content of the English online lessons page, for use inside its WordPress page.
+.github/scripts/build_corsi.py fills each {{name}} from the "online" block of
+data/ali.json (its "en" block replaces the Italian fields). Styles are in
+ali-course.css. This comment does not appear in the pages.
+-->
+<div class="ali-course">
+  <section>
+    <div class="wrap">
+      <h2>Course features</h2>
+      <dl class="facts">
+        <div><dt>Lessons</dt><dd>50 minutes<small>on the days and at the times you prefer</small></dd></div>
+        <div><dt>Levels</dt><dd>A1 to C2<small>beginners welcome</small></dd></div>
+        <div><dt>Students</dt><dd>1 to 3<small>one-to-one, duo or three-to-one</small></dd></div>
+        <div><dt>Where</dt><dd>Online<small>virtual classroom on Zoom and the Moodle platform</small></dd></div>
+      </dl>
+      <div class="narrow-l" style="margin-top:28px">
+        <p>Online lessons help you improve your Italian with a qualified teacher, on the days and at the times you prefer. Diction lessons help you perfect your pronunciation.</p>
+        <p>Besides Zoom, we use Moodle and Google to share audio and video and for online exercises. You can also prepare for the CILS and Roma Tre certification exams.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>Each set of 10 lessons includes</h2></summary>
+      <ul class="cols fold-body">
+        <li>8 live general Italian lessons</li>
+        <li>2 live pronunciation lessons</li>
+        <li>Self-study activities, with feedback from the teacher</li>
+        <li>Course materials and access to the Moodle platform</li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Plan your course</h2>
+      <div class="themes steps">
+        <div>
+          <h3>1. Let’s talk</h3>
+          <p>Book an online meeting or a free trial lesson to plan your course.</p>
+        </div>
+        <div>
+          <h3>2. The test</h3>
+          <p>If you are not a beginner, ask for a placement test.</p>
+        </div>
+        <div>
+          <h3>3. Your times</h3>
+          <p>Tell us the days and times that work for you. We will do our best to fit them.</p>
+        </div>
+        <div>
+          <h3>4. Off you go</h3>
+          <p>You receive your schedule, the link to the virtual classroom, the course materials and your Moodle codes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Fees</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr>{{intestazione_prezzi}}</tr></thead>
+          <tbody>
+{{righe_prezzi}}
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;font-size:.9rem">Lessons last 50 minutes. Prices are per lesson, not per student.</p>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="{{iscrizione}}">Book an online meeting</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="mailto:info@aliassisi.it">Write to us</a>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold">
+        <summary><h2>Booking and cancellation</h2></summary>
+        <div class="fold-body narrow-l">
+          <p>Book your course with our <a class="inl" href="{{iscrizione}}">form</a>. We will contact you within 1 working day.</p>
+          <p>All times are Italian time. Please be at your computer or phone at least five minutes before your lesson starts.</p>
+          <p>To cancel a booked lesson, email <a class="inl" href="mailto:info@aliassisi.it">info@aliassisi.it</a> at least 24 hours before it starts, and it will be rescheduled. Lessons cancelled later cannot be rescheduled.</p>
+          <p>Booked lessons must be completed within 12 months.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Other courses</h2>
+      <ul class="others">
+{{altri_corsi}}
+      </ul>
+    </div>
+  </section>
+</div>
