@@ -1,0 +1,617 @@
+{
+  "date_inizio": [
+    "2026-11-30",
+    "2027-02-01",
+    "2027-03-01",
+    "2027-04-05",
+    "2027-05-03",
+    "2027-05-31",
+    "2027-06-28",
+    "2027-07-26",
+    "2027-08-23",
+    "2027-09-20",
+    "2027-10-18",
+    "2027-11-15"
+  ],
+  "chiusure": [
+    {"dal": "2026-12-08", "al": "2026-12-08", "it": "Immacolata Concezione", "en": "Immaculate Conception"},
+    {"dal": "2026-12-21", "al": "2026-12-31", "it": "vacanze di Natale", "en": "Christmas Holidays"},
+    {"dal": "2027-01-01", "al": "2027-01-09", "it": "vacanze di Natale", "en": "Christmas Holidays"},
+    {"dal": "2027-03-26", "al": "2027-04-02", "it": "vacanze di Pasqua", "en": "Easter Holidays"},
+    {"dal": "2027-06-02", "al": "2027-06-02", "it": "Festa nazionale", "en": "Republic Day"},
+    {"dal": "2027-10-04", "al": "2027-10-04", "it": "festa di S. Francesco", "en": "Feast of St. Francis"},
+    {"dal": "2027-12-08", "al": "2027-12-08", "it": "Immacolata Concezione", "en": "Immaculate Conception"},
+    {"dal": "2027-12-20", "al": "2027-12-31", "it": "vacanze di Natale", "en": "Christmas Holidays"}
+  ],
+  "tariffe": {
+    "standard": [
+      {"from": 1, "to": 1, "ppw": 390},
+      {"from": 2, "to": 2, "ppw": 360},
+      {"from": 3, "to": 7, "ppw": 320},
+      {"from": 8, "to": 48, "ppw": 300}
+    ],
+    "intensivo": [
+      {"from": 1, "to": 1, "ppw": 550},
+      {"from": 2, "to": 2, "ppw": 520},
+      {"from": 3, "to": 7, "ppw": 480},
+      {"from": 8, "to": 48, "ppw": 460}
+    ],
+    "super_intensivo": [
+      {"from": 1, "to": 1, "ppw": 710},
+      {"from": 2, "to": 2, "ppw": 680},
+      {"from": 3, "to": 7, "ppw": 640},
+      {"from": 8, "to": 48, "ppw": 620}
+    ]
+  },
+  "modulo_iscrizione": "https://docs.google.com/forms/d/e/1FAIpQLSfe9CdrKQ0ZjvSQioXBHZLDy6AqqZqgstdyp6IGgci7OpfopA/viewform?usp=pp_url&entry.266111784=Onsite%20%2F%20In%20presenza%20ad%20Assisi&entry.719657308=",
+  "corsi": [
+    {
+      "id": "standard",
+      "nome": "Standard",
+      "tariffa": "standard",
+      "pagine": ["product/standard", "product/corso-di-inglese-standard"],
+      "hero": "Lezioni di gruppo al mattino, con compagni di classe da tutto il mondo. Che tu sia alle prime armi o che parli già bene l’italiano, c’è un corso adatto al tuo livello.",
+      "ore": 18,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 0, 0, 0, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Standard (20 lezioni settimanali /20 weekly lessons)",
+      "dettagli": [
+        "Una lingua si impara usandola: presentarsi, chiedere, raccontare, discutere. Anche la grammatica nasce dall’uso, dentro un contesto determinato. Per questo il nostro approccio è comunicativo-situazionale: si parte da una situazione concreta e si impara ad affrontarla in italiano.",
+        "Particolare attenzione è rivolta alla cultura italiana, attraverso documenti autentici, letteratura, arte e cinema. L’obiettivo è migliorare la competenza comunicativa.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/standard-italian-course"],
+        "nome": "Standard",
+        "hero": "Group lessons in the morning, with classmates from all over the world. Whether you are just starting out or already speak Italian well, there is a course for your level.",
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "You learn a language by using it: introducing yourself, asking, telling, discussing. Grammar, too, grows out of use, within a given context. That is why our approach is communicative and situational: you start from a concrete situation and learn to handle it in Italian.",
+          "Special attention goes to Italian culture, through authentic documents, literature, art and cinema. The aim is to improve how you communicate.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    },
+    {
+      "id": "intensivo",
+      "nome": "Intensivo",
+      "tariffa": "intensivo",
+      "pagine": ["product/intensive-italian"],
+      "hero": "Lezioni di gruppo la mattina, lezioni individuali il pomeriggio. Tanta pratica, nuovi amici da ogni parte del mondo e un insegnante che si dedica a te.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo  (24 lezioni settimanali) / Intensive (24 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e quello individuale al pomeriggio. In classe si impara usando la lingua, in situazioni concrete; nelle lezioni individuali l’insegnante lavora solo con te, sui tuoi obiettivi.",
+        "Le lezioni individuali possono servire anche per preparare gli esami di certificazione CILS e Roma Tre, riconosciuti per la cittadinanza italiana (B1) e per il permesso di soggiorno (A2).",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/intensive-italian"],
+        "nome": "Intensive",
+        "hero": "Group lessons in the morning, one-to-one lessons in the afternoon. Plenty of practice, new friends from all over the world and a teacher who works with you alone.",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons in the afternoon. In class you learn by using the language in concrete situations; in the one-to-one lessons the teacher works only with you, on your goals.",
+          "The one-to-one lessons can also prepare you for the CILS and Roma Tre certification exams, which are recognised for Italian citizenship (B1) and for a residence permit (A2).",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ],
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform"
+      }
+    },
+    {
+      "id": "super_intensivo",
+      "nome": "Super intensivo",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/super-intensive-italian"],
+      "hero": "Il modo più rapido per imparare l’italiano ad Assisi.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Super intensivo (28 lezioni settimanali)/ Super intensive (28 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e quello individuale quasi tutti i pomeriggi. È adatto a chi vuole approfondire l’italiano in poco tempo, per motivi personali, di lavoro o di studio.",
+        "Chi ha già un livello intermedio o avanzato rafforza tutte le abilità, dalla conversazione alla scrittura. Chi parte da zero fa progressi nel più breve tempo possibile.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/super-intensive-italian"],
+        "nome": "Super intensive",
+        "hero": "The fastest way to learn Italian in Assisi.",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons almost every afternoon. It suits anyone who wants to make real progress in Italian in a short time, for personal, work or study reasons.",
+          "Intermediate and advanced students strengthen every skill, from conversation to writing. Beginners make progress in the shortest possible time.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ],
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform"
+      }
+    },
+    {
+      "id": "esame_intensivo",
+      "nome": "Intensivo per la certificazione",
+      "tariffa": "intensivo",
+      "pagine": ["product/corsi-di-preparazione-per-la-certificazione"],
+      "hero": "Per chi vuole sostenere gli esami di certificazione universitari CILS e Roma Tre.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da A1 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo per la CERTIFICAZIONE (24 lezioni settimanali)/Intensive Certification Exam Preparation (24 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e le lezioni individuali al pomeriggio, dedicate alla preparazione dell’esame di certificazione, per tutti i livelli da A1 a C2.",
+        "Con l’insegnante scopri com’è fatto l’esame, che cosa chiede ogni prova e come affrontarla. L’Accademia è sede d’esame CILS e Roma Tre, certificazioni riconosciute per la cittadinanza italiana (B1) e per il permesso di soggiorno (A2).",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/corsi-di-preparazione-per-la-certificazione"],
+        "nome": "Intensive certification exam preparation",
+        "hero": "For those who want to take the CILS and Roma Tre university certification exams.",
+        "livelli": "A1 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons in the afternoon, focused on preparing for the certification exam, at every level from A1 to C2.",
+          "With your teacher you learn how the exam is built, what each part asks and how to handle it. The Academy is an exam centre for CILS and Roma Tre, certificates recognised for Italian citizenship (B1) and for a residence permit (A2).",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    },
+    {
+      "id": "religiosi_22",
+      "nome": "Italiano per religiosi 22",
+      "tariffa": "intensivo",
+      "pagine": ["product/religious-student-program-24"],
+      "hero": "Programma per seminaristi, sacerdoti e suore.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più Italiano e latino in Chiesa e la piattaforma Moodle",
+      "libro": {
+        "titolo": "Italiano e latino in Chiesa",
+        "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+        "testo": [
+          "Per il vocabolario specifico della teologia si utilizzerà Italiano e latino in Chiesa.",
+          "Italiano e latino in Chiesa propone in modo chiaro e sintetico il lessico e i contenuti necessari a chi si troverà ad agire nei contesti religiosi: in parrocchia, in chiesa, al corso di teologia, in seminario ecc.",
+          "Il volume è suddiviso in aree dedicate a:"
+        ],
+        "voci": [
+          "preghiere (anche in latino con traccia audio per entrambe le lingue);",
+          "messa (anche in latino con traccia audio per entrambe le lingue);",
+          "canti religiosi;",
+          "catechismo;",
+          "linguaggio scritturale;",
+          "organizzazione gerarchica;",
+          "feste principali (fisse e mobili);",
+          "oggettistica sacra (il lessico è presentato come un dizionario visuale)."
+        ],
+        "dopo": [
+          "Completa il volume un glossario essenziale italiano-inglese."
+        ]
+      },
+      "voce_modulo": "Corso per studenti religiosi / Italian for religious students",
+      "dettagli": [
+        "Il corso è pensato per seminaristi, sacerdoti e suore che si preparano a studiare teologia in Italia. Al mattino si studia in gruppo; nelle lezioni individuali del pomeriggio, per chi non è principiante, si lavora sul lessico della filosofia e della teologia.",
+        "Oltre al metodo In italiano. Il corso, usiamo il libro Italiano e latino in Chiesa, descritto più sotto. Libri e accesso a Moodle sono inclusi.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/religious-student-program-22"],
+        "nome": "Italian for religious students 22",
+        "hero": "Program for seminarians, priests and nuns.",
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus Italiano e latino in Chiesa and the Moodle platform",
+        "libro": {
+          "titolo": "Italiano e latino in Chiesa",
+          "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+          "testo": [
+            "The book is designed for those who want to learn the Italian vocabulary used in the Church. It focuses on prayers, hymns, the catechism, the language of the scriptures, the hierarchical structure of leadership and the main feast days and celebrations. An English-Italian glossary and audio files are included."
+          ]
+        },
+        "dettagli": [
+          "The course is designed for seminarians, priests and nuns who are getting ready to study theology in Italy. In the morning you study in a group; in the one-to-one lessons in the afternoon, students who are not beginners work on the vocabulary of philosophy and theology.",
+          "Besides the In italiano. Il corso method, we use the book Italiano e latino in Chiesa, described below. Books and Moodle access are included.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    },
+    {
+      "id": "religiosi_26",
+      "nome": "Italiano per religiosi 26",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/religious-student-program-28"],
+      "hero": "Programma per seminaristi, sacerdoti e suore.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più Italiano e latino in Chiesa e la piattaforma Moodle",
+      "libro": {
+        "titolo": "Italiano e latino in Chiesa",
+        "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+        "testo": [
+          "Per il vocabolario specifico della teologia si utilizzerà Italiano e latino in Chiesa.",
+          "Italiano e latino in Chiesa propone in modo chiaro e sintetico il lessico e i contenuti necessari a chi si troverà ad agire nei contesti religiosi: in parrocchia, in chiesa, al corso di teologia, in seminario ecc.",
+          "Il volume è suddiviso in aree dedicate a:"
+        ],
+        "voci": [
+          "preghiere (anche in latino con traccia audio per entrambe le lingue);",
+          "messa (anche in latino con traccia audio per entrambe le lingue);",
+          "canti religiosi;",
+          "catechismo;",
+          "linguaggio scritturale;",
+          "organizzazione gerarchica;",
+          "feste principali (fisse e mobili);",
+          "oggettistica sacra (il lessico è presentato come un dizionario visuale)."
+        ],
+        "dopo": [
+          "Completa il volume un glossario essenziale italiano-inglese."
+        ]
+      },
+      "voce_modulo": "Corso per studenti religiosi / Italian for religious students",
+      "dettagli": [
+        "Il corso è pensato per seminaristi, sacerdoti e suore che si preparano a studiare teologia in Italia. Al mattino si studia in gruppo; nelle lezioni individuali del pomeriggio, per chi non è principiante, si lavora sul lessico della filosofia e della teologia.",
+        "Oltre al metodo In italiano. Il corso, usiamo il libro Italiano e latino in Chiesa, descritto più sotto. Libri e accesso a Moodle sono inclusi.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/religious-student-program-28"],
+        "nome": "Italian for religious students 26",
+        "hero": "Program for seminarians, priests and nuns.",
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus Italiano e latino in Chiesa and the Moodle platform",
+        "libro": {
+          "titolo": "Italiano e latino in Chiesa",
+          "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+          "testo": [
+            "The book is designed for those who want to learn the Italian vocabulary used in the Church. It focuses on prayers, hymns, the catechism, the language of the scriptures, the hierarchical structure of leadership and the main feast days and celebrations. An English-Italian glossary and audio files are included."
+          ]
+        },
+        "dettagli": [
+          "The course is designed for seminarians, priests and nuns who are getting ready to study theology in Italy. In the morning you study in a group; in the one-to-one lessons in the afternoon, students who are not beginners work on the vocabulary of philosophy and theology.",
+          "Besides the In italiano. Il corso method, we use the book Italiano e latino in Chiesa, described below. Books and Moodle access are included.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    },
+    {
+      "id": "tematico_22",
+      "nome": "Tematico 22",
+      "tariffa": "intensivo",
+      "pagine": ["product/thematic-24"],
+      "hero": "Lezioni individuali di letteratura, arte, cinema, archeologia o città d’arte.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da A2 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo tematico LETTERATURA (24 lezioni settimanali)  Intensive Thematic Literature (24 lezioni settimanali)",
+      "dettagli": [
+        "Il corso unisce le lezioni di gruppo al mattino e le lezioni individuali al pomeriggio, dedicate al tema che scegli: letteratura, cinema, arte, archeologia o città d’arte.",
+        "Nelle lezioni individuali puoi proporre gli autori, le opere o le città che ti interessano di più. I temi sono descritti più sotto.",
+        "Il corso è per i livelli da A2 a C2. Il livello è definito da un test d’ingresso e da una breve intervista online prima dell’inizio del corso."
+      ],
+      "temi": {
+        "intro": "Le lezioni individuali del pomeriggio sono dedicate al tema che scegli tra questi.",
+        "voci": [
+          {
+            "titolo": "Letteratura",
+            "testo": [
+              "Per chi vuole approfondire l’italiano lavorando su testi letterari. Nelle lezioni individuali puoi scegliere gli autori che preferisci e gli argomenti che ti servono per lo studio o per il lavoro.",
+              "Oltre al metodo In italiano. Il corso e ai testi letterari autentici, usiamo i volumi Ritratti, Ambienti e Incontri, pensati per migliorare la comprensione dei testi letterari e per aiutare ad apprezzarne lo stile."
+            ],
+            "link": {
+              "testo": "Estratto di Incontri (pdf)",
+              "url": "/assets/uploads/2026/10/incontri.pdf"
+            },
+            "voce_modulo": "Intensivo tematico LETTERATURA (24 lezioni settimanali)  Intensive Thematic Literature (24 lezioni settimanali)"
+          },
+          {
+            "titolo": "Cinema",
+            "testo": [
+              "Praticheremo l’italiano conoscendo meglio la cinematografia italiana. Lavoreremo sulla fotografia di registi famosi, sull’arte del doppiaggio e sugli stili di regia. Vedremo brani di capolavori della filmografia italiana, con particolare riferimento a Roberto Rossellini, Luchino Visconti e Federico Fellini."
+            ],
+            "voce_modulo": "Intensivo tematico CINEMA (24 lezioni settimanali)/   Intensive Thematic Cinema (24 weekly lessons)"
+          },
+          {
+            "titolo": "Arte",
+            "testo": [
+              "Studieremo l’italiano attraverso i grandi periodi dell’arte italiana e le tradizioni artistiche greca e romana. Parleremo in italiano dei capolavori di Leonardo da Vinci, di Caravaggio, del Rinascimento e del Barocco."
+            ],
+            "voce_modulo": "Intensivo tematico ARTE (24 lezioni settimanali)  Intensive Thematic Art (24 lezioni settimanali)"
+          },
+          {
+            "titolo": "Archeologia",
+            "testo": [
+              "Approfondiremo l’italiano studiando i luoghi più importanti dell’archeologia italiana: Pompei ed Ercolano, la Valle dei Templi di Agrigento, Selinunte, Villa Adriana."
+            ],
+            "voce_modulo": "Intensivo tematico (24 lezioni settimanali) ARCHEOLOGIA /  Intensive Thematic Archaeology (24 weekly lessons)"
+          },
+          {
+            "titolo": "Città d’arte",
+            "testo": [
+              "Ogni lezione del pomeriggio dà spazio alla conversazione e alla scioltezza, mentre prepari il tuo viaggio in Italia: come arrivare nella città che vuoi visitare, che cosa vedere, cibi e prodotti tipici, feste, leggende, curiosità e aneddoti. Nelle lezioni individuali puoi proporre le città d’arte che ti interessano di più."
+            ],
+            "voce_modulo": "Intensivo tematico (24 lezioni settimanali)CITTA' d'arte/  Intensive Thematic Cities of art (24 weekly lessons)"
+          }
+        ]
+      },
+      "en": {
+        "pagine": ["en/product/thematic-22"],
+        "nome": "Thematic 22",
+        "hero": "One-to-one lessons on literature, art, cinema, archaeology or cities of art.",
+        "livelli": "A2 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group lessons in the morning with one-to-one lessons in the afternoon on the theme you choose: literature, cinema, art, archaeology or cities of art.",
+          "In the one-to-one lessons you can suggest the authors, works or cities you are most interested in. The themes are described below.",
+          "The course is for levels A2 to C2. Your level is set by a placement test and a short online interview before the course starts."
+        ],
+        "temi": {
+          "intro": "Choose one of these themes. Your one-to-one lessons in the afternoon focus on it.",
+          "voci": [
+            {
+              "titolo": "Italian literature",
+              "testo": [
+                "For students who wish to learn Italian through literature. In the one-to-one lessons you are welcome to select the authors you prefer and work on the topics you need for your academic or professional purposes.",
+                "In addition to the In italiano. Il corso method and authentic literary texts, we use textbooks developed with two aims: to improve your understanding of literary texts and to help you appreciate their style."
+              ],
+              "link": {
+                "testo": "Sample from Incontri (pdf)",
+                "url": "/assets/uploads/2026/10/incontri.pdf"
+              },
+              "voce_modulo": "Intensivo tematico LETTERATURA (24 lezioni settimanali)  Intensive Thematic Literature (24 lezioni settimanali)"
+            },
+            {
+              "titolo": "Cinema",
+              "testo": [
+                "Learn and practise Italian while learning more about Italian cinema. We will work on the photography of famous directors, the art of dubbing and directing styles. We will watch excerpts from masterpieces of Italian film, with special reference to Roberto Rossellini, Luchino Visconti and Federico Fellini."
+              ],
+              "voce_modulo": "Intensivo tematico CINEMA (24 lezioni settimanali)/   Intensive Thematic Cinema (24 weekly lessons)"
+            },
+            {
+              "titolo": "Art",
+              "testo": [
+                "We will study Italian through the great periods of Italian art and through the Greek and Roman art traditions. We will discuss in Italian the masterpieces of Leonardo da Vinci, Caravaggio, the Renaissance and the Baroque."
+              ],
+              "voce_modulo": "Intensivo tematico ARTE (24 lezioni settimanali)  Intensive Thematic Art (24 lezioni settimanali)"
+            },
+            {
+              "titolo": "Archaeology",
+              "testo": [
+                "We will deepen your Italian by studying the most important sites of Italian archaeology: Pompeii and Herculaneum, the Valley of the Temples in Agrigento, Selinunte, Hadrian’s Villa."
+              ],
+              "voce_modulo": "Intensivo tematico (24 lezioni settimanali) ARCHEOLOGIA /  Intensive Thematic Archaeology (24 weekly lessons)"
+            },
+            {
+              "titolo": "Cities of art",
+              "testo": [
+                "Each afternoon lesson puts the emphasis on conversation and fluency while you get ready for your journey in Italy: how to get to the city you wish to visit, what to see, typical food and products, festivals, legends, curiosities and anecdotes. In the one-to-one lessons you are welcome to suggest the cities of art you are most interested in."
+              ],
+              "voce_modulo": "Intensivo tematico (24 lezioni settimanali)CITTA' d'arte/  Intensive Thematic Cities of art (24 weekly lessons)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tematico_26",
+      "nome": "Tematico 26",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/thematic-28"],
+      "hero": "Lezioni individuali di letteratura, arte, cinema, archeologia o città d’arte.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da A2 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Tematico_28 LETTERATURA (28 lezioni settimanali)  Thematic Literature_28 (28 weeky lesons)",
+      "dettagli": [
+        "Il corso unisce le lezioni di gruppo al mattino e le lezioni individuali al pomeriggio, dedicate al tema che scegli: letteratura, cinema, arte, archeologia o città d’arte.",
+        "Nelle lezioni individuali puoi proporre gli autori, le opere o le città che ti interessano di più. I temi sono descritti più sotto.",
+        "Il corso è per i livelli da A2 a C2. Il livello è definito da un test d’ingresso e da una breve intervista online prima dell’inizio del corso."
+      ],
+      "temi": {
+        "intro": "Le lezioni individuali del pomeriggio sono dedicate al tema che scegli tra questi.",
+        "voci": [
+          {
+            "titolo": "Letteratura",
+            "testo": [
+              "Per chi vuole approfondire l’italiano lavorando su testi letterari. Nelle lezioni individuali puoi scegliere gli autori che preferisci e gli argomenti che ti servono per lo studio o per il lavoro.",
+              "Oltre al metodo In italiano. Il corso e ai testi letterari autentici, usiamo i volumi Ritratti, Ambienti e Incontri, pensati per migliorare la comprensione dei testi letterari e per aiutare ad apprezzarne lo stile."
+            ],
+            "link": {
+              "testo": "Estratto di Incontri (pdf)",
+              "url": "/assets/uploads/2026/10/incontri.pdf"
+            },
+            "voce_modulo": "Tematico_28 LETTERATURA (28 lezioni settimanali)  Thematic Literature_28 (28 weeky lesons)"
+          },
+          {
+            "titolo": "Cinema",
+            "testo": [
+              "Praticheremo l’italiano conoscendo meglio la cinematografia italiana. Lavoreremo sulla fotografia di registi famosi, sull’arte del doppiaggio e sugli stili di regia. Vedremo brani di capolavori della filmografia italiana, con particolare riferimento a Roberto Rossellini, Luchino Visconti e Federico Fellini."
+            ],
+            "voce_modulo": "Tematico_28 CINEMA (28 lezioni settimanali)/  Thematic_28 CINEMA(28 weekly lessons)"
+          },
+          {
+            "titolo": "Arte",
+            "testo": [
+              "Studieremo l’italiano attraverso i grandi periodi dell’arte italiana e le tradizioni artistiche greca e romana. Parleremo in italiano dei capolavori di Leonardo da Vinci, di Caravaggio, del Rinascimento e del Barocco."
+            ]
+          },
+          {
+            "titolo": "Archeologia",
+            "testo": [
+              "Approfondiremo l’italiano studiando i luoghi più importanti dell’archeologia italiana: Pompei ed Ercolano, la Valle dei Templi di Agrigento, Selinunte, Villa Adriana."
+            ],
+            "voce_modulo": "Tematico_28 ARCHEOLOGIA (28 lezioni alla settimana) -   Thematic_28 Archaeology ( 28 weekly lessons)22"
+          },
+          {
+            "titolo": "Città d’arte",
+            "testo": [
+              "Ogni lezione del pomeriggio dà spazio alla conversazione e alla scioltezza, mentre prepari il tuo viaggio in Italia: come arrivare nella città che vuoi visitare, che cosa vedere, cibi e prodotti tipici, feste, leggende, curiosità e aneddoti. Nelle lezioni individuali puoi proporre le città d’arte che ti interessano di più."
+            ],
+            "voce_modulo": "Super intensivo  tematico (28 lezioni settimanali) CITTA' d'arte/ Super  Intensive Thematic CITIES of art (28 weekly lessons) Opzione 21"
+          }
+        ]
+      },
+      "en": {
+        "pagine": ["en/product/thematic-26"],
+        "nome": "Thematic 26",
+        "hero": "One-to-one lessons on literature, art, cinema, archaeology or cities of art.",
+        "livelli": "A2 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group lessons in the morning with one-to-one lessons in the afternoon on the theme you choose: literature, cinema, art, archaeology or cities of art.",
+          "In the one-to-one lessons you can suggest the authors, works or cities you are most interested in. The themes are described below.",
+          "The course is for levels A2 to C2. Your level is set by a placement test and a short online interview before the course starts."
+        ],
+        "temi": {
+          "intro": "Choose one of these themes. Your one-to-one lessons in the afternoon focus on it.",
+          "voci": [
+            {
+              "titolo": "Italian literature",
+              "testo": [
+                "For students who wish to learn Italian through literature. In the one-to-one lessons you are welcome to select the authors you prefer and work on the topics you need for your academic or professional purposes.",
+                "In addition to the In italiano. Il corso method and authentic literary texts, we use textbooks developed with two aims: to improve your understanding of literary texts and to help you appreciate their style."
+              ],
+              "link": {
+                "testo": "Sample from Incontri (pdf)",
+                "url": "/assets/uploads/2026/10/incontri.pdf"
+              },
+              "voce_modulo": "Tematico_28 LETTERATURA (28 lezioni settimanali)  Thematic Literature_28 (28 weeky lesons)"
+            },
+            {
+              "titolo": "Cinema",
+              "testo": [
+                "Learn and practise Italian while learning more about Italian cinema. We will work on the photography of famous directors, the art of dubbing and directing styles. We will watch excerpts from masterpieces of Italian film, with special reference to Roberto Rossellini, Luchino Visconti and Federico Fellini."
+              ],
+              "voce_modulo": "Tematico_28 CINEMA (28 lezioni settimanali)/  Thematic_28 CINEMA(28 weekly lessons)"
+            },
+            {
+              "titolo": "Art",
+              "testo": [
+                "We will study Italian through the great periods of Italian art and through the Greek and Roman art traditions. We will discuss in Italian the masterpieces of Leonardo da Vinci, Caravaggio, the Renaissance and the Baroque."
+              ]
+            },
+            {
+              "titolo": "Archaeology",
+              "testo": [
+                "We will deepen your Italian by studying the most important sites of Italian archaeology: Pompeii and Herculaneum, the Valley of the Temples in Agrigento, Selinunte, Hadrian’s Villa."
+              ],
+              "voce_modulo": "Tematico_28 ARCHEOLOGIA (28 lezioni alla settimana) -   Thematic_28 Archaeology ( 28 weekly lessons)22"
+            },
+            {
+              "titolo": "Cities of art",
+              "testo": [
+                "Each afternoon lesson puts the emphasis on conversation and fluency while you get ready for your journey in Italy: how to get to the city you wish to visit, what to see, typical food and products, festivals, legends, curiosities and anecdotes. In the one-to-one lessons you are welcome to suggest the cities of art you are most interested in."
+              ],
+              "voce_modulo": "Super intensivo  tematico (28 lezioni settimanali) CITTA' d'arte/ Super  Intensive Thematic CITIES of art (28 weekly lessons) Opzione 21"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "privati": {
+    "pagine": ["product/private"],
+    "hero": "Corsi privati per studiare o approfondire con un insegnante qualificato.",
+    "dal": "2027-01-12",
+    "al": "2027-12-18",
+    "formule": [
+      {"nome": "Individuali", "nota": "1 studente", "una": 50, "dieci": 400,
+       "voce_modulo": "Lezioni private / One-on-one lessons"},
+      {"nome": "Duo", "nota": "2 studenti", "una": 55, "dieci": 500,
+       "voce_modulo": "Duo / Two-to-one lessons"},
+      {"nome": "Tre-a-uno", "nota": "3 studenti", "una": 66, "dieci": 600,
+       "voce_modulo": "Tre a uno / Three-to-one lessons"},
+      {"nome": "Mini gruppo", "nota": "da 4 a 9 studenti", "una": 89, "dieci": 830,
+       "voce_modulo": "PRIVATO: Mini gruppo (MIN 4 - MAX 9) / mini group private tuition"}
+    ],
+    "en": {
+      "pagine": ["en/product/private"],
+      "hero": "Private tuition to study or go deeper with a qualified teacher.",
+      "formule": [
+        {"nome": "One-to-one", "nota": "1 student"},
+        {"nome": "Duo", "nota": "2 students"},
+        {"nome": "Three-to-one", "nota": "3 students"},
+        {"nome": "Mini group", "nota": "4 to 9 students"}
+      ]
+    }
+  },
+  "altri_corsi": [
+    {
+      "nome": "Standard",
+      "url": "product/corso-di-inglese-standard",
+      "nota": ["18 lezioni a settimana", "di gruppo"],
+      "en": {"url": "en/product/standard-italian-course", "nota": ["18 lessons a week", "group lessons"]}
+    },
+    {
+      "nome": "Intensivo",
+      "url": "product/intensive-italian",
+      "nota": ["22 lezioni a settimana", "18 di gruppo + 4 individuali"],
+      "en": {"nome": "Intensive", "url": "en/product/intensive-italian", "nota": ["22 lessons a week", "18 group + 4 one-to-one"]}
+    },
+    {
+      "nome": "Super intensivo",
+      "url": "product/super-intensive-italian",
+      "nota": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"],
+      "en": {"nome": "Super intensive", "url": "en/product/super-intensive-italian", "nota": ["26 lessons a week", "18 group + 8 one-to-one"]}
+    },
+    {
+      "nome": "Italian & cooking & food",
+      "url": "product/italiancookingfood",
+      "nota": ["Livelli A1–C2 · 09:00–12:00"],
+      "en": {"url": "en/product/italiancookingfood", "nota": ["Levels A1–C2 · 09:00–12:00"]}
+    }
+  ]
+}
