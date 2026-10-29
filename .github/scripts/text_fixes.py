@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Text fixes on the Metodo pages and in the shared footer.
 
+The footer legal links go to the legal pages (built by legal_pages.py).
+YouTube embeds use youtube-nocookie.com.
+
 Usage: python3 -I .github/scripts/text_fixes.py SITE_DIR
 
 postprocess.py runs it near the end (step 7n), after the book cards (7m).
@@ -8,6 +11,7 @@ It is safe to run again on a site it already fixed: no new text contains
 the old text. It prints each fix it could not find.
 """
 import os
+import posixpath
 import re
 import sys
 
@@ -81,7 +85,22 @@ CAPTION = re.compile(r"(gallery-caption'[^>]*>\s*)([^<]*?)(\s*</figcaption>)")
 SITEWIDE = [
     ("WhatsAPP", "WhatsApp"),
     (">Adress<", ">Address<"),
+    # Privacy-enhanced mode for the YouTube embeds (the Metodo video).
+    ('src="https://www.youtube.com/embed/', 'src="https://www.youtube-nocookie.com/embed/'),
 ]
+
+# Footer legal links: WordPress points all three to the English visa page.
+# The legal pages are in Italian only for now: the English footer links to
+# them too.
+LEGAL = {
+    "Termini e condizioni": "termini-e-condizioni", "Terms &#038; Conditions": "termini-e-condizioni",
+    "Privacy Policy": "privacy-policy",
+    "Note legali": "note-legali", "Legal": "note-legali",
+}
+LEGAL_LINK = re.compile(
+    r'<a href="[^"]*visa-information/index\.html"( class="elementor-item"(?: tabindex="-1")?>)('
+    + "|".join(map(re.escape, LEGAL)) + r")</a>"
+)
 
 missing = []
 pages = {}
@@ -134,10 +153,13 @@ for dirpath, _, files in os.walk(site):
         new = text
         for old, rep in SITEWIDE:
             new = new.replace(old, rep)
+        here = posixpath.dirname(os.path.relpath(path, site).replace(os.sep, "/")) or "."
+        new = LEGAL_LINK.sub(
+            lambda m: f'<a href="{posixpath.relpath(LEGAL[m.group(2)] + "/index.html", here)}"{m.group(1)}{m.group(2)}</a>', new)
         if new != text:
             write(path, new)
             changed += 1
 
-print(f"text fixes: {len(pages)} pages, footer typos in {changed} files")
+print(f"text fixes: {len(pages)} pages, footer typos, legal links and YouTube in {changed} files")
 for m in missing:
     print("  not found:", m)
