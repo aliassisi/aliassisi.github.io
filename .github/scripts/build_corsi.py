@@ -11,6 +11,8 @@ SITE_DIR/data/ali.json:
   Italian pages ("pagine"):       .github/templates/corso-contenuto.html
   English pages ("en"."pagine"):  .github/templates/corso-contenuto-en.html
 Fields in a course's "en" block replace the Italian ones for English pages.
+The private lessons pages come from the "privati" block, with
+corso-privato.html and corso-privato-en.html.
 The page head gets a link to assets/ali/ali-course.css
 (source: .github/templates/ali-course.css).
 
@@ -36,7 +38,8 @@ SLOT_MATTINA = 4
 
 LINGUE = {
     "it": {
-        "modello": "corso-contenuto.html",
+        "modello": "corso-contenuto.html", "modello_privati": "corso-privato.html",
+        "iscriviti": "Iscriviti",
         "mesi": ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
                  "agosto", "settembre", "ottobre", "novembre", "dicembre"],
         "giorni": ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì"],
@@ -52,7 +55,8 @@ LINGUE = {
         "temi_titolo": "I temi", "iscriviti_tema": "Iscriviti con questo tema",
     },
     "en": {
-        "modello": "corso-contenuto-en.html",
+        "modello": "corso-contenuto-en.html", "modello_privati": "corso-privato-en.html",
+        "iscriviti": "Enrol",
         "mesi": ["January", "February", "March", "April", "May", "June", "July",
                  "August", "September", "October", "November", "December"],
         "giorni": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -193,9 +197,6 @@ def contenuto(modello, ali, c, oggi, lingua):
     tariffe = ali["tariffe"][c["tariffa"]]
     ind = sum(c["pomeriggio"])
     mix = L["mix"].format(g=sum(c["mattina"]), i=ind) if ind else ""
-    altri = [{**o, **o.get(lingua, {})} if lingua != "it" else o for o in ali["altri_corsi"]]
-    # A course page does not list itself.
-    altri = [o for o in altri if o["url"] not in c["pagine"]]
     valori = {
         "ore": str(c["ore"]),
         "durata_nota": L["durata_mix"].format(mix=mix) if mix else L["durata"],
@@ -221,10 +222,42 @@ def contenuto(modello, ali, c, oggi, lingua):
         "celle_prezzi": "".join(f'<td class="num">{t["ppw"]} €</td>' for t in tariffe),
         # One address, used by both enrolment buttons.
         "iscrizione": ali["modulo_iscrizione"] + quote(c["voce_modulo"], safe=""),
-        "altri_corsi": "\n".join(
-            f'        <li><a href="https://aliassisi.github.io/{o["url"]}/index.html">'
-            f'<b>{esc(o["nome"])}</b><small>{"<br>".join(esc(x) for x in o["nota"])}</small></a></li>'
-            for o in altri),
+        "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
+    }
+    return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
+
+
+def altri_corsi(ali, pagine, lingua):
+    altri = [{**o, **o.get(lingua, {})} if lingua != "it" else o for o in ali["altri_corsi"]]
+    # A course page does not list itself.
+    return "\n".join(
+        f'        <li><a href="https://aliassisi.github.io/{o["url"]}/index.html">'
+        f'<b>{esc(o["nome"])}</b><small>{"<br>".join(esc(x) for x in o["nota"])}</small></a></li>'
+        for o in altri if o["url"] not in pagine)
+
+
+def contenuto_privati(modello, ali, c, lingua):
+    """c: the "privati" block, with its "en" fields merged in for English.
+    Each entry of "formule" is a row of the price table; in the "en" block,
+    "formule" holds only the texts, in the same order."""
+    L = LINGUE[lingua]
+    formule = ali["privati"]["formule"]
+    if lingua != "it":
+        formule = [{**f, **e} for f, e in zip(formule, c["formule"])]
+    url = [ali["modulo_iscrizione"] + quote(f["voce_modulo"], safe="") for f in formule]
+    righe = "\n".join(
+        f'            <tr><td>{esc(f["nome"])}<small>{esc(f["nota"])}</small></td>'
+        f'<td class="num">{f["una"]} €</td><td class="num">{f["dieci"]} €</td>'
+        f'<td><a class="btn small" href="{esc(u)}">{L["iscriviti"]}</a></td></tr>'
+        for f, u in zip(formule, url))
+    dal, al = data(c["dal"]), data(c["al"])
+    valori = {
+        "anno": str(dal.year) if dal.year == al.year else f"{dal.year}–{al.year}",
+        "periodo": periodo(dal, al, L),
+        "righe_prezzi": righe,
+        # The main button opens the form for one-to-one lessons.
+        "iscrizione": esc(url[0]),
+        "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
     }
     return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
 
@@ -287,12 +320,17 @@ def main():
     with open(css, "w", encoding="utf-8", newline="\n") as f:
         f.write(testo)
 
-    for c in ali["corsi"]:
+    privati = {lingua: leggi_modello(L["modello_privati"]) for lingua, L in LINGUE.items()}
+
+    for c in ali["corsi"] + [ali["privati"]]:
         versioni = [("it", c)]
         if "en" in c:
             versioni.append(("en", {**c, **c["en"]}))
         for lingua, corso in versioni:
-            blocco = contenuto(modelli[lingua], ali, corso, args.oggi, lingua)
+            if c is ali["privati"]:
+                blocco = contenuto_privati(privati[lingua], ali, corso, lingua)
+            else:
+                blocco = contenuto(modelli[lingua], ali, corso, args.oggi, lingua)
             for p in corso["pagine"]:
                 dest = os.path.join(args.site, p, "index.html")
                 with open(dest, encoding="utf-8") as f:
