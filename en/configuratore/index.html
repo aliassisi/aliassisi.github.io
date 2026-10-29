@@ -686,7 +686,7 @@ padding-right: 30px;
 .cfg-chip:hover{background:#f3f3f3;border-color:#ccc}
 .cfg-chip.dragging{opacity:.35;cursor:grabbing}
 .cfg-chip .chip-icon{font-size:16px;color:#999;flex-shrink:0}
-.cfg-chip .chip-name{flex:1;color:#222;font-weight:500;font-size:14px}
+.cfg-chip .chip-name{flex:1;min-width:0;overflow-wrap:anywhere;color:#222;font-weight:500;font-size:14px}
 .cfg-chip .chip-price{color:#888;font-size:13px;white-space:nowrap}
 .cfg-chip .chip-rm{font-size:14px;color:#aaa;cursor:pointer;padding:0 2px;flex-shrink:0}
 .cfg-chip .chip-rm:hover{color:#e05454}
@@ -702,12 +702,13 @@ padding-right: 30px;
 .cfg-total-label{font-size:17px;font-weight:600}
 .cfg-total-val{font-size:30px;font-weight:700;color:#111;letter-spacing:-.5px}
 .cfg-note{font-size:12px;color:#999;margin-top:.4rem;text-align:right}
-.cfg-cta{margin-top:1.2rem;width:100%;padding:.9rem;background:var(--ali-accent);color:#fff;border:none;border-radius:9px;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;letter-spacing:.01em}
-.cfg-cta:hover{background:var(--ali-accent-dark)}
+#cfg-wrap .cfg-cta{margin-top:1.2rem;width:100%;padding:.9rem;background:var(--ali-accent);color:#fff;border:none;border-radius:9px;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;letter-spacing:.01em;font-family:inherit;text-transform:none;line-height:1.4}
+#cfg-wrap .cfg-cta:hover,#cfg-wrap .cfg-cta:focus{background:var(--ali-accent-dark);color:#fff}
 .accom-note{font-size:12px;color:#999;margin-top:6px}
 @media(max-width:560px){
   .cfg-cards{grid-template-columns:repeat(2,1fr)}
-  .cfg-drag-col{min-width:100%;flex:none}
+  #cfg-wrap{padding:1.5rem 0}
+  .cfg-drag-col{flex:1 1 100%;min-width:0}
   .cfg-act-list li{flex-direction:column;gap:2px}
 }
 @media(max-width:380px){.cfg-cards{grid-template-columns:1fr}}
