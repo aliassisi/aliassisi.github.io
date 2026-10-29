@@ -850,6 +850,11 @@ for post in ("994884", "341"):
 import subprocess
 subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(os.path.abspath(__file__)), "text_fixes.py"), site], check=True)
 
+# 7o. Legal pages: termini-e-condizioni, privacy-policy and note-legali are
+# copies of the visa page with the blocks in .github/snippets. After 7n, so
+# the copies have the footer legal links already fixed.
+subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal_pages.py"), site], check=True)
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
