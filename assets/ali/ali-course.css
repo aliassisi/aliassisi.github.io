@@ -11,17 +11,11 @@
 .ali-course :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .ali-course .wrap{max-width:1140px;margin:0 auto;padding:0 30px}
 .ali-course .narrow{max-width:860px;margin:0 auto}
-.ali-course h1,.ali-course h2,.ali-course h3{font-family:var(--serif);font-weight:300;margin:0;line-height:1.25;letter-spacing:.2px}
+.ali-course h2,.ali-course h3{font-family:var(--serif);font-weight:300;margin:0;line-height:1.25;letter-spacing:.2px}
 .ali-course h2{font-size:clamp(2rem,4vw,2.5rem);color:var(--deep);margin-bottom:.5em}
 .ali-course h3{font-size:1.5rem;font-weight:600;color:var(--deep);margin-bottom:.3em}
 .ali-course p{margin:0 0 1em}
 .ali-course strong{font-weight:600}
-.ali-course .hero{position:relative;color:var(--white);min-height:420px;display:flex;align-items:center;
-  background:linear-gradient(90deg,rgba(43,58,122,.92) 0%,rgba(63,77,130,.7) 45%,rgba(63,77,130,.12) 100%),
-  url("https://aliassisi.github.io/assets/uploads/2026/10/Gruppo-1024x683.jpg") center/cover,var(--deep)}
-.ali-course .hero .wrap{width:100%;padding-top:70px;padding-bottom:70px}
-.ali-course .hero h1{font-size:clamp(2.4rem,5vw,3.4rem);color:var(--gold);margin-bottom:.4em}
-.ali-course .hero p{font:300 clamp(1.25rem,2.4vw,1.65rem)/1.5 var(--serif);max-width:640px;margin:0}
 .ali-course .tablewrap{overflow-x:auto;background:rgba(255,255,255,.35);border:1px solid var(--line)}
 .ali-course table{width:100%;border-collapse:collapse;min-width:560px}
 /* Il tema WordPress dà stili ad alcuni elementi: tabelle (layout fisso, margine, interlinea 2,
