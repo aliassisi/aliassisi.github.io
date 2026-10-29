@@ -90,17 +90,32 @@ SITEWIDE = [
 ]
 
 # Footer legal links: WordPress points all three to the English visa page.
-# The legal pages are in Italian only for now: the English footer links to
-# them too.
+# On the English visa page they are "index.html" and marked as the current
+# page (aria-current, elementor-item-active): they lose the mark. Pages under
+# en/ link to the English legal pages, the others to the Italian ones. The
+# pattern also takes links already fixed; a link that already reaches the
+# right page keeps its href.
 LEGAL = {
     "Termini e condizioni": "termini-e-condizioni", "Terms &#038; Conditions": "termini-e-condizioni",
     "Privacy Policy": "privacy-policy",
     "Note legali": "note-legali", "Legal": "note-legali",
 }
+LEGAL_EN = {"termini-e-condizioni": "en/terms-and-conditions", "privacy-policy": "en/privacy-policy",
+            "note-legali": "en/legal-notice"}
 LEGAL_LINK = re.compile(
-    r'<a href="[^"]*visa-information/index\.html"( class="elementor-item"(?: tabindex="-1")?>)('
+    r'<a href="((?:[^"]*(?:visa-information|termini-e-condizioni|terms-and-conditions|privacy-policy|note-legali|legal-notice)/)?'
+    r'index\.html)"(?: aria-current="page")? class="elementor-item(?: elementor-item-active)?"((?: tabindex="-1")?>)('
     + "|".join(map(re.escape, LEGAL)) + r")</a>"
 )
+
+
+def legal_link(m, here):
+    slug = LEGAL[m.group(3)]
+    target = (LEGAL_EN[slug] if here.split("/")[0] == "en" else slug) + "/index.html"
+    href = m.group(1)
+    if posixpath.normpath(posixpath.join(here, href)) != target:
+        href = posixpath.relpath(target, here)
+    return f'<a href="{href}" class="elementor-item"{m.group(2)}{m.group(3)}</a>'
 
 missing = []
 pages = {}
@@ -154,8 +169,7 @@ for dirpath, _, files in os.walk(site):
         for old, rep in SITEWIDE:
             new = new.replace(old, rep)
         here = posixpath.dirname(os.path.relpath(path, site).replace(os.sep, "/")) or "."
-        new = LEGAL_LINK.sub(
-            lambda m: f'<a href="{posixpath.relpath(LEGAL[m.group(2)] + "/index.html", here)}"{m.group(1)}{m.group(2)}</a>', new)
+        new = LEGAL_LINK.sub(lambda m: legal_link(m, here), new)
         if new != text:
             write(path, new)
             changed += 1
