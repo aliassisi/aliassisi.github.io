@@ -42,6 +42,11 @@ root. English pages are under `en/`. There is no backend.
   Run `python3 -I .github/scripts/build_corsi.py .` after editing.
 - Optional blocks: `"libro"` (a course book section) and `"temi"` (a list of themes,
   each with its own enrolment link if it has `"voce_modulo"`).
+- "Altri corsi" (three boxes at the end of each course page) comes from
+  `data/related-courses.json`: per course a title, url, two-line subtitle and three
+  suggestion ids. `build_corsi.py` and `.github/scripts/build_related.py` fill the
+  part between `<!-- related:start -->` and `<!-- related:end -->`. Never suggest
+  `italiancookingfood`; the script refuses it.
 - English pages use `corso-contenuto-en.html`. Each course's `"en"` block in
   `data/ali.json` holds the English texts and pages.
 - Styles: `.github/templates/ali-course.css`, copied to `assets/ali/`, limited to
