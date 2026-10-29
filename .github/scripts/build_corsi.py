@@ -14,6 +14,8 @@ Fields in a course's "en" block replace the Italian ones for English pages.
 The private and online lessons pages come from the "privati" and "online"
 blocks. Their "modello" names the template: corso-privato.html and
 corso-privato-en.html, corso-online.html and corso-online-en.html.
+The "Altri corsi" boxes come from SITE_DIR/data/related-courses.json
+(see build_related.py).
 The page head gets a link to assets/ali/ali-course.css
 (source: .github/templates/ali-course.css).
 
@@ -25,6 +27,7 @@ Safe to run again on a page it already changed. Run it after every crawl.
 import argparse
 import datetime
 import html
+import importlib.util
 import json
 import os
 import re
@@ -32,6 +35,11 @@ import sys
 from urllib.parse import quote
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+# python3 -I leaves the script's folder out of sys.path; load build_related.py by path.
+_spec = importlib.util.spec_from_file_location("build_related", os.path.join(HERE, "build_related.py"))
+related = importlib.util.module_from_spec(_spec)
+sys.dont_write_bytecode = True
+_spec.loader.exec_module(related)
 TEMPLATES = os.path.join(HERE, "..", "templates")
 CSS_OUT = os.path.join("assets", "ali", "ali-course.css")
 INIZIO, FINE = "<!-- ali-course -->", "<!-- /ali-course -->"
@@ -231,12 +239,9 @@ def contenuto(modello, ali, c, oggi, lingua):
 
 
 def altri_corsi(ali, pagine, lingua):
-    altri = [{**o, **o.get(lingua, {})} if lingua != "it" else o for o in ali["altri_corsi"]]
-    # A course page does not list itself.
-    return "\n".join(
-        f'        <li><a href="https://aliassisi.github.io/{o["url"]}/index.html">'
-        f'<b>{esc(o["nome"])}</b><small>{"<br>".join(esc(x) for x in o["nota"])}</small></a></li>'
-        for o in altri if o["url"] not in pagine)
+    """The "Altri corsi" boxes, from data/related-courses.json, between the
+    markers build_related.py fills. All pages of a course show the same boxes."""
+    return related.blocco(ali["_related"], pagine[0])
 
 
 def cella_prezzo(prezzo, studenti, L):
@@ -340,6 +345,8 @@ def main():
 
     with open(os.path.join(args.site, "data", "ali.json"), encoding="utf-8") as f:
         ali = json.load(f)
+    ali["_related"] = related.leggi(args.site)
+    related.controlla(args.site, ali["_related"])
     modelli = {lingua: leggi_modello(L["modello"]) for lingua, L in LINGUE.items()}
 
     css = os.path.join(args.site, CSS_OUT)
