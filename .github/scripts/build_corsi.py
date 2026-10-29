@@ -41,6 +41,7 @@ LINGUE = {
     "it": {
         "modello": "corso-contenuto.html",
         "iscriviti": "Iscriviti", "formula": "Formula",
+        "a_testa": "{p} € a studente", "decimali": ",",
         "mesi": ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
                  "agosto", "settembre", "ottobre", "novembre", "dicembre"],
         "giorni": ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì"],
@@ -58,6 +59,7 @@ LINGUE = {
     "en": {
         "modello": "corso-contenuto-en.html",
         "iscriviti": "Enrol", "formula": "Format",
+        "a_testa": "{p} € per student", "decimali": ".",
         "mesi": ["January", "February", "March", "April", "May", "June", "July",
                  "August", "September", "October", "November", "December"],
         "giorni": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -237,12 +239,24 @@ def altri_corsi(ali, pagine, lingua):
         for o in altri if o["url"] not in pagine)
 
 
+def cella_prezzo(prezzo, studenti, L):
+    """A price of the table. The price is for the group; for 2 or more
+    students the share of each one goes underneath."""
+    if prezzo is None:
+        return '<td class="num">–</td>'
+    if studenti == 1:
+        return f'<td class="num">{prezzo} €</td>'
+    quota = f"{prezzo / studenti:.2f}".removesuffix(".00").replace(".", L["decimali"])
+    return f'<td class="num">{prezzo} €<small>{L["a_testa"].format(p=quota)}</small></td>'
+
+
 def contenuto_lezioni(modello, ali, it, c, lingua):
     """A page of lessons sold by the lesson ("privati", "online").
     it: the Italian block; c: the same block, with its "en" fields merged in
     for English. Each entry of "formule" is a row of the price table, with
     "prezzi" {number of lessons: price}; in the "en" block, "formule" holds
-    only the texts, in the same order. A row with "voce_modulo" gets its own
+    only the texts, in the same order. "studenti" (default 1) is the size of
+    the group; the table shows each student's share. A row with "voce_modulo" gets its own
     enrolment link to the main form; a block with "modulo" uses that form instead."""
     L = LINGUE[lingua]
     formule = it["formule"]
@@ -259,8 +273,7 @@ def contenuto_lezioni(modello, ali, it, c, lingua):
              + (f'<th>{L["iscriviti"]}</th>' if bottoni else ""))
     righe = "\n".join(
         f'            <tr><td>{esc(f["nome"])}<small>{esc(f["nota"])}</small></td>'
-        + "".join(f'<td class="num">{f["prezzi"][str(n)]} €</td>' if str(n) in f["prezzi"]
-                  else '<td class="num">–</td>' for n in colonne)
+        + "".join(cella_prezzo(f["prezzi"].get(str(n)), f.get("studenti", 1), L) for n in colonne)
         + (f'<td><a class="btn small" href="{esc(u)}">{L["iscriviti"]}</a></td>' if bottoni else "")
         + "</tr>"
         for f, u in zip(formule, url))
