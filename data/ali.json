@@ -120,7 +120,7 @@
       "nome": "Super intensivo",
       "tariffa": "super_intensivo",
       "pagine": ["product/super-intensive-italian"],
-      "hero": "Lezioni di gruppo la mattina e lezioni individuali quasi tutti i pomeriggi. Il modo più rapido per imparare l’italiano ad Assisi.",
+      "hero": "Il modo più rapido per imparare l’italiano ad Assisi.",
       "ore": 26,
       "mattina": [4, 4, 4, 4, 2],
       "pomeriggio": [2, 2, 2, 2, 0],
@@ -139,7 +139,7 @@
       "en": {
         "pagine": ["en/product/super-intensive-italian"],
         "nome": "Super intensive",
-        "hero": "Group lessons in the morning and one-to-one lessons almost every afternoon. The fastest way to learn Italian in Assisi.",
+        "hero": "The fastest way to learn Italian in Assisi.",
         "dettagli": [
           "The course combines group work in the morning with one-to-one lessons almost every afternoon. It suits anyone who wants to make real progress in Italian in a short time, for personal, work or study reasons.",
           "Intermediate and advanced students strengthen every skill, from conversation to writing. Beginners make progress in the shortest possible time.",
