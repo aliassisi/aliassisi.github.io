@@ -56,7 +56,7 @@ LINGUE = {
         "giorni": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         "lezione": "lesson", "lezioni": "lessons",
         "libero": "free", "mattina": "morning", "pomeriggio": "afternoon",
-        "al_mattino": " in the morning", "ind_pomeriggio": " one-to-one in the afternoon",
+        "al_mattino": " in the morning", "ind_pomeriggio": " (one-to-one) in the afternoon",
         "mix": "{g} group + {i} one-to-one",
         "durata": "each lesson lasts 50 minutes", "durata_mix": "{mix}, 50 minutes each",
         "prezzi": "group · 50 minutes each", "prezzi_mix": "{mix} · 50 minutes each",
@@ -149,6 +149,8 @@ def contenuto(modello, ali, c, oggi, lingua):
     ind = sum(c["pomeriggio"])
     mix = L["mix"].format(g=sum(c["mattina"]), i=ind) if ind else ""
     altri = [{**o, **o.get(lingua, {})} if lingua != "it" else o for o in ali["altri_corsi"]]
+    # A course page does not list itself.
+    altri = [o for o in altri if o["url"] not in c["pagine"]]
     valori = {
         "nome": esc(c["nome"]),
         "hero": esc(c["hero"]),
