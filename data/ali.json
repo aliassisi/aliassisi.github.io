@@ -608,31 +608,5 @@
         {"nome": "Three-to-one", "nota": "3 students"}
       ]
     }
-  },
-  "altri_corsi": [
-    {
-      "nome": "Standard",
-      "url": "product/corso-di-inglese-standard",
-      "nota": ["18 lezioni a settimana", "di gruppo"],
-      "en": {"url": "en/product/standard-italian-course", "nota": ["18 lessons a week", "group lessons"]}
-    },
-    {
-      "nome": "Intensivo",
-      "url": "product/intensive-italian",
-      "nota": ["22 lezioni a settimana", "18 di gruppo + 4 individuali"],
-      "en": {"nome": "Intensive", "url": "en/product/intensive-italian", "nota": ["22 lessons a week", "18 group + 4 one-to-one"]}
-    },
-    {
-      "nome": "Super intensivo",
-      "url": "product/super-intensive-italian",
-      "nota": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"],
-      "en": {"nome": "Super intensive", "url": "en/product/super-intensive-italian", "nota": ["26 lessons a week", "18 group + 8 one-to-one"]}
-    },
-    {
-      "nome": "Italian & cooking & food",
-      "url": "product/italiancookingfood",
-      "nota": ["Livelli A1–C2 · 09:00–12:00"],
-      "en": {"url": "en/product/italiancookingfood", "nota": ["Levels A1–C2 · 09:00–12:00"]}
-    }
-  ]
+  }
 }
