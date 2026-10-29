@@ -911,7 +911,8 @@ padding-right: 30px;
 .dw-field label{font-size:13px;opacity:.75}
 .dw-field select,.dw-field input[type=number],.dw-field input[type=date]{width:100%;padding:8px 10px;border:1px solid #d9d4cc;border-radius:6px;font-size:14px;font-family:inherit;color:#1a1a1a !important;background:#fff !important;outline:none;cursor:pointer;-webkit-appearance:auto;appearance:auto}
 .dw-field select:focus,.dw-field input:focus{border-color:#2b3a7a}
-.dw-toggle{display:flex;gap:8px;flex-wrap:wrap}
+.dw-toggle{display:flex;gap:8px}
+.dw-toggle .dw-tbtn{flex:1 1 0;min-width:0;padding:9px 10px !important}
 .dw-tbtn{padding:9px 18px !important;border-radius:6px !important;border:1px solid #d9d4cc !important;background:#fff !important;font-family:inherit !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;color:#2b3a7a !important;transition:all .12s !important;display:inline-block !important;line-height:1.4 !important;text-transform:none !important;letter-spacing:0 !important}
 .dw-tbtn:hover{border-color:#2b3a7a !important;background:rgba(43,58,122,.06) !important}
 .dw-tbtn.act{border-color:#2b3a7a !important;background:#2b3a7a !important;color:#fff !important}
@@ -988,11 +989,11 @@ padding-right: 30px;
     </div>
 
     <div class="dw-sec">
-      <span class="dw-lbl">Lezioni a settimana</span>
+      <span class="dw-lbl">Corso</span>
       <div class="dw-toggle">
-        <button class="dw-tbtn" id="dwbtn18" onclick="selL(18)">18 lezioni/sett.<br><small style="font-size:10px;font-weight:400">Solo gruppo</small></button>
-        <button class="dw-tbtn" id="dwbtn22" onclick="selL(22)">22 lezioni/sett.<br><small style="font-size:10px;font-weight:400">Gruppo + privato</small></button>
-        <button class="dw-tbtn" id="dwbtn26" onclick="selL(26)">26 lezioni/sett.<br><small style="font-size:10px;font-weight:400">Gruppo + privato</small></button>
+        <button class="dw-tbtn" id="dwbtn18" onclick="selL(18)">Standard<br><small style="font-size:11px;font-weight:400">18 lezioni/sett. · solo gruppo</small></button>
+        <button class="dw-tbtn" id="dwbtn22" onclick="selL(22)">Intensivo<br><small style="font-size:11px;font-weight:400">22 lezioni/sett. · gruppo + privato</small></button>
+        <button class="dw-tbtn" id="dwbtn26" onclick="selL(26)">Super intensivo<br><small style="font-size:11px;font-weight:400">26 lezioni/sett. · gruppo + privato</small></button>
       </div>
       <div class="dw-sub-opts" id="sub22" style="display:none">
         <span class="dw-sub-lbl">Tipo di corso — 22 lezioni/sett.</span>
