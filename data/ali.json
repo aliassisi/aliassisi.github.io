@@ -184,6 +184,134 @@
           "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
         ]
       }
+    },
+    {
+      "id": "religiosi_22",
+      "nome": "Italiano per religiosi 22",
+      "tariffa": "intensivo",
+      "pagine": ["product/religious-student-program-24"],
+      "hero": "Programma per seminaristi, sacerdoti e suore.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più Italiano e latino in Chiesa e la piattaforma Moodle",
+      "libro": {
+        "titolo": "Italiano e latino in Chiesa",
+        "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+        "testo": [
+          "Per il vocabolario specifico della teologia si utilizzerà Italiano e latino in Chiesa.",
+          "Italiano e latino in Chiesa propone in modo chiaro e sintetico il lessico e i contenuti necessari a chi si troverà ad agire nei contesti religiosi: in parrocchia, in chiesa, al corso di teologia, in seminario ecc.",
+          "Il volume è suddiviso in aree dedicate a:"
+        ],
+        "voci": [
+          "preghiere (anche in latino con traccia audio per entrambe le lingue);",
+          "messa (anche in latino con traccia audio per entrambe le lingue);",
+          "canti religiosi;",
+          "catechismo;",
+          "linguaggio scritturale;",
+          "organizzazione gerarchica;",
+          "feste principali (fisse e mobili);",
+          "oggettistica sacra (il lessico è presentato come un dizionario visuale)."
+        ],
+        "dopo": [
+          "Completa il volume un glossario essenziale italiano-inglese."
+        ]
+      },
+      "voce_modulo": "Corso per studenti religiosi / Italian for religious students",
+      "dettagli": [
+        "Il corso è pensato per seminaristi, sacerdoti e suore che si preparano a studiare teologia in Italia. Al mattino si studia in gruppo; nelle lezioni individuali del pomeriggio, per chi non è principiante, si lavora sul lessico della filosofia e della teologia.",
+        "Oltre al metodo In italiano. Il corso, usiamo il libro Italiano e latino in Chiesa, descritto più sotto. Libri e accesso a Moodle sono inclusi.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/religious-student-program-22"],
+        "nome": "Italian for religious students 22",
+        "hero": "Program for seminarians, priests and nuns.",
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus Italiano e latino in Chiesa and the Moodle platform",
+        "libro": {
+          "titolo": "Italiano e latino in Chiesa",
+          "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+          "testo": [
+            "The book is designed for those who want to learn the Italian vocabulary used in the Church. It focuses on prayers, hymns, the catechism, the language of the scriptures, the hierarchical structure of leadership and the main feast days and celebrations. An English-Italian glossary and audio files are included."
+          ]
+        },
+        "dettagli": [
+          "The course is designed for seminarians, priests and nuns who are getting ready to study theology in Italy. In the morning you study in a group; in the one-to-one lessons in the afternoon, students who are not beginners work on the vocabulary of philosophy and theology.",
+          "Besides the In italiano. Il corso method, we use the book Italiano e latino in Chiesa, described below. Books and Moodle access are included.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    },
+    {
+      "id": "religiosi_26",
+      "nome": "Italiano per religiosi 26",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/religious-student-program-28"],
+      "hero": "Programma per seminaristi, sacerdoti e suore.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più Italiano e latino in Chiesa e la piattaforma Moodle",
+      "libro": {
+        "titolo": "Italiano e latino in Chiesa",
+        "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+        "testo": [
+          "Per il vocabolario specifico della teologia si utilizzerà Italiano e latino in Chiesa.",
+          "Italiano e latino in Chiesa propone in modo chiaro e sintetico il lessico e i contenuti necessari a chi si troverà ad agire nei contesti religiosi: in parrocchia, in chiesa, al corso di teologia, in seminario ecc.",
+          "Il volume è suddiviso in aree dedicate a:"
+        ],
+        "voci": [
+          "preghiere (anche in latino con traccia audio per entrambe le lingue);",
+          "messa (anche in latino con traccia audio per entrambe le lingue);",
+          "canti religiosi;",
+          "catechismo;",
+          "linguaggio scritturale;",
+          "organizzazione gerarchica;",
+          "feste principali (fisse e mobili);",
+          "oggettistica sacra (il lessico è presentato come un dizionario visuale)."
+        ],
+        "dopo": [
+          "Completa il volume un glossario essenziale italiano-inglese."
+        ]
+      },
+      "voce_modulo": "Corso per studenti religiosi / Italian for religious students",
+      "dettagli": [
+        "Il corso è pensato per seminaristi, sacerdoti e suore che si preparano a studiare teologia in Italia. Al mattino si studia in gruppo; nelle lezioni individuali del pomeriggio, per chi non è principiante, si lavora sul lessico della filosofia e della teologia.",
+        "Oltre al metodo In italiano. Il corso, usiamo il libro Italiano e latino in Chiesa, descritto più sotto. Libri e accesso a Moodle sono inclusi.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/religious-student-program-28"],
+        "nome": "Italian for religious students 26",
+        "hero": "Program for seminarians, priests and nuns.",
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus Italiano e latino in Chiesa and the Moodle platform",
+        "libro": {
+          "titolo": "Italiano e latino in Chiesa",
+          "copertina": "/assets/uploads/2026/10/italiano-e-latino-in-chiesa.webp",
+          "testo": [
+            "The book is designed for those who want to learn the Italian vocabulary used in the Church. It focuses on prayers, hymns, the catechism, the language of the scriptures, the hierarchical structure of leadership and the main feast days and celebrations. An English-Italian glossary and audio files are included."
+          ]
+        },
+        "dettagli": [
+          "The course is designed for seminarians, priests and nuns who are getting ready to study theology in Italy. In the morning you study in a group; in the one-to-one lessons in the afternoon, students who are not beginners work on the vocabulary of philosophy and theology.",
+          "Besides the In italiano. Il corso method, we use the book Italiano e latino in Chiesa, described below. Books and Moodle access are included.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
     }
   ],
   "altri_corsi": [
