@@ -48,6 +48,7 @@ LINGUE = {
         "prezzi": "di gruppo · 50 minuti ciascuna", "prezzi_mix": "{mix} · 50 minuti ciascuna",
         "sett": "sett.", "sett_plur": "sett.",
         "nessuna_data": "Nuove date in arrivo. Scrivici per sapere quando inizia il prossimo corso.",
+        "libro_titolo": "Materiale didattico", "copertina": "Copertina di {t}",
     },
     "en": {
         "modello": "corso-contenuto-en.html",
@@ -62,6 +63,7 @@ LINGUE = {
         "prezzi": "group · 50 minutes each", "prezzi_mix": "{mix} · 50 minutes each",
         "sett": "wk", "sett_plur": "wks",
         "nessuna_data": "New dates coming soon. Write to us to find out when the next course starts.",
+        "libro_titolo": "Course materials", "copertina": "Cover of {t}",
     },
 }
 
@@ -126,6 +128,24 @@ def periodo(a, b, L):
     return f"{a.day} {M[a.month - 1]} {a.year} – {b.day} {M[b.month - 1]} {b.year}"
 
 
+def libro(b, L):
+    """The section on a course's own book, or nothing if the course has none.
+    b: {"titolo", "copertina", "testo": [...], "voci": [...], "dopo": [...]}"""
+    if not b:
+        return ""
+    righe = ['  <section id="libro">', '    <div class="wrap">',
+             f'      <h2>{L["libro_titolo"]}</h2>', '      <div class="book">',
+             f'        <img src="{b["copertina"]}" alt="{esc(L["copertina"].format(t=b["titolo"]))}"'
+             ' width="768" height="1024" loading="lazy">',
+             '        <div>', f'          <h3>{esc(b["titolo"])}</h3>']
+    righe += [f"          <p>{esc(p)}</p>" for p in b["testo"]]
+    if b.get("voci"):
+        righe.append("          <ul>" + "".join(f"<li>{esc(v)}</li>" for v in b["voci"]) + "</ul>")
+    righe += [f"          <p>{esc(p)}</p>" for p in b.get("dopo", [])]
+    righe += ["        </div>", "      </div>", "    </div>", "  </section>", "", ""]
+    return "\n".join(righe)
+
+
 def chiusure(lista, oggi, lingua):
     L = LINGUE[lingua]
     anni = {}
@@ -163,6 +183,7 @@ def contenuto(modello, ali, c, oggi, lingua):
         "riga_mattina": riga(c["mattina"], "mattina", L),
         "riga_pomeriggio": riga(c["pomeriggio"], "pomeriggio", L),
         "dettagli": "\n".join(f"          <p>{esc(p)}</p>" for p in c["dettagli"]),
+        "libro": libro(c.get("libro"), L),
         "date_inizio": date_inizio(sorted(data(d) for d in ali["date_inizio"]), oggi, L),
         "chiusure": chiusure(ali["chiusure"], oggi, lingua),
         "intestazione_prezzi": "".join(
