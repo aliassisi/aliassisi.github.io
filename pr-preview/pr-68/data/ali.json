@@ -1,0 +1,215 @@
+{
+  "date_inizio": [
+    "2026-11-30",
+    "2027-02-01",
+    "2027-03-01",
+    "2027-04-05",
+    "2027-05-03",
+    "2027-05-31",
+    "2027-06-28",
+    "2027-07-26",
+    "2027-08-23",
+    "2027-09-20",
+    "2027-10-18",
+    "2027-11-15"
+  ],
+  "chiusure": [
+    {"dal": "2026-12-08", "al": "2026-12-08", "it": "Immacolata Concezione", "en": "Immaculate Conception"},
+    {"dal": "2026-12-21", "al": "2026-12-31", "it": "vacanze di Natale", "en": "Christmas Holidays"},
+    {"dal": "2027-01-01", "al": "2027-01-09", "it": "vacanze di Natale", "en": "Christmas Holidays"},
+    {"dal": "2027-03-26", "al": "2027-04-02", "it": "vacanze di Pasqua", "en": "Easter Holidays"},
+    {"dal": "2027-06-02", "al": "2027-06-02", "it": "Festa nazionale", "en": "Republic Day"},
+    {"dal": "2027-10-04", "al": "2027-10-04", "it": "festa di S. Francesco", "en": "Feast of St. Francis"},
+    {"dal": "2027-12-08", "al": "2027-12-08", "it": "Immacolata Concezione", "en": "Immaculate Conception"},
+    {"dal": "2027-12-20", "al": "2027-12-31", "it": "vacanze di Natale", "en": "Christmas Holidays"}
+  ],
+  "tariffe": {
+    "standard": [
+      {"from": 1, "to": 1, "ppw": 390},
+      {"from": 2, "to": 2, "ppw": 360},
+      {"from": 3, "to": 7, "ppw": 320},
+      {"from": 8, "to": 48, "ppw": 300}
+    ],
+    "intensivo": [
+      {"from": 1, "to": 1, "ppw": 550},
+      {"from": 2, "to": 2, "ppw": 520},
+      {"from": 3, "to": 7, "ppw": 480},
+      {"from": 8, "to": 48, "ppw": 460}
+    ],
+    "super_intensivo": [
+      {"from": 1, "to": 1, "ppw": 710},
+      {"from": 2, "to": 2, "ppw": 680},
+      {"from": 3, "to": 7, "ppw": 640},
+      {"from": 8, "to": 48, "ppw": 620}
+    ]
+  },
+  "modulo_iscrizione": "https://docs.google.com/forms/d/e/1FAIpQLSfe9CdrKQ0ZjvSQioXBHZLDy6AqqZqgstdyp6IGgci7OpfopA/viewform?usp=pp_url&entry.266111784=Onsite%20%2F%20In%20presenza%20ad%20Assisi&entry.719657308=",
+  "corsi": [
+    {
+      "id": "standard",
+      "nome": "Standard",
+      "tariffa": "standard",
+      "pagine": ["product/standard", "product/corso-di-inglese-standard"],
+      "hero": "Lezioni di gruppo al mattino, con compagni di classe da tutto il mondo. Che tu sia alle prime armi o che parli già bene l’italiano, c’è un corso adatto al tuo livello.",
+      "ore": 18,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 0, 0, 0, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Standard (20 lezioni settimanali /20 weekly lessons)",
+      "dettagli": [
+        "Una lingua si impara usandola: presentarsi, chiedere, raccontare, discutere. Anche la grammatica nasce dall’uso, dentro un contesto determinato. Per questo il nostro approccio è comunicativo-situazionale: si parte da una situazione concreta e si impara ad affrontarla in italiano.",
+        "Particolare attenzione è rivolta alla cultura italiana, attraverso documenti autentici, letteratura, arte e cinema. L’obiettivo è migliorare la competenza comunicativa.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/standard-italian-course"],
+        "nome": "Standard",
+        "hero": "Group lessons in the morning, with classmates from all over the world. Whether you are just starting out or already speak Italian well, there is a course for your level.",
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "You learn a language by using it: introducing yourself, asking, telling, discussing. Grammar, too, grows out of use, within a given context. That is why our approach is communicative and situational: you start from a concrete situation and learn to handle it in Italian.",
+          "Special attention goes to Italian culture, through authentic documents, literature, art and cinema. The aim is to improve how you communicate.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    },
+    {
+      "id": "intensivo",
+      "nome": "Intensivo",
+      "tariffa": "intensivo",
+      "pagine": ["product/intensive-italian"],
+      "hero": "Lezioni di gruppo la mattina, lezioni individuali il pomeriggio. Tanta pratica, nuovi amici da ogni parte del mondo e un insegnante che si dedica a te.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo  (24 lezioni settimanali) / Intensive (24 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e quello individuale al pomeriggio. In classe si impara usando la lingua, in situazioni concrete; nelle lezioni individuali l’insegnante lavora solo con te, sui tuoi obiettivi.",
+        "Le lezioni individuali possono servire anche per preparare gli esami di certificazione CILS e Roma Tre, riconosciuti per la cittadinanza italiana (B1) e per il permesso di soggiorno (A2).",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/intensive-italian"],
+        "nome": "Intensive",
+        "hero": "Group lessons in the morning, one-to-one lessons in the afternoon. Plenty of practice, new friends from all over the world and a teacher who works with you alone.",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons in the afternoon. In class you learn by using the language in concrete situations; in the one-to-one lessons the teacher works only with you, on your goals.",
+          "The one-to-one lessons can also prepare you for the CILS and Roma Tre certification exams, which are recognised for Italian citizenship (B1) and for a residence permit (A2).",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ],
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform"
+      }
+    },
+    {
+      "id": "super_intensivo",
+      "nome": "Super intensivo",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/super-intensive-italian"],
+      "hero": "Il modo più rapido per imparare l’italiano ad Assisi.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Super intensivo (28 lezioni settimanali)/ Super intensive (28 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e quello individuale quasi tutti i pomeriggi. È adatto a chi vuole approfondire l’italiano in poco tempo, per motivi personali, di lavoro o di studio.",
+        "Chi ha già un livello intermedio o avanzato rafforza tutte le abilità, dalla conversazione alla scrittura. Chi parte da zero fa progressi nel più breve tempo possibile.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/super-intensive-italian"],
+        "nome": "Super intensive",
+        "hero": "The fastest way to learn Italian in Assisi.",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons almost every afternoon. It suits anyone who wants to make real progress in Italian in a short time, for personal, work or study reasons.",
+          "Intermediate and advanced students strengthen every skill, from conversation to writing. Beginners make progress in the shortest possible time.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ],
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform"
+      }
+    },
+    {
+      "id": "esame_intensivo",
+      "nome": "Intensivo per la certificazione",
+      "tariffa": "intensivo",
+      "pagine": ["product/corsi-di-preparazione-per-la-certificazione"],
+      "hero": "Per chi vuole sostenere gli esami di certificazione universitari CILS e Roma Tre.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da A1 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo per la CERTIFICAZIONE (24 lezioni settimanali)/Intensive Certification Exam Preparation (24 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e le lezioni individuali al pomeriggio, dedicate alla preparazione dell’esame di certificazione, per tutti i livelli da A1 a C2.",
+        "Con l’insegnante scopri com’è fatto l’esame, che cosa chiede ogni prova e come affrontarla. L’Accademia è sede d’esame CILS e Roma Tre, certificazioni riconosciute per la cittadinanza italiana (B1) e per il permesso di soggiorno (A2).",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/corsi-di-preparazione-per-la-certificazione"],
+        "nome": "Intensive certification exam preparation",
+        "hero": "For those who want to take the CILS and Roma Tre university certification exams.",
+        "livelli": "A1 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons in the afternoon, focused on preparing for the certification exam, at every level from A1 to C2.",
+          "With your teacher you learn how the exam is built, what each part asks and how to handle it. The Academy is an exam centre for CILS and Roma Tre, certificates recognised for Italian citizenship (B1) and for a residence permit (A2).",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ]
+      }
+    }
+  ],
+  "altri_corsi": [
+    {
+      "nome": "Standard",
+      "url": "product/corso-di-inglese-standard",
+      "nota": ["18 lezioni a settimana", "di gruppo"],
+      "en": {"url": "en/product/standard-italian-course", "nota": ["18 lessons a week", "group lessons"]}
+    },
+    {
+      "nome": "Intensivo",
+      "url": "product/intensive-italian",
+      "nota": ["22 lezioni a settimana", "18 di gruppo + 4 individuali"],
+      "en": {"nome": "Intensive", "url": "en/product/intensive-italian", "nota": ["22 lessons a week", "18 group + 4 one-to-one"]}
+    },
+    {
+      "nome": "Super intensivo",
+      "url": "product/super-intensive-italian",
+      "nota": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"],
+      "en": {"nome": "Super intensive", "url": "en/product/super-intensive-italian", "nota": ["26 lessons a week", "18 group + 8 one-to-one"]}
+    },
+    {
+      "nome": "Italian & cooking & food",
+      "url": "product/italiancookingfood",
+      "nota": ["Livelli A1–C2 · 09:00–12:00"],
+      "en": {"url": "en/product/italiancookingfood", "nota": ["Levels A1–C2 · 09:00–12:00"]}
+    }
+  ]
+}
