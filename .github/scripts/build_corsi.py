@@ -152,8 +152,6 @@ def contenuto(modello, ali, c, oggi, lingua):
     # A course page does not list itself.
     altri = [o for o in altri if o["url"] not in c["pagine"]]
     valori = {
-        "nome": esc(c["nome"]),
-        "hero": esc(c["hero"]),
         "ore": str(c["ore"]),
         "durata_nota": L["durata_mix"].format(mix=mix) if mix else L["durata"],
         "livelli": esc(c["livelli"]),
@@ -184,18 +182,36 @@ def contenuto(modello, ali, c, oggi, lingua):
     return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
 
 
-def in_wordpress(s, blocco_html, css_href, p):
-    """Put blocco_html in the WordPress page s, between header and footer.
+def testata_wordpress(main):
+    """The page's own top section (title over the background video), with the
+    Elementor wrapper it needs, closed right after it."""
+    w = re.search(r'<div data-elementor-type="product"[^>]*>', main)
+    if not w:
+        return None
+    inizio = main.index("<section", w.end())
+    fine = main.index("</section>", inizio) + len("</section>")
+    return w.group(0) + main[inizio:fine] + "\n</div>\n"
+
+
+def in_wordpress(s, blocco_html, css_href, p, hero):
+    """Put blocco_html in the WordPress page s, below the page's own top
+    section with the video. Header, top section and footer stay as they are;
+    only the line under the title comes from the data ("hero").
     Later runs replace what is between the markers."""
     blocco = f"{INIZIO}\n{blocco_html}{FINE}\n"
     if INIZIO in s:
         s = re.sub(re.escape(INIZIO) + r".*?" + re.escape(FINE) + r"\n",
                    lambda m: blocco, s, count=1, flags=re.S)
     else:
-        s, n = re.subn(r'(<div id="main" role="main"[^>]*>\n).*?(?=[ \t]*</div><!-- #main -->)',
-                       lambda m: m.group(1) + blocco, s, count=1, flags=re.S)
-        if n != 1:
+        m = re.search(r'(<div id="main" role="main"[^>]*>\n)(.*?)(?=[ \t]*</div><!-- #main -->)', s, re.S)
+        if not m:
             sys.exit(f'{p}: no <div id="main"> found. Is it the crawled WordPress page?')
+        testata = testata_wordpress(m.group(2))
+        if not testata:
+            sys.exit(f"{p}: no Elementor top section found in <div id=\"main\">.")
+        s = s[:m.start(2)] + testata + blocco + s[m.end(2):]
+    s = re.sub(r'(data-id="192f165"[^>]*>\s*<div class="elementor-widget-container">\s*).*?(\s*</div>)',
+               lambda m: m.group(1) + esc(hero) + m.group(2), s, count=1, flags=re.S)
     if 'id="ali-course-css"' not in s:
         s = s.replace("</head>", f'<link rel="stylesheet" id="ali-course-css" href="{css_href}">\n</head>', 1)
     return s
@@ -236,7 +252,7 @@ def main():
                     s = f.read()
                 href = os.path.relpath(css, os.path.dirname(dest)).replace(os.sep, "/")
                 with open(dest, "w", encoding="utf-8", newline="\n") as f:
-                    f.write(in_wordpress(s, blocco, href, p))
+                    f.write(in_wordpress(s, blocco, href, p, corso["hero"]))
                 print(f"wrote {p}/index.html ({lingua})")
 
 
