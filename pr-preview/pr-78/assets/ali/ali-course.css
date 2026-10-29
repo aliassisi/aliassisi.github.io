@@ -111,6 +111,9 @@
 .ali-course .themes h3{font-size:1.7rem;font-weight:400}
 .ali-course .themes p{margin:0 0 .8em}
 .ali-course .themes.steps{grid-template-columns:repeat(4,1fr);gap:24px}
+.ali-course .intro{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:48px;align-items:center;margin-top:28px;max-width:960px}
+.ali-course .intro img{width:100%;height:auto;box-shadow:0 8px 24px rgba(43,58,122,.18)}
+@media(max-width:700px){.ali-course .intro{grid-template-columns:1fr;gap:24px}.ali-course .intro img{max-width:260px}}
 @media(max-width:900px){.ali-course .themes.steps{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.ali-course .themes.steps{grid-template-columns:1fr}}
 .ali-course .others{list-style:none;margin:0;padding:0}
