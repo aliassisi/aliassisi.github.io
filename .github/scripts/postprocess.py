@@ -855,6 +855,20 @@ subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(os.path.abspa
 # the copies have the footer legal links already fixed.
 subprocess.run([sys.executable, "-I", os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal_pages.py"), site], check=True)
 
+# 7p. Italian Accademia page: drop the heading "Nel centro di Assisi" (ee8f16a).
+# The line above it stays.
+CENTRO_HEADING = re.compile(
+    r'[ \t]*<div class="elementor-element elementor-element-ee8f16a [^>]*>\s*'
+    r'<div class="elementor-widget-container">\s*<h1 [^>]*>Nel centro di Assisi</h1>\s*</div>\s*</div>\n'
+)
+path = os.path.join(site, "location/index.html")
+if os.path.exists(path):
+    text, n = CENTRO_HEADING.subn("", read(path), count=1)
+    if n:
+        write(path, text)
+    else:
+        print('location/index.html: heading "Nel centro di Assisi" not found')
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
