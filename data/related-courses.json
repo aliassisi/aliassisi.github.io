@@ -76,6 +76,13 @@
              "sottotitolo": ["1–4 settimane", "Lingua, attività ed escursioni"]},
       "en": {"titolo": "Programs", "url": "en/product/programs",
              "sottotitolo": ["1–4 weeks", "Language, activities and excursions"]}
+    },
+    "calendimaggio": {
+      "it": {"titolo": "Italian&Calendimaggio", "url": "product/italiancalendimaggio-medieval-festival",
+             "sottotitolo": ["4 settimane in primavera", "Corso e festa medievale"]},
+      "en": {"titolo": "Italian&Calendimaggio", "url": "en/product/italiancalendimaggio-medieval-festival",
+             "sottotitolo": ["4 weeks in spring", "Course and medieval festival"]},
+      "suggerimenti": ["intensivo", "standard", "programmi"]
     }
   }
 }

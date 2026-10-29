@@ -1,0 +1,104 @@
+<!--
+Contenuto principale della pagina italiana Italian&Calendimaggio, dentro la sua pagina WordPress.
+.github/scripts/build_corsi.py riempie ogni {{nome}} dal blocco "calendimaggio" di
+data/ali.json. Gli stili sono in ali-course.css. Questo commento non compare nelle pagine.
+-->
+<div class="ali-course">
+  <section>
+    <div class="wrap">
+      <div class="media">
+        <div>
+          <h2>La festa medievale di primavera</h2>
+          <p>Arriva la primavera e il Calendimaggio la festeggia! Il Calendimaggio è una delle occasioni più belle per vivere l’atmosfera del Medioevo.</p>
+          <p>Impara l’italiano in una città che risale al Medioevo. Vivi la festa mentre gli abitanti la preparano e partecipa agli eventi che cominciano una settimana prima del Calendimaggio.</p>
+        </div>
+        <img src="/assets/uploads/2026/06/calendimaggio-Assisi.jpg" alt="Il Calendimaggio ad Assisi" width="672" height="372" loading="lazy">
+      </div>
+      <dl class="facts" style="margin-top:36px">
+        <div><dt>Edizione</dt><dd>{{anno}}<small>{{periodo}}</small></dd></div>
+        <div><dt>Lezioni</dt><dd>72 lezioni di gruppo<small>lingua e cultura italiana</small></dd></div>
+        <div><dt>La festa</dt><dd>Biglietti inclusi<small>per il Calendimaggio</small></dd></div>
+        <div><dt>Prezzo</dt><dd>{{prezzo}} €<small>tutto il pacchetto</small></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <details class="fold" open>
+      <summary><h2>L’iscrizione comprende</h2></summary>
+      <ul class="cols fold-body">
+        <li>Test d’ingresso e colloquio online</li>
+        <li>Lezione di pronuncia</li>
+        <li>72 lezioni di gruppo di lingua e cultura italiana
+          <small>Italiano generale · lezioni fuori dall’aula: alla scoperta di Giotto, la visita sotterranea di San Rufino · laboratori: i manoscritti miniati alla Basilica di San Francesco, l’hortus conclusus nel Medioevo</small></li>
+        <li>Biglietti per il Calendimaggio</li>
+        <li><a class="inl" href="https://aliassisi.github.io/method/index.html">Libri del corso</a> e accesso alla piattaforma Moodle</li>
+        <li>Attività, laboratori e facilities: <a class="inl" href="#student-life">vedi Student life</a></li>
+        <li>Attestato di frequenza</li>
+        <li>Certificato di valutazione</li>
+        <li>Tessera dello studente
+          <small>Sconti in alcuni ristoranti e negozi · ingresso gratuito in 4 musei di Assisi</small></li>
+        <li>Wi-fi gratuito</li>
+      </ul>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Il Calendimaggio ad Assisi</h2>
+      <div class="video">
+        <iframe src="https://www.youtube-nocookie.com/embed/sBzu1zHFoTA" title="Il Calendimaggio ad Assisi (video YouTube)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="costi">
+    <div class="wrap">
+      <h2>Costi</h2>
+      <div class="tablewrap">
+        <table class="prices">
+          <thead><tr><th>Pacchetto</th><th>Date</th><th class="num">Prezzo</th><th>Iscriviti</th></tr></thead>
+          <tbody><tr>
+            <td>Italian&amp;Calendimaggio<small>72 lezioni di gruppo · biglietti per la festa</small></td>
+            <td>{{periodo}} {{anno}}</td>
+            <td class="num">{{prezzo}} €</td>
+            <td><a class="btn small" href="{{iscrizione}}">Iscriviti</a></td>
+          </tr></tbody>
+        </table>
+      </div>
+      <p class="cta" style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="btn" href="{{iscrizione}}">Modulo di iscrizione</a>
+        <a class="btn" style="background:transparent;border:1px solid var(--ink)" href="mailto:info@aliassisi.it">Scrivici</a>
+      </p>
+    </div>
+  </section>
+
+  <section id="student-life">
+    <div class="wrap">
+      <h2>Student life</h2>
+      <div class="themes">
+        <div>
+          <h3>Attività</h3>
+          <p>Laboratori, visite ed eventi con gli altri studenti.</p>
+          <p><a class="inl" href="https://aliassisi.github.io/attivita-facilities-e-laboratori/index.html">Tutte le attività e i laboratori in programma</a></p>
+        </div>
+        <div>
+          <h3>Alloggio</h3>
+          <p>Ti aiutiamo a trovare un appartamento, un monastero o un hotel a pochi passi dall’Accademia.</p>
+          <p><a class="inl" href="https://aliassisi.github.io/accommodation/index.html">Scopri come possiamo aiutarti</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Altri corsi</h2>
+      <ul class="others">
+{{altri_corsi}}
+      </ul>
+    </div>
+  </section>
+</div>
