@@ -79,9 +79,85 @@
           "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
         ]
       }
+    },
+    {
+      "id": "intensivo",
+      "nome": "Intensivo",
+      "tariffa": "intensivo",
+      "pagine": ["product/intensive-italian"],
+      "hero": "Lezioni di gruppo la mattina, lezioni individuali il pomeriggio. Tanta pratica, nuovi amici da ogni parte del mondo e un insegnante che si dedica a te.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo  (24 lezioni settimanali) / Intensive (24 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e quello individuale al pomeriggio. In classe si impara usando la lingua, in situazioni concrete; nelle lezioni individuali l’insegnante lavora solo con te, sui tuoi obiettivi.",
+        "Le lezioni individuali possono servire anche per preparare gli esami di certificazione CILS e Roma Tre, riconosciuti per la cittadinanza italiana (B1) e per il permesso di soggiorno (A2).",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/intensive-italian"],
+        "nome": "Intensive",
+        "hero": "Group lessons in the morning, one-to-one lessons in the afternoon. Plenty of practice, new friends from all over the world and a teacher who works with you alone.",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons in the afternoon. In class you learn by using the language in concrete situations; in the one-to-one lessons the teacher works only with you, on your goals.",
+          "The one-to-one lessons can also prepare you for the CILS and Roma Tre certification exams, which are recognised for Italian citizenship (B1) and for a residence permit (A2).",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ],
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform"
+      }
+    },
+    {
+      "id": "super_intensivo",
+      "nome": "Super intensivo",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/super-intensive-italian"],
+      "hero": "Lezioni di gruppo la mattina e lezioni individuali quasi tutti i pomeriggi. Il modo più rapido per imparare l’italiano ad Assisi.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da principianti a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Super intensivo (28 lezioni settimanali)/ Super intensive (28 weekly lessons)",
+      "dettagli": [
+        "Il corso unisce il lavoro in gruppo al mattino e quello individuale quasi tutti i pomeriggi. È adatto a chi vuole approfondire l’italiano in poco tempo, per motivi personali, di lavoro o di studio.",
+        "Chi ha già un livello intermedio o avanzato rafforza tutte le abilità, dalla conversazione alla scrittura. Chi parte da zero fa progressi nel più breve tempo possibile.",
+        "I livelli vanno da principianti a C2 e sono definiti da un test d’ingresso. Per gli studenti non principianti è prevista anche una breve intervista online prima dell’inizio del corso."
+      ],
+      "en": {
+        "pagine": ["en/product/super-intensive-italian"],
+        "nome": "Super intensive",
+        "hero": "Group lessons in the morning and one-to-one lessons almost every afternoon. The fastest way to learn Italian in Assisi.",
+        "dettagli": [
+          "The course combines group work in the morning with one-to-one lessons almost every afternoon. It suits anyone who wants to make real progress in Italian in a short time, for personal, work or study reasons.",
+          "Intermediate and advanced students strengthen every skill, from conversation to writing. Beginners make progress in the shortest possible time.",
+          "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
+        ],
+        "livelli": "Beginner to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform"
+      }
     }
   ],
   "altri_corsi": [
+    {
+      "nome": "Standard",
+      "url": "product/corso-di-inglese-standard",
+      "nota": ["18 lezioni a settimana", "di gruppo"],
+      "en": {"url": "en/product/standard-italian-course", "nota": ["18 lessons a week", "group lessons"]}
+    },
     {
       "nome": "Intensivo",
       "url": "product/intensive-italian",
