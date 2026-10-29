@@ -312,6 +312,254 @@
           "Levels go from beginner to C2 and are set by a placement test. Students who are not beginners also have a short online interview before the course starts."
         ]
       }
+    },
+    {
+      "id": "tematico_22",
+      "nome": "Tematico 22",
+      "tariffa": "intensivo",
+      "pagine": ["product/thematic-24"],
+      "hero": "Lezioni individuali di letteratura, arte, cinema, archeologia o città d’arte.",
+      "ore": 22,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [0, 2, 0, 2, 0],
+      "livelli": "Da A2 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Intensivo tematico LETTERATURA (24 lezioni settimanali)  Intensive Thematic Literature (24 lezioni settimanali)",
+      "dettagli": [
+        "Il corso unisce le lezioni di gruppo al mattino e le lezioni individuali al pomeriggio, dedicate al tema che scegli: letteratura, cinema, arte, archeologia o città d’arte.",
+        "Nelle lezioni individuali puoi proporre gli autori, le opere o le città che ti interessano di più. I temi sono descritti più sotto.",
+        "Il corso è per i livelli da A2 a C2. Il livello è definito da un test d’ingresso e da una breve intervista online prima dell’inizio del corso."
+      ],
+      "temi": {
+        "intro": "Le lezioni individuali del pomeriggio sono dedicate al tema che scegli tra questi.",
+        "voci": [
+          {
+            "titolo": "Letteratura",
+            "testo": [
+              "Per chi vuole approfondire l’italiano lavorando su testi letterari. Nelle lezioni individuali puoi scegliere gli autori che preferisci e gli argomenti che ti servono per lo studio o per il lavoro.",
+              "Oltre al metodo In italiano. Il corso e ai testi letterari autentici, usiamo i volumi Ritratti, Ambienti e Incontri, pensati per migliorare la comprensione dei testi letterari e per aiutare ad apprezzarne lo stile."
+            ],
+            "link": {
+              "testo": "Estratto di Incontri (pdf)",
+              "url": "/assets/uploads/2026/10/incontri.pdf"
+            },
+            "voce_modulo": "Intensivo tematico LETTERATURA (24 lezioni settimanali)  Intensive Thematic Literature (24 lezioni settimanali)"
+          },
+          {
+            "titolo": "Cinema",
+            "testo": [
+              "Praticheremo l’italiano conoscendo meglio la cinematografia italiana. Lavoreremo sulla fotografia di registi famosi, sull’arte del doppiaggio e sugli stili di regia. Vedremo brani di capolavori della filmografia italiana, con particolare riferimento a Roberto Rossellini, Luchino Visconti e Federico Fellini."
+            ],
+            "voce_modulo": "Intensivo tematico CINEMA (24 lezioni settimanali)/   Intensive Thematic Cinema (24 weekly lessons)"
+          },
+          {
+            "titolo": "Arte",
+            "testo": [
+              "Studieremo l’italiano attraverso i grandi periodi dell’arte italiana e le tradizioni artistiche greca e romana. Parleremo in italiano dei capolavori di Leonardo da Vinci, di Caravaggio, del Rinascimento e del Barocco."
+            ],
+            "voce_modulo": "Intensivo tematico ARTE (24 lezioni settimanali)  Intensive Thematic Art (24 lezioni settimanali)"
+          },
+          {
+            "titolo": "Archeologia",
+            "testo": [
+              "Approfondiremo l’italiano studiando i luoghi più importanti dell’archeologia italiana: Pompei ed Ercolano, la Valle dei Templi di Agrigento, Selinunte, Villa Adriana."
+            ],
+            "voce_modulo": "Intensivo tematico (24 lezioni settimanali) ARCHEOLOGIA /  Intensive Thematic Archaeology (24 weekly lessons)"
+          },
+          {
+            "titolo": "Città d’arte",
+            "testo": [
+              "Ogni lezione del pomeriggio dà spazio alla conversazione e alla scioltezza, mentre prepari il tuo viaggio in Italia: come arrivare nella città che vuoi visitare, che cosa vedere, cibi e prodotti tipici, feste, leggende, curiosità e aneddoti. Nelle lezioni individuali puoi proporre le città d’arte che ti interessano di più."
+            ],
+            "voce_modulo": "Intensivo tematico (24 lezioni settimanali)CITTA' d'arte/  Intensive Thematic Cities of art (24 weekly lessons)"
+          }
+        ]
+      },
+      "en": {
+        "pagine": ["en/product/thematic-22"],
+        "nome": "Thematic 22",
+        "hero": "One-to-one lessons on literature, art, cinema, archaeology or cities of art.",
+        "livelli": "A2 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group lessons in the morning with one-to-one lessons in the afternoon on the theme you choose: literature, cinema, art, archaeology or cities of art.",
+          "In the one-to-one lessons you can suggest the authors, works or cities you are most interested in. The themes are described below.",
+          "The course is for levels A2 to C2. Your level is set by a placement test and a short online interview before the course starts."
+        ],
+        "temi": {
+          "intro": "Choose one of these themes. Your one-to-one lessons in the afternoon focus on it.",
+          "voci": [
+            {
+              "titolo": "Italian literature",
+              "testo": [
+                "For students who wish to learn Italian through literature. In the one-to-one lessons you are welcome to select the authors you prefer and work on the topics you need for your academic or professional purposes.",
+                "In addition to the In italiano. Il corso method and authentic literary texts, we use textbooks developed with two aims: to improve your understanding of literary texts and to help you appreciate their style."
+              ],
+              "link": {
+                "testo": "Sample from Incontri (pdf)",
+                "url": "/assets/uploads/2026/10/incontri.pdf"
+              },
+              "voce_modulo": "Intensivo tematico LETTERATURA (24 lezioni settimanali)  Intensive Thematic Literature (24 lezioni settimanali)"
+            },
+            {
+              "titolo": "Cinema",
+              "testo": [
+                "Learn and practise Italian while learning more about Italian cinema. We will work on the photography of famous directors, the art of dubbing and directing styles. We will watch excerpts from masterpieces of Italian film, with special reference to Roberto Rossellini, Luchino Visconti and Federico Fellini."
+              ],
+              "voce_modulo": "Intensivo tematico CINEMA (24 lezioni settimanali)/   Intensive Thematic Cinema (24 weekly lessons)"
+            },
+            {
+              "titolo": "Art",
+              "testo": [
+                "We will study Italian through the great periods of Italian art and through the Greek and Roman art traditions. We will discuss in Italian the masterpieces of Leonardo da Vinci, Caravaggio, the Renaissance and the Baroque."
+              ],
+              "voce_modulo": "Intensivo tematico ARTE (24 lezioni settimanali)  Intensive Thematic Art (24 lezioni settimanali)"
+            },
+            {
+              "titolo": "Archaeology",
+              "testo": [
+                "We will deepen your Italian by studying the most important sites of Italian archaeology: Pompeii and Herculaneum, the Valley of the Temples in Agrigento, Selinunte, Hadrian’s Villa."
+              ],
+              "voce_modulo": "Intensivo tematico (24 lezioni settimanali) ARCHEOLOGIA /  Intensive Thematic Archaeology (24 weekly lessons)"
+            },
+            {
+              "titolo": "Cities of art",
+              "testo": [
+                "Each afternoon lesson puts the emphasis on conversation and fluency while you get ready for your journey in Italy: how to get to the city you wish to visit, what to see, typical food and products, festivals, legends, curiosities and anecdotes. In the one-to-one lessons you are welcome to suggest the cities of art you are most interested in."
+              ],
+              "voce_modulo": "Intensivo tematico (24 lezioni settimanali)CITTA' d'arte/  Intensive Thematic Cities of art (24 weekly lessons)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tematico_26",
+      "nome": "Tematico 26",
+      "tariffa": "super_intensivo",
+      "pagine": ["product/thematic-28"],
+      "hero": "Lezioni individuali di letteratura, arte, cinema, archeologia o città d’arte.",
+      "ore": 26,
+      "mattina": [4, 4, 4, 4, 2],
+      "pomeriggio": [2, 2, 2, 2, 0],
+      "livelli": "Da A2 a C2",
+      "studenti_min": 5,
+      "studenti_max": 12,
+      "studenti_media": "6–8",
+      "materiale": "Libri cartacei e digitali",
+      "materiale_nota": "più l’accesso alla piattaforma Moodle",
+      "voce_modulo": "Tematico_28 LETTERATURA (28 lezioni settimanali)  Thematic Literature_28 (28 weeky lesons)",
+      "dettagli": [
+        "Il corso unisce le lezioni di gruppo al mattino e le lezioni individuali al pomeriggio, dedicate al tema che scegli: letteratura, cinema, arte, archeologia o città d’arte.",
+        "Nelle lezioni individuali puoi proporre gli autori, le opere o le città che ti interessano di più. I temi sono descritti più sotto.",
+        "Il corso è per i livelli da A2 a C2. Il livello è definito da un test d’ingresso e da una breve intervista online prima dell’inizio del corso."
+      ],
+      "temi": {
+        "intro": "Le lezioni individuali del pomeriggio sono dedicate al tema che scegli tra questi.",
+        "voci": [
+          {
+            "titolo": "Letteratura",
+            "testo": [
+              "Per chi vuole approfondire l’italiano lavorando su testi letterari. Nelle lezioni individuali puoi scegliere gli autori che preferisci e gli argomenti che ti servono per lo studio o per il lavoro.",
+              "Oltre al metodo In italiano. Il corso e ai testi letterari autentici, usiamo i volumi Ritratti, Ambienti e Incontri, pensati per migliorare la comprensione dei testi letterari e per aiutare ad apprezzarne lo stile."
+            ],
+            "link": {
+              "testo": "Estratto di Incontri (pdf)",
+              "url": "/assets/uploads/2026/10/incontri.pdf"
+            },
+            "voce_modulo": "Tematico_28 LETTERATURA (28 lezioni settimanali)  Thematic Literature_28 (28 weeky lesons)"
+          },
+          {
+            "titolo": "Cinema",
+            "testo": [
+              "Praticheremo l’italiano conoscendo meglio la cinematografia italiana. Lavoreremo sulla fotografia di registi famosi, sull’arte del doppiaggio e sugli stili di regia. Vedremo brani di capolavori della filmografia italiana, con particolare riferimento a Roberto Rossellini, Luchino Visconti e Federico Fellini."
+            ],
+            "voce_modulo": "Tematico_28 CINEMA (28 lezioni settimanali)/  Thematic_28 CINEMA(28 weekly lessons)"
+          },
+          {
+            "titolo": "Arte",
+            "testo": [
+              "Studieremo l’italiano attraverso i grandi periodi dell’arte italiana e le tradizioni artistiche greca e romana. Parleremo in italiano dei capolavori di Leonardo da Vinci, di Caravaggio, del Rinascimento e del Barocco."
+            ]
+          },
+          {
+            "titolo": "Archeologia",
+            "testo": [
+              "Approfondiremo l’italiano studiando i luoghi più importanti dell’archeologia italiana: Pompei ed Ercolano, la Valle dei Templi di Agrigento, Selinunte, Villa Adriana."
+            ],
+            "voce_modulo": "Tematico_28 ARCHEOLOGIA (28 lezioni alla settimana) -   Thematic_28 Archaeology ( 28 weekly lessons)22"
+          },
+          {
+            "titolo": "Città d’arte",
+            "testo": [
+              "Ogni lezione del pomeriggio dà spazio alla conversazione e alla scioltezza, mentre prepari il tuo viaggio in Italia: come arrivare nella città che vuoi visitare, che cosa vedere, cibi e prodotti tipici, feste, leggende, curiosità e aneddoti. Nelle lezioni individuali puoi proporre le città d’arte che ti interessano di più."
+            ],
+            "voce_modulo": "Super intensivo  tematico (28 lezioni settimanali) CITTA' d'arte/ Super  Intensive Thematic CITIES of art (28 weekly lessons) Opzione 21"
+          }
+        ]
+      },
+      "en": {
+        "pagine": ["en/product/thematic-26"],
+        "nome": "Thematic 26",
+        "hero": "One-to-one lessons on literature, art, cinema, archaeology or cities of art.",
+        "livelli": "A2 to C2",
+        "materiale": "Printed and digital books",
+        "materiale_nota": "plus access to the Moodle platform",
+        "dettagli": [
+          "The course combines group lessons in the morning with one-to-one lessons in the afternoon on the theme you choose: literature, cinema, art, archaeology or cities of art.",
+          "In the one-to-one lessons you can suggest the authors, works or cities you are most interested in. The themes are described below.",
+          "The course is for levels A2 to C2. Your level is set by a placement test and a short online interview before the course starts."
+        ],
+        "temi": {
+          "intro": "Choose one of these themes. Your one-to-one lessons in the afternoon focus on it.",
+          "voci": [
+            {
+              "titolo": "Italian literature",
+              "testo": [
+                "For students who wish to learn Italian through literature. In the one-to-one lessons you are welcome to select the authors you prefer and work on the topics you need for your academic or professional purposes.",
+                "In addition to the In italiano. Il corso method and authentic literary texts, we use textbooks developed with two aims: to improve your understanding of literary texts and to help you appreciate their style."
+              ],
+              "link": {
+                "testo": "Sample from Incontri (pdf)",
+                "url": "/assets/uploads/2026/10/incontri.pdf"
+              },
+              "voce_modulo": "Tematico_28 LETTERATURA (28 lezioni settimanali)  Thematic Literature_28 (28 weeky lesons)"
+            },
+            {
+              "titolo": "Cinema",
+              "testo": [
+                "Learn and practise Italian while learning more about Italian cinema. We will work on the photography of famous directors, the art of dubbing and directing styles. We will watch excerpts from masterpieces of Italian film, with special reference to Roberto Rossellini, Luchino Visconti and Federico Fellini."
+              ],
+              "voce_modulo": "Tematico_28 CINEMA (28 lezioni settimanali)/  Thematic_28 CINEMA(28 weekly lessons)"
+            },
+            {
+              "titolo": "Art",
+              "testo": [
+                "We will study Italian through the great periods of Italian art and through the Greek and Roman art traditions. We will discuss in Italian the masterpieces of Leonardo da Vinci, Caravaggio, the Renaissance and the Baroque."
+              ]
+            },
+            {
+              "titolo": "Archaeology",
+              "testo": [
+                "We will deepen your Italian by studying the most important sites of Italian archaeology: Pompeii and Herculaneum, the Valley of the Temples in Agrigento, Selinunte, Hadrian’s Villa."
+              ],
+              "voce_modulo": "Tematico_28 ARCHEOLOGIA (28 lezioni alla settimana) -   Thematic_28 Archaeology ( 28 weekly lessons)22"
+            },
+            {
+              "titolo": "Cities of art",
+              "testo": [
+                "Each afternoon lesson puts the emphasis on conversation and fluency while you get ready for your journey in Italy: how to get to the city you wish to visit, what to see, typical food and products, festivals, legends, curiosities and anecdotes. In the one-to-one lessons you are welcome to suggest the cities of art you are most interested in."
+              ],
+              "voce_modulo": "Super intensivo  tematico (28 lezioni settimanali) CITTA' d'arte/ Super  Intensive Thematic CITIES of art (28 weekly lessons) Opzione 21"
+            }
+          ]
+        }
+      }
     }
   ],
   "altri_corsi": [

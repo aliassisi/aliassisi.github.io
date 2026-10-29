@@ -49,6 +49,7 @@ LINGUE = {
         "sett": "sett.", "sett_plur": "sett.",
         "nessuna_data": "Nuove date in arrivo. Scrivici per sapere quando inizia il prossimo corso.",
         "libro_titolo": "Materiale didattico", "copertina": "Copertina di {t}",
+        "temi_titolo": "I temi", "iscriviti_tema": "Iscriviti con questo tema",
     },
     "en": {
         "modello": "corso-contenuto-en.html",
@@ -64,6 +65,7 @@ LINGUE = {
         "sett": "wk", "sett_plur": "wks",
         "nessuna_data": "New dates coming soon. Write to us to find out when the next course starts.",
         "libro_titolo": "Course materials", "copertina": "Cover of {t}",
+        "temi_titolo": "The themes", "iscriviti_tema": "Enrol with this theme",
     },
 }
 
@@ -146,6 +148,29 @@ def libro(b, L):
     return "\n".join(righe)
 
 
+def temi(t, ali, L):
+    """The section on the themes a course offers, or nothing if it has none.
+    t: {"intro", "voci": [{"titolo", "testo": [...], "link": {"testo", "url"},
+    "voce_modulo"}]}. "link" and "voce_modulo" are optional; a theme with
+    "voce_modulo" gets its own enrolment link."""
+    if not t:
+        return ""
+    righe = ['  <section id="temi">', '    <div class="wrap">',
+             f'      <h2>{L["temi_titolo"]}</h2>', f'      <p class="narrow-l">{esc(t["intro"])}</p>',
+             '      <div class="themes">']
+    for v in t["voci"]:
+        righe += ["        <div>", f'          <h3>{esc(v["titolo"])}</h3>']
+        righe += [f"          <p>{esc(p)}</p>" for p in v["testo"]]
+        if v.get("link"):
+            righe.append(f'          <p><a class="inl" href="{esc(v["link"]["url"])}">{esc(v["link"]["testo"])}</a></p>')
+        if v.get("voce_modulo"):
+            url = ali["modulo_iscrizione"] + quote(v["voce_modulo"], safe="")
+            righe.append(f'          <p><a class="btn small" href="{esc(url)}">{L["iscriviti_tema"]}</a></p>')
+        righe.append("        </div>")
+    righe += ["      </div>", "    </div>", "  </section>", "", ""]
+    return "\n".join(righe)
+
+
 def chiusure(lista, oggi, lingua):
     L = LINGUE[lingua]
     anni = {}
@@ -184,6 +209,7 @@ def contenuto(modello, ali, c, oggi, lingua):
         "riga_pomeriggio": riga(c["pomeriggio"], "pomeriggio", L),
         "dettagli": "\n".join(f"          <p>{esc(p)}</p>" for p in c["dettagli"]),
         "libro": libro(c.get("libro"), L),
+        "temi": temi(c.get("temi"), ali, L),
         "date_inizio": date_inizio(sorted(data(d) for d in ali["date_inizio"]), oggi, L),
         "chiusure": chiusure(ali["chiusure"], oggi, lingua),
         "intestazione_prezzi": "".join(
