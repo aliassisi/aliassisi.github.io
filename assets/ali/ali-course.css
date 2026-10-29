@@ -119,3 +119,8 @@
 .ali-course .others b{font:400 1.6rem/1.2 var(--serif);color:var(--deep)}
 .ali-course .others a:hover b{text-decoration:underline;text-underline-offset:4px}
 .ali-course .others small{text-align:right;align-self:center}
+.ali-course .media{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+.ali-course .media img{width:100%;height:auto;box-shadow:0 8px 24px rgba(43,58,122,.18)}
+@media(max-width:800px){.ali-course .media{grid-template-columns:1fr;gap:24px}}
+.ali-course .video{position:relative;aspect-ratio:16/9;max-width:860px;background:var(--deep)}
+.ali-course .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}

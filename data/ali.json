@@ -608,5 +608,17 @@
         {"nome": "Three-to-one", "nota": "3 students"}
       ]
     }
+  },
+  "calendimaggio": {
+    "modello": "corso-calendimaggio",
+    "pagine": [],
+    "dal": "2026-04-13",
+    "al": "2026-05-10",
+    "prezzo": 1280,
+    "voce_modulo": "Pacchetto Calendimaggio/ Italian&Calendimaggio Medieval festival package",
+    "en": {
+      "pagine": ["en/product/italiancalendimaggio-medieval-festival"],
+      "hero": "Learn Italian in Assisi during Calendimaggio, its medieval spring festival."
+    }
   }
 }

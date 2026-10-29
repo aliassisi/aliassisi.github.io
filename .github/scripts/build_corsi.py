@@ -14,6 +14,8 @@ Fields in a course's "en" block replace the Italian ones for English pages.
 The private and online lessons pages come from the "privati" and "online"
 blocks. Their "modello" names the template: corso-privato.html and
 corso-privato-en.html, corso-online.html and corso-online-en.html.
+The Italian&Calendimaggio page comes from the "calendimaggio" block and
+corso-calendimaggio-en.html. A language with no "pagine" is skipped.
 The "Altri corsi" boxes come from SITE_DIR/data/related-courses.json
 (see build_related.py).
 The page head gets a link to assets/ali/ali-course.css
@@ -296,6 +298,20 @@ def contenuto_lezioni(modello, ali, it, c, lingua):
     return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
 
 
+def contenuto_pacchetto(modello, ali, c, lingua):
+    """A package with one price and fixed dates ("calendimaggio")."""
+    L = LINGUE[lingua]
+    dal, al = data(c["dal"]), data(c["al"])
+    valori = {
+        "anno": str(dal.year) if dal.year == al.year else f"{dal.year}–{al.year}",
+        "periodo": periodo(dal, al, L),
+        "prezzo": str(c["prezzo"]),
+        "iscrizione": esc(ali["modulo_iscrizione"] + quote(c["voce_modulo"], safe="")),
+        "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
+    }
+    return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
+
+
 def testata_wordpress(main):
     """The page's own top section (title over the background video), with the
     Elementor wrapper it needs, closed right after it."""
@@ -357,12 +373,17 @@ def main():
         f.write(testo)
 
     a_lezione = [ali["privati"], ali["online"]]
-    for c in ali["corsi"] + a_lezione:
+    for c in ali["corsi"] + a_lezione + [ali["calendimaggio"]]:
         versioni = [("it", c)]
         if "en" in c:
             versioni.append(("en", {**c, **c["en"]}))
         for lingua, corso in versioni:
-            if any(c is b for b in a_lezione):
+            if not corso["pagine"]:
+                continue
+            if c is ali["calendimaggio"]:
+                nome = c["modello"] + ("" if lingua == "it" else "-" + lingua) + ".html"
+                blocco = contenuto_pacchetto(leggi_modello(nome), ali, corso, lingua)
+            elif any(c is b for b in a_lezione):
                 nome = c["modello"] + ("" if lingua == "it" else "-" + lingua) + ".html"
                 blocco = contenuto_lezioni(leggi_modello(nome), ali, c, corso, lingua)
             else:
