@@ -1,0 +1,28 @@
+/* Shared by every page: the top section with the background video,
+   the yellow title (page or course title) and the white line under it.
+   Selected by structure, not by element id, so every page gets the same rule. */
+
+/* Title: 48px mobile, 60px tablet, 72px desktop.
+   Long joined words ("certificazione/Crediti/Livelli") break only when they do not fit. */
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:48px;font-weight:500;line-height:1.1;overflow-wrap:anywhere}
+
+/* Line under the title: 20px mobile, 23px tablet, 26px desktop; 14-16px below the title */
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor{padding-top:14px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor,
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p){font-size:20px;line-height:1.35;margin-top:0}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p):last-child{margin-bottom:0}
+
+/* A little more blue behind the text, so the yellow stays readable */
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) > .elementor-background-overlay{background-image:linear-gradient(82deg,#3F4D82 0%,rgba(63,77,130,.75) 50%,rgba(63,77,130,.15) 100%)}
+
+@media(min-width:768px){
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:60px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor,
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p){font-size:23px}
+}
+@media(min-width:1025px){
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor{padding-top:16px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:72px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor,
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p){font-size:26px}
+}
