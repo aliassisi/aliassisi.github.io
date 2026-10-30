@@ -27,7 +27,13 @@
              "sottotitolo": ["22 lezioni a settimana", "18 di gruppo + 4 individuali"]},
       "en": {"titolo": "Intensive certification exam preparation", "url": "en/product/corsi-di-preparazione-per-la-certificazione",
              "sottotitolo": ["22 lessons a week", "18 group + 4 one-to-one"]},
-      "suggerimenti": ["super_intensivo", "intensivo", "programmi"]
+      "suggerimenti": ["esame_super", "intensivo", "programmi"]
+    },
+    "esame_super": {
+      "it": {"titolo": "Super intensivo per la certificazione", "url": "product/super-intensive-certification-exam-preparation-cours",
+             "sottotitolo": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"]},
+      "en": {"titolo": "Super intensive certification exam preparation", "url": "en/product/super-intensive-certification-exam-preparation-cours",
+             "sottotitolo": ["26 lessons a week", "18 group + 8 one-to-one"]}
     },
     "religiosi_22": {
       "it": {"titolo": "Italiano per religiosi 22", "url": "product/religious-student-program-24",
@@ -41,7 +47,7 @@
              "sottotitolo": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"]},
       "en": {"titolo": "Italian for religious students 26", "url": "en/product/religious-student-program-28",
              "sottotitolo": ["26 lessons a week", "18 group + 8 one-to-one"]},
-      "suggerimenti": ["religiosi_22", "super_intensivo", "programmi"]
+      "suggerimenti": ["religiosi_22", "privati", "programmi"]
     },
     "tematico_22": {
       "it": {"titolo": "Tematico 22", "url": "product/thematic-24",
@@ -55,7 +61,7 @@
              "sottotitolo": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"]},
       "en": {"titolo": "Thematic 26", "url": "en/product/thematic-26",
              "sottotitolo": ["26 lessons a week", "18 group + 8 one-to-one"]},
-      "suggerimenti": ["tematico_22", "super_intensivo", "programmi"]
+      "suggerimenti": ["tematico_22", "privati", "programmi"]
     },
     "privati": {
       "it": {"titolo": "Privati", "url": "product/private",
@@ -75,7 +81,8 @@
       "it": {"titolo": "Programmi", "url": "product/programs",
              "sottotitolo": ["1–4 settimane", "Lingua, attività ed escursioni"]},
       "en": {"titolo": "Programs", "url": "en/product/programs",
-             "sottotitolo": ["1–4 weeks", "Language, activities and excursions"]}
+             "sottotitolo": ["1–4 weeks", "Language, activities and excursions"]},
+      "suggerimenti": ["standard", "intensivo", "privati"]
     },
     "calendimaggio": {
       "it": {"titolo": "Italian&Calendimaggio", "url": "product/italiancalendimaggio-medieval-festival",
