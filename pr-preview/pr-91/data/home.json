@@ -1,0 +1,38 @@
+{
+  "_nota": "Slide del carosello in home e testi del riquadro 'Prossimo inizio'. Le date vengono da data/ali.json (date_inizio). Dopo una modifica: python3 -I .github/scripts/build_home.py .",
+  "slide": [
+    {
+      "it": {"testo": "Corsi di italiano<br>ad Assisi.<br>Dal 1993", "url": "/product/corso-di-inglese-standard/"},
+      "en": {"testo": "Italian courses<br>in Assisi.<br>Since 1993", "url": "/en/product/standard-italian-course/"}
+    },
+    {
+      "it": {"testo": "Intensivi e<br>Superintensivi", "url": "/product-category/intensivi/"},
+      "en": {"testo": "Intensive and<br>Super intensive", "url": "/en/product-category/intensive-en/"}
+    },
+    {
+      "it": {"testo": "Italiano online<br>con i nostri docenti", "url": "/product/online-italian/"},
+      "en": {"testo": "Italian online<br>with our teachers", "url": "/en/product/online-italian/"}
+    },
+    {
+      "it": {"testo": "Programmi:<br>lingua, cultura,<br>eventi", "url": "/product/packages/"},
+      "en": {"testo": "Programs:<br>language, culture,<br>events", "url": "/en/product/packages/"}
+    }
+  ],
+  "pulsante": {"it": "Scopri", "en": "View more"},
+  "prossimo_inizio": {
+    "it": {
+      "titolo": "Prossimo inizio",
+      "poi": "Poi",
+      "altre_date": "Ti serve un'altra data? <a href=\"https://wa.me/393515537976\">Scrivici</a>: valutiamo insieme inizi diversi, per tutti i corsi.",
+      "pulsante": "Calendario e costi",
+      "url": "calendar-and-fees/index.html"
+    },
+    "en": {
+      "titolo": "Next start",
+      "poi": "Then",
+      "altre_date": "Need a different date? <a href=\"https://wa.me/393515537976\">Write to us</a>: other start dates are possible for all courses.",
+      "pulsante": "Calendar and fees",
+      "url": "../calendar-and-fees/index.html"
+    }
+  }
+}
