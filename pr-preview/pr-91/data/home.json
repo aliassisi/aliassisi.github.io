@@ -23,14 +23,14 @@
     "it": {
       "titolo": "Prossimo inizio",
       "poi": "Poi",
-      "altre_date": "Ti serve un'altra data? <a href=\"https://wa.me/393515537976\">Scrivici</a>: valutiamo insieme inizi diversi, per tutti i corsi.",
+      "altre_date": "Ti serve un'altra data? <a href=\"https://wa.me/393515537976\">Scrivici</a>.",
       "pulsante": "Calendario e costi",
       "url": "calendar-and-fees/index.html"
     },
     "en": {
       "titolo": "Next start",
       "poi": "Then",
-      "altre_date": "Need a different date? <a href=\"https://wa.me/393515537976\">Write to us</a>: other start dates are possible for all courses.",
+      "altre_date": "Need a different date? <a href=\"https://wa.me/393515537976\">Write to us</a>.",
       "pulsante": "Calendar and fees",
       "url": "../calendar-and-fees/index.html"
     }
