@@ -143,7 +143,9 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
 
     # runtime update: the date list and the month names go with the page
     css = ("<style>.elementor-element-bad613d .elementor-testimonial-content a,"
-           ".elementor-element-139c2fa a{color:#fec15f;text-decoration:underline}</style>\n")
+           ".elementor-element-139c2fa .elementor-heading-title a{font:inherit!important;letter-spacing:inherit!important;"
+           "color:#fec15f!important;text-decoration:underline!important;text-decoration-thickness:1px!important;"
+           "text-underline-offset:.18em}</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
         + ",M=" + json.dumps(MESI[lang], ensure_ascii=False) + ",L=" + json.dumps(lang) \
         + ",P=" + json.dumps(t["poi"], ensure_ascii=False) + r""";
