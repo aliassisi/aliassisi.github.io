@@ -33,7 +33,8 @@
       "it": {"titolo": "Super intensivo per la certificazione", "url": "product/super-intensive-certification-exam-preparation-cours",
              "sottotitolo": ["26 lezioni a settimana", "18 di gruppo + 8 individuali"]},
       "en": {"titolo": "Super intensive certification exam preparation", "url": "en/product/super-intensive-certification-exam-preparation-cours",
-             "sottotitolo": ["26 lessons a week", "18 group + 8 one-to-one"]}
+             "sottotitolo": ["26 lessons a week", "18 group + 8 one-to-one"]},
+      "suggerimenti": ["esame_intensivo", "privati", "programmi"]
     },
     "religiosi_22": {
       "it": {"titolo": "Italiano per religiosi 22", "url": "product/religious-student-program-24",
