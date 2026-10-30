@@ -134,7 +134,7 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     pagina = pulsante(pagina, "0bcf9eb", t["pulsante"], t["url"])
     # desktop bar
     pagina = sostituisci_widget(pagina, "b259213",
-                                '<span style="font-size:.7em">' + html.escape(t["titolo"].upper()) + "</span>")
+                                '<span style="font-size:.58em">' + html.escape(t["titolo"].upper()) + "</span>")
     pagina = sostituisci_widget(pagina, "38f8ffd", span("breve", primo.strftime("%d.%m.%Y")))
     pagina = sostituisci_widget(pagina, "139c2fa",
                                 span("poi", poi) + " " + t["altre_date"])
@@ -150,12 +150,13 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            ".elementor-element-2c917f6 .elementor-element-15f1e8c{flex:1 1 auto;min-width:0}"
            ".elementor-element-2c917f6 .elementor-heading-title,.elementor-element-2c917f6 .elementor-button{white-space:nowrap}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{white-space:normal}"
-           # breathing room: side padding per column, spaced label, button off the edge
-           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:20px clamp(14px,1.9vw,36px)!important}"
-           ".elementor-element-2c917f6 .elementor-element-fbdcc07>.elementor-widget-wrap{padding-left:clamp(20px,2.6vw,48px)!important}"
-           ".elementor-element-2c917f6 .elementor-element-15f1e8c>.elementor-widget-wrap{padding-left:clamp(18px,2.4vw,44px)!important}"
-           ".elementor-element-2c917f6 .elementor-element-fa2ccb2>.elementor-widget-wrap{padding-right:clamp(20px,2.6vw,48px)!important}"
-           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{letter-spacing:clamp(.04em,.6vw,.14em)}"
+           # breathing room: same side padding in every column, smaller label and date,
+           # the sentence on one line from 1400px up
+           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:20px clamp(18px,2.4vw,44px)!important}"
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{letter-spacing:.16em}"
+           ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:30px!important}"
+           ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:24px!important}"
+           "@media(min-width:1400px){.elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{white-space:nowrap}}"
            "</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
         + ",M=" + json.dumps(MESI[lang], ensure_ascii=False) + ",L=" + json.dumps(lang) \
