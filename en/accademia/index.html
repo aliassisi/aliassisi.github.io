@@ -376,8 +376,50 @@ padding-right: 30px;
 </style>
 <link rel='stylesheet' id='ali-footer-css' href='../../assets/ali/footer.css' media='all' />
 <link rel='stylesheet' id='ali-hero-css' href='../../assets/ali/hero.css' media='all' />
+<script id="accademia-anchor-fix">
+/* Lazy images and carousels above the target change height after the jump; keep the target in place until the page settles or the visitor scrolls. */
+(function(){
+  var id=decodeURIComponent(location.hash.slice(1)); if(!id) return;
+  var stop=false, t0=Date.now();
+  function off(){stop=true}
+  ['wheel','touchstart','keydown','mousedown'].forEach(function(e){addEventListener(e,off,{once:true,passive:true})});
+  function fix(){ if(stop||Date.now()-t0>8000) return; var el=document.getElementById(id); if(el) el.scrollIntoView({block:'start'}); }
+  document.addEventListener('DOMContentLoaded',function(){
+    if(!document.getElementById(id)||!window.ResizeObserver) return;
+    var ro=new ResizeObserver(fix); ro.observe(document.body);
+    addEventListener('load',function(){setTimeout(function(){fix();ro.disconnect()},300)});
+    setTimeout(function(){ro.disconnect()},8000);
+  });
+})();
+</script>
 <style id="accademia-anchors">
 #team,#sede,#collaborazioni{scroll-margin-top:130px}
+</style>
+<style id="accademia-parole">
+.ali-parole{width:100%;--navy:#3b4a8a;--linea:#cfc8bd;color:var(--navy);border-top:1px solid var(--linea)}
+.ali-parole details{border-bottom:1px solid var(--linea)}
+.ali-parole summary{position:relative;display:block;list-style:none;cursor:pointer;padding:14px 40px 14px 0}
+.ali-parole summary::-webkit-details-marker{display:none}
+.ali-parole summary::after{content:"+";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:24px;line-height:1;color:var(--navy)}
+.ali-parole details[open] summary::after{content:"\2212"}
+.ali-parole .t{display:block;font-family:"Cormorant Garamond",serif;font-size:24px;line-height:1.2;font-weight:500}
+.ali-parole summary:hover .t{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.ali-parole .s{display:block;font-size:14px;font-style:italic;line-height:1.4;margin-top:3px}
+.ali-parole .b{padding:0 0 18px;font-size:15px;line-height:1.65}
+.ali-parole .b p{margin:0 0 .9em}
+.ali-parole .b p:last-child{margin-bottom:0}
+.ali-parole .b blockquote{margin:0 0 .9em;padding:0 0 0 16px;border-left:2px solid var(--linea);font-size:inherit;font-style:normal;color:inherit}
+.ali-parole .b blockquote:last-child{margin-bottom:0}
+.ali-parole .b .verso{padding-left:16px}
+@media(max-width:767px){
+#sede > .elementor-container{flex-direction:column}
+#sede .elementor-element-8a05863,#sede .elementor-element-8a05863 > .elementor-widget-wrap{display:contents}
+#sede .elementor-element-8a05863 > .elementor-widget-wrap > .elementor-element{padding:0 10px}
+#sede .elementor-element-2f629cb{order:1}
+#sede .elementor-element-dbe1e09,#sede .ali-parole{order:2}
+#sede .elementor-element-dbe1e09{margin-top:30px}
+#sede .ali-parole{margin:0 10px;width:auto}
+}
 </style>
 <style id="location-photo">
 @media(min-width:768px){
@@ -751,12 +793,12 @@ padding-right: 30px;
 .ali-team h2{font-size:clamp(30px,5vw,44px);text-align:center;margin-bottom:28px}
 .ali-team .grp{aspect-ratio:3/2;overflow:hidden;background:var(--sabbia);margin-bottom:40px}
 .ali-team .grp img{object-position:50% 22%}
-.ali-team .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px;align-items:start}
+.ali-team .g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch;max-width:960px;margin:0 auto}
 .ali-team .c{scroll-margin-top:110px;display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff;overflow:hidden}
 .ali-team .ph{width:100%;aspect-ratio:4/5;overflow:hidden;background:var(--sabbia)}
 .ali-team .ph img{object-position:50% 25%;transition:transform .5s}
 .ali-team .c:hover .ph img{transform:scale(1.04)}
-.ali-team .bd{display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 20px 22px}
+.ali-team .bd{flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 20px 22px}
 .ali-team h4{font-size:24px;line-height:1.2;margin-bottom:6px;min-height:2.4em;display:flex;align-items:flex-end;justify-content:center}
 .ali-team .s{font-size:14px;font-style:italic;line-height:1.45;margin:0;min-height:4.35em}
 .ali-team details{width:100%;border-top:1px solid var(--linea);margin-top:16px}
@@ -768,12 +810,14 @@ padding-right: 30px;
 .ali-team .bio{text-align:left;font-size:15px;padding-top:16px}
 .ali-team .bio p:last-child{margin-bottom:0}
 .ali-team .bio ul{margin:0 0 1em;padding-left:18px;line-height:1.55}
+@media(max-width:759px){.ali-team .g{grid-template-columns:repeat(2,minmax(0,1fr))}.ali-team .c:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 10px)}}
+@media(max-width:519px){.ali-team .g{grid-template-columns:minmax(0,1fr)}.ali-team .c:last-child:nth-child(odd){width:100%}}
 @media(max-width:600px){.ali-team .grp{aspect-ratio:4/3}}
 @media(max-width:511px){.ali-team h4,.ali-team .s{min-height:0}}
 </style>
 
 <section class="ali-team" id="team">
-  <h2>Meet Our Team</h2>
+  <h2>Our team</h2>
 
   <div class="grp"><img src="/assets/uploads/team/DSC01998.jpg" alt="The team of Accademia Lingua Italiana Assisi" loading="lazy"></div>
 
@@ -961,20 +1005,26 @@ padding-right: 30px;
 						<div class="elementor-container elementor-column-gap-default">
 					<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-8a05863" data-id="8a05863" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">
-						<div class="elementor-element elementor-element-3c789eb elementor-widget elementor-widget-text-editor" data-id="3c789eb" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+						<div class="elementor-element elementor-element-f68c845 elementor-invisible elementor-widget elementor-widget-heading" data-id="f68c845" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;_animation_delay&quot;:500}" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-									<p>of Accademia Lingua Italiana Assisi is in the historic heart of the town centre, at 17 via Santa Maria delle Rose, a short distance from Piazza del Comune and in the vicinity of the Basilica of St. Francis and the Church of Santa Chiara. This 14th century  former residence was renovated in 2006 by the architect Michele Bilancia. Architectural changes have been made in order to enhance the functional properties of the space. The classrooms and offices are accessible from a medieval courtyard. All the classrooms have air conditioning. </p>								</div>
+					<h3 class="elementor-heading-title elementor-size-default">The school</h3>				</div>
+				</div>
+				<div class="elementor-element elementor-element-3c789eb elementor-widget elementor-widget-text-editor" data-id="3c789eb" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+									<p>The Accademia is housed in a fourteenth-century building in the historic centre of Assisi, at Via Santa Maria delle Rose 17, a few steps from Piazza del Comune and the Basilica of Santa Chiara. The architect Michele Bilancia restored it, keeping its old structure and adapting it to the school. All classrooms are air-conditioned.</p>								</div>
 				</div>
 				<div class="elementor-element elementor-element-dbe1e09 elementor-invisible elementor-widget elementor-widget-heading" data-id="dbe1e09" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;_animation_delay&quot;:500}" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h3 class="elementor-heading-title elementor-size-default">Assisi
-</h3>				</div>
+					<h3 class="elementor-heading-title elementor-size-default">Words born in Assisi</h3>				</div>
 				</div>
-				<div class="elementor-element elementor-element-d8152e9 elementor-widget elementor-widget-text-editor" data-id="d8152e9" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p>The historic centre of Assisi, with the Basilica of Saint Francis and the other Franciscan sites, is a UNESCO World Heritage Site. It is a medieval hill town built of pink stone from Mount Subasio, where everything is within walking distance.</p><p>As the town of Saint Francis, it has drawn visitors for centuries. In the twentieth century it was written about or painted by, among others, Rainer Maria Rilke, Hermann Hesse, Nikos Kazantzakis, J.R.R. Tolkien, William Congdon, Albert Camus, Paul Celan and Allen Ginsberg.</p>								</div>
-				</div>
-					</div>
+				<div class="ali-parole">
+<details><summary><span class="t">The Canticle</span><span class="s">1224–1225, the first poem by a known author in Italian literature</span></summary><div class="b"><p>In the winter of 1224–1225, at San Damiano, Francis wrote the <em>Canticle of Brother Sun</em>, the oldest poem in Italian literature whose author we know. The earliest copy is still here, in the library of the Sacro Convento. With the <em>Canticle</em>, poetry leaves Latin for the vernacular: the road along which, with Dante, Petrarch and Boccaccio, the common language of Italians would be born.</p></div></details>
+<details><summary><span class="t">Dante</span><span class="s">Assisi as the East</span></summary><div class="b"><p>Less than a century later, Dante told the life of Francis in Canto XI of the <em>Paradiso</em>. If Francis is the sun, the place where he was born should not be called by its old name, Ascesi, but by the name of the point where the sun rises:</p><p class="verso"><em>non dica Ascesi, ché direbbe corto, / ma Orïente, se proprio dir vuole</em> (Par. XI, 53–54)<br>(<em>“let no one call it Ascesi, which would say too little, but the East, if he would name it rightly”</em>)</p></div></details>
+<details><summary><span class="t">Travellers</span><span class="s">From Goethe to Jørgensen</span></summary><div class="b"><p>Goethe reached Assisi in October 1786 and visited the Temple of Minerva, the first intact ancient monument he had ever seen; he did not go in to see Giotto. In 1874 John Ruskin spent weeks studying Giotto’s frescoes. In the same year Henry James, in an essay on the towns of central Italy, wrote that the church of St. Francis “is one of the very sacred places of Italy, and it would be hard to breathe anywhere an air more heavy with holiness.” In 1893 the French historian Paul Sabatier published his <em>Life of Saint Francis</em>; in Assisi he founded the International Society of Franciscan Studies in 1902 and was made an honorary citizen. The Danish poet Johannes Jørgensen, author of a celebrated biography of the saint, lived in Assisi for almost forty years.</p></div></details>
+<details><summary><span class="t">The twentieth century</span><span class="s">From Hesse to Congdon</span></summary><div class="b"><p>In 1904 Hermann Hesse wrote his <em>Francis of Assisi</em>: “He was a child and a poet, a master and a teacher of love, a humble friend and brother to every creature.”</p><p>In 1924 Nikos Kazantzakis met Jørgensen in Assisi, and years later, remembering that stay, he wrote <em>God’s Pauper</em>. For Kazantzakis, Francis is the man of a task that seems impossible: “to transform the matter God has entrusted to him into spirit.” To Brother Leo he says:</p><blockquote>“We must have faith in the soul of man; don’t listen to sensible people, Brother Leo, the soul can do the impossible. You said: whoever lives with wolves must be a wolf, not a lamb; that is what you said, Brother Leo, that is what wise men say; but God has given me a madness, a new madness, and I say: whoever lives with wolves must be a lamb, and let them devour him! What is the name of that immortal thing inside us?” ‘The soul.’ “That, Brother Leo, they cannot devour.”</blockquote><p>In her letter of 15 May 1942 to Father Joseph-Marie Perrin, Simone Weil wrote:</p><blockquote>“In 1937 I spent two wonderful days in Assisi. There, alone in the little twelfth-century Romanesque chapel of Santa Maria degli Angeli, an incomparable marvel of purity where Saint Francis often used to pray, something stronger than I was compelled me for the first time in my life to go down on my knees.”</blockquote><p>In August 1955 J.R.R. Tolkien spent a week in Assisi with his daughter, guests of the French Poor Clares, while he corrected the proofs of <em>The Lord of the Rings</em>. Paul Celan gave the title <em>Assisi</em> to one of the poems in <em>Threshold to Threshold</em> (1955). The American painter William Congdon converted here in 1959 and worked here for twenty years.</p></div></details>
+<details><summary><span class="t">Italian writers</span><span class="s">From Carducci to Pasolini</span></summary><div class="b"><p>Giosue Carducci wrote a sonnet to Santa Maria degli Angeli. Gabriele d’Annunzio included <em>Assisi</em> among his <em>Cities of Silence</em> (1903); in a prose piece of 1897, written in Assisi, he has Illuminata say that “a kind of second sight is in all natural things.”</p><p>After the war the Pro Civitate Christiana drew writers and filmmakers: Giuseppe Ungaretti took part in its courses. In October 1962 Pier Paolo Pasolini, a guest at the Cittadella, read the Gospel of Matthew in a single night and decided to make it into a film; the following year he returned with Elsa Morante.</p></div></details>
+</div>
+</div>
 		</div>
 				<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-2f629cb" data-id="2f629cb" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">

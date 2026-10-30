@@ -376,8 +376,50 @@ padding-right: 30px;
 </style>
 <link rel='stylesheet' id='ali-footer-css' href='../assets/ali/footer.css' media='all' />
 <link rel='stylesheet' id='ali-hero-css' href='../assets/ali/hero.css' media='all' />
+<script id="accademia-anchor-fix">
+/* Lazy images and carousels above the target change height after the jump; keep the target in place until the page settles or the visitor scrolls. */
+(function(){
+  var id=decodeURIComponent(location.hash.slice(1)); if(!id) return;
+  var stop=false, t0=Date.now();
+  function off(){stop=true}
+  ['wheel','touchstart','keydown','mousedown'].forEach(function(e){addEventListener(e,off,{once:true,passive:true})});
+  function fix(){ if(stop||Date.now()-t0>8000) return; var el=document.getElementById(id); if(el) el.scrollIntoView({block:'start'}); }
+  document.addEventListener('DOMContentLoaded',function(){
+    if(!document.getElementById(id)||!window.ResizeObserver) return;
+    var ro=new ResizeObserver(fix); ro.observe(document.body);
+    addEventListener('load',function(){setTimeout(function(){fix();ro.disconnect()},300)});
+    setTimeout(function(){ro.disconnect()},8000);
+  });
+})();
+</script>
 <style id="accademia-anchors">
 #team,#sede,#collaborazioni{scroll-margin-top:130px}
+</style>
+<style id="accademia-parole">
+.ali-parole{width:100%;--navy:#3b4a8a;--linea:#cfc8bd;color:var(--navy);border-top:1px solid var(--linea)}
+.ali-parole details{border-bottom:1px solid var(--linea)}
+.ali-parole summary{position:relative;display:block;list-style:none;cursor:pointer;padding:14px 40px 14px 0}
+.ali-parole summary::-webkit-details-marker{display:none}
+.ali-parole summary::after{content:"+";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:24px;line-height:1;color:var(--navy)}
+.ali-parole details[open] summary::after{content:"\2212"}
+.ali-parole .t{display:block;font-family:"Cormorant Garamond",serif;font-size:24px;line-height:1.2;font-weight:500}
+.ali-parole summary:hover .t{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.ali-parole .s{display:block;font-size:14px;font-style:italic;line-height:1.4;margin-top:3px}
+.ali-parole .b{padding:0 0 18px;font-size:15px;line-height:1.65}
+.ali-parole .b p{margin:0 0 .9em}
+.ali-parole .b p:last-child{margin-bottom:0}
+.ali-parole .b blockquote{margin:0 0 .9em;padding:0 0 0 16px;border-left:2px solid var(--linea);font-size:inherit;font-style:normal;color:inherit}
+.ali-parole .b blockquote:last-child{margin-bottom:0}
+.ali-parole .b .verso{padding-left:16px}
+@media(max-width:767px){
+#sede > .elementor-container{flex-direction:column}
+#sede .elementor-element-8a05863,#sede .elementor-element-8a05863 > .elementor-widget-wrap{display:contents}
+#sede .elementor-element-8a05863 > .elementor-widget-wrap > .elementor-element{padding:0 10px}
+#sede .elementor-element-2f629cb{order:1}
+#sede .elementor-element-dbe1e09,#sede .ali-parole{order:2}
+#sede .elementor-element-dbe1e09{margin-top:30px}
+#sede .ali-parole{margin:0 10px;width:auto}
+}
 </style>
 <style id="location-photo">
 @media(min-width:768px){
@@ -751,12 +793,12 @@ padding-right: 30px;
 .ali-team h2{font-size:clamp(30px,5vw,44px);text-align:center;margin-bottom:28px}
 .ali-team .grp{aspect-ratio:3/2;overflow:hidden;background:var(--sabbia);margin-bottom:40px}
 .ali-team .grp img{object-position:50% 22%}
-.ali-team .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px;align-items:start}
+.ali-team .g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch;max-width:960px;margin:0 auto}
 .ali-team .c{scroll-margin-top:110px;display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff;overflow:hidden}
 .ali-team .ph{width:100%;aspect-ratio:4/5;overflow:hidden;background:var(--sabbia)}
 .ali-team .ph img{object-position:50% 25%;transition:transform .5s}
 .ali-team .c:hover .ph img{transform:scale(1.04)}
-.ali-team .bd{display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 20px 22px}
+.ali-team .bd{flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 20px 22px}
 .ali-team h4{font-size:24px;line-height:1.2;margin-bottom:6px;min-height:2.4em;display:flex;align-items:flex-end;justify-content:center}
 .ali-team .s{font-size:14px;font-style:italic;line-height:1.45;margin:0;min-height:4.35em}
 .ali-team details{width:100%;border-top:1px solid var(--linea);margin-top:16px}
@@ -768,6 +810,8 @@ padding-right: 30px;
 .ali-team .bio{text-align:left;font-size:15px;padding-top:16px}
 .ali-team .bio p:last-child{margin-bottom:0}
 .ali-team .bio ul{margin:0 0 1em;padding-left:18px;line-height:1.55}
+@media(max-width:759px){.ali-team .g{grid-template-columns:repeat(2,minmax(0,1fr))}.ali-team .c:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 10px)}}
+@media(max-width:519px){.ali-team .g{grid-template-columns:minmax(0,1fr)}.ali-team .c:last-child:nth-child(odd){width:100%}}
 @media(max-width:600px){.ali-team .grp{aspect-ratio:4/3}}
 @media(max-width:511px){.ali-team h4,.ali-team .s{min-height:0}}
 </style>
@@ -959,22 +1003,24 @@ padding-right: 30px;
 			<div class="elementor-widget-wrap elementor-element-populated">
 						<div class="elementor-element elementor-element-f68c845 elementor-invisible elementor-widget elementor-widget-heading" data-id="f68c845" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;_animation_delay&quot;:500}" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h3 class="elementor-heading-title elementor-size-default">La sede dell'Accademia</h3>				</div>
+					<h3 class="elementor-heading-title elementor-size-default">La sede</h3>				</div>
 				</div>
 				<div class="elementor-element elementor-element-3c789eb elementor-widget elementor-widget-text-editor" data-id="3c789eb" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p>si trova nel centro storico di Assisi, in via Santa Maria delle Rose, 17, a pochi passi da Piazza del Comune e nelle vicinanze  della Basilica di S. Chiara.</p><p>Si tratta di una palazzina trecentesca ristrutturata dall’architetto Michele Bilancia. Nel rispetto della storia dell’immobile, sono stati eseguiti interventi architettonici che esaltano la funzionalità della struttura. Tutte le aule sono climatizzate.</p>								</div>
+									<p>L’Accademia è in una palazzina del Trecento nel centro storico di Assisi, in via Santa Maria delle Rose 17, a pochi passi da Piazza del Comune e dalla Basilica di Santa Chiara. L’architetto Michele Bilancia l’ha restaurata conservando la struttura antica e adattandola alla scuola. Tutte le aule hanno l’aria condizionata.</p>								</div>
 				</div>
 				<div class="elementor-element elementor-element-dbe1e09 elementor-invisible elementor-widget elementor-widget-heading" data-id="dbe1e09" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;_animation_delay&quot;:500}" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h3 class="elementor-heading-title elementor-size-default">Assisi
-</h3>				</div>
+					<h3 class="elementor-heading-title elementor-size-default">Le parole nate ad Assisi</h3>				</div>
 				</div>
-				<div class="elementor-element elementor-element-d8152e9 elementor-widget elementor-widget-text-editor" data-id="d8152e9" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p>Il centro storico di Assisi, con la Basilica di San Francesco e gli altri luoghi francescani, è Patrimonio dell’Umanità UNESCO. È una città medievale su un colle, costruita con la pietra rosa del Monte Subasio, dove tutto si raggiunge a piedi.</p><p>È la città di San Francesco, e per questo una meta da secoli. Nel Novecento ne hanno scritto o l’hanno dipinta, tra gli altri, Rainer Maria Rilke, Hermann Hesse, Nikos Kazantzakis, J.R.R. Tolkien, William Congdon, Albert Camus, Paul Celan, Allen Ginsberg.</p>								</div>
-				</div>
-					</div>
+				<div class="ali-parole">
+<details><summary><span class="t">Il Cantico</span><span class="s">1224-1225, il primo testo poetico d’autore della letteratura italiana</span></summary><div class="b"><p>Nell’inverno tra il 1224 e il 1225, a San Damiano, Francesco compone il <em>Cantico di Frate Sole</em>, il più antico testo poetico della letteratura italiana di cui si conosca l’autore. La copia più antica è ancora qui, nella Biblioteca del Sacro Convento. Con il <em>Cantico</em> la poesia lascia il latino per il volgare: è la strada da cui, con Dante, Petrarca e Boccaccio, nascerà la lingua comune degli italiani.</p></div></details>
+<details><summary><span class="t">Dante</span><span class="s">Assisi come Oriente</span></summary><div class="b"><p>Meno di un secolo dopo, Dante racconta la vita di Francesco nell’XI canto del <em>Paradiso</em>. Se Francesco è il sole, il luogo dove è nato non va chiamato con il suo nome antico, Ascesi, ma con quello del punto da cui il sole sorge:</p><p class="verso"><em>non dica Ascesi, ché direbbe corto, / ma Orïente, se proprio dir vuole</em> (Par. XI, 53-54).</p></div></details>
+<details><summary><span class="t">I viaggiatori</span><span class="s">Da Goethe a Jørgensen</span></summary><div class="b"><p>Goethe arriva ad Assisi nell’ottobre 1786 e visita il tempio di Minerva, il primo monumento antico intatto che vede in vita sua; non entra a vedere Giotto. Nel 1874 John Ruskin passa settimane a studiare gli affreschi di Giotto. Nello stesso anno Henry James, in un saggio sulle città dell’Italia centrale, scrive che la chiesa di San Francesco «è uno dei luoghi più sacri d’Italia, e sarebbe difficile respirare altrove un’aria più carica di santità». Nel 1893 lo storico francese Paul Sabatier pubblica la sua <em>Vita di san Francesco</em>; ad Assisi fonda nel 1902 la Società internazionale di studi francescani e ne diventa cittadino onorario. Il poeta danese Johannes Jørgensen, autore di una celebre biografia del santo, vive ad Assisi per quasi quarant’anni.</p></div></details>
+<details><summary><span class="t">Il Novecento</span><span class="s">Da Hesse a Congdon</span></summary><div class="b"><p>Nel 1904 Hermann Hesse scrive il suo <em>Francesco d’Assisi</em>: «Egli era un fanciullo e un poeta, un maestro e un insegnante d’amore, un umile amico e fratello di ogni creatura».</p><p>Nel 1924 Nikos Kazantzakis incontra Jørgensen ad Assisi, e anni dopo, ricordando quel soggiorno, scriverà <em>Il poverello di Dio</em>. Per Kazantzakis Francesco è l’uomo di un compito in apparenza impossibile: «trasformare la materia che Dio gli ha affidato rendendola spirito». A frate Leone dice:</p><blockquote>«Bisogna aver fiducia nell’anima dell’uomo; non ascoltare le persone ragionevoli, frate Leone, l’anima può l’impossibile. Hai detto: chi vive con i lupi deve essere lupo, e non agnello; questo hai detto, frate Leone, questo dicono gli uomini assennati; però a me Dio ha dato una follia, una nuova follia, e dico: chi vive con i lupi deve essere agnello, e lo divorino pure! Come si chiama quella cosa immortale che c’è dentro di noi?» “Anima.” «Quella, frate Leone, non la possono divorare.»</blockquote><p>Nella lettera a padre Joseph-Marie Perrin del 15 maggio 1942 Simone Weil scrive:</p><blockquote>«Nel 1937 ho trascorso ad Assisi due giorni meravigliosi. Lì, mentre ero sola nella piccola cappella romanica del XII secolo di Santa Maria degli Angeli, incomparabile meraviglia di purezza, dove san Francesco ha pregato tanto spesso, qualcosa di più forte di me mi ha costretta, per la prima volta nella mia vita, a mettermi in ginocchio».</blockquote><p>Nell’agosto 1955 J.R.R. Tolkien trascorre una settimana ad Assisi con la figlia, ospite delle Clarisse francesi, mentre corregge le bozze del <em>Signore degli Anelli</em>. Paul Celan intitola <em>Assisi</em> una delle poesie di <em>Di soglia in soglia</em> (1955). Il pittore americano William Congdon vi si converte nel 1959 e vi lavora per vent’anni.</p></div></details>
+<details><summary><span class="t">Gli scrittori italiani</span><span class="s">Da Carducci a Pasolini</span></summary><div class="b"><p>Giosue Carducci dedica un sonetto a Santa Maria degli Angeli. Gabriele d’Annunzio include <em>Assisi</em> tra le <em>Città del silenzio</em> (1903); in una prosa del 1897, scritta ad Assisi, fa dire a Illuminata che «una specie di veggenza è in tutte le cose naturali».</p><p>Dal dopoguerra la Pro Civitate Christiana richiama scrittori e registi: ai suoi corsi partecipa Giuseppe Ungaretti. Nell’ottobre 1962 Pier Paolo Pasolini, ospite della Cittadella, legge in una notte il Vangelo di Matteo e decide di farne un film; l’anno dopo torna con Elsa Morante.</p></div></details>
+</div>
+</div>
 		</div>
 				<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-2f629cb" data-id="2f629cb" data-element_type="column" data-e-type="column">
 			<div class="elementor-widget-wrap elementor-element-populated">
