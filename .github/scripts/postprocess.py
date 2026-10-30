@@ -654,6 +654,17 @@ for path in text_files():
         text = text.replace("</head>", FOOTER_CSS + "</head>", 1)
     write(path, text)
 
+# 7f2. No NEWS item in the menu: the home shows the next start date instead.
+# The news pages stay, because some language links still point to them.
+NEWS_ITEM = re.compile(r'<li class="menu-item[^"]*"><a href="[^"]*news/index\.html"[^>]*>\s*NEWS\s*</a></li>\s*')
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    text, n = NEWS_ITEM.subn("", text)
+    if n:
+        write(path, text)
+
 # 7g. Files the crawl host does not have live in .github/files, at their path
 # in the site. Copy them in.
 extra = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "files")
