@@ -134,8 +134,7 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     pagina = pulsante(pagina, "0bcf9eb", t["pulsante"], t["url"])
     # desktop bar
     pagina = sostituisci_widget(pagina, "b259213",
-                                '<span style="font-size:.62em;line-height:1.15;display:inline-block">'
-                                + html.escape(t["titolo"].upper()).replace(" ", "<br>", 1) + "</span>")
+                                '<span style="font-size:.7em">' + html.escape(t["titolo"].upper()) + "</span>")
     pagina = sostituisci_widget(pagina, "38f8ffd", span("breve", primo.strftime("%d.%m.%Y")))
     pagina = sostituisci_widget(pagina, "139c2fa",
                                 span("poi", poi) + " " + t["altre_date"])
@@ -145,7 +144,13 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     css = ("<style>.elementor-element-bad613d .elementor-testimonial-content a,"
            ".elementor-element-139c2fa .elementor-heading-title a{font:inherit!important;letter-spacing:inherit!important;"
            "color:#fec15f!important;text-decoration:underline!important;text-decoration-thickness:1px!important;"
-           "text-underline-offset:.18em}</style>\n")
+           "text-underline-offset:.18em}"
+           # desktop bar on one line: columns as wide as their content, the text takes the rest
+           ".elementor-element-2c917f6 .elementor-column{width:auto!important;flex:0 0 auto}"
+           ".elementor-element-2c917f6 .elementor-element-15f1e8c{flex:1 1 auto;min-width:0}"
+           ".elementor-element-2c917f6 .elementor-heading-title,.elementor-element-2c917f6 .elementor-button{white-space:nowrap}"
+           ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{white-space:normal}"
+           "</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
         + ",M=" + json.dumps(MESI[lang], ensure_ascii=False) + ",L=" + json.dumps(lang) \
         + ",P=" + json.dumps(t["poi"], ensure_ascii=False) + r""";
