@@ -477,15 +477,15 @@ MAP_TEXT = {
     "en": ("Google Maps", "When you load it, Google gets your IP address and may use its cookies.", "Privacy policy", "Show the map"),
 }
 def map_placeholders(text, lang, privacy_href, css_prefix):
-    title, note, link, button = MAP_TEXT[lang]
+    note, link, button = MAP_TEXT[lang][1:]
     def box(m):
         tag = m.group(0)
         t = MAP_TITLE.search(tag)
         return (
             '<div class="ali-map" data-src="%s" data-title="%s"><div class="ali-map__box">'
-            '<p class="ali-map__title">%s</p><button type="button" class="ali-map__btn">%s</button>'
+            '<button type="button" class="ali-map__btn">%s</button>'
             '<p class="ali-map__note">%s <a href="%s">%s</a></p></div></div>'
-            % (m.group(1), t.group(1).strip() if t else "", title, button, note, privacy_href, link)
+            % (m.group(1), t.group(1).strip() if t else "", button, note, privacy_href, link)
         )
     text, n = MAP_IFRAME.subn(box, text)
     if n and 'id="ali-map-css"' not in text:
