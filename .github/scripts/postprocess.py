@@ -700,6 +700,31 @@ FOOTER_HIDDEN = re.compile(
     r' elementor-hidden-tablet elementor-hidden-mobile'
 )
 FOOTER_CSS = """<style id="footer-narrow">
+.elementor.elementor-location-footer .elementor-element.elementor-element-5ab1ac8 > .elementor-element-populated{border-width:0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c9c2626 > .elementor-widget-container{margin:0 0 0 50px;padding:0}
+.elementor.elementor-location-footer .elementor-element.elementor-element-c9c2626 img{width:260px;max-width:100%;height:auto}
+.elementor.elementor-location-footer .elementor-element.elementor-element-228c61c p{font-size:14px;line-height:1.6}
+.elementor.elementor-location-footer .elementor-element.elementor-element-0f20157 > .elementor-widget-container{margin-top:-7px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-a5dfa93 > .elementor-widget-container{margin-top:6px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-2535570 a,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 a,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a0ae208 a{text-decoration:none}
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 a[href^="mailto"]{font-size:inherit!important}
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 a[href^="tel"],
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 a[href^="mailto"]{transition:color .2s}
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 a[href^="tel"]:hover,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42 a[href^="mailto"]:hover{text-decoration:underline;text-underline-offset:3px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-97c7218 .elementor-nav-menu--main .elementor-item,
+.elementor.elementor-location-footer .elementor-element.elementor-element-989728d .elementor-nav-menu--main .elementor-item{padding-top:5px;padding-bottom:5px}
+.elementor.elementor-location-footer .elementor-element.elementor-element-75dc852 > .elementor-widget-container,
+.elementor.elementor-location-footer .elementor-element.elementor-element-67583c6 > .elementor-widget-container,
+.elementor.elementor-location-footer .elementor-element.elementor-element-e15095a > .elementor-widget-container{padding-bottom:16px}
+@media(min-width:1025px){
+.elementor.elementor-location-footer .elementor-element.elementor-element-796acb0{width:37%}
+.elementor.elementor-location-footer .elementor-element.elementor-element-2535570,
+.elementor.elementor-location-footer .elementor-element.elementor-element-7679b42,
+.elementor.elementor-location-footer .elementor-element.elementor-element-a0ae208{width:21%}
+}
 @media(max-width:1024px){
 .elementor.elementor-location-footer .elementor-element.elementor-element-b81e2fe{padding:20px 0 0}
 .elementor.elementor-location-footer .elementor-element.elementor-element-868692e,
@@ -757,6 +782,91 @@ for path in text_files():
     if 'id="footer-narrow"' not in text:
         text = text.replace("</head>", FOOTER_CSS + "</head>", 1)
     write(path, text)
+
+# 7f1. No contact form in the footer: the "Contattaci" column (2af153d, heading
+# and form) goes. The form posts nowhere. Cut the column by counting its divs.
+def drop_footer_form(text):
+    m = re.search(r'[ \t]*<div class="elementor-column [^"]*elementor-element-2af153d"', text)
+    if not m:
+        return text, 0
+    depth = 0
+    for t in re.finditer(r"<div\b|</div>", text[m.start():]):
+        depth += 1 if t.group() != "</div>" else -1
+        if depth == 0:
+            end = m.start() + t.end()
+            while text[end:end + 1] in "\r\n":
+                end += 1
+            return text[:m.start()] + text[end:], 1
+    return text, 0
+
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    text, n = drop_footer_form(text)
+    if n:
+        write(path, text)
+
+# 7f1b. Footer: the logo moves into the first column, above the accreditation
+# text, and its own row (868692e, four empty columns) goes. The first column
+# is 796acb0.
+def balanced_end(text, start):
+    """End of the element that opens at text[start], counting its own tag."""
+    tag = re.match(r"<(\w+)", text[start:]).group(1)
+    depth = 0
+    for t in re.finditer(r"<%s\b|</%s>" % (tag, tag), text[start:]):
+        depth += -1 if t.group().startswith("</") else 1
+        if depth == 0:
+            return start + t.end()
+    return None
+
+def move_footer_logo(text):
+    logo = re.search(r'<div class="elementor-element elementor-element-c9c2626 ', text)
+    row = re.search(r'<(?:section|div) class="[^"]*elementor-element-868692e[^"]*"', text)
+    col = re.search(r'<div class="elementor-column [^"]*elementor-element-796acb0"', text)
+    if not (logo and row and col) or not row.start() < logo.start() < col.start():
+        return text, 0
+    logo_end = balanced_end(text, logo.start())
+    row_end = balanced_end(text, row.start())
+    widget = text[logo.start():logo_end]
+    text = text[:row.start()] + text[row_end:]
+    col = re.search(r'<div class="elementor-column [^"]*elementor-element-796acb0"', text)
+    wrap = re.compile(r'<div class="elementor-widget-wrap[^"]*">').search(text, col.end())
+    return text[:wrap.end()] + "\n" + widget + text[wrap.end():], 1
+
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if 'data-id="868692e"' not in text:
+        continue
+    text, n = move_footer_logo(text)
+    if n:
+        write(path, text)
+    else:
+        print(f"{path}: footer logo not moved")
+
+# 7f1d. English footer: same five accreditation lines as the Italian one (the
+# crawl has a bold title and three lines).
+FOOTER_TEXT_EN_OLD = re.compile(
+    r"<p><strong>ITALIAN LANGUAGE COURSES IN ASSISI</strong></p><p>Official CILS and ROMA TRE Certification center "
+    r"<br />Officially recognized by the Italian Ministry of Education <br />"
+    r"Under the high patronage of Assisi town council and Umbria Regional council</p>"
+)
+FOOTER_TEXT_EN_NEW = (
+    "<p>CILS and Roma Tre CERT IT exam center<br />"
+    "Acknowledged by the Ministry of Education<br />"
+    "MIUR-accredited body for the training of school staff<br />"
+    "Body accredited for training activities by the Umbria Region<br />"
+    "Under the patronage of the Municipality of Assisi and the Umbria Regional Council</p>"
+)
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    text, n = FOOTER_TEXT_EN_OLD.subn(FOOTER_TEXT_EN_NEW, text)
+    if n:
+        write(path, text)
 
 # 7f2. No NEWS item in the menu: the home shows the next start date instead.
 # The news pages stay, because some language links still point to them.
