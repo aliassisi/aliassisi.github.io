@@ -1094,6 +1094,33 @@ if os.path.exists(path):
     else:
         print('location/index.html: heading "Nel centro di Assisi" not found')
 
+# 7q. Italian home, section 7332770: WordPress set its video background to the page
+# /corsi-online/, which does not exist. The browser asked for it and got a 404.
+# Drop the video setting and the empty video box. The section keeps its content.
+CORSI_VIDEO = re.compile(
+    r'(<section\b[^>]*data-id="7332770"[^>]*data-settings="\{)&quot;background_background&quot;:&quot;video&quot;,'
+    r'&quot;background_video_link&quot;:&quot;\\/corsi-online\\/&quot;(\}">)'
+    r'\s*<div class="elementor-background-video-container[^>]*>\s*<video\b[^>]*></video>\s*</div>'
+)
+path = os.path.join(site, "index.html")
+if os.path.exists(path):
+    text, n = CORSI_VIDEO.subn(lambda m: m.group(1) + m.group(2), read(path), count=1)
+    if n:
+        write(path, text)
+    else:
+        print("index.html: no video background on section 7332770")
+
+# 7r. The theme script asks for low-priority.js after the page loads. The crawl
+# does not have that file, so the browser got a 404. Drop the call.
+LOW_PRIORITY = 'window.VAMTAM.load_script(VAMTAM_FRONT.jspath+"low-priority.js"),'
+path = os.path.join(site, "assets/themes/scuola/vamtam/assets/js/all.min.js")
+if os.path.exists(path):
+    text = read(path)
+    if LOW_PRIORITY in text:
+        write(path, text.replace(LOW_PRIORITY, "", 1))
+    else:
+        print("all.min.js: no low-priority.js call found")
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
