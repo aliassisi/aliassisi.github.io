@@ -389,6 +389,11 @@ for path in text_files():
 HOME_MP4 = "/assets/uploads/2026/10/main-video1.mp4"
 HOME_VIDEO = re.compile(r'(<rs-bgvideo\b[^>]*?data-mp4=")[^"]*(")', re.S)
 HOME_BGVIDEO = re.compile(r"[ \t]*<rs-bgvideo\b[^>]*>\s*</rs-bgvideo>\n?")
+HOME_MOBILE = re.compile(r"<!-- START Home mobile .*?<!-- END REVOLUTION SLIDER -->", re.S)
+HOME_MOBILE_SECTION = re.compile(r'(<section\b[^>]*data-id="1220c9a"[^>]*>\n)')
+HOME_MOBILE_VIDEO = (
+    '\t\t\t\t\t\t<div class="ali-home-mobile-video"><video src="' + HOME_MP4 + '" role="presentation" autoplay muted playsinline loop></video></div>\n'
+)
 HOME_DESKTOP = re.compile(r"<!-- START Home desktop .*?<!-- END REVOLUTION SLIDER -->", re.S)
 HOME_SECTION = re.compile(
     r'(<section\b[^>]*data-id="24dca05"[^>]*data-settings="\{&quot;background_background&quot;:&quot;video&quot;)(\}">)'
@@ -407,6 +412,10 @@ HOME_SECTION_VIDEO = (
 HOME_CSS = """<style id="home-hero">
 .elementor-section.elementor-element-24dca05 .elementor-background-video-hosted{transform:translate(-50%,-50%) scale(1.02)}
 .elementor-section.elementor-element-2c917f6{padding-left:0;padding-right:0}
+.elementor-element-1220c9a{position:relative;overflow:hidden}
+.ali-home-mobile-video{position:absolute;inset:0;z-index:0;overflow:hidden}
+.ali-home-mobile-video video{width:100%;height:100%;object-fit:cover}
+.elementor-element-1220c9a .elementor-container{position:relative;z-index:1}
 </style>
 """
 for page in ("index.html", "en/home/index.html"):
@@ -420,9 +429,12 @@ for page in ("index.html", "en/home/index.html"):
     if "background_video_link&quot;:&quot;" + HOME_MP4.replace("/", "\\/") not in text:
         print(f"{page}: main-video1.mp4 is not the desktop section background")
     text = HOME_DESKTOP.sub(lambda m: HOME_BGVIDEO.sub("", m.group(0)), text, count=1)
-    text, n = HOME_VIDEO.subn(lambda m: m.group(1) + HOME_MP4 + m.group(2), text)
+    # Mobile: one video behind the whole slider, like on desktop. A video in
+    # each slide starts over at every slide change.
+    text = HOME_MOBILE.sub(lambda m: HOME_BGVIDEO.sub("", m.group(0)), text, count=1)
+    text, n = HOME_MOBILE_SECTION.subn(lambda m: m.group(1) + HOME_MOBILE_VIDEO, text, count=1)
     if not n:
-        print(f"{page}: no mobile slider video found, main-video1.mp4 not set")
+        print(f"{page}: no mobile slider section found, no mobile video")
     write(path, text)
 
 # 7a. Method page, "In italiano. Il corso": the covers image sits in the same
