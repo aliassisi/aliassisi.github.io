@@ -1133,6 +1133,20 @@ if os.path.exists(path):
     else:
         print("all.min.js: no low-priority.js call found")
 
+# 7s. Visit statistics: GoatCounter (no cookies, no consent banner; the privacy
+# policy says so). One script before </body> on every page.
+GOATCOUNTER = (
+    '<script data-goatcounter="https://aliassisi.goatcounter.com/count" async '
+    'src="https://gc.zgo.at/count.js"></script>\n'
+)
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if "goatcounter" in text or "</body>" not in text:
+        continue
+    write(path, text.replace("</body>", GOATCOUNTER + "</body>", 1))
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
