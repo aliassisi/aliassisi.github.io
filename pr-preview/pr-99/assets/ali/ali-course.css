@@ -1,0 +1,126 @@
+/* Pagine dei corsi dentro WordPress (build_corsi.py): stili limitati a .ali-course, non toccano header, menu e footer del sito.
+   Richiede i font Cormorant Garamond (300, 400, 600) e Inter (300, 400, 600) già caricati dal sito. */
+.ali-course{--sand:#F0EAE5; --sand2:#E7DED6; --ink:#3F4D82; --deep:#2B3A7A; --gold:#FEC15F;
+  --line:#D9D0C8; --white:#fff;
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:Inter,system-ui,sans-serif;}
+.ali-course *{box-sizing:border-box}
+@media(prefers-reduced-motion:reduce){.ali-course *{transition:none!important}}
+.ali-course{background:var(--sand);color:var(--ink);font:300 16px/1.7 var(--sans);letter-spacing:.2px}
+.ali-course a{color:inherit}
+.ali-course img{max-width:100%;display:block}
+.ali-course :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.ali-course .wrap{max-width:1140px;margin:0 auto;padding:0 30px}
+.ali-course .narrow{max-width:860px;margin:0 auto}
+.ali-course h2,.ali-course h3{font-family:var(--serif);font-weight:300;margin:0;line-height:1.25;letter-spacing:.2px}
+.ali-course h2{font-size:clamp(2rem,4vw,2.5rem);color:var(--deep);margin-bottom:.5em}
+.ali-course h3{font-size:1.5rem;font-weight:600;color:var(--deep);margin-bottom:.3em}
+.ali-course p{margin:0 0 1em}
+.ali-course strong{font-weight:600}
+.ali-course .tablewrap{overflow-x:auto;background:rgba(255,255,255,.35);border:1px solid var(--line)}
+.ali-course table{width:100%;border-collapse:collapse;min-width:560px}
+/* Il tema WordPress dà stili ad alcuni elementi: tabelle (layout fisso, margine, interlinea 2,
+   bordi, allineamento in alto), dt in grassetto, small all'85%, font dei link. Qui tornano come nella pagina modello. */
+.ali-course table{table-layout:auto;margin:0;line-height:inherit;border:0}
+.ali-course tr,.ali-course tr:first-child{border:0}
+.ali-course th,.ali-course td{border:0;vertical-align:middle;line-height:1.7}
+.ali-course dt{font-weight:inherit}
+.ali-course small{font-size:smaller}
+.ali-course a{font-family:inherit}
+.ali-course th,.ali-course td{padding:12px;text-align:left;font-weight:400}
+.ali-course th{font-weight:600;color:var(--deep);border-bottom:2px solid var(--deep)}
+.ali-course td{border-bottom:1px solid var(--line)}
+.ali-course td small{display:block;color:var(--ink);opacity:.8;font-size:.85em}
+.ali-course .num{text-align:right;white-space:nowrap}
+.ali-course tr:last-child td{border-bottom:0}
+.ali-course .btn{display:inline-block;font:300 19px/1.2 var(--serif);text-decoration:none;color:var(--ink);background:var(--gold);padding:14px 30px;border-radius:2px;transition:background .2s}
+.ali-course .btn:hover{background:#f6b13f}
+.ali-course .btn.small{font:400 14px/1 var(--sans);background:transparent;border:1px solid var(--ink);border-radius:6px;padding:6px 10px;white-space:nowrap}
+.ali-course .btn.small:hover{background:var(--ink);color:var(--white)}
+.ali-course a.inl{text-decoration:underline;text-underline-offset:3px}
+.ali-course section{padding:72px 0}
+.ali-course section+section{padding-top:0}
+.ali-course .week{display:grid;grid-template-columns:6.5rem repeat(5,1fr);gap:6px;margin-top:24px;align-items:stretch}
+.ali-course .week .rl{align-self:center;font:400 1.15rem/1.2 var(--serif);color:var(--deep)}
+.ali-course .week .wd{text-align:center;font-weight:600;color:var(--deep);font-size:.9rem;padding-bottom:2px}
+.ali-course .week .wd .short{display:none}
+.ali-course .week .am{background:var(--deep);color:var(--white);padding:12px 8px;text-align:center;border-radius:2px;display:flex;flex-direction:column;gap:8px;align-items:center}
+.ali-course .week .bars{display:flex;gap:4px;width:100%}
+.ali-course .week .bars i{flex:1;height:10px;border:1px solid rgba(255,255,255,.55);border-radius:1px}
+.ali-course .week .bars i.on{background:var(--gold);border-color:var(--gold)}
+.ali-course .week .n{font-size:.85rem}
+.ali-course .week .pm{border:1px dashed var(--ink);padding:12px 8px;text-align:center;font-size:.85rem;opacity:.9;display:flex;align-items:center;justify-content:center}
+@media(max-width:620px){.ali-course .week{grid-template-columns:4.6rem repeat(5,minmax(0,1fr));gap:4px}
+.ali-course .week .am,.ali-course .week .pm{padding-left:4px;padding-right:4px}
+.ali-course .week .wd .long{display:none}
+.ali-course .week .wd .short{display:inline}
+.ali-course .week .n{font-size:.75rem}
+.ali-course .week .rl{font-size:1rem}
+.ali-course .week .pm{font-size:.75rem}}
+@media(max-width:420px){.ali-course .week .am,.ali-course .week .pm{padding-left:2px;padding-right:2px}
+.ali-course .week .n,.ali-course .week .pm{font-size:.65rem}}
+.ali-course .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--deep);border-bottom:1px solid var(--line);margin:0}
+.ali-course .facts div{padding:18px 20px 18px 0}
+.ali-course .facts dt{font-size:.85rem;opacity:.8}
+.ali-course .facts dd{margin:0;font:400 1.6rem/1.2 var(--serif);color:var(--deep)}
+.ali-course .facts dd small{display:block;margin-top:6px;font:300 .85rem/1.45 var(--sans);color:var(--ink);opacity:.9}
+@media(max-width:900px){.ali-course .facts{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.ali-course .facts{grid-template-columns:1fr}}
+.ali-course .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px 48px;padding:0;margin:0;list-style:none}
+.ali-course .cols li{padding:12px 0;border-bottom:1px solid var(--line)}
+.ali-course .cols small{display:block;font-size:.88rem;opacity:.85;line-height:1.5;margin-top:2px}
+@media(max-width:700px){.ali-course .cols{grid-template-columns:1fr}}
+.ali-course .cal{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;margin-top:24px}
+.ali-course .cal h3{font-size:1.6rem;margin:0 0 .4em}
+.ali-course .cal>div>h3:not(:first-child){margin-top:1.2em}
+.ali-course .dates{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ali-course .dates li{border:1px solid var(--deep);padding:7px 14px;font-weight:400;color:var(--deep);border-radius:2px;background:rgba(255,255,255,.45)}
+.ali-course .closed{margin:0}
+.ali-course .closed dt{font-weight:600;color:var(--deep);margin-top:6px}
+.ali-course .closed dd{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line);line-height:1.8}
+@media(max-width:800px){.ali-course .cal{grid-template-columns:1fr}}
+.ali-course .fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:2px solid var(--deep);padding-bottom:6px}
+.ali-course .fold>summary::-webkit-details-marker{display:none}
+.ali-course .fold>summary h2{margin:0}
+.ali-course .fold>summary::after{content:"+";font:300 2.2rem/1 var(--serif);color:var(--deep);transition:transform .2s}
+.ali-course .fold[open]>summary::after{content:"–"}
+.ali-course .fold-body{margin-top:22px}
+.ali-course .fold.sub>summary{border-bottom:1px solid var(--line)}
+.ali-course .fold.sub>summary h3{margin:0 0 .3em}
+.ali-course .fold.sub>summary::after{font-size:1.8rem}
+.ali-course .fold.sub .fold-body{margin-top:14px}
+.ali-course .narrow-l{max-width:860px}
+.ali-course .book{display:grid;grid-template-columns:200px 1fr;gap:36px;align-items:start;max-width:860px}
+.ali-course .book img{width:100%;height:auto;box-shadow:0 8px 24px rgba(43,58,122,.18)}
+.ali-course .book ul{margin:0 0 1em;padding-left:1.2em}
+.ali-course .book li{margin:2px 0}
+@media(max-width:620px){.ali-course .book{grid-template-columns:1fr;gap:20px}.ali-course .book img{max-width:180px}}
+.ali-course .prices th.num,.ali-course .prices td.num{font-size:1.05rem}
+.ali-course .prices th.grp{text-align:center;border-bottom:1px solid var(--line);padding-bottom:6px}
+.ali-course .prices thead th[rowspan]{vertical-align:bottom}
+.ali-course .cta{margin-top:28px}
+.ali-course .stay{margin-top:48px;padding-top:24px;border-top:2px solid var(--deep);max-width:860px}
+.ali-course .stay h3{font-size:1.7rem;font-weight:400}
+.ali-course .rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:28px}
+.ali-course .rhythm>div{border-top:2px solid var(--deep);padding-top:14px}
+.ali-course .rhythm h3{font-size:1.7rem;font-weight:400}
+.ali-course .rhythm ul{margin:0;padding:0;list-style:none}
+.ali-course .rhythm li{padding:8px 0;border-bottom:1px solid var(--line)}
+@media(max-width:800px){.ali-course .rhythm{grid-template-columns:1fr}}
+.ali-course .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:32px;margin-top:28px}
+.ali-course .themes>div{border-top:2px solid var(--deep);padding-top:14px}
+.ali-course .themes h3{font-size:1.7rem;font-weight:400}
+.ali-course .themes p{margin:0 0 .8em}
+.ali-course .themes.steps{grid-template-columns:repeat(4,1fr);gap:24px}
+@media(max-width:900px){.ali-course .themes.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.ali-course .themes.steps{grid-template-columns:1fr}}
+.ali-course .others{list-style:none;margin:0;padding:0}
+.ali-course .others a{display:flex;justify-content:space-between;gap:20px;text-decoration:none;padding:18px 0;border-top:1px solid var(--line)}
+.ali-course .others li:last-child a{border-bottom:1px solid var(--line)}
+.ali-course .others b{font:400 1.6rem/1.2 var(--serif);color:var(--deep)}
+.ali-course .others a:hover b{text-decoration:underline;text-underline-offset:4px}
+.ali-course .others small{text-align:right;align-self:center}
+.ali-course .media{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+.ali-course .media img{width:100%;height:auto;box-shadow:0 8px 24px rgba(43,58,122,.18)}
+@media(max-width:800px){.ali-course .media{grid-template-columns:1fr;gap:24px}}
+.ali-course .video{position:relative;aspect-ratio:16/9;max-width:860px;background:var(--deep)}
+.ali-course .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
