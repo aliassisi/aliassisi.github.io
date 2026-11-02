@@ -63,7 +63,7 @@ mkdir -p "$dest"
 rsync -a --delete --exclude .git --exclude .github --exclude .claude --exclude CLAUDE.md --exclude pagefind \
   --exclude data "$tmp/site/" "$dest/"
 
-# 5. Fill the course pages' main content from data/ali.json.
+# 5. Fill the course pages' main content from data/alia.json.
 python3 -I "$repo/.github/scripts/build_corsi.py" "$dest"
 
 # 6. Check links. The search index is rebuilt by the deploy workflow.
