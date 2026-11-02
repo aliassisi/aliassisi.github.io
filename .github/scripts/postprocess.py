@@ -480,7 +480,7 @@ for path in text_files():
 
 # 7b1. Google Maps loads only after a click. The crawl has the map as an
 # iframe that opens at once, so Google gets the visitor's IP address and can set
-# cookies. Put a box with a button there. assets/ali/map.js (from .github/files)
+# cookies. Put a box with a button there. assets/alia/map.js (from .github/files)
 # puts the iframe in on click.
 MAP_IFRAME = re.compile(r'<iframe\b[^>]*?\bsrc="(https://maps\.google\.com/maps[^"]*)"[^>]*?>\s*</iframe>', re.S)
 MAP_TITLE = re.compile(r'\btitle="([^"]*)"')
@@ -503,8 +503,8 @@ def map_placeholders(text, lang, privacy_href, css_prefix):
     if n and 'id="ali-map-css"' not in text:
         text = text.replace(
             "</head>",
-            "<link rel='stylesheet' id='ali-map-css' href='%sassets/ali/map.css' media='all' />\n"
-            "<script src='%sassets/ali/map.js' defer></script>\n</head>" % (css_prefix, css_prefix),
+            "<link rel='stylesheet' id='ali-map-css' href='%sassets/alia/map.css' media='all' />\n"
+            "<script src='%sassets/alia/map.js' defer></script>\n</head>" % (css_prefix, css_prefix),
             1,
         )
     return text, n
@@ -516,7 +516,7 @@ for path in text_files():
     if "maps.google.com/maps" not in text:
         continue
     href = re.search(r'href="([^"]*privacy-policy/index\.html)"', text)
-    pre = re.search(r"href='((?:\.\./)*)assets/ali/footer\.css'", text)
+    pre = re.search(r"href='((?:\.\./)*)assets/alia/footer\.css'", text)
     if not href:
         print(f"{path}: no privacy policy link, map not changed")
         continue
@@ -529,7 +529,7 @@ for path in text_files():
 # 7b1b. YouTube videos load only after a click, like the map. The course
 # pages with a video (Calendimaggio) get their box from the templates in
 # .github/templates. This rule covers the rest (the Method page). Same
-# assets/ali/map.css and map.js. The video starts at once after the click.
+# assets/alia/map.css and map.js. The video starts at once after the click.
 YT_IFRAME = re.compile(r'<iframe\b[^>]*?\bsrc="(https://www\.youtube-nocookie\.com/embed/[^"]*)"[^>]*?>\s*</iframe>', re.S)
 YT_TEXT = {
     "it": ("Guarda il video", "Quando guardi il video, YouTube (Google) riceve il tuo indirizzo IP e potrebbe usare dei cookie.", "Informativa", "Video YouTube"),
@@ -567,7 +567,7 @@ for path in text_files():
 # 7b0. Fonts come from our own site, not from Google (the visitor's IP address
 # went to Google at every page view). The crawl has one <link> per font family
 # (Elementor) and one from Revolution Slider. They become one link to
-# assets/ali/fonts/fonts.css (from .github/files: Inter, Cormorant Garamond,
+# assets/alia/fonts/fonts.css (from .github/files: Inter, Cormorant Garamond,
 # Montserrat, Libre Baskerville, Roboto; latin and latin-ext).
 GF_LINK = re.compile(r"[ \t]*<link\b[^>]*fonts\.googleapis\.com[^>]*>[ \t]*\n?")
 for path in text_files():
@@ -578,7 +578,7 @@ for path in text_files():
         continue
     first = GF_LINK.search(text)
     prefix = "../" * os.path.relpath(path, site).count(os.sep)
-    link = "<link rel='stylesheet' id='ali-fonts-css' href='%sassets/ali/fonts/fonts.css' media='all' />\n" % prefix
+    link = "<link rel='stylesheet' id='ali-fonts-css' href='%sassets/alia/fonts/fonts.css' media='all' />\n" % prefix
     text = text[:first.start()] + link + GF_LINK.sub("", text[first.start():])
     write(path, text)
 
@@ -1136,11 +1136,11 @@ if os.path.exists(path):
 # 7s. Visit statistics: GoatCounter (no cookies, no consent banner; the privacy
 # policy says so). Two scripts before </body> on every page. The first one
 # turns counting off on PR previews. count.js is our own copy of GoatCounter's
-# script (.github/files/assets/ali/count.js, ISC license).
+# script (.github/files/assets/alia/count.js, ISC license).
 GOATCOUNTER = (
     '<script>window.goatcounter={no_onload:location.pathname.indexOf("/pr-preview/")===0};</script>\n'
     '<script data-goatcounter="https://aliassisi.goatcounter.com/count" async '
-    'src="%sassets/ali/count.js"></script>\n'
+    'src="%sassets/alia/count.js"></script>\n'
 )
 for path in text_files():
     if not path.endswith(".html"):

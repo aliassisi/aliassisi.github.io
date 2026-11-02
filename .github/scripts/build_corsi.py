@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fill the main content of the course pages from data/ali.json.
+"""Fill the main content of the course pages from data/alia.json.
 
 Usage:
   python3 -I .github/scripts/build_corsi.py SITE_DIR [--oggi YYYY-MM-DD]
@@ -7,7 +7,7 @@ Usage:
 Each course page keeps its crawled WordPress page: header, menu, footer,
 language links, global CSS and JS. Only the content of <div id="main"> is
 replaced, with a template filled from the course's block in
-SITE_DIR/data/ali.json:
+SITE_DIR/data/alia.json:
   Italian pages ("pagine"):       .github/templates/corso-contenuto.html
   English pages ("en"."pagine"):  .github/templates/corso-contenuto-en.html
 Fields in a course's "en" block replace the Italian ones for English pages.
@@ -19,8 +19,8 @@ corso-calendimaggio.html, corso-calendimaggio-en.html. A language with no
 "pagine" is skipped.
 The "Altri corsi" boxes come from SITE_DIR/data/related-courses.json
 (see build_related.py).
-The page head gets a link to assets/ali/ali-course.css
-(source: .github/templates/ali-course.css).
+The page head gets a link to assets/alia/alia-course.css
+(source: .github/templates/alia-course.css).
 
 Start dates before today are left out, and so are closures that have ended.
 --oggi sets "today", for tests.
@@ -44,7 +44,7 @@ related = importlib.util.module_from_spec(_spec)
 sys.dont_write_bytecode = True
 _spec.loader.exec_module(related)
 TEMPLATES = os.path.join(HERE, "..", "templates")
-CSS_OUT = os.path.join("assets", "ali", "ali-course.css")
+CSS_OUT = os.path.join("assets", "alia", "alia-course.css")
 INIZIO, FINE = "<!-- ali-course -->", "<!-- /ali-course -->"
 SLOT_MATTINA = 4
 
@@ -360,7 +360,7 @@ def main():
     ap.add_argument("--oggi", type=data, default=datetime.date.today())
     args = ap.parse_args()
 
-    with open(os.path.join(args.site, "data", "ali.json"), encoding="utf-8") as f:
+    with open(os.path.join(args.site, "data", "alia.json"), encoding="utf-8") as f:
         ali = json.load(f)
     ali["_related"] = related.leggi(args.site)
     related.controlla(args.site, ali["_related"])
@@ -368,7 +368,7 @@ def main():
 
     css = os.path.join(args.site, CSS_OUT)
     os.makedirs(os.path.dirname(css), exist_ok=True)
-    with open(os.path.join(TEMPLATES, "ali-course.css"), encoding="utf-8") as f:
+    with open(os.path.join(TEMPLATES, "alia-course.css"), encoding="utf-8") as f:
         testo = f.read()
     with open(css, "w", encoding="utf-8", newline="\n") as f:
         f.write(testo)
