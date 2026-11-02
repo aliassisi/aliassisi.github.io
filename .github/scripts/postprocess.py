@@ -514,6 +514,44 @@ for path in text_files():
     if n:
         write(path, text)
 
+# 7b1b. YouTube videos load only after a click, like the map. The course
+# pages with a video (Calendimaggio) get their box from the templates in
+# .github/templates. This rule covers the rest (the Method page). Same
+# assets/ali/map.css and map.js. The video starts at once after the click.
+YT_IFRAME = re.compile(r'<iframe\b[^>]*?\bsrc="(https://www\.youtube-nocookie\.com/embed/[^"]*)"[^>]*?>\s*</iframe>', re.S)
+YT_TEXT = {
+    "it": ("Guarda il video", "Quando guardi il video, YouTube (Google) riceve il tuo indirizzo IP e potrebbe usare dei cookie.", "Informativa", "Video YouTube"),
+    "en": ("Watch the video", "When you watch the video, YouTube (Google) gets your IP address and may use cookies.", "Privacy policy", "YouTube video"),
+}
+YT_ALLOW = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+def youtube_placeholders(text, lang, privacy_href):
+    button, note, link, default_title = YT_TEXT[lang]
+    def box(m):
+        t = MAP_TITLE.search(m.group(0))
+        src = m.group(1) + ("&amp;" if "?" in m.group(1) else "?") + "autoplay=1"
+        return (
+            '<div class="ali-map ali-map--video" data-src="%s" data-title="%s" data-allow="%s"><div class="ali-map__box">'
+            '<button type="button" class="ali-map__btn">%s</button>'
+            '<p class="ali-map__note">%s <a href="%s">%s</a></p></div></div>'
+            % (src, t.group(1).strip() if t else default_title, YT_ALLOW, button, note, privacy_href, link)
+        )
+    return YT_IFRAME.subn(box, text)
+
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if "youtube-nocookie.com/embed" not in text or "<iframe" not in text:
+        continue
+    href = re.search(r'href="([^"]*privacy-policy/index\.html)"', text)
+    if not href or "ali-map-css" not in text:
+        print(f"{path}: no privacy policy link or map.css link, video not changed")
+        continue
+    lang = "en" if os.path.relpath(path, site).startswith("en" + os.sep) else "it"
+    text, n = youtube_placeholders(text, lang, href.group(1) + "#cookie")
+    if n:
+        write(path, text)
+
 # 7b2. English Accademia page (994819) and Italian Location page (991146),
 # "The Location": size the photo (column 2f629cb) like the carousel at the
 # top of the page. Mirror its column: 80px (30px on tablets) between text
