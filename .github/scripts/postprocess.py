@@ -473,7 +473,7 @@ for path in text_files():
 MAP_IFRAME = re.compile(r'<iframe\b[^>]*?\bsrc="(https://maps\.google\.com/maps[^"]*)"[^>]*?>\s*</iframe>', re.S)
 MAP_TITLE = re.compile(r'\btitle="([^"]*)"')
 MAP_TEXT = {
-    "it": ("Mappa di Google Maps", "Quando la carichi, Google riceve il tuo indirizzo IP e può usare i suoi cookie.", "Informativa", "Mostra l'indirizzo sulla mappa"),
+    "it": ("Mappa di Google Maps", "Quando visualizzi la mappa, Google riceve il tuo indirizzo IP e potrebbe usare dei cookie.", "Informativa", "Mostra l'indirizzo sulla mappa"),
     "en": ("Google Maps", "When you load it, Google gets your IP address and may use its cookies.", "Privacy policy", "Show the address on the map"),
 }
 def map_placeholders(text, lang, privacy_href, css_prefix):
