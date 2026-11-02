@@ -12,7 +12,7 @@ from "slide" in SITE_DIR/data/home.json. Each module keeps its first slide as
 the template, so the look (font, colours, video) stays as it is.
 
 "Prossimo inizio": the old NEWS bar (desktop) and NEWS card (mobile) show the
-next start date from "date_inizio" in SITE_DIR/data/ali.json, the two dates
+next start date from "date_inizio" in SITE_DIR/data/alia.json, the two dates
 after it, and a line saying other start dates can be asked for. The page also
 carries the full date list and a small script, so after a start date has passed
 the browser shows the next one without a rebuild.
@@ -121,7 +121,7 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     t = dati["prossimo_inizio"][lang]
     prossime = future(date, oggi)
     if not prossime:
-        sys.exit("nessuna data d'inizio futura in data/ali.json")
+        sys.exit("nessuna data d'inizio futura in data/alia.json")
     primo, dopo = prossime[0], prossime[1:3]
     poi = f'{t["poi"]} {elenco(dopo, lang)}.' if dopo else ""
     span = lambda ruolo, testo: f'<span data-ali-ni="{ruolo}">{testo}</span>'
@@ -188,7 +188,7 @@ def main():
     oggi = datetime.date.fromisoformat(a.oggi) if a.oggi else datetime.date.today()
     with open(os.path.join(a.site, "data", "home.json"), encoding="utf-8") as f:
         dati = json.load(f)
-    with open(os.path.join(a.site, "data", "ali.json"), encoding="utf-8") as f:
+    with open(os.path.join(a.site, "data", "alia.json"), encoding="utf-8") as f:
         date = sorted(datetime.date.fromisoformat(d) for d in json.load(f)["date_inizio"])
     for lang, rel in PAGINE.items():
         p = os.path.join(a.site, rel)
