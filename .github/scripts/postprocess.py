@@ -552,6 +552,24 @@ for path in text_files():
     if n:
         write(path, text)
 
+# 7b0. Fonts come from our own site, not from Google (the visitor's IP address
+# went to Google at every page view). The crawl has one <link> per font family
+# (Elementor) and one from Revolution Slider. They become one link to
+# assets/ali/fonts/fonts.css (from .github/files: Inter, Cormorant Garamond,
+# Montserrat, Libre Baskerville, Roboto; latin and latin-ext).
+GF_LINK = re.compile(r"[ \t]*<link\b[^>]*fonts\.googleapis\.com[^>]*>[ \t]*\n?")
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if "fonts.googleapis.com" not in text:
+        continue
+    first = GF_LINK.search(text)
+    prefix = "../" * os.path.relpath(path, site).count(os.sep)
+    link = "<link rel='stylesheet' id='ali-fonts-css' href='%sassets/ali/fonts/fonts.css' media='all' />\n" % prefix
+    text = text[:first.start()] + link + GF_LINK.sub("", text[first.start():])
+    write(path, text)
+
 # 7b2. English Accademia page (994819) and Italian Location page (991146),
 # "The Location": size the photo (column 2f629cb) like the carousel at the
 # top of the page. Mirror its column: 80px (30px on tablets) between text
