@@ -1134,8 +1134,10 @@ if os.path.exists(path):
         print("all.min.js: no low-priority.js call found")
 
 # 7s. Visit statistics: GoatCounter (no cookies, no consent banner; the privacy
-# policy says so). One script before </body> on every page.
+# policy says so). Two scripts before </body> on every page. The first one
+# turns counting off on PR previews.
 GOATCOUNTER = (
+    '<script>window.goatcounter={no_onload:location.pathname.indexOf("/pr-preview/")===0};</script>\n'
     '<script data-goatcounter="https://aliassisi.goatcounter.com/count" async '
     'src="https://gc.zgo.at/count.js"></script>\n'
 )
