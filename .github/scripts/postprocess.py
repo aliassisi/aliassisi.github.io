@@ -466,6 +466,54 @@ for path in text_files():
         text = text.replace("</head>", MAP_CSS + "</head>", 1)
     write(path, text)
 
+# 7b1. Google Maps loads only after a click. The crawl has the map as an
+# iframe that opens at once, so Google gets the visitor's IP address and can set
+# cookies. Put a box with a button there. assets/ali/map.js (from .github/files)
+# puts the iframe in on click.
+MAP_IFRAME = re.compile(r'<iframe\b[^>]*?\bsrc="(https://maps\.google\.com/maps[^"]*)"[^>]*?>\s*</iframe>', re.S)
+MAP_TITLE = re.compile(r'\btitle="([^"]*)"')
+MAP_TEXT = {
+    "it": ("Mappa di Google Maps", "Quando la carichi, Google riceve il tuo indirizzo IP e può usare i suoi cookie.", "Informativa", "Mostra la mappa"),
+    "en": ("Google Maps", "When you load it, Google gets your IP address and may use its cookies.", "Privacy policy", "Show the map"),
+}
+def map_placeholders(text, lang, privacy_href, css_prefix):
+    title, note, link, button = MAP_TEXT[lang]
+    def box(m):
+        tag = m.group(0)
+        t = MAP_TITLE.search(tag)
+        return (
+            '<div class="ali-map" data-src="%s" data-title="%s"><div class="ali-map__box">'
+            '<p class="ali-map__title">%s</p><p class="ali-map__note">%s <a href="%s">%s</a></p>'
+            '<button type="button" class="ali-map__btn">%s</button></div></div>'
+            % (m.group(1), t.group(1).strip() if t else "", title, note, privacy_href, link, button)
+        )
+    text, n = MAP_IFRAME.subn(box, text)
+    if n and 'id="ali-map-css"' not in text:
+        text = text.replace(
+            "</head>",
+            "<link rel='stylesheet' id='ali-map-css' href='%sassets/ali/map.css' media='all' />\n"
+            "<script src='%sassets/ali/map.js' defer></script>\n</head>" % (css_prefix, css_prefix),
+            1,
+        )
+    return text, n
+
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if "maps.google.com/maps" not in text:
+        continue
+    href = re.search(r'href="([^"]*privacy-policy/index\.html)"', text)
+    pre = re.search(r"href='((?:\.\./)*)assets/ali/footer\.css'", text)
+    if not href:
+        print(f"{path}: no privacy policy link, map not changed")
+        continue
+    prefix = pre.group(1) if pre else "../" * path[len(site):].lstrip("/").count("/")
+    lang = "en" if os.path.relpath(path, site).startswith("en" + os.sep) else "it"
+    text, n = map_placeholders(text, lang, href.group(1) + "#cookie", prefix)
+    if n:
+        write(path, text)
+
 # 7b2. English Accademia page (994819) and Italian Location page (991146),
 # "The Location": size the photo (column 2f629cb) like the carousel at the
 # top of the page. Mirror its column: 80px (30px on tablets) between text
