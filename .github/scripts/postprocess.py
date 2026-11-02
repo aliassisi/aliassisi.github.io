@@ -1133,6 +1133,24 @@ if os.path.exists(path):
     else:
         print("all.min.js: no low-priority.js call found")
 
+# 7s. Visit statistics: GoatCounter (no cookies, no consent banner; the privacy
+# policy says so). Two scripts before </body> on every page. The first one
+# turns counting off on PR previews. count.js is our own copy of GoatCounter's
+# script (.github/files/assets/ali/count.js, ISC license).
+GOATCOUNTER = (
+    '<script>window.goatcounter={no_onload:location.pathname.indexOf("/pr-preview/")===0};</script>\n'
+    '<script data-goatcounter="https://aliassisi.goatcounter.com/count" async '
+    'src="%sassets/ali/count.js"></script>\n'
+)
+for path in text_files():
+    if not path.endswith(".html"):
+        continue
+    text = read(path)
+    if "data-goatcounter=" in text or "</body>" not in text:
+        continue
+    prefix = "../" * os.path.relpath(path, site).count(os.sep)
+    write(path, text.replace("</body>", GOATCOUNTER % prefix + "</body>", 1))
+
 # 8. Delete files nothing names. Elementor loads chunks at run time, so
 # only core files and WooCommerce are checked.
 corpus = "".join(read(p) for p in text_files())
