@@ -2,8 +2,8 @@
   "_nota": "Slide del carosello in home e testi del riquadro 'Prossimo inizio'. Le date vengono da data/alia.json (date_inizio). Dopo una modifica: python3 -I .github/scripts/build_home.py .",
   "slide": [
     {
-      "it": {"testo": "Corsi di italiano<br>ad Assisi.<br>Dal 1993", "url": "/product/corso-di-inglese-standard/"},
-      "en": {"testo": "Italian courses<br>in Assisi.<br>Since 1993", "url": "/en/product/standard-italian-course/"}
+      "it": {"testo": "Italiano ad Assisi,<br>con il metodo che<br>abbiamo ideato.<br>Dal 1993", "url": "/product/corso-di-inglese-standard/"},
+      "en": {"testo": "Italian in Assisi,<br>with the method<br>we created.<br>Since 1993", "url": "/en/product/standard-italian-course/"}
     },
     {
       "it": {"testo": "Intensivi e<br>Superintensivi", "url": "/product-category/intensivi/"},
