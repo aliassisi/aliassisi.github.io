@@ -40,7 +40,7 @@ var T=IT?{
   continua:'Continua con l’iscrizione',contatta:'Contattaci per informazioni',
   oggetto_info:'Richiesta di informazioni',info_intro:'Vorrei informazioni su questa configurazione:',info_domanda:'La mia domanda:',
   dati:'I tuoi dati',nome:'Nome',cognome:'Cognome',email:'Email',telefono:'Telefono o WhatsApp',
-  nascita:'Data di nascita',nazionalita:'Nazionalità',livello:'Il tuo italiano',
+  nascita:'Data di nascita',livello:'Il tuo italiano',
   principiante:'Sono principiante',studiato:'Ho già studiato italiano',
   visto:'Ti serve il visto di studio?',si:'Sì',no:'No',
   pagamento:'Come preferisci pagare?',
@@ -97,7 +97,7 @@ var T=IT?{
   continua:'Continue to enrolment',contatta:'Contact us for information',
   oggetto_info:'Information request',info_intro:'I would like information about this configuration:',info_domanda:'My question:',
   dati:'Your details',nome:'First name',cognome:'Last name',email:'Email',telefono:'Phone or WhatsApp',
-  nascita:'Date of birth',nazionalita:'Nationality',livello:'Your Italian',
+  nascita:'Date of birth',livello:'Your Italian',
   principiante:'I am a beginner',studiato:'I have studied Italian before',
   visto:'Do you need a study visa?',si:'Yes',no:'No',
   pagamento:'How would you like to pay?',
@@ -221,7 +221,6 @@ wrap.innerHTML=
       campo('cfg-email',T.email+' *','<input id="cfg-email" type="email" autocomplete="email" required>')+
       campo('cfg-tel',T.telefono,'<input id="cfg-tel" type="tel" autocomplete="tel">',true)+
       campo('cfg-nascita',T.nascita,'<input id="cfg-nascita" type="date">',true)+
-      campo('cfg-naz',T.nazionalita,'<input id="cfg-naz" autocomplete="country-name">',true)+
     '</div>'+
     '<div class="cfg-field" id="f-cfg-livello"><span class="cfg-flabel">'+T.livello+' *</span>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-livello" value="'+esc(T.principiante)+'"> '+T.principiante+'</label>'+
@@ -579,7 +578,7 @@ function iscrizione(){
     extra:S.extra.map(function(id){return extra(id).nome;}),
     voci:voci(),totale:totale(),
     nome:valore('cfg-nome'),cognome:valore('cfg-cognome'),email:valore('cfg-email'),
-    telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),nazionalita:valore('cfg-naz'),
+    telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),
     livello:scelta('cfg-livello'),visto:scelta('cfg-visto'),pagamento:scelta('cfg-pag'),
     fattura:fattura(),
     note:valore('cfg-note'),lingua:D.lingua
@@ -606,7 +605,7 @@ function testoEmail(x){
   var r=[];
   function l(k,v){if(v)r.push(k+': '+v);}
   l(T.nome,x.nome+' '+x.cognome);l(T.email,x.email);l(T.telefono,x.telefono);
-  l(T.nascita,x.nascita?giorno(fromIso(x.nascita)):'');l(T.nazionalita,x.nazionalita);
+  l(T.nascita,x.nascita?giorno(fromIso(x.nascita)):'');
   l(T.livello,x.livello);l(T.visto,x.visto);l(T.pagamento,x.pagamento);
   var f=x.fattura;
   r.push('');r.push(T.fattura+': '+(f.intestatario==='ente'?f.ente:x.nome+' '+x.cognome));
