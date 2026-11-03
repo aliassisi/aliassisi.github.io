@@ -1,6 +1,7 @@
 {
   "email": "info@aliassisi.it",
   "invio": "",
+  "test_ingresso": "https://docs.google.com/forms/d/e/1FAIpQLSdDSA9G7P8uD0zOkvdnI9DTULQdrmPseKHEYw3NdC8mrA7gxg/viewform",
   "alloggi": [
     {"id": "nessuno", "icona": "ti-home-off",
      "it": {"nome": "Nessun alloggio", "nota": "Ci penso da solo"},

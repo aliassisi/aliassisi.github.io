@@ -62,6 +62,8 @@ var T=IT?{
   invio_corso:'Invio in corso…',ricevuta_t:'Iscrizione ricevuta',
   ricevuta:'Grazie! La tua iscrizione {n} è arrivata e ti abbiamo mandato un’email di conferma a {e}. Ti scriviamo entro pochi giorni con la conferma e la fattura proforma.',
   invio_fallito:'L’invio non è riuscito. Si apre il tuo programma di posta con l’iscrizione già scritta: invia l’email (se ti serve il visto, allega il passaporto).',
+  test_nota:'Se hai già studiato italiano, dopo l’invio trovi il link al test d’ingresso.',
+  test_testo:'Non sei principiante: fai subito il test d’ingresso, così ti inseriamo nella classe giusta.',test_link:'Fai il test d’ingresso',
   grazie_t:'Ci siamo quasi',
   grazie:'Si apre il tuo programma di posta con l’iscrizione già scritta: invia l’email. Ti rispondiamo entro pochi giorni con la conferma e la fattura proforma.',
   non_si_apre:'Se il programma di posta non si apre, copia questo testo e mandalo a {e}.',
@@ -126,6 +128,8 @@ var T=IT?{
   invio_corso:'Sending…',ricevuta_t:'Enrolment received',
   ricevuta:'Thank you! Your enrolment {n} has arrived and we have sent a confirmation email to {e}. We will write to you within a few days with the confirmation and the proforma invoice.',
   invio_fallito:'Sending did not work. Your email program opens with the enrolment already written: send the email (if you need a visa, attach your passport).',
+  test_nota:'If you have studied Italian before, after sending you will find the link to the entry test.',
+  test_testo:'You are not a beginner: take the entry test now, so we can place you in the right class.',test_link:'Take the entry test',
   grazie_t:'Almost done',
   grazie:'Your email program opens with the enrolment already written: send the email. We reply within a few days with the confirmation and the proforma invoice.',
   non_si_apre:'If your email program does not open, copy this text and send it to {e}.',
@@ -239,7 +243,8 @@ wrap.innerHTML=
     '</div>'+
     '<div class="cfg-field" id="f-cfg-livello"><span class="cfg-flabel">'+T.livello+' *</span>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-livello" value="'+esc(T.principiante)+'"> '+T.principiante+'</label>'+
-      '<label class="cfg-radio"><input type="radio" name="cfg-livello" value="'+esc(T.studiato)+'"> '+T.studiato+'</label></div>'+
+      '<label class="cfg-radio"><input type="radio" name="cfg-livello" value="'+esc(T.studiato)+'"> '+T.studiato+'</label>'+
+      '<p class="accom-note" style="margin:2px 0 0">'+T.test_nota+'</p></div>'+
     '<div class="cfg-field" id="f-cfg-visto"><span class="cfg-flabel">'+T.visto+' *</span>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-visto" value="'+T.si+'"> '+T.si+'</label>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-visto" value="'+T.no+'"> '+T.no+'</label>'+
@@ -273,7 +278,10 @@ wrap.innerHTML=
     '<button type="submit" class="cfg-cta"><i class="ti ti-send"></i> '+T.invia+'</button>'+
   '</form>'+
   '<div id="cfg-done" class="cfg-summary" hidden><div class="cfg-summary-title"><i class="ti ti-mail-forward" style="font-size:18px;color:#888"></i> <span id="cfg-done-t"></span></div>'+
-    '<p id="cfg-done-p"></p><div id="cfg-done-mail"><p class="accom-note">'+fmt(T.non_si_apre,{e:'<a href="mailto:'+D.email+'">'+D.email+'</a>'})+'</p>'+
+    '<p id="cfg-done-p"></p>'+
+    '<div id="cfg-done-test" class="cfg-sub-opts" hidden><p style="margin:0 0 10px">'+T.test_testo+'</p>'+
+      '<a class="cfg-cta cfg-test-btn" href="'+esc(D.test_ingresso)+'" target="_blank" rel="noopener"><i class="ti ti-school"></i> '+T.test_link+'</a></div>'+
+    '<div id="cfg-done-mail"><p class="accom-note">'+fmt(T.non_si_apre,{e:'<a href="mailto:'+D.email+'">'+D.email+'</a>'})+'</p>'+
     '<textarea id="cfg-testo" class="cfg-testo" rows="12" readonly></textarea>'+
     '<p class="cfg-done-btns"><button type="button" class="cfg-link" id="cfg-copia">'+T.copia+'</button> <button type="button" class="cfg-link" id="cfg-modifica">'+T.modifica+'</button></p></div></div>';
 
@@ -583,7 +591,7 @@ if(DA_CORSO)$('cfg-cta').addEventListener('click',function(){
 });
 function valore(id){return $(id).value.trim();}
 function scelta(nome){var r=document.querySelector('input[name="'+nome+'"]:checked');return r?r.value:'';}
-function segna(id,male){$(id).classList.toggle('cfg-bad',male);return male;}
+function segna(id,male){var c=$(id);if(!c)return false;c.classList.toggle('cfg-bad',male);return male;}
 /* L'iscrizione come dati: è quello che un domani riceverà il gestionale. */
 function iscrizione(){
   var c=C(),a=inizio(),b=fineCorso();
@@ -603,7 +611,7 @@ function iscrizione(){
     telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),nazionalita:valore('cfg-naz'),
     luogo_nascita:serveVisto()?valore('cfg-luogo'):'',passaporto:serveVisto()?valore('cfg-pass'):'',
     scadenza_passaporto:serveVisto()?valore('cfg-scad'):'',
-    livello:scelta('cfg-livello'),visto:scelta('cfg-visto'),pagamento:scelta('cfg-pag'),
+    livello:scelta('cfg-livello'),principiante:scelta('cfg-livello')===T.principiante,visto:scelta('cfg-visto'),pagamento:scelta('cfg-pag'),
     fattura:fattura(),sito:valore('cfg-sito'),
     note:valore('cfg-note'),lingua:D.lingua
   };
@@ -720,6 +728,7 @@ $('cfg-form').addEventListener('submit',function(e){
     if(id){$('cfg-done-t').textContent=T.ricevuta_t;$('cfg-done-p').textContent=fmt(T.ricevuta,{n:id,e:x.email});}
     else{inviaEmail(x);$('cfg-done-t').textContent=T.grazie_t;$('cfg-done-p').textContent=D.invio?T.invio_fallito:T.grazie;}
     $('cfg-done-mail').hidden=!!id;
+    $('cfg-done-test').hidden=x.principiante;
     $('cfg-config').hidden=true;form.hidden=true;$('cfg-done').hidden=false;
     wrap.scrollIntoView({behavior:'smooth',block:'start'});
   }

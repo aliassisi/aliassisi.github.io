@@ -10,6 +10,8 @@
  */
 
 var EMAIL_STAFF = 'info@aliassisi.it';
+// Il test d'ingresso per chi non è principiante (lo stesso link è in data/configuratore.json del sito).
+var TEST_INGRESSO = 'https://docs.google.com/forms/d/e/1FAIpQLSdDSA9G7P8uD0zOkvdnI9DTULQdrmPseKHEYw3NdC8mrA7gxg/viewform';
 var NOME_SCUOLA = 'Accademia Lingua Italiana Assisi';
 var MAX_FILE = 5 * 1024 * 1024;
 var TIPI_FILE = {'application/pdf': '.pdf', 'image/jpeg': '.jpg', 'image/png': '.png'};
@@ -168,10 +170,12 @@ function mandaEmail(id, x, link) {
     var allo = en
       ? ['Dear ' + x.nome + ',', '', 'thank you for enrolling. We have received your enrolment ' + id + ':', '']
           .concat(righeRiepilogo(x, true),
+            x.principiante === false ? ['', 'You are not a beginner: please take the entry test, so we can place you in the right class:', TEST_INGRESSO] : [],
             ['', 'We will write to you within a few days with the confirmation and the proforma invoice. You do not pay anything now.',
              '', 'Best wishes,', NOME_SCUOLA, EMAIL_STAFF])
       : ['Ciao ' + x.nome + ',', '', 'grazie per l’iscrizione. Abbiamo ricevuto la tua iscrizione ' + id + ':', '']
           .concat(righeRiepilogo(x, false),
+            x.principiante === false ? ['', 'Non sei principiante: fai il test d’ingresso, così ti inseriamo nella classe giusta:', TEST_INGRESSO] : [],
             ['', 'Ti scriviamo entro pochi giorni con la conferma e la fattura proforma. Adesso non devi pagare niente.',
              '', 'A presto,', NOME_SCUOLA, EMAIL_STAFF]);
     MailApp.sendEmail({

@@ -94,6 +94,8 @@ def dati(ali, cfg, lingua):
         "email": cfg["email"],
         # The address of the Google Apps Script that receives enrolments. Empty: email only.
         "invio": cfg.get("invio", ""),
+        # The entry test for students who are not beginners.
+        "test_ingresso": cfg["test_ingresso"],
         "link": LINK[lingua],
         "corsi": corsi(ali, lingua),
         "date_inizio": sorted(ali["date_inizio"]),
