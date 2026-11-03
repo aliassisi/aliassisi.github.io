@@ -5,7 +5,8 @@
         {"titolo": "STANDARD", "url": "product/corso-di-inglese-standard/"},
         {"titolo": "INTENSIVI, SUPERINTENSIVI", "url": "product-category/intensivi/"},
         {"titolo": "PRIVATI", "url": "product/private/"},
-        {"titolo": "ONLINE", "url": "product/online-italian/"}
+        {"titolo": "ONLINE", "url": "product/online-italian/"},
+        {"titolo": "CONFIGURATORE", "url": "configuratore/"}
       ]},
       {"titolo": "PROGRAMMI", "url": "product/programs/"},
       {"titolo": "ACCADEMIA", "sotto": [
@@ -24,8 +25,7 @@
         {"titolo": "INFORMAZIONI VISTO", "url": "visa-information/"}
       ]},
       {"titolo": "FAQ", "url": "frequently-asked-questions/"}
-    ],
-    "pulsante": {"titolo": "CONFIGURATORE", "url": "configuratore/"}
+    ]
   },
   "en": {
     "voci": [
@@ -33,7 +33,8 @@
         {"titolo": "STANDARD", "url": "en/product/standard-italian-course/"},
         {"titolo": "INTENSIVE, SUPERINTENSIVE", "url": "en/product-category/intensive-en/"},
         {"titolo": "PRIVATE", "url": "en/product/private/"},
-        {"titolo": "ONLINE", "url": "en/product/online-italian/"}
+        {"titolo": "ONLINE", "url": "en/product/online-italian/"},
+        {"titolo": "CONFIGURATOR", "url": "en/configuratore/"}
       ]},
       {"titolo": "PROGRAMS", "url": "en/product/programs/"},
       {"titolo": "ACCADEMIA", "sotto": [
@@ -52,7 +53,6 @@
         {"titolo": "VISA INFORMATION", "url": "en/visa-information/"}
       ]},
       {"titolo": "FAQ", "url": "en/faq/"}
-    ],
-    "pulsante": {"titolo": "CONFIGURATOR", "url": "en/configuratore/"}
+    ]
   }
 }

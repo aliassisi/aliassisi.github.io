@@ -28,10 +28,12 @@
 }
 
 /* Header menu: the language flags are menu items. Never let them wrap to a second
-   line. When the row gets tight, the items get less padding and a smaller font. */
+   line. When the row gets tight, the items get less padding and a smaller font.
+   The 16px step goes up to 1439px: Programmi and Vivere ad Assisi do not fit at
+   18px below that. */
 .elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal > ul.elementor-nav-menu{flex-wrap:nowrap}
 .elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-nav-menu > li{flex-shrink:0;white-space:nowrap}
-@media (min-width:1025px) and (max-width:1200px){
+@media (min-width:1025px) and (max-width:1439px){
   .elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-item{padding-left:8px !important;padding-right:8px !important;font-size:16px !important}
 }
 @media (min-width:1025px) and (max-width:1150px){
