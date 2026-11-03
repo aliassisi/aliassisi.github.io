@@ -58,3 +58,9 @@
   .elementor-location-header .elementor-section.elementor-hidden-desktop.elementor-hidden-tablet .elementor-column ~ .elementor-column{width:auto !important;flex:1 1 0}
   .elementor-location-header .elementor-section.elementor-hidden-desktop.elementor-hidden-tablet .elementor-column ~ .elementor-column > .elementor-widget-wrap{padding-right:30px !important;justify-content:flex-end !important}
 }
+
+/* Menu: Configuratore is the last item of Corsi. It is a tool, not a course:
+   a thin line above it, the site blue, a bit bolder, and an arrow. */
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool{border-top:1px solid rgba(59,74,138,.3) !important}
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item{color:#3b4a8a !important;font-weight:600 !important}
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item::after{content:"\00a0\2192";display:inline;position:static;opacity:1;background:none;width:auto;height:auto;transform:none}
