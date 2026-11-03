@@ -10,7 +10,7 @@
       ]},
       {"titolo": "PROGRAMMI", "url": "product/programs/"},
       {"titolo": "ACCADEMIA", "sotto": [
-        {"titolo": "L’ACCADEMIA", "url": "location/"},
+        {"titolo": "CHI SIAMO", "url": "location/"},
         {"titolo": "METODO", "url": "method/"},
         {"titolo": "GUESTBOOK", "url": "guestbook/"}
       ]},
@@ -38,7 +38,7 @@
       ]},
       {"titolo": "PROGRAMS", "url": "en/product/programs/"},
       {"titolo": "ACCADEMIA", "sotto": [
-        {"titolo": "THE ACCADEMIA", "url": "en/accademia/"},
+        {"titolo": "ABOUT US", "url": "en/accademia/"},
         {"titolo": "METHOD", "url": "en/method/"},
         {"titolo": "GUESTBOOK", "url": "en/testimonials/"}
       ]},
