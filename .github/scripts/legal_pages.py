@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the legal pages, in Italian and English.
+"""Build the legal pages and the Vivere ad Assisi page, in Italian and English.
 
 Usage: python3 -I .github/scripts/legal_pages.py SITE_DIR
 
@@ -53,6 +53,16 @@ PAGES = {
         "en": ("Legal notice", "legal-notice-en.html",
                "Who runs the Accademia Lingua Italiana Assisi website: company details, "
                "recognitions, rights on texts and images, hosting."),
+    },
+    # Not a legal page, but built the same way. Its events section reads
+    # data/eventi-assisi.json (assets/alia/eventi.js).
+    ("vivere-ad-assisi", "life-in-assisi"): {
+        "it": ("Vivere ad Assisi", "vivere-ad-assisi-it.html",
+               "Vivere ad Assisi durante il corso di italiano: attività, alloggio e gli "
+               "eventi in città, da Calendimaggio al Natale."),
+        "en": ("Life in Assisi", "life-in-assisi-en.html",
+               "Life in Assisi during your Italian course: activities, accommodation and "
+               "what is on in town, from Calendimaggio to Christmas."),
     },
 }
 
