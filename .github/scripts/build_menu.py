@@ -11,9 +11,9 @@ All four get the same items. The page language comes from the language
 switcher item marked "current-lang".
 
 Kept as they are: the language switcher items, the arrow icon of each widget,
-everything outside the <ul>. The button ("pulsante") is the last item, after
-the language switcher. Its look is in assets/alia/menu.css, linked after
-footer.css.
+everything outside the <ul>. The button ("pulsante") comes before the
+language switcher in the horizontal menu, and last in the burger dropdown.
+Its look is in assets/alia/menu.css, linked after footer.css.
 
 Safe to run again on a page it already changed.
 """
@@ -87,8 +87,8 @@ def build(text, page_dir, menus):
         menu = menus[lang]
         dropdown = m.group(1) == "2"
         new = items(menu, page_dir, arrow.group(0), dropdown)
-        new += langs
-        new.append(link(menu["pulsante"], page_dir, False, dropdown, " ali-menu-cta")[1])
+        cta = link(menu["pulsante"], page_dir, False, dropdown, " ali-menu-cta")[1]
+        new += langs + [cta] if dropdown else [cta] + langs
         parts += [text[pos:m.end()], "\n".join(new) + "\n"]
         pos = close
         count += 1

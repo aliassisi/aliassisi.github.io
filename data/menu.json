@@ -25,7 +25,7 @@
       ]},
       {"titolo": "FAQ", "url": "frequently-asked-questions/"}
     ],
-    "pulsante": {"titolo": "Configura il tuo corso", "url": "configuratore/"}
+    "pulsante": {"titolo": "CONFIGURATORE", "url": "configuratore/"}
   },
   "en": {
     "voci": [
@@ -53,6 +53,6 @@
       ]},
       {"titolo": "FAQ", "url": "en/faq/"}
     ],
-    "pulsante": {"titolo": "Build your course", "url": "en/configuratore/"}
+    "pulsante": {"titolo": "CONFIGURATOR", "url": "en/configuratore/"}
   }
 }
