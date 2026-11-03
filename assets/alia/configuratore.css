@@ -94,6 +94,7 @@
 .cfg-group-title:first-child{margin-top:0}
 #cfg-courses .cfg-cards{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
 .cfg-group-title span{font-weight:400;color:#888;font-size:13px;margin-left:6px}
+.cfg-group-title small{display:block;font-weight:400;color:#555;font-size:13px;margin-top:2px}
 #cfg-wrap h3{margin-bottom:.4rem}
 .cfg-tema{margin-top:12px}
 .cfg-fixed{font-size:15px;font-weight:600;color:#111;margin:0}

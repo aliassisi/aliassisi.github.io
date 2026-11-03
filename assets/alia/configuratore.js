@@ -10,7 +10,9 @@ var T=IT?{
   sottotitolo:'Scegli date, durata e alloggio: vedi subito il costo totale e poi invia l’iscrizione.',
   corso:'Corso',tutti:'Vedi tutti i corsi',
   gruppi:{18:'Standard',22:'Intensivi',26:'Superintensivi',lezioni:'Lezioni private e online',pacchetto:'Pacchetti'},
-  a_sett_gruppo:'{n} lezioni a settimana',tema:'Tema',formula:'Formula',
+  a_sett_gruppo:'{n} lezioni a settimana',
+  solo_gruppo:'{g} lezioni in piccolo gruppo al mattino',
+  gruppo_ind:'{g} lezioni in piccolo gruppo al mattino + {i} lezioni individuali',tema:'Tema',formula:'Formula',
   n_lezioni:'Numero di lezioni',lezione:'lezione',lezioni:'lezioni',a_lezione:'a lezione',da:'da',
   a_studente:'{p} a studente',prezzo_gruppo:'Il prezzo è per tutto il gruppo.',
   inizio:'Data di inizio',inizio_prev:'Prossimi inizi',scegli:'— Scegli —',altra_data:'Un altro lunedì…',
@@ -57,7 +59,9 @@ var T=IT?{
   sottotitolo:'Choose dates, length and accommodation: see the total cost at once, then send your enrolment.',
   corso:'Course',tutti:'See all courses',
   gruppi:{18:'Standard',22:'Intensive',26:'Super intensive',lezioni:'Private and online lessons',pacchetto:'Packages'},
-  a_sett_gruppo:'{n} lessons a week',tema:'Theme',formula:'Format',
+  a_sett_gruppo:'{n} lessons a week',
+  solo_gruppo:'{g} small-group lessons in the morning',
+  gruppo_ind:'{g} small-group lessons in the morning + {i} individual lessons',tema:'Theme',formula:'Format',
   n_lezioni:'Number of lessons',lezione:'lesson',lezioni:'lessons',a_lezione:'per lesson',da:'from',
   a_studente:'{p} per student',prezzo_gruppo:'The price is for the whole group.',
   inizio:'Start date',inizio_prev:'Next start dates',scegli:'— Select —',altra_data:'Another Monday…',
@@ -228,11 +232,12 @@ function prezzoScheda(c){
   return eur(c.prezzo);
 }
 function descScheda(c){
-  if(c.tipo==='settimane')return c.ore+' '+T.lezioni+' '+T.a_sett+(c.individuali?'<span class="cfg-card-mix">('+c.gruppo+' + '+c.individuali+')</span>':'');
+  if(c.tipo==='settimane')return c.ore+' '+T.lezioni+' '+T.a_sett+(BLOCCATO?'<span class="cfg-card-mix">'+fmt(c.individuali?T.gruppo_ind:T.solo_gruppo,{g:c.gruppo,i:c.individuali})+'</span>':'');
   if(c.tipo==='pacchetto')return esc(fmt(T.dal_al,{a:breve(fromIso(c.dal)),b:giorno(fromIso(c.al))}));
   return c.formule.map(function(f){return esc(f.nome);}).join(' · ');
 }
-/* I corsi divisi per gruppo: Standard (18 lezioni), Intensivi (22), Superintensivi (26), poi lezioni e pacchetti. */
+/* I corsi divisi per gruppo: Standard (18 lezioni), Intensivi (22), Superintensivi (26), poi lezioni e pacchetti.
+   Il titolo del gruppo dice quante lezioni sono di gruppo e quante individuali; con un corso solo lo dice la scheda. */
 function gruppo(c){return c.tipo==='settimane'?c.ore:c.tipo;}
 function renderCorsi(){
   var box=$('cfg-courses'),griglie={};box.innerHTML='';
@@ -243,7 +248,8 @@ function renderCorsi(){
     if(!griglie[g]){
       if(!BLOCCATO){
         var t=document.createElement('div');t.className='cfg-group-title';
-        t.innerHTML=esc(T.gruppi[g]||g)+(c.tipo==='settimane'?' <span>'+fmt(T.a_sett_gruppo,{n:c.ore})+'</span>':'');
+        t.innerHTML=esc(T.gruppi[g]||g)+(c.tipo==='settimane'?' <span>'+fmt(T.a_sett_gruppo,{n:c.ore})+'</span>'+
+          '<small>'+fmt(c.individuali?T.gruppo_ind:T.solo_gruppo,{g:c.gruppo,i:c.individuali})+'</small>':'');
         box.appendChild(t);
       }
       griglie[g]=document.createElement('div');griglie[g].className='cfg-cards';box.appendChild(griglie[g]);
