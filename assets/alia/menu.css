@@ -1,0 +1,25 @@
+/* Shared by every page: the "Configura il tuo corso" / "Build your course"
+   button, last item of the main menu (widgets 985225e and 7062eec4).
+   Filled by .github/scripts/build_menu.py. */
+
+/* Horizontal menu: the pill keeps its own width. When the row is full
+   (laptop widths) it moves to a second line, on the right. */
+.elementor-nav-menu--main .elementor-nav-menu > li.ali-menu-cta{
+  flex:0 0 auto;display:flex;align-items:center;margin-left:auto;padding:4px 0 4px 12px}
+.elementor-nav-menu li.ali-menu-cta > a.elementor-item{
+  background:#3b4a8a !important;color:#fff !important;
+  padding:8px 18px !important;border-radius:999px !important;text-transform:uppercase !important;
+  font-size:.85em;line-height:1.2;white-space:nowrap;
+  transition:background-color .2s,color .2s}
+.elementor-nav-menu li.ali-menu-cta > a.elementor-item:hover,
+.elementor-nav-menu li.ali-menu-cta > a.elementor-item:focus-visible{
+  background:#ffbf00 !important;color:#3b4a8a !important}
+/* Open dropdowns stay above the pill on its second line */
+.elementor-nav-menu--main .elementor-nav-menu > li.ali-menu-cta{z-index:1}
+.elementor-nav-menu li.ali-menu-cta > a.elementor-item::before,
+.elementor-nav-menu li.ali-menu-cta > a.elementor-item::after{display:none !important}
+
+/* Burger menu: last item, full width */
+.elementor-nav-menu--dropdown .elementor-nav-menu > li.ali-menu-cta{display:block;padding:10px 16px}
+.elementor-nav-menu--dropdown .elementor-nav-menu > li.ali-menu-cta > a.elementor-item{
+  display:block;margin:0;text-align:center;justify-content:center}

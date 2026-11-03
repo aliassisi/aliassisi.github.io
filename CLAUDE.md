@@ -60,6 +60,12 @@ root. English pages are under `en/`. There is no backend.
 - Styles: `.github/templates/alia-course.css`, copied to `assets/alia/`, limited to
   `.ali-course`. Its reset block undoes theme rules on tables, `dt`, `small`, links.
 
+## Main menu
+- The main menu (IT and EN, desktop, burger and sticky headers) comes from
+  `data/menu.json`. Run `python3 -I .github/scripts/build_menu.py .` after editing.
+  It keeps the language switcher. The "Configura il tuo corso" button style is
+  `assets/alia/menu.css`.
+
 ## Gotchas
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.
