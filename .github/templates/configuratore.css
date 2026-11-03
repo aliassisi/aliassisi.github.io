@@ -101,6 +101,10 @@
 .cfg-err{font-size:14px;color:#b3261e;margin:.6rem 0 0}
 .cfg-err:empty{display:none}
 #cfg-wrap .cfg-cta:disabled{background:#999;cursor:not-allowed}
+.cfg-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.2rem}
+#cfg-wrap .cfg-ctas .cfg-cta{margin-top:0;flex:1 1 220px;width:auto}
+#cfg-wrap .cfg-cta-sec{background:transparent;color:var(--ali-accent);border:1.5px solid var(--ali-accent)}
+#cfg-wrap .cfg-cta-sec:hover,#cfg-wrap .cfg-cta-sec:focus{background:var(--ali-tint);color:var(--ali-accent-dark)}
 .cfg-form{margin-top:2rem;background:rgba(255,255,255,.65);border:1px solid #e6e1dc;border-radius:14px;padding:1.4rem 1.6rem}
 .cfg-form h4{font-size:16px;font-weight:600;margin:0 0 1rem;color:#111}
 .cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px 16px}

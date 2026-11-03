@@ -8,6 +8,7 @@ var IT=D.lingua==='it',LOC=IT?'it-IT':'en-GB';
 var T=IT?{
   titolo:'Calcola date e costi / Iscriviti',
   sottotitolo:'Scegli date, durata e alloggio: vedi subito il costo totale e poi invia l’iscrizione.',
+  titolo_info:'Calcola date e costi',sottotitolo_info:'Scegli corso, date, durata e alloggio: vedi subito il costo totale. Per domande, scrivici.',
   corso:'Corso',tutti:'Vedi tutti i corsi',
   gruppi:{18:'Standard',22:'Intensivi',26:'Superintensivi',lezioni:'Lezioni private e online',pacchetto:'Pacchetti'},
   a_sett_gruppo:'{n} lezioni a settimana',
@@ -36,7 +37,8 @@ var T=IT?{
   riepilogo:'Riepilogo dei costi',fine:'Fine',scegli_data:'Scegli una data di inizio',
   nessun_alloggio:'Nessun alloggio',totale:'Totale stimato',
   nota_prezzi:'I prezzi sono indicativi. Vale il costo confermato all’iscrizione.',
-  continua:'Continua con l’iscrizione',
+  continua:'Continua con l’iscrizione',contatta:'Contattaci per informazioni',
+  oggetto_info:'Richiesta di informazioni',info_intro:'Vorrei informazioni su questa configurazione:',info_domanda:'La mia domanda:',
   dati:'I tuoi dati',nome:'Nome',cognome:'Cognome',email:'Email',telefono:'Telefono o WhatsApp',
   nascita:'Data di nascita',nazionalita:'Nazionalità',livello:'Il tuo italiano',
   principiante:'Sono principiante',studiato:'Ho già studiato italiano',
@@ -57,6 +59,7 @@ var T=IT?{
 }:{
   titolo:'Dates, costs and enrolment',
   sottotitolo:'Choose dates, length and accommodation: see the total cost at once, then send your enrolment.',
+  titolo_info:'Dates and costs',sottotitolo_info:'Choose course, dates, length and accommodation: see the total cost at once. For questions, write to us.',
   corso:'Course',tutti:'See all courses',
   gruppi:{18:'Standard',22:'Intensive',26:'Super intensive',lezioni:'Private and online lessons',pacchetto:'Packages'},
   a_sett_gruppo:'{n} lessons a week',
@@ -85,7 +88,8 @@ var T=IT?{
   riepilogo:'Cost summary',fine:'End',scegli_data:'Select a start date',
   nessun_alloggio:'No accommodation',totale:'Total estimate',
   nota_prezzi:'Prices are indicative. The cost confirmed on enrolment applies.',
-  continua:'Continue to enrolment',
+  continua:'Continue to enrolment',contatta:'Contact us for information',
+  oggetto_info:'Information request',info_intro:'I would like information about this configuration:',info_domanda:'My question:',
   dati:'Your details',nome:'First name',cognome:'Last name',email:'Email',telefono:'Phone or WhatsApp',
   nascita:'Date of birth',nazionalita:'Nationality',livello:'Your Italian',
   principiante:'I am a beginner',studiato:'I have studied Italian before',
@@ -146,6 +150,8 @@ var Q=new URLSearchParams(location.search);
 function trova(id){return D.corsi.filter(function(c){return c.id===id;})[0];}
 function passato(c){return c.tipo==='pacchetto'&&fromIso(c.al)<OGGI;}
 var BLOCCATO=!!trova(Q.get('corso'));
+/* Ci si iscrive solo arrivando da una pagina corso; dal menu si chiedono informazioni. */
+var DA_CORSO=BLOCCATO;
 var S={
   corso:BLOCCATO?Q.get('corso'):'standard',
   tema:+Q.get('tema')||0, formula:+Q.get('formula')||0,
@@ -163,7 +169,7 @@ function campo(id,label,input,fac){return '<div class="cfg-field" id="f-'+id+'">
 var opzioniDate=D.date_inizio.filter(function(d){return fromIso(d)>=OGGI;}).map(function(d){return '<option value="'+d+'">'+esc(giorno(fromIso(d)))+'</option>';}).join('');
 var wrap=$('cfg-wrap');
 wrap.innerHTML=
-  '<h3>'+T.titolo+'</h3><p class="cfg-subtitle">'+T.sottotitolo+'</p>'+
+  '<h3>'+(DA_CORSO?T.titolo:T.titolo_info)+'</h3><p class="cfg-subtitle">'+(DA_CORSO?T.sottotitolo:T.sottotitolo_info)+'</p>'+
   '<div id="cfg-config">'+
   sezione('s-corso',T.corso,'<div id="cfg-courses"></div>'+
     (BLOCCATO?'<a href="#" id="cfg-tutti" class="price-table-toggle"><i class="ti ti-list" style="font-size:14px"></i> '+T.tutti+'</a>':'')+
@@ -192,7 +198,8 @@ wrap.innerHTML=
     '<div class="cfg-total-row"><div class="cfg-total-label">'+T.totale+'</div><div id="cfg-total" class="cfg-total-val">0 €</div></div>'+
     '<p class="cfg-note">'+T.nota_prezzi+'</p>'+
     '<p id="cfg-passato" class="cfg-err"></p>'+
-    '<button type="button" class="cfg-cta" id="cfg-cta"><i class="ti ti-arrow-down"></i> '+T.continua+'</button></div>'+
+    '<div class="cfg-ctas">'+(DA_CORSO?'<button type="button" class="cfg-cta" id="cfg-cta"><i class="ti ti-arrow-down"></i> '+T.continua+'</button>':'')+
+    '<button type="button" class="cfg-cta cfg-cta-sec" id="cfg-info"><i class="ti ti-mail"></i> '+T.contatta+'</button></div></div>'+
   '</div>'+
   '<form id="cfg-form" class="cfg-form" novalidate hidden>'+
     '<h4>'+T.dati+'</h4>'+
@@ -477,8 +484,7 @@ function renderRiepilogo(){
   $('cfg-total').textContent=eur(totale());
   var chiuso=passato(c);
   $('cfg-passato').innerHTML=chiuso?fmt(T.pacchetto_passato,{e:'<a href="mailto:'+D.email+'">'+D.email+'</a>'}):'';
-  $('cfg-cta').disabled=chiuso;
-  if(chiuso)$('cfg-form').hidden=true;
+  if(DA_CORSO){$('cfg-cta').disabled=chiuso;if(chiuso)$('cfg-form').hidden=true;}
 }
 
 /* ---------- AGGIORNAMENTO ---------- */
@@ -523,7 +529,7 @@ $('cfg-nlez').addEventListener('input',function(){S.lezioni=+this.value;aggiorna
 $('cfg-salloggio').addEventListener('input',function(){S.settAlloggio=+this.value;aggiorna();});
 
 /* ---------- ISCRIZIONE ---------- */
-$('cfg-cta').addEventListener('click',function(){
+if(DA_CORSO)$('cfg-cta').addEventListener('click',function(){
   $('cfg-form').hidden=false;
   $('cfg-form').scrollIntoView({behavior:'smooth',block:'start'});
   setTimeout(function(){$('cfg-nome').focus({preventScroll:true});},400);
@@ -558,14 +564,26 @@ function testoEmail(x){
   l(T.nascita,x.nascita?giorno(fromIso(x.nascita)):'');l(T.nazionalita,x.nazionalita);
   l(T.livello,x.livello);l(T.visto,x.visto);l(T.pagamento,x.pagamento);
   r.push('');
+  r=r.concat(testoConfig(x));
+  if(x.note){r.push('');l(T.note,x.note);}
+  return r.join('\n');
+}
+/* Il corso scelto, le date e i costi: righe per l'email. */
+function testoConfig(x){
+  var r=[];
+  function l(k,v){if(v)r.push(k+': '+v);}
   l(T.corso,x.corso_nome+' ['+x.corso+']');l(T.tema,x.tema);
   l(T.inizio,x.inizio?giorno(fromIso(x.inizio)):'');l(T.fine,x.fine?giorno(fromIso(x.fine)):'');
   r.push('');
   x.voci.forEach(function(v){r.push('- '+v[0]+(v[1]?' ('+v[1]+')':'')+(v[2]===null?'':': '+eur(v[2])));});
   l(T.totale,eur(x.totale));
-  if(x.note){r.push('');l(T.note,x.note);}
-  return r.join('\n');
+  return r;
 }
+/* Richiesta di informazioni: un'email con la configurazione, senza i dati dello studente. */
+$('cfg-info').addEventListener('click',function(){
+  var x=iscrizione(),testo=[T.info_intro,''].concat(testoConfig(x),['',T.info_domanda,'']).join('\n');
+  location.href='mailto:'+D.email+'?subject='+encodeURIComponent(T.oggetto_info+': '+x.corso_nome)+'&body='+encodeURIComponent(testo);
+});
 /* Invio. Per ora un'email a info@: quando ci sarà il gestionale, qui si salverà l'iscrizione. */
 function invia(x){
   var testo=testoEmail(x);
