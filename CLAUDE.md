@@ -49,6 +49,12 @@ root. English pages are under `en/`. There is no backend.
   `italiancookingfood`; the script refuses it.
 - English pages use `corso-contenuto-en.html`. Each course's `"en"` block in
   `data/alia.json` holds the English texts and pages.
+- Enrolment: every "Iscriviti" button opens the configurator with the course chosen
+  (`configuratore/index.html?corso=<id>`, `&tema=N`, `&formula=N`). The configurator
+  is built by `python3 -I .github/scripts/build_configuratore.py .` from `data/alia.json`
+  and `data/configuratore.json` (accommodation, extras, activities, payment methods),
+  with `.github/templates/configuratore.js` and `.css`. For now the enrolment is sent
+  as an email the student sends (mailto). No Google form is used any more.
 - Styles: `.github/templates/alia-course.css`, copied to `assets/alia/`, limited to
   `.ali-course`. Its reset block undoes theme rules on tables, `dt`, `small`, links.
 

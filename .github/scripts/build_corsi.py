@@ -19,6 +19,8 @@ corso-calendimaggio.html, corso-calendimaggio-en.html. A language with no
 "pagine" is skipped.
 The "Altri corsi" boxes come from SITE_DIR/data/related-courses.json
 (see build_related.py).
+The enrolment buttons open the configurator with the course already chosen
+(see build_configuratore.py).
 The page head gets a link to assets/alia/alia-course.css
 (source: .github/templates/alia-course.css).
 
@@ -35,7 +37,7 @@ import json
 import os
 import re
 import sys
-from urllib.parse import quote
+from urllib.parse import urlencode
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # python3 -I leaves the script's folder out of sys.path; load build_related.py by path.
@@ -46,6 +48,8 @@ _spec.loader.exec_module(related)
 TEMPLATES = os.path.join(HERE, "..", "templates")
 CSS_OUT = os.path.join("assets", "alia", "alia-course.css")
 INIZIO, FINE = "<!-- ali-course -->", "<!-- /ali-course -->"
+# From a course page (product/x or en/product/x) to the configurator of its language.
+CONFIGURATORE = "../../configuratore/index.html"
 SLOT_MATTINA = 4
 
 LINGUE = {
@@ -148,6 +152,11 @@ def periodo(a, b, L):
     return f"{a.day} {M[a.month - 1]} {a.year} – {b.day} {M[b.month - 1]} {b.year}"
 
 
+def iscrizione(corso, **scelte):
+    """The configurator link for a course; scelte preselect a theme or a row."""
+    return CONFIGURATORE + "?" + urlencode({"corso": corso, **scelte})
+
+
 def libro(b, L):
     """The section on a course's own book, or nothing if the course has none.
     b: {"titolo", "copertina", "testo": [...], "voci": [...], "dopo": [...]}"""
@@ -166,24 +175,22 @@ def libro(b, L):
     return "\n".join(righe)
 
 
-def temi(t, ali, L):
+def temi(t, corso, L):
     """The section on the themes a course offers, or nothing if it has none.
-    t: {"intro", "voci": [{"titolo", "testo": [...], "link": {"testo", "url"},
-    "voce_modulo"}]}. "link" and "voce_modulo" are optional; a theme with
-    "voce_modulo" gets its own enrolment link."""
+    t: {"intro", "voci": [{"titolo", "testo": [...], "link": {"testo", "url"}}]}.
+    "link" is optional. Each theme gets its own enrolment link."""
     if not t:
         return ""
     righe = ['  <section id="temi">', '    <div class="wrap">',
              f'      <h2>{L["temi_titolo"]}</h2>', f'      <p class="narrow-l">{esc(t["intro"])}</p>',
              '      <div class="themes">']
-    for v in t["voci"]:
+    for i, v in enumerate(t["voci"]):
         righe += ["        <div>", f'          <h3>{esc(v["titolo"])}</h3>']
         righe += [f"          <p>{esc(p)}</p>" for p in v["testo"]]
         if v.get("link"):
             righe.append(f'          <p><a class="inl" href="{esc(v["link"]["url"])}">{esc(v["link"]["testo"])}</a></p>')
-        if v.get("voce_modulo"):
-            url = ali["modulo_iscrizione"] + quote(v["voce_modulo"], safe="")
-            righe.append(f'          <p><a class="btn small" href="{esc(url)}">{L["iscriviti_tema"]}</a></p>')
+        url = iscrizione(corso, tema=i)
+        righe.append(f'          <p><a class="btn small" href="{esc(url)}">{L["iscriviti_tema"]}</a></p>')
         righe.append("        </div>")
     righe += ["      </div>", "    </div>", "  </section>", "", ""]
     return "\n".join(righe)
@@ -224,7 +231,7 @@ def contenuto(modello, ali, c, oggi, lingua):
         "riga_pomeriggio": riga(c["pomeriggio"], "pomeriggio", L),
         "dettagli": "\n".join(f"          <p>{esc(p)}</p>" for p in c["dettagli"]),
         "libro": libro(c.get("libro"), L),
-        "temi": temi(c.get("temi"), ali, L),
+        "temi": temi(c.get("temi"), c["id"], L),
         "date_inizio": date_inizio(sorted(data(d) for d in ali["date_inizio"]), oggi, L),
         "chiusure": chiusure(ali["chiusure"], oggi, lingua),
         "intestazione_prezzi": "".join(
@@ -234,8 +241,7 @@ def contenuto(modello, ali, c, oggi, lingua):
         "n_tariffe": str(len(tariffe)),
         "nota_prezzi": L["prezzi_mix"].format(mix=mix) if mix else L["prezzi"],
         "celle_prezzi": "".join(f'<td class="num">{t["ppw"]} €</td>' for t in tariffe),
-        # One address, used by both enrolment buttons.
-        "iscrizione": ali["modulo_iscrizione"] + quote(c["voce_modulo"], safe=""),
+        "iscrizione": esc(iscrizione(c["id"])),
         "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
     }
     return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
@@ -258,38 +264,35 @@ def cella_prezzo(prezzo, studenti, L):
     return f'<td class="num">{prezzo} €<small>{L["a_testa"].format(p=quota)}</small></td>'
 
 
-def contenuto_lezioni(modello, ali, it, c, lingua):
+def contenuto_lezioni(modello, ali, it, c, lingua, corso):
     """A page of lessons sold by the lesson ("privati", "online").
     it: the Italian block; c: the same block, with its "en" fields merged in
     for English. Each entry of "formule" is a row of the price table, with
     "prezzi" {number of lessons: price}; in the "en" block, "formule" holds
     only the texts, in the same order. "studenti" (default 1) is the size of
-    the group; the table shows each student's share. A row with "voce_modulo" gets its own
-    enrolment link to the main form; a block with "modulo" uses that form instead."""
+    the group; the table shows each student's share. Each row gets its own
+    enrolment link: the configurator, with the course ("privati" or "online")
+    and the row chosen."""
     L = LINGUE[lingua]
     formule = it["formule"]
     if lingua != "it":
         formule = [{**f, **e} for f, e in zip(formule, c["formule"])]
     colonne = sorted({int(n) for f in formule for n in f["prezzi"]})
-    if "modulo" in c:
-        url = [c["modulo"]] * len(formule)
-    else:
-        url = [ali["modulo_iscrizione"] + quote(f["voce_modulo"], safe="") for f in formule]
-    bottoni = "modulo" not in c
+    url = [iscrizione(corso, formula=i) for i in range(len(formule))]
     testa = (f'<th>{L["formula"]}</th>'
              + "".join(f'<th class="num">{lezioni(n, L)}</th>' for n in colonne)
-             + (f'<th>{L["iscriviti"]}</th>' if bottoni else ""))
+             + f'<th>{L["iscriviti"]}</th>')
     righe = "\n".join(
         f'            <tr><td>{esc(f["nome"])}<small>{esc(f["nota"])}</small></td>'
         + "".join(cella_prezzo(f["prezzi"].get(str(n)), f.get("studenti", 1), L) for n in colonne)
-        + (f'<td><a class="btn small" href="{esc(u)}">{L["iscriviti"]}</a></td>' if bottoni else "")
+        + f'<td><a class="btn small" href="{esc(u)}">{L["iscriviti"]}</a></td>'
         + "</tr>"
         for f, u in zip(formule, url))
     valori = {
         "intestazione_prezzi": testa,
         "righe_prezzi": righe,
-        # The main button opens the form of the first row.
-        "iscrizione": esc(url[0]),
+        # The main button opens the configurator on the first row.
+        "iscrizione": esc(iscrizione(corso)),
         "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
     }
     if "dal" in c:
@@ -307,7 +310,7 @@ def contenuto_pacchetto(modello, ali, c, lingua):
         "anno": str(dal.year) if dal.year == al.year else f"{dal.year}–{al.year}",
         "periodo": periodo(dal, al, L),
         "prezzo": str(c["prezzo"]),
-        "iscrizione": esc(ali["modulo_iscrizione"] + quote(c["voce_modulo"], safe="")),
+        "iscrizione": esc(iscrizione("calendimaggio")),
         "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
     }
     return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
@@ -386,10 +389,13 @@ def main():
                 blocco = contenuto_pacchetto(leggi_modello(nome), ali, corso, lingua)
             elif any(c is b for b in a_lezione):
                 nome = c["modello"] + ("" if lingua == "it" else "-" + lingua) + ".html"
-                blocco = contenuto_lezioni(leggi_modello(nome), ali, c, corso, lingua)
+                chiave = "privati" if c is ali["privati"] else "online"
+                blocco = contenuto_lezioni(leggi_modello(nome), ali, c, corso, lingua, chiave)
             else:
                 blocco = contenuto(modelli[lingua], ali, corso, args.oggi, lingua)
             for p in corso["pagine"]:
+                if len(p.removeprefix("en/").split("/")) != 2:
+                    sys.exit(f"{p}: a course page must be two folders deep, for the configurator link.")
                 dest = os.path.join(args.site, p, "index.html")
                 with open(dest, encoding="utf-8") as f:
                     s = f.read()
