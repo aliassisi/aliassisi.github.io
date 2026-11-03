@@ -1,6 +1,6 @@
 {
   "email": "info@aliassisi.it",
-  "invio": "",
+  "invio": "https://script.google.com/macros/s/AKfycbyvzXK8bGqYkLGGX2EzYYm4LueCAjhlSsvqLY2lDcYrwHQvFavgOgeuqO8t6cFhcwkw/exec",
   "test_ingresso": "https://docs.google.com/forms/d/e/1FAIpQLSdDSA9G7P8uD0zOkvdnI9DTULQdrmPseKHEYw3NdC8mrA7gxg/viewform",
   "alloggi": [
     {"id": "nessuno", "icona": "ti-home-off",
