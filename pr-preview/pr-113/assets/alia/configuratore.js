@@ -46,6 +46,12 @@ var T=IT?{
   pagamento:'Come preferisci pagare?',
   pagamento_nota:'Non paghi adesso. Dopo la conferma ti mandiamo la fattura proforma; il pagamento va fatto prima dell’inizio del corso.',
   note:'Note',facoltativo:'facoltativo',
+  fattura:'Dati per la fattura',fattura_nota:'Ci servono per la fattura proforma.',
+  intestata:'A chi intestiamo la fattura?',a_me:'A me',a_ente:'A un ente o istituzione (diocesi, congregazione, università, azienda…)',
+  ente:'Nome dell’ente',indirizzo:'Indirizzo (via e numero)',cap:'CAP',citta:'Città',paese:'Paese',
+  cf:'Codice fiscale',cf_nota:'solo se risiedi in Italia',
+  piva:'Partita IVA o codice fiscale dell’ente',sdi:'Codice destinatario (SDI) o PEC',sdi_nota:'solo per enti italiani',
+  email_fattura:'Email per la fattura',
   accetto:'Ho letto e accetto i <a href="{t}" target="_blank">termini e condizioni</a> e l’<a href="{p}" target="_blank">informativa sulla privacy</a>.',
   invia:'Invia l’iscrizione',manca:'Compila i campi segnati.',email_errata:'Controlla l’indirizzo email.',
   manca_data:'Scegli la data di inizio.',
@@ -97,6 +103,12 @@ var T=IT?{
   pagamento:'How would you like to pay?',
   pagamento_nota:'You do not pay now. After confirming we send you the proforma invoice; payment is due before the course starts.',
   note:'Notes',facoltativo:'optional',
+  fattura:'Invoice details',fattura_nota:'We need them for the proforma invoice.',
+  intestata:'Who should the invoice be made out to?',a_me:'To me',a_ente:'To an organisation or institution (diocese, congregation, university, company…)',
+  ente:'Name of the organisation',indirizzo:'Address (street and number)',cap:'Postcode',citta:'City',paese:'Country',
+  cf:'Italian tax code (codice fiscale)',cf_nota:'only if you live in Italy',
+  piva:'VAT number or tax code of the organisation',sdi:'SDI code or PEC',sdi_nota:'only for Italian organisations',
+  email_fattura:'Email for the invoice',
   accetto:'I have read and accept the <a href="{t}" target="_blank">terms and conditions</a> and the <a href="{p}" target="_blank">privacy policy</a>.',
   invia:'Send enrolment',manca:'Please fill in the marked fields.',email_errata:'Please check the email address.',
   manca_data:'Please choose the start date.',
@@ -220,6 +232,21 @@ wrap.innerHTML=
     '<div class="cfg-field" id="f-cfg-pag"><span class="cfg-flabel">'+T.pagamento+' *</span>'+
       D.pagamenti.map(function(p){return '<label class="cfg-radio"><input type="radio" name="cfg-pag" value="'+esc(p.nome)+'"> '+esc(p.nome)+'</label>';}).join('')+
       '<p class="accom-note">'+T.pagamento_nota+'</p></div>'+
+    '<h4 class="cfg-h4-sez">'+T.fattura+'</h4><p class="accom-note cfg-sez-nota">'+T.fattura_nota+'</p>'+
+    '<div class="cfg-field" id="f-cfg-int"><span class="cfg-flabel">'+T.intestata+' *</span>'+
+      '<label class="cfg-radio"><input type="radio" name="cfg-int" value="persona" checked> '+T.a_me+'</label>'+
+      '<label class="cfg-radio"><input type="radio" name="cfg-int" value="ente"> '+T.a_ente+'</label></div>'+
+    '<div class="cfg-grid cfg-grid-fatt">'+
+      campo('cfg-ente',T.ente+' *','<input id="cfg-ente" autocomplete="organization">')+
+      campo('cfg-ind',T.indirizzo+' *','<input id="cfg-ind" autocomplete="street-address">')+
+      campo('cfg-cap',T.cap+' *','<input id="cfg-cap" autocomplete="postal-code">')+
+      campo('cfg-citta',T.citta+' *','<input id="cfg-citta" autocomplete="address-level2">')+
+      campo('cfg-paese',T.paese+' *','<input id="cfg-paese" autocomplete="country-name">')+
+      campo('cfg-codfisc',T.cf+' <span class="cfg-opt">('+T.cf_nota+')</span>','<input id="cfg-codfisc">')+
+      campo('cfg-piva',T.piva+' *','<input id="cfg-piva">')+
+      campo('cfg-sdi',T.sdi+' <span class="cfg-opt">('+T.sdi_nota+')</span>','<input id="cfg-sdi">')+
+      campo('cfg-emailf',T.email_fattura,'<input id="cfg-emailf" type="email">',true)+
+    '</div>'+
     campo('cfg-note',T.note,'<textarea id="cfg-note" rows="3"></textarea>',true)+
     '<div class="cfg-field" id="f-cfg-ok"><label class="cfg-radio"><input type="checkbox" id="cfg-ok"> '+fmt(T.accetto,{t:D.link.termini,p:D.link.privacy})+' *</label></div>'+
     '<p id="cfg-form-err" class="cfg-err" role="alert"></p>'+
@@ -554,15 +581,37 @@ function iscrizione(){
     nome:valore('cfg-nome'),cognome:valore('cfg-cognome'),email:valore('cfg-email'),
     telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),nazionalita:valore('cfg-naz'),
     livello:scelta('cfg-livello'),visto:scelta('cfg-visto'),pagamento:scelta('cfg-pag'),
+    fattura:fattura(),
     note:valore('cfg-note'),lingua:D.lingua
   };
 }
+/* Dati per la fattura: a nome dello studente o di un ente. */
+function enteScelto(){return scelta('cfg-int')==='ente';}
+function campiFattura(){
+  var e=enteScelto();
+  ['f-cfg-ente','f-cfg-piva','f-cfg-sdi','f-cfg-emailf'].forEach(function(id){mostra(id,e);});
+  mostra('f-cfg-codfisc',!e);
+}
+function fattura(){
+  var e=enteScelto();
+  return {
+    intestatario:e?'ente':'persona',ente:e?valore('cfg-ente'):'',
+    indirizzo:valore('cfg-ind'),cap:valore('cfg-cap'),citta:valore('cfg-citta'),paese:valore('cfg-paese'),
+    codice_fiscale:e?'':valore('cfg-codfisc'),piva:e?valore('cfg-piva'):'',sdi:e?valore('cfg-sdi'):'',email:e?valore('cfg-emailf'):''
+  };
+}
+document.querySelectorAll('input[name="cfg-int"]').forEach(function(r){r.addEventListener('change',campiFattura);});
+campiFattura();
 function testoEmail(x){
   var r=[];
   function l(k,v){if(v)r.push(k+': '+v);}
   l(T.nome,x.nome+' '+x.cognome);l(T.email,x.email);l(T.telefono,x.telefono);
   l(T.nascita,x.nascita?giorno(fromIso(x.nascita)):'');l(T.nazionalita,x.nazionalita);
   l(T.livello,x.livello);l(T.visto,x.visto);l(T.pagamento,x.pagamento);
+  var f=x.fattura;
+  r.push('');r.push(T.fattura+': '+(f.intestatario==='ente'?f.ente:x.nome+' '+x.cognome));
+  l(T.indirizzo,f.indirizzo);l(T.cap,f.cap);l(T.citta,f.citta);l(T.paese,f.paese);
+  l(T.cf,f.codice_fiscale);l(T.piva,f.piva);l(T.sdi,f.sdi);l(T.email_fattura,f.email);
   r.push('');
   r=r.concat(testoConfig(x));
   if(x.note){r.push('');l(T.note,x.note);}
@@ -595,6 +644,9 @@ $('cfg-form').addEventListener('submit',function(e){
   var err=[],x=iscrizione();
   if(segna('f-cfg-nome',!x.nome)|segna('f-cfg-cognome',!x.cognome)|segna('f-cfg-email',!x.email)|
      segna('f-cfg-livello',!x.livello)|segna('f-cfg-visto',!x.visto)|segna('f-cfg-pag',!x.pagamento)|
+     segna('f-cfg-ind',!x.fattura.indirizzo)|segna('f-cfg-cap',!x.fattura.cap)|segna('f-cfg-citta',!x.fattura.citta)|
+     segna('f-cfg-paese',!x.fattura.paese)|
+     segna('f-cfg-ente',enteScelto()&&!x.fattura.ente)|segna('f-cfg-piva',enteScelto()&&!x.fattura.piva)|
      segna('f-cfg-ok',!$('cfg-ok').checked))err.push(T.manca);
   if(x.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x.email)){segna('f-cfg-email',true);err.push(T.email_errata);}
   if(!x.inizio){err.push(T.manca_data);}

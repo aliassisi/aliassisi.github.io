@@ -107,6 +107,9 @@
 #cfg-wrap .cfg-cta-sec:hover,#cfg-wrap .cfg-cta-sec:focus{background:var(--ali-tint);color:var(--ali-accent-dark)}
 .cfg-form{margin-top:2rem;background:rgba(255,255,255,.65);border:1px solid #e6e1dc;border-radius:14px;padding:1.4rem 1.6rem}
 .cfg-form h4{font-size:16px;font-weight:600;margin:0 0 1rem;color:#111}
+.cfg-form h4.cfg-h4-sez{margin:1.6rem 0 .2rem;padding-top:1.2rem;border-top:1px solid #e6e1dc}
+.cfg-sez-nota{margin:0 0 .8rem}
+.cfg-grid-fatt{margin-bottom:14px;align-items:end}
 .cfg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px 16px}
 .cfg-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;border-radius:8px}
 .cfg-grid .cfg-field{margin-bottom:0}
