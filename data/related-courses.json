@@ -73,9 +73,9 @@
     },
     "online": {
       "it": {"titolo": "Online", "url": "product/online-italian",
-             "sottotitolo": ["Lezioni da 50 minuti", "Da A1 a C2 · su Zoom"]},
+             "sottotitolo": ["Lezioni da 50 minuti", "Da principianti a C2 · su Zoom"]},
       "en": {"titolo": "Online", "url": "en/product/online-italian",
-             "sottotitolo": ["50-minute lessons", "A1 to C2 · on Zoom"]},
+             "sottotitolo": ["50-minute lessons", "Beginner to C2 · on Zoom"]},
       "suggerimenti": ["privati", "standard", "programmi"]
     },
     "programmi": {
