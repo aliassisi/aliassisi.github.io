@@ -8,7 +8,9 @@ var IT=D.lingua==='it',LOC=IT?'it-IT':'en-GB';
 var T=IT?{
   titolo:'Calcola date e costi / Iscriviti',
   sottotitolo:'Scegli date, durata e alloggio: vedi subito il costo totale e poi invia l’iscrizione.',
-  corso:'Corso',tutti:'Vedi tutti i corsi',tema:'Tema',formula:'Formula',
+  corso:'Corso',tutti:'Vedi tutti i corsi',
+  gruppi:{18:'Standard',22:'Intensivi',26:'Superintensivi',lezioni:'Lezioni private e online',pacchetto:'Pacchetti'},
+  a_sett_gruppo:'{n} lezioni a settimana',tema:'Tema',formula:'Formula',
   n_lezioni:'Numero di lezioni',lezione:'lezione',lezioni:'lezioni',a_lezione:'a lezione',da:'da',
   a_studente:'{p} a studente',prezzo_gruppo:'Il prezzo è per tutto il gruppo.',
   inizio:'Data di inizio',inizio_prev:'Prossimi inizi',scegli:'— Scegli —',altra_data:'Un altro lunedì…',
@@ -53,7 +55,9 @@ var T=IT?{
 }:{
   titolo:'Dates, costs and enrolment',
   sottotitolo:'Choose dates, length and accommodation: see the total cost at once, then send your enrolment.',
-  corso:'Course',tutti:'See all courses',tema:'Theme',formula:'Format',
+  corso:'Course',tutti:'See all courses',
+  gruppi:{18:'Standard',22:'Intensive',26:'Super intensive',lezioni:'Private and online lessons',pacchetto:'Packages'},
+  a_sett_gruppo:'{n} lessons a week',tema:'Theme',formula:'Format',
   n_lezioni:'Number of lessons',lezione:'lesson',lezioni:'lessons',a_lezione:'per lesson',da:'from',
   a_studente:'{p} per student',prezzo_gruppo:'The price is for the whole group.',
   inizio:'Start date',inizio_prev:'Next start dates',scegli:'— Select —',altra_data:'Another Monday…',
@@ -157,7 +161,7 @@ var wrap=$('cfg-wrap');
 wrap.innerHTML=
   '<h3>'+T.titolo+'</h3><p class="cfg-subtitle">'+T.sottotitolo+'</p>'+
   '<div id="cfg-config">'+
-  sezione('s-corso',T.corso,'<div id="cfg-courses" class="cfg-cards"></div>'+
+  sezione('s-corso',T.corso,'<div id="cfg-courses"></div>'+
     (BLOCCATO?'<a href="#" id="cfg-tutti" class="price-table-toggle"><i class="ti ti-list" style="font-size:14px"></i> '+T.tutti+'</a>':'')+
     '<div id="cfg-tema-box" class="date-field cfg-tema"><label for="cfg-tema">'+T.tema+'</label><select id="cfg-tema"></select></div>'+
     '<div><div id="ptoggle" class="price-table-toggle"></div><div id="price-table" class="price-table"></div></div>')+
@@ -228,11 +232,22 @@ function descScheda(c){
   if(c.tipo==='pacchetto')return esc(fmt(T.dal_al,{a:breve(fromIso(c.dal)),b:giorno(fromIso(c.al))}));
   return c.formule.map(function(f){return esc(f.nome);}).join(' · ');
 }
+/* I corsi divisi per gruppo: Standard (18 lezioni), Intensivi (22), Superintensivi (26), poi lezioni e pacchetti. */
+function gruppo(c){return c.tipo==='settimane'?c.ore:c.tipo;}
 function renderCorsi(){
-  var box=$('cfg-courses');box.innerHTML='';
+  var box=$('cfg-courses'),griglie={};box.innerHTML='';
   D.corsi.forEach(function(c){
     if(BLOCCATO&&c.id!==S.corso)return;
     if(!BLOCCATO&&passato(c))return;
+    var g=gruppo(c);
+    if(!griglie[g]){
+      if(!BLOCCATO){
+        var t=document.createElement('div');t.className='cfg-group-title';
+        t.innerHTML=esc(T.gruppi[g]||g)+(c.tipo==='settimane'?' <span>'+fmt(T.a_sett_gruppo,{n:c.ore})+'</span>':'');
+        box.appendChild(t);
+      }
+      griglie[g]=document.createElement('div');griglie[g].className='cfg-cards';box.appendChild(griglie[g]);
+    }
     var sel=c.id===S.corso,d=document.createElement('div');
     d.className='cfg-card'+(sel?' selected':'');
     d.setAttribute('role','button');d.tabIndex=0;
@@ -244,7 +259,7 @@ function renderCorsi(){
       '<div class="cfg-card-desc">'+descScheda(c)+'</div>'+
       '<div class="cfg-card-price">'+prezzoScheda(c)+'</div>'+
       (c.livelli?'<div class="cfg-card-note">'+esc(c.livelli)+'</div>':'');
-    box.appendChild(d);
+    griglie[g].appendChild(d);
   });
 }
 var tabellaAperta=false;
