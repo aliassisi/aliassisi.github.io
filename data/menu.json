@@ -6,7 +6,7 @@
         {"titolo": "INTENSIVI, SUPERINTENSIVI", "url": "product-category/intensivi/"},
         {"titolo": "PRIVATI", "url": "product/private/"},
         {"titolo": "ONLINE", "url": "product/online-italian/"},
-        {"titolo": "CONFIGURATORE", "url": "configuratore/"}
+        {"titolo": "CONFIGURATORE", "url": "configuratore/", "classe": "ali-menu-tool"}
       ]},
       {"titolo": "PROGRAMMI", "url": "product/programs/"},
       {"titolo": "ACCADEMIA", "sotto": [
@@ -34,7 +34,7 @@
         {"titolo": "INTENSIVE, SUPERINTENSIVE", "url": "en/product-category/intensive-en/"},
         {"titolo": "PRIVATE", "url": "en/product/private/"},
         {"titolo": "ONLINE", "url": "en/product/online-italian/"},
-        {"titolo": "CONFIGURATOR", "url": "en/configuratore/"}
+        {"titolo": "CONFIGURATOR", "url": "en/configuratore/", "classe": "ali-menu-tool"}
       ]},
       {"titolo": "PROGRAMS", "url": "en/product/programs/"},
       {"titolo": "ACCADEMIA", "sotto": [
