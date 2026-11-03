@@ -11,9 +11,7 @@ All four get the same items. The page language comes from the language
 switcher item marked "current-lang".
 
 Kept as they are: the language switcher items, the arrow icon of each widget,
-everything outside the <ul>. The button ("pulsante") comes before the
-language switcher in the horizontal menu, and last in the burger dropdown.
-Its look is in assets/alia/menu.css, linked after footer.css.
+everything outside the <ul>. The language switcher stays last.
 
 Safe to run again on a page it already changed.
 """
@@ -28,8 +26,6 @@ WIDGETS = ("985225e", "7062eec4")
 UL = re.compile(r'<ul id="menu-([12])-(%s)" class="elementor-nav-menu">' % "|".join(WIDGETS))
 LANG_ITEM = re.compile(r'<li class="lang-item .*?</li>', re.S)
 ARROW = re.compile(r'<span class="sub-arrow">.*?</span>', re.S)
-CSS_LINK = "<link rel='stylesheet' id='ali-menu-css' href='%sassets/alia/menu.css' media='all' />"
-FOOTER_LINK = re.compile(r"<link rel='stylesheet' id='ali-footer-css' href='([^']*)assets/alia/footer\.css' media='all' />")
 
 
 def href(url, page_dir):
@@ -37,7 +33,7 @@ def href(url, page_dir):
     return os.path.relpath(target, page_dir or ".").replace(os.sep, "/")
 
 
-def link(voce, page_dir, sub, dropdown, extra_li=""):
+def link(voce, page_dir, sub, dropdown):
     h = href(voce["url"], page_dir)
     current = h == "index.html"
     li = "menu-item menu-item-type-post_type menu-item-object-page"
@@ -48,8 +44,8 @@ def link(voce, page_dir, sub, dropdown, extra_li=""):
         a_cls += " elementor-item-active"
         aria = ' aria-current="page"'
     tab = ' tabindex="-1"' if dropdown else ""
-    return current, '<li class="%s%s"><a href="%s"%s class="%s"%s>%s</a></li>' % (
-        li, extra_li, h, aria, a_cls, tab, html.escape(voce["titolo"], quote=False))
+    return current, '<li class="%s"><a href="%s"%s class="%s"%s>%s</a></li>' % (
+        li, h, aria, a_cls, tab, html.escape(voce["titolo"], quote=False))
 
 
 def items(menu, page_dir, arrow, dropdown):
@@ -86,9 +82,7 @@ def build(text, page_dir, menus):
             raise SystemExit("%s: menu %s has no sub-arrow" % (page_dir, m.group(0)))
         menu = menus[lang]
         dropdown = m.group(1) == "2"
-        new = items(menu, page_dir, arrow.group(0), dropdown)
-        cta = link(menu["pulsante"], page_dir, False, dropdown, " ali-menu-cta")[1]
-        new += langs + [cta] if dropdown else [cta] + langs
+        new = items(menu, page_dir, arrow.group(0), dropdown) + langs
         parts += [text[pos:m.end()], "\n".join(new) + "\n"]
         pos = close
         count += 1
@@ -115,11 +109,6 @@ def main():
             continue
         if count != 4:
             raise SystemExit("%s: %d main menus, expected 4" % (rel, count))
-        if "id='ali-menu-css'" not in new:
-            m = FOOTER_LINK.search(new)
-            if not m:
-                raise SystemExit("%s: no footer.css link" % rel)
-            new = new[:m.end()] + "\n" + CSS_LINK % m.group(1) + new[m.end():]
         if new != text:
             with open(path, "w", encoding="utf-8", newline="") as f:
                 f.write(new)
