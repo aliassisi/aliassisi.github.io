@@ -44,6 +44,8 @@
 /* Search icon: its underline sat half a pixel lower than the menu underline, so it
    rendered one pixel off. One more pixel of margin makes the two lines meet. */
 .elementor-location-header .elementor-widget-search-form > .elementor-widget-container{margin-bottom:31px !important}
+/* Scrolled (sticky) header: the menu moves up, so the search keeps the theme's 6px. */
+.elementor-location-header .elementor-sticky--effects .elementor-widget-search-form > .elementor-widget-container{margin-bottom:6px !important}
 
 /* Tablet header (768 to 1024): it was the desktop header with a small burger and the
    search icon floating in the middle. Use the phone header up to 1024 instead. */
