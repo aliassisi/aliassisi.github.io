@@ -21,6 +21,7 @@ private or online lessons price table.
 
 Safe to run again on a page it already changed.
 """
+import hashlib
 import json
 import os
 import re
@@ -129,15 +130,21 @@ def main():
 
     out = os.path.join(site, "assets", "alia")
     os.makedirs(out, exist_ok=True)
+    versione = {}
     for nome in ("configuratore.css", "configuratore.js"):
         shutil.copyfile(os.path.join(TEMPLATES, nome), os.path.join(out, nome))
+        # ?v= changes with the file, so browsers do not keep an old copy.
+        with open(os.path.join(out, nome), "rb") as f:
+            versione[nome] = hashlib.sha256(f.read()).hexdigest()[:8]
 
     for lingua, p in PAGINE.items():
         dest = os.path.join(site, p, "index.html")
         with open(dest, encoding="utf-8") as f:
             s = f.read()
         rel = os.path.relpath(out, os.path.dirname(dest)).replace(os.sep, "/")
-        nuovo = blocco(dati(ali, cfg, lingua), f"{rel}/configuratore.css", f"{rel}/configuratore.js")
+        nuovo = blocco(dati(ali, cfg, lingua),
+                       f"{rel}/configuratore.css?v={versione['configuratore.css']}",
+                       f"{rel}/configuratore.js?v={versione['configuratore.js']}")
         if INIZIO in s:
             s = re.sub(re.escape(INIZIO) + r".*?" + re.escape(FINE), lambda m: nuovo, s, count=1, flags=re.S)
         else:
