@@ -40,9 +40,11 @@ var T=IT?{
   continua:'Continua con l’iscrizione',contatta:'Contattaci per informazioni',
   oggetto_info:'Richiesta di informazioni',info_intro:'Vorrei informazioni su questa configurazione:',info_domanda:'La mia domanda:',
   dati:'I tuoi dati',nome:'Nome',cognome:'Cognome',email:'Email',telefono:'Telefono o WhatsApp',
-  nascita:'Data di nascita',livello:'Il tuo italiano',
+  nascita:'Data di nascita',nazionalita:'Cittadinanza',livello:'Il tuo italiano',
   principiante:'Sono principiante',studiato:'Ho già studiato italiano',
   visto:'Ti serve il visto di studio?',si:'Sì',no:'No',
+  visto_nota:'Ti mandiamo il certificato di preiscrizione per il visto: per prepararlo ci servono cittadinanza, data di nascita e numero di passaporto.',
+  passaporto:'Numero di passaporto',
   pagamento:'Come preferisci pagare?',
   pagamento_nota:'Non paghi adesso. Dopo la conferma ti mandiamo la fattura proforma; il pagamento va fatto prima dell’inizio del corso.',
   note:'Note',facoltativo:'facoltativo',
@@ -97,9 +99,11 @@ var T=IT?{
   continua:'Continue to enrolment',contatta:'Contact us for information',
   oggetto_info:'Information request',info_intro:'I would like information about this configuration:',info_domanda:'My question:',
   dati:'Your details',nome:'First name',cognome:'Last name',email:'Email',telefono:'Phone or WhatsApp',
-  nascita:'Date of birth',livello:'Your Italian',
+  nascita:'Date of birth',nazionalita:'Citizenship',livello:'Your Italian',
   principiante:'I am a beginner',studiato:'I have studied Italian before',
   visto:'Do you need a study visa?',si:'Yes',no:'No',
+  visto_nota:'We send you the pre-enrolment certificate for the visa: to prepare it we need your citizenship, date of birth and passport number.',
+  passaporto:'Passport number',
   pagamento:'How would you like to pay?',
   pagamento_nota:'You do not pay now. After confirming we send you the proforma invoice; payment is due before the course starts.',
   note:'Notes',facoltativo:'optional',
@@ -220,14 +224,17 @@ wrap.innerHTML=
       campo('cfg-cognome',T.cognome+' *','<input id="cfg-cognome" autocomplete="family-name" required>')+
       campo('cfg-email',T.email+' *','<input id="cfg-email" type="email" autocomplete="email" required>')+
       campo('cfg-tel',T.telefono,'<input id="cfg-tel" type="tel" autocomplete="tel">',true)+
-      campo('cfg-nascita',T.nascita,'<input id="cfg-nascita" type="date">',true)+
+      campo('cfg-nascita',T.nascita,'<input id="cfg-nascita" type="date" autocomplete="bday">',true)+
+      campo('cfg-naz',T.nazionalita,'<input id="cfg-naz">',true)+
     '</div>'+
     '<div class="cfg-field" id="f-cfg-livello"><span class="cfg-flabel">'+T.livello+' *</span>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-livello" value="'+esc(T.principiante)+'"> '+T.principiante+'</label>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-livello" value="'+esc(T.studiato)+'"> '+T.studiato+'</label></div>'+
     '<div class="cfg-field" id="f-cfg-visto"><span class="cfg-flabel">'+T.visto+' *</span>'+
       '<label class="cfg-radio"><input type="radio" name="cfg-visto" value="'+T.si+'"> '+T.si+'</label>'+
-      '<label class="cfg-radio"><input type="radio" name="cfg-visto" value="'+T.no+'"> '+T.no+'</label></div>'+
+      '<label class="cfg-radio"><input type="radio" name="cfg-visto" value="'+T.no+'"> '+T.no+'</label>'+
+      '<div id="cfg-visto-box" class="cfg-sub-opts" hidden><p class="accom-note" style="margin:0 0 10px">'+T.visto_nota+'</p>'+
+      campo('cfg-pass',T.passaporto+' *','<input id="cfg-pass">')+'</div></div>'+
     '<div class="cfg-field" id="f-cfg-pag"><span class="cfg-flabel">'+T.pagamento+' *</span>'+
       D.pagamenti.map(function(p){return '<label class="cfg-radio"><input type="radio" name="cfg-pag" value="'+esc(p.nome)+'"> '+esc(p.nome)+'</label>';}).join('')+
       '<p class="accom-note">'+T.pagamento_nota+'</p></div>'+
@@ -578,7 +585,8 @@ function iscrizione(){
     extra:S.extra.map(function(id){return extra(id).nome;}),
     voci:voci(),totale:totale(),
     nome:valore('cfg-nome'),cognome:valore('cfg-cognome'),email:valore('cfg-email'),
-    telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),
+    telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),nazionalita:valore('cfg-naz'),
+    passaporto:serveVisto()?valore('cfg-pass'):'',
     livello:scelta('cfg-livello'),visto:scelta('cfg-visto'),pagamento:scelta('cfg-pag'),
     fattura:fattura(),
     note:valore('cfg-note'),lingua:D.lingua
@@ -586,6 +594,16 @@ function iscrizione(){
 }
 /* Dati per la fattura: a nome dello studente o di un ente. */
 function enteScelto(){return scelta('cfg-int')==='ente';}
+/* Con il visto servono cittadinanza, data di nascita e passaporto: diventano obbligatori. */
+function serveVisto(){return scelta('cfg-visto')===T.si;}
+function campiVisto(){
+  var v=serveVisto();
+  $('cfg-visto-box').hidden=!v;
+  [['cfg-nascita',T.nascita],['cfg-naz',T.nazionalita]].forEach(function(c){
+    document.querySelector('label[for="'+c[0]+'"]').innerHTML=c[1]+(v?' *':' <span class="cfg-opt">('+T.facoltativo+')</span>');
+  });
+}
+document.querySelectorAll('input[name="cfg-visto"]').forEach(function(r){r.addEventListener('change',campiVisto);});
 function campiFattura(){
   var e=enteScelto();
   ['f-cfg-ente','f-cfg-piva','f-cfg-sdi','f-cfg-emailf'].forEach(function(id){mostra(id,e);});
@@ -605,8 +623,8 @@ function testoEmail(x){
   var r=[];
   function l(k,v){if(v)r.push(k+': '+v);}
   l(T.nome,x.nome+' '+x.cognome);l(T.email,x.email);l(T.telefono,x.telefono);
-  l(T.nascita,x.nascita?giorno(fromIso(x.nascita)):'');
-  l(T.livello,x.livello);l(T.visto,x.visto);l(T.pagamento,x.pagamento);
+  l(T.nascita,x.nascita?fromIso(x.nascita).toLocaleDateString(LOC,{day:'numeric',month:'long',year:'numeric'}):'');l(T.nazionalita,x.nazionalita);
+  l(T.livello,x.livello);l(T.visto,x.visto);l(T.passaporto,x.passaporto);l(T.pagamento,x.pagamento);
   var f=x.fattura;
   r.push('');r.push(T.fattura+': '+(f.intestatario==='ente'?f.ente:x.nome+' '+x.cognome));
   l(T.indirizzo,f.indirizzo);l(T.cap,f.cap);l(T.citta,f.citta);l(T.paese,f.paese);
@@ -643,6 +661,7 @@ $('cfg-form').addEventListener('submit',function(e){
   var err=[],x=iscrizione();
   if(segna('f-cfg-nome',!x.nome)|segna('f-cfg-cognome',!x.cognome)|segna('f-cfg-email',!x.email)|
      segna('f-cfg-livello',!x.livello)|segna('f-cfg-visto',!x.visto)|segna('f-cfg-pag',!x.pagamento)|
+     segna('f-cfg-nascita',serveVisto()&&!x.nascita)|segna('f-cfg-naz',serveVisto()&&!x.nazionalita)|segna('f-cfg-pass',serveVisto()&&!x.passaporto)|
      segna('f-cfg-ind',!x.fattura.indirizzo)|segna('f-cfg-cap',!x.fattura.cap)|segna('f-cfg-citta',!x.fattura.citta)|
      segna('f-cfg-paese',!x.fattura.paese)|
      segna('f-cfg-ente',enteScelto()&&!x.fattura.ente)|segna('f-cfg-piva',enteScelto()&&!x.fattura.piva)|
