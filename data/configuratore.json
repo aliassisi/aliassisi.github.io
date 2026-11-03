@@ -1,5 +1,6 @@
 {
   "email": "info@aliassisi.it",
+  "invio": "",
   "alloggi": [
     {"id": "nessuno", "icona": "ti-home-off",
      "it": {"nome": "Nessun alloggio", "nota": "Ci penso da solo"},

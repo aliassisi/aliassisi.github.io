@@ -57,6 +57,11 @@ var T=IT?{
   accetto:'Ho letto e accetto i <a href="{t}" target="_blank">termini e condizioni</a> e l’<a href="{p}" target="_blank">informativa sulla privacy</a>.',
   invia:'Invia l’iscrizione',manca:'Compila i campi segnati.',email_errata:'Controlla l’indirizzo email.',
   manca_data:'Scegli la data di inizio.',
+  passaporto_file:'Scansione del passaporto (pagina con la foto)',file_nota:'PDF, JPG o PNG, al massimo 5 MB.',
+  file_grande:'Il file del passaporto supera 5 MB.',file_tipo:'Il passaporto deve essere un PDF, JPG o PNG.',
+  invio_corso:'Invio in corso…',ricevuta_t:'Iscrizione ricevuta',
+  ricevuta:'Grazie! La tua iscrizione {n} è arrivata e ti abbiamo mandato un’email di conferma a {e}. Ti scriviamo entro pochi giorni con la conferma e la fattura proforma.',
+  invio_fallito:'L’invio non è riuscito. Si apre il tuo programma di posta con l’iscrizione già scritta: invia l’email (se ti serve il visto, allega il passaporto).',
   grazie_t:'Ci siamo quasi',
   grazie:'Si apre il tuo programma di posta con l’iscrizione già scritta: invia l’email. Ti rispondiamo entro pochi giorni con la conferma e la fattura proforma.',
   non_si_apre:'Se il programma di posta non si apre, copia questo testo e mandalo a {e}.',
@@ -116,6 +121,11 @@ var T=IT?{
   accetto:'I have read and accept the <a href="{t}" target="_blank">terms and conditions</a> and the <a href="{p}" target="_blank">privacy policy</a>.',
   invia:'Send enrolment',manca:'Please fill in the marked fields.',email_errata:'Please check the email address.',
   manca_data:'Please choose the start date.',
+  passaporto_file:'Scan of your passport (photo page)',file_nota:'PDF, JPG or PNG, up to 5 MB.',
+  file_grande:'The passport file is larger than 5 MB.',file_tipo:'The passport must be a PDF, JPG or PNG.',
+  invio_corso:'Sending…',ricevuta_t:'Enrolment received',
+  ricevuta:'Thank you! Your enrolment {n} has arrived and we have sent a confirmation email to {e}. We will write to you within a few days with the confirmation and the proforma invoice.',
+  invio_fallito:'Sending did not work. Your email program opens with the enrolment already written: send the email (if you need a visa, attach your passport).',
   grazie_t:'Almost done',
   grazie:'Your email program opens with the enrolment already written: send the email. We reply within a few days with the confirmation and the proforma invoice.',
   non_si_apre:'If your email program does not open, copy this text and send it to {e}.',
@@ -236,7 +246,8 @@ wrap.innerHTML=
       '<div id="cfg-visto-box" class="cfg-sub-opts" hidden><p class="accom-note" style="margin:0 0 10px">'+T.visto_nota+'</p>'+
       '<div class="cfg-grid">'+campo('cfg-luogo',T.luogo_nascita+' *','<input id="cfg-luogo">')+
       campo('cfg-pass',T.passaporto+' *','<input id="cfg-pass">')+
-      campo('cfg-scad',T.scadenza+' *','<input id="cfg-scad" type="date">')+'</div></div></div>'+
+      campo('cfg-scad',T.scadenza+' *','<input id="cfg-scad" type="date">')+'</div>'+
+      (D.invio?campo('cfg-pfile',T.passaporto_file+' *','<input id="cfg-pfile" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"><span class="accom-note">'+T.file_nota+'</span>'):'')+'</div></div>'+
     '<div class="cfg-field" id="f-cfg-pag"><span class="cfg-flabel">'+T.pagamento+' *</span>'+
       D.pagamenti.map(function(p){return '<label class="cfg-radio"><input type="radio" name="cfg-pag" value="'+esc(p.nome)+'"> '+esc(p.nome)+'</label>';}).join('')+
       '<p class="accom-note">'+T.pagamento_nota+'</p></div>'+
@@ -257,13 +268,14 @@ wrap.innerHTML=
     '</div>'+
     campo('cfg-note',T.note,'<textarea id="cfg-note" rows="3"></textarea>',true)+
     '<div class="cfg-field" id="f-cfg-ok"><label class="cfg-radio"><input type="checkbox" id="cfg-ok"> '+fmt(T.accetto,{t:D.link.termini,p:D.link.privacy})+' *</label></div>'+
+    '<div class="cfg-hp" aria-hidden="true"><label for="cfg-sito">Sito</label><input id="cfg-sito" tabindex="-1" autocomplete="off"></div>'+
     '<p id="cfg-form-err" class="cfg-err" role="alert"></p>'+
     '<button type="submit" class="cfg-cta"><i class="ti ti-send"></i> '+T.invia+'</button>'+
   '</form>'+
-  '<div id="cfg-done" class="cfg-summary" hidden><div class="cfg-summary-title"><i class="ti ti-mail-forward" style="font-size:18px;color:#888"></i> '+T.grazie_t+'</div>'+
-    '<p>'+T.grazie+'</p><p class="accom-note">'+fmt(T.non_si_apre,{e:'<a href="mailto:'+D.email+'">'+D.email+'</a>'})+'</p>'+
+  '<div id="cfg-done" class="cfg-summary" hidden><div class="cfg-summary-title"><i class="ti ti-mail-forward" style="font-size:18px;color:#888"></i> <span id="cfg-done-t"></span></div>'+
+    '<p id="cfg-done-p"></p><div id="cfg-done-mail"><p class="accom-note">'+fmt(T.non_si_apre,{e:'<a href="mailto:'+D.email+'">'+D.email+'</a>'})+'</p>'+
     '<textarea id="cfg-testo" class="cfg-testo" rows="12" readonly></textarea>'+
-    '<p class="cfg-done-btns"><button type="button" class="cfg-link" id="cfg-copia">'+T.copia+'</button> <button type="button" class="cfg-link" id="cfg-modifica">'+T.modifica+'</button></p></div>';
+    '<p class="cfg-done-btns"><button type="button" class="cfg-link" id="cfg-copia">'+T.copia+'</button> <button type="button" class="cfg-link" id="cfg-modifica">'+T.modifica+'</button></p></div></div>';
 
 function mostra(id,si){$(id).style.display=si?'':'none';}
 
@@ -581,6 +593,7 @@ function iscrizione(){
     formula:c.tipo==='lezioni'?c.formule[S.formula].nome:null,
     lezioni:c.tipo==='lezioni'?S.lezioni:null,
     settimane:c.tipo==='settimane'?S.settimane:null,
+    lezioni_totali:c.tipo==='settimane'?c.ore*S.settimane:(c.tipo==='lezioni'?S.lezioni:null),
     inizio:a?iso(a):null,fine:b?iso(b):null,
     alloggio:inSede(c)&&S.alloggio!=='nessuno'?alloggio().nome+(alloggio().camere.length?' · '+camera().nome:''):null,
     settimane_alloggio:inSede(c)&&S.alloggio!=='nessuno'?settAlloggio():null,
@@ -591,7 +604,7 @@ function iscrizione(){
     luogo_nascita:serveVisto()?valore('cfg-luogo'):'',passaporto:serveVisto()?valore('cfg-pass'):'',
     scadenza_passaporto:serveVisto()?valore('cfg-scad'):'',
     livello:scelta('cfg-livello'),visto:scelta('cfg-visto'),pagamento:scelta('cfg-pag'),
-    fattura:fattura(),
+    fattura:fattura(),sito:valore('cfg-sito'),
     note:valore('cfg-note'),lingua:D.lingua
   };
 }
@@ -654,8 +667,29 @@ $('cfg-info').addEventListener('click',function(){
   var x=iscrizione(),testo=[T.info_intro,''].concat(testoConfig(x),['',T.info_domanda,'']).join('\n');
   location.href='mailto:'+D.email+'?subject='+encodeURIComponent(T.oggetto_info+': '+x.corso_nome)+'&body='+encodeURIComponent(testo);
 });
-/* Invio. Per ora un'email a info@: quando ci sarà il gestionale, qui si salverà l'iscrizione. */
+/* Invio allo script Google (D.invio): salva l'iscrizione, il passaporto e manda le email.
+   Restituisce il numero dell'iscrizione. Senza D.invio, o se l'invio non riesce, si usa inviaEmail. */
+function fileScelto(){var i=$('cfg-pfile');return D.invio&&serveVisto()&&i&&i.files[0]||null;}
+function leggiFile(f){
+  return new Promise(function(ok,ko){
+    var r=new FileReader();
+    r.onload=function(){ok({nome:f.name,tipo:f.type,dati:String(r.result).split(',')[1]});};
+    r.onerror=ko;r.readAsDataURL(f);
+  });
+}
 function invia(x){
+  if(!D.invio)return Promise.reject(new Error('nessun indirizzo di invio'));
+  var f=fileScelto();
+  return (f?leggiFile(f):Promise.resolve(null)).then(function(file){
+    if(file)x.file_passaporto=file;
+    return fetch(D.invio,{method:'POST',body:JSON.stringify(x)});
+  }).then(function(r){return r.json();}).then(function(r){
+    if(!r.ok)throw new Error(r.errore);
+    return r.id;
+  });
+}
+/* Un'email già scritta, nel programma di posta dello studente. */
+function inviaEmail(x){
   var testo=testoEmail(x);
   $('cfg-testo').value=testo;
   location.href='mailto:'+D.email+'?subject='+encodeURIComponent(T.oggetto+': '+x.corso_nome+' – '+x.nome+' '+x.cognome)+'&body='+encodeURIComponent(testo);
@@ -672,12 +706,24 @@ $('cfg-form').addEventListener('submit',function(e){
      segna('f-cfg-ente',enteScelto()&&!x.fattura.ente)|segna('f-cfg-piva',enteScelto()&&!x.fattura.piva)|
      segna('f-cfg-ok',!$('cfg-ok').checked))err.push(T.manca);
   if(x.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x.email)){segna('f-cfg-email',true);err.push(T.email_errata);}
+  var pf=fileScelto();
+  if(segna('f-cfg-pfile',!!$('cfg-pfile')&&serveVisto()&&!pf)&&!err.length)err.push(T.manca);
+  if(pf&&['application/pdf','image/jpeg','image/png'].indexOf(pf.type)<0){segna('f-cfg-pfile',true);err.push(T.file_tipo);}
+  else if(pf&&pf.size>5*1024*1024){segna('f-cfg-pfile',true);err.push(T.file_grande);}
   if(!x.inizio){err.push(T.manca_data);}
   $('cfg-form-err').textContent=err.join(' ');
   if(err.length){var bad=this.querySelector('.cfg-bad input,.cfg-bad textarea');if(bad)bad.focus();else if(!x.inizio)$('s-data').scrollIntoView({behavior:'smooth'});return;}
-  invia(x);
-  $('cfg-config').hidden=true;this.hidden=true;$('cfg-done').hidden=false;
-  wrap.scrollIntoView({behavior:'smooth',block:'start'});
+  var form=this,btn=form.querySelector('button[type=submit]'),etichetta=btn.innerHTML;
+  btn.disabled=true;btn.textContent=T.invio_corso;
+  function fine(id){
+    btn.disabled=false;btn.innerHTML=etichetta;
+    if(id){$('cfg-done-t').textContent=T.ricevuta_t;$('cfg-done-p').textContent=fmt(T.ricevuta,{n:id,e:x.email});}
+    else{inviaEmail(x);$('cfg-done-t').textContent=T.grazie_t;$('cfg-done-p').textContent=D.invio?T.invio_fallito:T.grazie;}
+    $('cfg-done-mail').hidden=!!id;
+    $('cfg-config').hidden=true;form.hidden=true;$('cfg-done').hidden=false;
+    wrap.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  invia(x).then(fine,function(e){if(D.invio)console.error(e);fine(null);});
 });
 $('cfg-copia').addEventListener('click',function(){
   var b=this,t=$('cfg-testo');t.select();

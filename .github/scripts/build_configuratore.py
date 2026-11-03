@@ -92,6 +92,8 @@ def dati(ali, cfg, lingua):
     return {
         "lingua": lingua,
         "email": cfg["email"],
+        # The address of the Google Apps Script that receives enrolments. Empty: email only.
+        "invio": cfg.get("invio", ""),
         "link": LINK[lingua],
         "corsi": corsi(ali, lingua),
         "date_inizio": sorted(ali["date_inizio"]),
