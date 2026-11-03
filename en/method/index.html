@@ -928,7 +928,13 @@ document.querySelectorAll('.ali-lib dialog').forEach(function (d) {
 .ali-ric .ref{padding-left:2em;text-indent:-2em;overflow-wrap:anywhere}
 .ali-ric .ref strong{font-weight:600}
 .ali-ric .nota{margin-top:10px;font-size:.95em;max-width:720px}
-@media(max-width:767px){.ali-ric{padding:8px 20px 48px}.ali-ric .refs li{flex-direction:column;gap:16px;padding:20px}.ali-ric .ref{padding-left:1.5em;text-indent:-1.5em}}
+.ali-ric .sub{color:var(--navy);font-weight:400;font-size:clamp(22px,3vw,26px);line-height:1.3;margin:48px 0 18px}
+.ali-ric .corsi{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.ali-ric .corsi li{margin:0;padding:22px 26px;background:#fff;border-left:4px solid var(--giallo)}
+.ali-ric .corsi .dt{display:block;font-size:.9em;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.ali-ric .corsi .ct{display:block;font-size:1.1em;font-weight:600}
+.ali-ric .corsi .dv{display:block;margin-top:6px;font-size:.95em}
+@media(max-width:767px){.ali-ric{padding:8px 20px 48px}.ali-ric .refs li{flex-direction:column;gap:16px;padding:20px}.ali-ric .ref{padding-left:1.5em;text-indent:-1.5em}.ali-ric .corsi{grid-template-columns:1fr}.ali-ric .corsi li{padding:20px}}
 </style>
 <div class="ali-ric" id="research">
   <h2 class="hd">Research</h2>
@@ -952,6 +958,29 @@ document.querySelectorAll('.ali-lib dialog').forEach(function (d) {
     <div class="tx">
       <p class="ref" lang="en"><strong>Chiuchiù, G.</strong>, &amp; Benati, A. (2020). A self-paced-reading study on the effects of structured input and textual enhancement on the acquisition of the Italian subjunctive of doubt. <em>Instructed Second Language Acquisition</em>, <em>4</em>(2), 235–257. <a href="https://doi.org/10.1558/isla.40659" target="_blank" rel="noopener">https://doi.org/10.1558/isla.40659</a></p>
     </div>
+  </li>
+  </ul>
+  <h3 class="sub" id="teacher-training">Teacher training courses</h3>
+  <ul class="corsi">
+  <li>
+    <span class="dt">15–16 June 2017</span>
+    <span class="ct">Summer course in Second Language Acquisition</span>
+    <span class="dv">Led by Susan Gass. Accademia Lingua Italiana Assisi, Assisi (Perugia).</span>
+  </li>
+  <li>
+    <span class="dt">28–30 August 2018</span>
+    <span class="ct">Summer course in Second Language Acquisition</span>
+    <span class="dv">Led by Susan Gass. Accademia Lingua Italiana Assisi, Assisi (Perugia).</span>
+  </li>
+  <li>
+    <span class="dt">10–12 January 2019</span>
+    <span class="ct">Focus on Form in second language teaching</span>
+    <span class="dv">Led by Alessandro Benati. Accademia Lingua Italiana Assisi, Assisi (Perugia).</span>
+  </li>
+  <li>
+    <span class="dt">29 May – 1 June 2019</span>
+    <span class="ct">Communication and tasks in second language teaching</span>
+    <span class="dv">Led by Alessandro Benati. Accademia Lingua Italiana Assisi, Assisi (Perugia).</span>
   </li>
   </ul>
 </div>
