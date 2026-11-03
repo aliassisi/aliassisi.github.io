@@ -53,8 +53,10 @@ root. English pages are under `en/`. There is no backend.
   (`configuratore/index.html?corso=<id>`, `&tema=N`, `&formula=N`). The configurator
   is built by `python3 -I .github/scripts/build_configuratore.py .` from `data/alia.json`
   and `data/configuratore.json` (accommodation, extras, activities, payment methods),
-  with `.github/templates/configuratore.js` and `.css`. For now the enrolment is sent
-  as an email the student sends (mailto). No Google form is used any more.
+  with `.github/templates/configuratore.js` and `.css`. The form sends the enrolment
+  to a Google Apps Script (`.github/apps-script/`, set up as in its `ISTRUZIONI.md`):
+  its URL is `"invio"` in `data/configuratore.json`. Empty, or if sending fails, the
+  form falls back to an email the student sends (mailto).
 - Styles: `.github/templates/alia-course.css`, copied to `assets/alia/`, limited to
   `.ali-course`. Its reset block undoes theme rules on tables, `dt`, `small`, links.
 
