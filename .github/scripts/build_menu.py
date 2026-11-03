@@ -12,6 +12,8 @@ switcher item marked "current-lang".
 
 Kept as they are: the language switcher items, the arrow icon of each widget,
 everything outside the <ul>. The language switcher stays last.
+An item's optional "classe" is added to its <li> (ali-menu-tool: the
+Configuratore item, styled in assets/alia/hero.css).
 
 Safe to run again on a page it already changed.
 """
@@ -37,6 +39,8 @@ def link(voce, page_dir, sub, dropdown):
     h = href(voce["url"], page_dir)
     current = h == "index.html"
     li = "menu-item menu-item-type-post_type menu-item-object-page"
+    if voce.get("classe"):
+        li += " " + voce["classe"]
     a_cls = "elementor-sub-item" if sub else "elementor-item"
     aria = ""
     if current:
