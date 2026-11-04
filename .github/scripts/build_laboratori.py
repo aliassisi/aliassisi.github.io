@@ -42,7 +42,7 @@ TOP = '<section class="elementor-section elementor-top-section'
 SCRIPT = SCRIPT_START + """
 <style>
 .ali-lab { white-space: nowrap; }
-.ali-lab + .ali-lab::before { content: " / "; }
+.ali-lab + .ali-lab::before { content: "/ "; }
 html[lang^="en"] .ali-lab { display: block; }
 html[lang^="en"] .ali-lab + .ali-lab::before { content: none; }
 </style>
@@ -119,7 +119,7 @@ def colonna_date(pagina, lab, lang, oggi):
             anni.setdefault(d.year, []).append(d)
     corpo = ""
     for n, (anno, dd) in enumerate(sorted(anni.items())):
-        spans = "".join(f'<span class="ali-lab" data-data="{d.isoformat()}">{giorno(d, lang)}</span>' for d in dd)
+        spans = " ".join(f'<span class="ali-lab" data-data="{d.isoformat()}">{giorno(d, lang)}</span>' for d in dd)
         corpo += "\t\t\t\t\t\t" + widget(ids[n % len(ids)], "ali-lab-anno", f"<b>{anno}</b><br>{spans}")
     corpo += "\t\t\t\t\t\t" + widget(ids[-1] if anni else ids[0], "ali-lab-vuoto",
                                      html.escape(VUOTO[lang]), nascosto=bool(anni))
