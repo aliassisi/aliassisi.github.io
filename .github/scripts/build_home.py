@@ -70,7 +70,32 @@ def slide_da_modello(modello, chiave, num, testo, url, pulsante):
     s = re.sub(r'(<rs-layer[^>]*class="rev-btn"[^>]*>)(.*?)(</rs-layer>)',
                lambda m: m.group(1) + html.escape(pulsante) + " " + m.group(3), s, count=1, flags=re.S)
     s = re.sub(r"url:[^;']*;", f"url:{url};", s, count=1)
-    return s
+    return raggruppa(s, num, chiave)
+
+
+GRUPPO_XY = "xo:80px,50px,30px,20px;yo:300px,140px,114px,127px;"
+GRUPPO_SPAZIO = "t:40px"
+
+
+def raggruppa(s, num, chiave):
+    """Title and button in one Slider Revolution group, stacked (data-pos="r").
+    A longer title pushes the button down. Safe on a slide that is already grouped."""
+    s = re.sub(r"<rs-group\b[^>]*>\n?|\n?</rs-group>", "", s)
+    dim = re.search(r'<rs-layer[^>]*data-type="text"[^>]*data-dim="([^"]*)"', s).group(1)
+
+    def relativo(m, extra=""):
+        tag = re.sub(r'\s+data-(xy|pos|margin)="[^"]*"', "", m.group(0))
+        return tag[:-1] + ' data-pos="r"' + extra + ">"
+
+    s = re.sub(r'<rs-layer[^>]*data-type="text"[^>]*>', relativo, s, count=1)
+    s = re.sub(r'<rs-layer[^>]*class="rev-btn[^"]*"[^>]*>',
+               lambda m: relativo(m, f' data-margin="{GRUPPO_SPAZIO};"'), s, count=1)
+    ini = s.index("<rs-layer")
+    fine = s.index("</rs-layer>", s.index('class="rev-btn')) + len("</rs-layer>")
+    gruppo = (f'<rs-group id="slider-{num}-slide-{chiave}-group" data-type="group" data-rsp_ch="on" '
+              f'data-xy="{GRUPPO_XY}" data-dim="{dim.rstrip(";")};h:auto;" '
+              f'data-frame_1="sp:1;" data-frame_999="o:0;st:w;sR:7800;" style="z-index:28;">\n')
+    return s[:ini] + gruppo + s[ini:fine] + "\n</rs-group>" + s[fine:]
 
 
 def carosello(pagina, dati, lang):
