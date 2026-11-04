@@ -981,7 +981,6 @@ padding-right: 30px;
           <label>Date di inizio programmate</label>
           <select id="dw-startsel" onchange="onSS()">
             <option value="">— Seleziona —</option>
-            <option value="2026-11-02">2 novembre 2026</option>
             <option value="2026-11-30">30 novembre 2026</option>
             <option value="2027-02-01">1° febbraio 2027</option>
             <option value="2027-03-01">1° marzo 2027</option>
@@ -1089,14 +1088,12 @@ function fmtD(d){
 function calcEnd(start,weeks){
   var d=new Date(start),cmap={},wc=0;
   while(wc<weeks){
-    var allCl=true;
     for(var day=0;day<5;day++){
       var dd=new Date(d);dd.setDate(d.getDate()+day);
       var cl=isCl(dd);
-      if(!cl)allCl=false;
-      else{if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}
+      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}
     }
-    if(!allCl)wc++;
+    wc++;
     d.setDate(d.getDate()+7);
   }
   var end=new Date(d);end.setDate(end.getDate()-3);
@@ -1134,7 +1131,7 @@ window.onCalc=function(){
   var ck=Object.keys(res.cmap),cwrap=document.getElementById('dw-cw');
   if(ck.length){
     var h='<div class="dw-warn"><div class="dw-warn-t"><i class="ti ti-alert-triangle" style="font-size:13px"></i> Chiusure durante il tuo soggiorno</div><ul>';
-    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' giorn'+(res.cmap[k]===1?'o':'i')+' (il corso viene prolungato di conseguenza)</li>';});
+    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' giorn'+(res.cmap[k]===1?'o':'i')+' (il corso non viene prolungato)</li>';});
     cwrap.innerHTML=h+'</ul></div>';
   } else cwrap.innerHTML='';
 };
