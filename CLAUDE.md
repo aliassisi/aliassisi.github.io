@@ -74,6 +74,12 @@ root. English pages are under `en/`. There is no backend.
   themselves. With none, the fixed list in `.github/snippets/vivere-ad-assisi-it.html` and
   `life-in-assisi-en.html` shows. The pages are built by `legal_pages.py`.
 
+## Workshop dates
+- The workshop dates on `attivita-facilities-e-laboratori/` and `en/school-activity/`
+  (and the "Scegli le date" box) come from `data/laboratori.json`. Run
+  `python3 -I .github/scripts/build_laboratori.py .` after editing. Past dates are
+  left out at build time, and a small script on the page hides dates that pass later.
+
 ## Gotchas
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.
