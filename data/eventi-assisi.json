@@ -15,6 +15,17 @@
       "nota_en": "Exhibition"
     },
     {
+      "inizio": "2026-04-26",
+      "fine": "2026-12-06",
+      "ora": "",
+      "titolo": "Su e giù per Assisi – Natale",
+      "luogo": "Bosco di San Francesco (FAI), Assisi",
+      "descrizione_it": "Visita guidata speciale del FAI tra il Bosco e la città.",
+      "descrizione_en": "Special FAI guided tour between the Wood and the town.",
+      "link": "https://fondoambiente.it/luoghi/bosco-di-san-francesco/eventi",
+      "immagine": "https://fai-platform.imgix.net/media/eventi/bosco-di-san-francesco-natura-e-figura_226962.jpg?w=800&h=600&fit=crop"
+    },
+    {
       "inizio": "2026-10-22",
       "fine": "2026-11-28",
       "ora": "",
@@ -78,6 +89,19 @@
     {
       "inizio": "2026-11-07",
       "fine": "2026-11-07",
+      "ora": "21:00",
+      "titolo": "Aron Sariel e Igor Congulato in concerto",
+      "luogo": "Basilica di San Francesco, Chiesa Superiore",
+      "descrizione_it": "Concerto serale per “In cammino verso Assisi Pax Mundi”. Ingresso libero.",
+      "descrizione_en": "Evening concert for “In cammino verso Assisi Pax Mundi”. Free entry.",
+      "link": "https://basilica.sanfrancesco.org/eventi/cori-in-basilica-novembre-2026",
+      "immagine": "https://eventi.sanfrancesco.org/storage/events/covers/acp0729.JPG",
+      "nota_it": "Ingresso libero",
+      "nota_en": "Free entry"
+    },
+    {
+      "inizio": "2026-11-07",
+      "fine": "2026-11-07",
       "ora": "21:15",
       "titolo": "Gospel Connection Mass Choir",
       "luogo": "Teatro Lyrick, Santa Maria degli Angeli",
@@ -85,6 +109,17 @@
       "descrizione_en": "Gospel choir.",
       "link": "https://www.teatrolyrick.com/gospel-connection",
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/03---gospel-connection-_teatro_lyrick.jpg"
+    },
+    {
+      "inizio": "2026-11-08",
+      "fine": "2026-11-08",
+      "ora": "",
+      "titolo": "Tra Bosco e Futuro: passeggiata narrata sul cambiamento climatico",
+      "luogo": "Bosco di San Francesco (FAI), Assisi",
+      "descrizione_it": "Visita guidata speciale nel Bosco, per #FAIperilClima.",
+      "descrizione_en": "Special guided walk in the Wood, for #FAIperilClima.",
+      "link": "https://fondoambiente.it/luoghi/bosco-di-san-francesco/eventi",
+      "immagine": "https://fai-platform.imgix.net/media/eventi/bosco-di-san-francesco-fai-per-il-clima-al-bosco_184803.jpg?w=800&h=600&fit=crop"
     },
     {
       "inizio": "2026-11-13",
@@ -96,6 +131,41 @@
       "descrizione_en": "Play with Cesare Bocci and Vittoria Belvedere.",
       "link": "https://www.teatrolyrick.com/indovina-chi-viene-a-cena",
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/04---indovina-chi-viene-a-cena-_teatro_lyrick.jpg"
+    },
+    {
+      "inizio": "2026-11-15",
+      "fine": "2026-11-15",
+      "ora": "",
+      "titolo": "Sapori d’autunno: degustazione di vino e olio in giardino",
+      "luogo": "Bosco di San Francesco (FAI), Assisi",
+      "descrizione_it": "Visita guidata speciale con degustazione di vino e olio.",
+      "descrizione_en": "Special guided visit with a wine and olive oil tasting.",
+      "link": "https://fondoambiente.it/luoghi/bosco-di-san-francesco/eventi",
+      "immagine": "https://fai-platform.imgix.net/media/eventi/bosco-di-san-francesco-sapori-d-autunno_234813.jpg?w=800&h=600&fit=crop"
+    },
+    {
+      "inizio": "2026-11-17",
+      "fine": "2026-11-17",
+      "ora": "21:00",
+      "titolo": "Charmant Harmony in concerto",
+      "luogo": "Basilica di San Francesco, Chiesa Superiore",
+      "descrizione_it": "Concerto serale per “In cammino verso Assisi Pax Mundi”. Ingresso libero.",
+      "descrizione_en": "Evening concert for “In cammino verso Assisi Pax Mundi”. Free entry.",
+      "link": "https://basilica.sanfrancesco.org/eventi/cori-in-basilica-novembre-2026",
+      "immagine": "https://eventi.sanfrancesco.org/storage/events/covers/acp0729.JPG",
+      "nota_it": "Ingresso libero",
+      "nota_en": "Free entry"
+    },
+    {
+      "inizio": "2026-11-22",
+      "fine": "2026-11-29",
+      "ora": "",
+      "titolo": "Passeggiata fra gli ulivi",
+      "luogo": "Bosco di San Francesco (FAI), Assisi",
+      "descrizione_it": "Visita guidata speciale tra gli ulivi del Bosco.",
+      "descrizione_en": "Special guided walk among the Wood's olive trees.",
+      "link": "https://fondoambiente.it/luoghi/bosco-di-san-francesco/eventi",
+      "immagine": "https://fai-platform.imgix.net/media/eventi/bosco-di-san-francesco-una-passeggiata-fra-gli-ulivi-patrimonio-dell-umbria_234875.jpg?w=800&h=600&fit=crop"
     },
     {
       "inizio": "2026-11-27",
@@ -118,6 +188,19 @@
       "descrizione_en": "Comedy with Vincenzo Salemme. Sunday 29 at 5 pm.",
       "link": "https://www.teatrolyrick.com/vincenzo-salemme",
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/05---salemme-e-fuori-nevica-_teatro_lyrick.jpg"
+    },
+    {
+      "inizio": "2026-11-29",
+      "fine": "2026-11-29",
+      "ora": "21:00",
+      "titolo": "Cantico delle Creature",
+      "luogo": "Basilica di San Francesco, Chiesa Superiore",
+      "descrizione_it": "Concerto serale con Pasquale Mechise, per “In cammino verso Assisi Pax Mundi”. Ingresso libero.",
+      "descrizione_en": "Evening concert with Pasquale Mechise, for “In cammino verso Assisi Pax Mundi”. Free entry.",
+      "link": "https://basilica.sanfrancesco.org/eventi/cori-in-basilica-novembre-2026",
+      "immagine": "https://eventi.sanfrancesco.org/storage/events/covers/acp0729.JPG",
+      "nota_it": "Ingresso libero",
+      "nota_en": "Free entry"
     },
     {
       "inizio": "2026-12-05",
