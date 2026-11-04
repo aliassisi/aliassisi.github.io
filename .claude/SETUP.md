@@ -107,7 +107,7 @@ Claude will:
 3. Open a pull request.
 
 Then:
-1. Wait for the PR preview. It is at `https://aliassisi.github.io/pr-preview/pr-N/`.
+1. Wait for the PR preview. It is at `https://aliassisi.it/pr-preview/pr-N/`.
 2. Look at the preview. Check the page on a phone-size window too.
 3. Ask a teammate to review the PR.
 4. Merge it. The "Deploy production" workflow publishes the site.

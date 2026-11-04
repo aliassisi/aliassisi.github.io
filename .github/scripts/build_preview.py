@@ -3,7 +3,7 @@
 
 Usage:
   python3 -I .github/scripts/build_preview.py SRC DST BASE \
-      --prod-url https://aliassisi.github.io --changed-file changed.txt
+      --prod-url https://aliassisi.it --changed-file changed.txt
 
 BASE is the folder the preview is served from, e.g. /pr-preview/pr-12/
 

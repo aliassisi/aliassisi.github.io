@@ -32,16 +32,15 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
           PR_NUMBER: ${{ github.event.number }}
-          OWNER: ${{ github.repository_owner }}
         run: |
           git diff --name-only "origin/${BASE_REF}...HEAD" > "$RUNNER_TEMP/changed.txt"
           python3 -I .github/scripts/build_preview.py . _preview "/pr-preview/pr-${PR_NUMBER}/" \
-            --prod-url "https://${OWNER}.github.io" \
+            --prod-url "https://aliassisi.it" \
             --changed-file "$RUNNER_TEMP/changed.txt"
           npx --yes pagefind@1.5.2 --site _preview
 
       - uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: _preview
-          pages-base-url: ${{ github.repository_owner }}.github.io
+          pages-base-url: aliassisi.it
           wait-for-pages-deployment: true
