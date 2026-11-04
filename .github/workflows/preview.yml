@@ -44,3 +44,4 @@ jobs:
         with:
           source-dir: _preview
           pages-base-url: ${{ github.repository_owner }}.github.io
+          wait-for-pages-deployment: true
