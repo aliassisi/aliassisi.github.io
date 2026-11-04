@@ -16,8 +16,8 @@
     ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     : ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
   var T = en
-    ? { details: 'Details', until: 'until', updated: 'Updated ', check: 'Please check dates and times with the organisers.' }
-    : { details: 'Dettagli', until: 'fino al', updated: 'Aggiornato al ', check: 'Verifica date e orari sul sito degli organizzatori.' };
+    ? { details: 'Details', until: 'until', more: 'Show more', updated: 'Updated ', check: 'Please check dates and times with the organisers.' }
+    : { details: 'Dettagli', until: 'fino al', more: 'Mostra altri', updated: 'Aggiornato al ', check: 'Verifica date e orari sul sito degli organizzatori.' };
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -98,12 +98,23 @@
       // At most ONGOING started events (those ending first), so dated events keep their place.
       var started = list.filter(function (ev) { return ev.inizio < now; })
         .sort(function (a, b) { return a.fine.localeCompare(b.fine); }).slice(0, ONGOING);
-      list = list.filter(function (ev) { return ev.inizio >= now || started.indexOf(ev) >= 0; }).slice(0, MAX);
+      var first = list.filter(function (ev) { return ev.inizio >= now || started.indexOf(ev) >= 0; }).slice(0, MAX);
+      // "Mostra altri": the other events, in date order, MAX at a time.
+      var rest = list.filter(function (ev) { return first.indexOf(ev) < 0; });
       if (data.aggiornato && note) note.textContent = T.updated + longDate(data.aggiornato) + '. ' + T.check;
-      if (list.length < MIN) return;
+      if (first.length < MIN) return;
       var grid = box.querySelector('.ali-ev-g6');
-      list.forEach(function (ev) { grid.appendChild(card(ev, now)); });
+      first.forEach(function (ev) { grid.appendChild(card(ev, now)); });
       grid.hidden = false;
+      if (rest.length) {
+        var more = el('button', 'ali-ev-more', T.more);
+        more.type = 'button';
+        more.addEventListener('click', function () {
+          rest.splice(0, MAX).forEach(function (ev) { grid.appendChild(card(ev, now)); });
+          if (!rest.length) more.remove();
+        });
+        grid.parentNode.insertBefore(more, grid.nextSibling);
+      }
       box.querySelector('.ali-ev-anno').hidden = true;
     })
     .catch(function () { /* keep the fixed block */ });

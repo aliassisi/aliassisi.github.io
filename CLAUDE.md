@@ -70,7 +70,7 @@ root. English pages are under `en/`. There is no backend.
   (`#eventi`). The events are in `data/eventi-assisi.json`, edited by hand: one entry per
   event with `inizio`, `fine`, `ora`, `titolo`, `luogo`, `descrizione_it`, `descrizione_en`,
   `link`, optional `immagine`, `nota_it`, `nota_en`. Set `aggiornato` to the day you edit.
-- `assets/alia/eventi.js` shows the next 6 that have not ended; past ones drop off by
+- `assets/alia/eventi.js` shows the next 6 that have not ended, and "Mostra altri" adds 6 more at a time; past ones drop off by
   themselves. With none, the fixed list in `.github/snippets/vivere-ad-assisi-it.html` and
   `life-in-assisi-en.html` shows. The pages are built by `legal_pages.py`.
 
