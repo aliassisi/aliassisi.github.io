@@ -55,14 +55,14 @@ PAGES = {
                "recognitions, rights on texts and images, hosting."),
     },
     # Not a legal page, but built the same way. Its events section reads
-    # data/eventi-assisi.json (assets/alia/eventi.js).
+    # data/eventi-assisi.json, edited by hand (assets/alia/eventi.js).
     ("vivere-ad-assisi", "life-in-assisi"): {
         "it": ("Vivere ad Assisi", "vivere-ad-assisi-it.html",
                "Vivere ad Assisi durante il corso di italiano: attività, alloggio e gli "
-               "eventi in città, da Calendimaggio al Natale."),
+               "eventi in città e nei dintorni, da Calendimaggio al Natale."),
         "en": ("Life in Assisi", "life-in-assisi-en.html",
                "Life in Assisi during your Italian course: activities, accommodation and "
-               "what is on in town, from Calendimaggio to Christmas."),
+               "what is on in and around town, from Calendimaggio to Christmas."),
     },
 }
 

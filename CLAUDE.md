@@ -65,6 +65,15 @@ root. English pages are under `en/`. There is no backend.
   `data/menu.json`. Run `python3 -I .github/scripts/build_menu.py .` after editing.
   It keeps the language switcher.
 
+## Events (Vivere ad Assisi)
+- `vivere-ad-assisi/` and `en/life-in-assisi/` show "Cosa succede ad Assisi e dintorni"
+  (`#eventi`). The events are in `data/eventi-assisi.json`, edited by hand: one entry per
+  event with `inizio`, `fine`, `ora`, `titolo`, `luogo`, `descrizione_it`, `descrizione_en`,
+  `link`, optional `immagine`, `nota_it`, `nota_en`. Set `aggiornato` to the day you edit.
+- `assets/alia/eventi.js` shows the next 6 that have not ended; past ones drop off by
+  themselves. With none, the fixed list in `.github/snippets/vivere-ad-assisi-it.html` and
+  `life-in-assisi-en.html` shows. The pages are built by `legal_pages.py`.
+
 ## Gotchas
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.
