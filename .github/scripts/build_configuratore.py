@@ -17,7 +17,15 @@ extra services, activities and payment methods come from configuratore.json.
 A course page opens the configurator with ?corso=<id> (the course id in
 alia.json, or "privati", "online", "calendimaggio"). The configurator then
 shows only that course. &tema=N picks a theme, &formula=N a row of the
-private or online lessons price table.
+private or online lessons price table. &inizio=YYYY-MM-DD (a Monday) and
+&settimane=N fill in the start and length. With &da=calendario (links from
+the comparator) the course, start and length show as one summary line.
+
+The course comparator is on calendar-and-fees/index.html and
+en/calendar-and-fees/index.html, in <!-- comparatore --> ... <!-- /comparatore -->:
+assets/alia/comparatore.css and .js (sources in .github/templates/) and the
+data in <script id="cmp-dati">, from the same sources as the configurator.
+Its buttons open the configurator with ?corso=&inizio=&settimane=&da=calendario.
 
 Safe to run again on a page it already changed.
 """
@@ -38,6 +46,40 @@ ICONE = {
     "religiosi_22": "ti-building-church", "religiosi_26": "ti-building-church",
     "tematico_22": "ti-palette", "tematico_26": "ti-photo",
     "privati": "ti-user", "online": "ti-device-laptop", "calendimaggio": "ti-flag",
+}
+# The course comparator on the Calendar and fees pages. It replaces the old
+# "#dw-wrap" calculator, and the page's own menu links to it.
+INIZIO_CMP, FINE_CMP = "<!-- comparatore -->", "<!-- /comparatore -->"
+PAGINE_CMP = {"it": "calendar-and-fees", "en": "en/calendar-and-fees"}
+ANCORA_CMP = "cmp-wrap"
+VOCE_MENU_CMP = {
+    "it": ("Calcola il costo", "Confronta i corsi"),
+    "en": ("Cost calculator", "Compare courses"),
+}
+# The three columns (by rate) and their courses, in this order.
+GRUPPI_CMP = [
+    ("standard", ["standard"]),
+    ("intensivo", ["intensivo", "esame_intensivo", "tematico_22", "religiosi_22"]),
+    ("super_intensivo", ["super_intensivo", "esame_super", "tematico_26", "religiosi_26"]),
+]
+# Short names in the comparator: (name, note). A note of None lists the course's themes.
+VARIANTI_CMP = {
+    "it": {
+        "standard": ("Standard", ""),
+        "intensivo": ("Intensivo", ""), "super_intensivo": ("Super intensivo", ""),
+        "esame_intensivo": ("Preparazione all’esame", "CILS, Roma Tre"),
+        "esame_super": ("Preparazione all’esame", "CILS, Roma Tre"),
+        "tematico_22": ("Tematico", None), "tematico_26": ("Tematico", None),
+        "religiosi_22": ("Corso per religiosi", ""), "religiosi_26": ("Corso per religiosi", ""),
+    },
+    "en": {
+        "standard": ("Standard", ""),
+        "intensivo": ("Intensive", ""), "super_intensivo": ("Super intensive", ""),
+        "esame_intensivo": ("Certification exam prep.", "CILS, Roma Tre"),
+        "esame_super": ("Certification exam prep.", "CILS, Roma Tre"),
+        "tematico_22": ("Thematic", None), "tematico_26": ("Thematic", None),
+        "religiosi_22": ("Course for religious students", ""), "religiosi_26": ("Course for religious students", ""),
+    },
 }
 # Links of the enrolment form to the conditions the student accepts.
 LINK = {
@@ -112,6 +154,41 @@ def dati(ali, cfg, lingua):
     }
 
 
+def dati_comparatore(ali, cfg, lingua):
+    """The data of the course comparator: the same sources as the configurator."""
+    d = dati(ali, cfg, lingua)
+    per_id = {c["id"]: c for c in ali["corsi"]}
+    gruppi = []
+    for tariffa, ids in GRUPPI_CMP:
+        primo = per_id[ids[0]]
+        varianti = []
+        for i in ids:
+            c = in_lingua(per_id[i], lingua)
+            nome, nota = VARIANTI_CMP[lingua][i]
+            if nota is None and c.get("temi"):
+                # The themes of the course, as "Letteratura, cinema, arte, …".
+                temi = [v["titolo"] for v in c["temi"]["voci"]]
+                nota = ", ".join([temi[0]] + [t[0].lower() + t[1:] for t in temi[1:]])
+            varianti.append({"id": i, "nome": nome, "nota": nota})
+        gruppi.append({"ore": primo["ore"], "gruppo": sum(primo["mattina"]),
+                       "individuali": sum(primo["pomeriggio"]),
+                       "tariffe": ali["tariffe"][tariffa], "varianti": varianti})
+    return {"lingua": lingua, "configuratore": "../configuratore/index.html",
+            "date_inizio": d["date_inizio"], "chiusure": d["chiusure"],
+            "attivita_settimanali": d["attivita_settimanali"], "attivita": d["attivita"],
+            "gruppi": gruppi}
+
+
+def blocco_comparatore(d, css, js):
+    j = json.dumps(d, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return (f"{INIZIO_CMP}\n"
+            f'<link rel="stylesheet" href="{css}">\n'
+            f'<div id="{ANCORA_CMP}" class="ali-ancora"></div>\n'
+            f'<script id="cmp-dati" type="application/json">{j}</script>\n'
+            f'<script src="{js}"></script>\n'
+            f"{FINE_CMP}")
+
+
 def blocco(d, css, js):
     j = json.dumps(d, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     return (f"{INIZIO}\n"
@@ -135,7 +212,7 @@ def main():
     out = os.path.join(site, "assets", "alia")
     os.makedirs(out, exist_ok=True)
     versione = {}
-    for nome in ("configuratore.css", "configuratore.js"):
+    for nome in ("configuratore.css", "configuratore.js", "comparatore.css", "comparatore.js"):
         shutil.copyfile(os.path.join(TEMPLATES, nome), os.path.join(out, nome))
         # ?v= changes with the file, so browsers do not keep an old copy.
         with open(os.path.join(out, nome), "rb") as f:
@@ -161,6 +238,36 @@ def main():
         with open(dest, "w", encoding="utf-8", newline="\n") as f:
             f.write(s)
         print(f"wrote {p}/index.html ({lingua})")
+
+    for lingua, p in PAGINE_CMP.items():
+        dest = os.path.join(site, p, "index.html")
+        with open(dest, encoding="utf-8") as f:
+            s = f.read()
+        rel = os.path.relpath(out, os.path.dirname(dest)).replace(os.sep, "/")
+        nuovo = blocco_comparatore(dati_comparatore(ali, cfg, lingua),
+                                   f"{rel}/comparatore.css?v={versione['comparatore.css']}",
+                                   f"{rel}/comparatore.js?v={versione['comparatore.js']}")
+        if INIZIO_CMP in s:
+            s = re.sub(re.escape(INIZIO_CMP) + r".*?" + re.escape(FINE_CMP), lambda m: nuovo, s, count=1, flags=re.S)
+        else:
+            # First run: the old calculator, from the icons stylesheet to the end of its script.
+            m = re.search(r'<link rel="stylesheet" href="https://cdn\.jsdelivr\.net/npm/@tabler/[^"]*">\s*<style>\s*#dw-wrap'
+                          r'.*?<div id="dw-wrap">.*?\}\)\(\);\s*</script>', s, re.S)
+            if not m:
+                sys.exit(f"{dest}: old calculator (#dw-wrap) not found.")
+            s = s[:m.start()] + nuovo + s[m.end():]
+            # The page's own menu: the calculator link becomes "Compare courses".
+            vecchia, nuova = VOCE_MENU_CMP[lingua]
+            voce = f'<a href="#dw-wrap">{vecchia}</a>'
+            if voce not in s:
+                sys.exit(f"{dest}: menu link to #dw-wrap not found.")
+            s = s.replace(voce, f'<a href="#{ANCORA_CMP}">{nuova}</a>')
+            s = s.replace(".ali-ancora, #dw-wrap {", ".ali-ancora {")
+        if "dw-wrap" in s:
+            sys.exit(f"{dest}: still links to the old calculator (#dw-wrap).")
+        with open(dest, "w", encoding="utf-8", newline="\n") as f:
+            f.write(s)
+        print(f"wrote {p}/index.html (comparator, {lingua})")
 
 
 if __name__ == "__main__":

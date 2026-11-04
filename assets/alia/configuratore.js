@@ -1,7 +1,9 @@
 /* Configuratore del corso e modulo d'iscrizione.
    Source: .github/templates/configuratore.js. build_configuratore.py copies it
    to assets/alia/ and writes the data into <script id="cfg-dati">.
-   ?corso=<id> shows only that course; &tema=N and &formula=N preselect. */
+   ?corso=<id> shows only that course; &tema=N and &formula=N preselect.
+   &inizio=YYYY-MM-DD (a Monday) and &settimane=N fill in start and length.
+   &da=calendario (from the comparator) shows course, dates and length as one summary line. */
 (function(){
 var D=JSON.parse(document.getElementById('cfg-dati').textContent);
 var IT=D.lingua==='it',LOC=IT?'it-IT':'en-GB';
@@ -69,6 +71,7 @@ var T=IT?{
   non_si_apre:'Se il programma di posta non si apre, copia questo testo e mandalo a {e}.',
   copia:'Copia il testo',copiato:'Copiato',modifica:'Torna al configuratore',
   oggetto:'Iscrizione',
+  il_corso:'Il tuo corso',lez_sett:'lezioni/sett.',totale_corso:'totale corso',cambia:'Modifica',
   pacchetto_passato:'Le date della prossima edizione non sono ancora disponibili. Scrivici a {e}.',
   dal_al:'Dal {a} al {b}'
 }:{
@@ -135,6 +138,7 @@ var T=IT?{
   non_si_apre:'If your email program does not open, copy this text and send it to {e}.',
   copia:'Copy the text',copiato:'Copied',modifica:'Back to the configurator',
   oggetto:'Enrolment',
+  il_corso:'Your course',lez_sett:'lessons/week',totale_corso:'course total',cambia:'Change',
   pacchetto_passato:'The dates of the next edition are not available yet. Write to us at {e}.',
   dal_al:'From {a} to {b}'
 };
@@ -189,6 +193,14 @@ var S={
   alloggio:'nessuno', camera:'singola', settAlloggio:2, extra:[]
 };
 function C(){return trova(S.corso);}
+/* Inizio e durata dal link (comparatore): solo un lunedì non passato, da 1 a 48 settimane. */
+if(BLOCCATO&&C().tipo==='settimane'){
+  var qi=Q.get('inizio')||'',qs=Q.get('settimane')||'';
+  if(/^\d{4}-\d\d-\d\d$/.test(qi)){var qd=fromIso(qi);if(iso(qd)===qi&&qd.getDay()===1&&qd>=OGGI)S.inizio=qd;}
+  if(/^\d+$/.test(qs)&&+qs>=1&&+qs<=48)S.settimane=+qs;
+}
+/* Dal comparatore corso, date e durata sono già scelti: una riga di riepilogo al posto dei campi. */
+var RIEPILOGO=Q.get('da')==='calendario'&&BLOCCATO&&C().tipo==='settimane'&&!!S.inizio;
 function alloggio(){return D.alloggi.filter(function(a){return a.id===S.alloggio;})[0];}
 function camera(){return alloggio().camere.filter(function(r){return r.id===S.camera;})[0];}
 function inSede(c){return c.tipo!=='lezioni'||c.in_sede;}
@@ -201,6 +213,8 @@ var wrap=$('cfg-wrap');
 wrap.innerHTML=
   '<h3>'+(DA_CORSO?T.titolo:T.titolo_info)+'</h3><p class="cfg-subtitle">'+(DA_CORSO?T.sottotitolo:T.sottotitolo_info)+'</p>'+
   '<div id="cfg-config">'+
+  (RIEPILOGO?sezione('s-scelta',T.il_corso,'<div class="cfg-sub-opts"><div id="cfg-scelta" class="cfg-sum-row"></div>'+
+    '<button type="button" class="cfg-link" id="cfg-cambia">'+T.cambia+'</button></div>'):'')+
   sezione('s-corso',T.corso,'<div id="cfg-courses"></div>'+
     (BLOCCATO?'<a href="#" id="cfg-tutti" class="price-table-toggle"><i class="ti ti-list" style="font-size:14px"></i> '+T.tutti+'</a>':'')+
     '<div id="cfg-tema-box" class="date-field cfg-tema"><label for="cfg-tema">'+T.tema+'</label><select id="cfg-tema"></select></div>'+
@@ -572,6 +586,16 @@ function aggiorna(){
     $('cfg-tier-hint').innerHTML='<i class="ti ti-tag" style="font-size:13px;vertical-align:-2px"></i> '+nomeTariffa(t)+' · '+eur(t.ppw)+' '+T.a_sett;
   }
   renderSoggiorno();
+  if(RIEPILOGO){
+    /* Solo la riga di riepilogo; per i tematici resta la scelta del tema. */
+    var t2=tariffa(c,S.settimane);
+    $('cfg-scelta').innerHTML='<span class="slbl">'+esc(c.nome)+' · '+c.ore+' '+T.lez_sett+'<br>'+
+      esc(giorno(inizio()))+' → '+esc(giorno(fineCorso()))+' · '+settimane(S.settimane)+'</span>'+
+      '<span class="sv">'+eur(t2.ppw*S.settimane)+' <span class="stier">('+T.totale_corso+')</span></span>';
+    mostra('s-corso',c.temi.length>0);
+    ['cfg-courses','cfg-tutti','ptoggle','price-table'].forEach(function(id){if($(id))mostra(id,false);});
+    mostra('s-data',false);mostra('s-durata',false);mostra('cfg-stay',false);
+  }
   if(lez)$('cfg-range').innerHTML=(c.dal&&c.al?esc(fmt(T.disponibili_dal,{a:giorno(fromIso(c.dal)),b:giorno(fromIso(c.al))}))+' ':'')+T.orari;
   mostra('s-alloggio',inSede(c));mostra('s-extra',inSede(c));
   if(!inSede(c)){S.alloggio='nessuno';S.extra=[];}
@@ -741,6 +765,20 @@ $('cfg-copia').addEventListener('click',function(){
   else{document.execCommand('copy');ok();}
 });
 $('cfg-modifica').addEventListener('click',function(){$('cfg-done').hidden=true;$('cfg-config').hidden=false;$('cfg-form').hidden=false;});
+
+/* Inizio e durata dal link: i campi mostrano gli stessi valori. */
+if(S.inizio&&C().tipo==='settimane'){
+  var si=iso(S.inizio);
+  if(D.date_inizio.indexOf(si)>=0)$('cfg-startsel').value=si;
+  else{$('cfg-startsel').value='altra';$('cfg-cf').style.display='flex';$('cfg-cd').value=si;}
+}
+$('cfg-dur').value=S.settimane;
+if(RIEPILOGO)$('cfg-cambia').addEventListener('click',function(){
+  RIEPILOGO=false;
+  mostra('s-scelta',false);
+  ['s-corso','cfg-courses','cfg-tutti','s-data'].forEach(function(id){if($(id))mostra(id,true);});
+  aggiorna();
+});
 
 aggiorna();
 })();

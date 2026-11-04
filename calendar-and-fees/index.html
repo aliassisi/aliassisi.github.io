@@ -714,7 +714,7 @@ padding-right: 30px;
   .ali-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 32px; }
   .ali-nav a { display: inline-block; padding: 6px 14px; border: 1px solid #2b3a7a; border-radius: 999px; color: #2b3a7a; text-decoration: none; font-size: 0.9em; line-height: 1.4; white-space: nowrap; }
   .ali-nav a:hover, .ali-nav a:focus { background: #2b3a7a; color: #fff; }
-  .ali-ancora, #dw-wrap { scroll-margin-top: 120px; }
+  .ali-ancora { scroll-margin-top: 120px; }
   details.ali-chiusure summary { cursor: pointer; color: #2b3a7a; text-decoration: underline; list-style: revert; margin-bottom: 8px; }
   details.ali-chiusure[open] summary { margin-bottom: 12px; }
 </style>
@@ -722,7 +722,7 @@ padding-right: 30px;
   <a href="#corsi-gruppo">Corsi di gruppo</a>
   <a href="#gruppo-privati">Gruppo &amp; privati</a>
   <a href="#calendario">Calendario</a>
-  <a href="#dw-wrap">Calcola il costo</a>
+  <a href="#cmp-wrap">Confronta i corsi</a>
   <a href="#corsi-privati">Corsi privati</a>
   <a href="#informazioni">Informazioni</a>
 </nav>
@@ -920,257 +920,12 @@ padding-right: 30px;
 			<div class="elementor-widget-wrap elementor-element-populated">
 						<div class="elementor-element elementor-element-672e304 elementor-widget elementor-widget-html" data-id="672e304" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
-					<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/tabler-icons.min.css">
-<style>
-#dw-wrap{font-family:inherit;margin:0 auto;padding:1.5rem 0;color:inherit}
-#dw-wrap h2{margin:0 0 6px;color:#2b3a7a}
-#dw-wrap .dw-sub{font-size:.9em;opacity:.8;margin:0 0 1.5rem}
-#dw-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;column-gap:40px;align-items:start}
-#dw-body>.dw-sub{grid-column:1/-1}
-#dw-body>.dw-sec{grid-column:1}
-#dw-body>.dw-result{grid-column:2;grid-row:2/span 3;position:sticky;top:120px}
-@media(max-width:900px){#dw-body{display:block}#dw-body>.dw-result{position:static;margin-top:.5rem}}
-.dw-sec{margin-bottom:1.5rem}
-.dw-lbl{font-size:12px;font-weight:600;color:#2b3a7a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem;display:block}
-.dw-row{display:flex;gap:10px;flex-wrap:wrap}
-.dw-field{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px}
-.dw-field label{font-size:13px;opacity:.75}
-.dw-field select,.dw-field input[type=number],.dw-field input[type=date]{width:100%;padding:8px 10px;border:1px solid #d9d4cc;border-radius:6px;font-size:14px;font-family:inherit;color:#1a1a1a !important;background:#fff !important;outline:none;cursor:pointer;-webkit-appearance:auto;appearance:auto}
-.dw-field select:focus,.dw-field input:focus{border-color:#2b3a7a}
-.dw-toggle{display:flex;gap:8px}
-.dw-toggle .dw-tbtn{flex:1 1 0;min-width:0;padding:9px 10px !important}
-.dw-tbtn{padding:9px 18px !important;border-radius:6px !important;border:1px solid #d9d4cc !important;background:#fff !important;font-family:inherit !important;font-size:13px !important;font-weight:600 !important;cursor:pointer !important;color:#2b3a7a !important;transition:all .12s !important;display:inline-block !important;line-height:1.4 !important;text-transform:none !important;letter-spacing:0 !important}
-.dw-tbtn:hover{border-color:#2b3a7a !important;background:rgba(43,58,122,.06) !important}
-.dw-tbtn.act{border-color:#2b3a7a !important;background:#2b3a7a !important;color:#fff !important}
-.dw-sub-opts{margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:6px;border:1px solid #d9d4cc}
-.dw-sub-lbl{font-size:11px;color:#2b3a7a;display:block;margin-bottom:7px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.dw-scopt{display:flex;flex-direction:column;gap:5px}
-.dw-scopt label{display:flex !important;align-items:center;gap:8px;font-size:13px !important;color:inherit !important;cursor:pointer;font-weight:400 !important}
-.dw-scopt input[type=radio]{accent-color:#2b3a7a;cursor:pointer;flex-shrink:0}
-.dw-result{background:#fff;border:1px solid #d9d4cc;border-radius:10px;padding:1.2rem 1.4rem}
-.dw-rtitle{font-size:14px;font-weight:600;margin-bottom:.9rem;display:flex;align-items:center;gap:6px;color:#2b3a7a}
-.dw-rrow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #ece8e1;color:#666}
-.dw-rrow:last-of-type{border-bottom:none}
-.dw-rrow .rv{color:#1a1a1a;font-weight:600;margin-left:10px;text-align:right}
-.dw-rdiv{border:none;border-top:1px solid #d9d4cc;margin:.7rem 0}
-.dw-total-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.dw-tlbl{font-size:15px;font-weight:600;color:#2b3a7a}
-.dw-tval{font-size:26px;font-weight:700;color:#2b3a7a;white-space:nowrap}
-.dw-note{font-size:11px;color:#888;margin-top:.4rem;text-align:right}
-.dw-warn{margin-top:10px;background:#fbf5ec;border:1px solid #ead9bf;border-radius:6px;padding:9px 12px}
-.dw-warn-t{font-size:12px;font-weight:600;color:#8a5a1e;margin-bottom:4px;display:flex;align-items:center;gap:5px}
-.dw-warn ul{list-style:none;padding:0;margin:0}
-.dw-warn ul li{font-size:12px;color:#8a5a1e;padding:2px 0}
-.dw-empty{font-size:13px;color:#888;padding:6px 0}
-#dw-wrap .dw-cta-btn{margin-top:1rem;width:100%;padding:.75rem;background:#2b3a7a;color:#fff !important;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
-#dw-wrap .dw-cta-btn:hover{background:#1f2b5e}
-#dw-wrap .dw-cta-btn:disabled{background:#b9bccb;cursor:not-allowed}
-@media(max-width:480px){.dw-row{flex-direction:column}.dw-toggle{flex-direction:column}}
-</style>
-
-<div id="dw-wrap">
-  <h2>Calcola date e costo del corso</h2>
-
-  <div id="dw-body">
-    <p class="dw-sub">Scegli la data di inizio e la durata per vedere la data di fine corso e il costo totale.</p>
-
-    <div class="dw-sec">
-      <span class="dw-lbl">Data di inizio</span>
-      <div class="dw-row">
-        <div class="dw-field">
-          <label>Date di inizio programmate</label>
-          <select id="dw-startsel" onchange="onSS()">
-            <option value="">— Seleziona —</option>
-            <option value="2026-11-02">2 novembre 2026</option>
-            <option value="2026-11-30">30 novembre 2026</option>
-            <option value="2027-02-01">1° febbraio 2027</option>
-            <option value="2027-03-01">1° marzo 2027</option>
-            <option value="2027-04-05">5 aprile 2027</option>
-            <option value="2027-05-03">3 maggio 2027</option>
-            <option value="2027-05-31">31 maggio 2027</option>
-            <option value="2027-06-28">28 giugno 2027</option>
-            <option value="2027-07-26">26 luglio 2027</option>
-            <option value="2027-08-23">23 agosto 2027</option>
-            <option value="2027-09-20">20 settembre 2027</option>
-            <option value="2027-10-18">18 ottobre 2027</option>
-            <option value="2027-11-15">15 novembre 2027</option>
-            <option value="custom">Data diversa…</option>
-          </select>
-        </div>
-        <div class="dw-field" id="dw-cf" style="display:none">
-          <label>Data personalizzata (lunedì)</label>
-          <input type="date" id="dw-cd" onchange="onCD()">
-        </div>
-      </div>
-    </div>
-
-    <div class="dw-sec">
-      <span class="dw-lbl">Durata</span>
-      <div class="dw-row">
-        <div class="dw-field" style="max-width:200px">
-          <label>Numero di settimane (1–48)</label>
-          <input type="number" id="dw-weeks" min="1" max="48" value="2" oninput="onCalc()">
-        </div>
-      </div>
-    </div>
-
-    <div class="dw-sec">
-      <span class="dw-lbl">Lezioni a settimana e corso</span>
-      <div class="dw-toggle">
-        <button class="dw-tbtn" id="dwbtn18" onclick="selL(18)">18 lezioni/sett.<br><small style="font-size:11px;font-weight:400">Standard</small></button>
-        <button class="dw-tbtn" id="dwbtn22" onclick="selL(22)">22 lezioni/sett.<br><small style="font-size:11px;font-weight:400">Intensivo · Esame · Tematico · Religiosi</small></button>
-        <button class="dw-tbtn" id="dwbtn26" onclick="selL(26)">26 lezioni/sett.<br><small style="font-size:11px;font-weight:400">Super intensivo · Esame · Tematico · Religiosi</small></button>
-      </div>
-      <div class="dw-sub-opts" id="sub22" style="display:none">
-        <span class="dw-sub-lbl">Tipo di corso — 22 lezioni/sett.</span>
-        <div class="dw-scopt">
-          <label><input type="radio" name="s22" value="Intensivo" checked onchange="onCalc()"> Intensivo</label>
-          <label><input type="radio" name="s22" value="Preparazione esame" onchange="onCalc()"> Preparazione esame (CILS, Roma TRE)</label>
-          <label><input type="radio" name="s22" value="Tematico" onchange="onCalc()"> Tematico (Letteratura / Arte / Cinema / Archeologia / Città d'arte)</label>
-          <label><input type="radio" name="s22" value="Corso per religiosi" onchange="onCalc()"> Corso per religiosi</label>
-        </div>
-      </div>
-      <div class="dw-sub-opts" id="sub26" style="display:none">
-        <span class="dw-sub-lbl">Tipo di corso — 26 lezioni/sett.</span>
-        <div class="dw-scopt">
-          <label><input type="radio" name="s26" value="Super intensivo" checked onchange="onCalc()"> Super intensivo</label>
-          <label><input type="radio" name="s26" value="Preparazione esame" onchange="onCalc()"> Preparazione esame (CILS, Roma TRE)</label>
-          <label><input type="radio" name="s26" value="Tematico" onchange="onCalc()"> Tematico (Letteratura / Arte / Cinema / Archeologia / Città d'arte)</label>
-          <label><input type="radio" name="s26" value="Corso per religiosi" onchange="onCalc()"> Corso per religiosi</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="dw-result">
-      <div class="dw-rtitle"><i class="ti ti-calendar-check" style="font-size:16px;color:#888"></i> Riepilogo</div>
-      <div id="dw-lines"><div class="dw-empty">Seleziona una data di inizio e il tipo di corso per vedere il riepilogo.</div></div>
-      <div id="dw-cw"></div>
-      <hr class="dw-rdiv">
-      <div class="dw-total-row">
-        <div class="dw-tlbl">Costo totale stimato</div>
-        <div class="dw-tval" id="dw-total">—</div>
-      </div>
-      <p class="dw-note">Prezzo indicativo. Il preventivo definitivo viene confermato all'iscrizione.</p>
-      <button class="dw-cta-btn" id="dw-cta" disabled onclick="dwReq()"><i class="ti ti-send"></i> Richiedi un preventivo</button>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-var TS=[{f:1,t:1,p:390},{f:2,t:2,p:360},{f:3,t:7,p:320},{f:8,t:48,p:300}];
-var TI=[{f:1,t:1,p:550},{f:2,t:2,p:520},{f:3,t:7,p:480},{f:8,t:48,p:460}];
-var TSI=[{f:1,t:1,p:710},{f:2,t:2,p:680},{f:3,t:7,p:640},{f:8,t:48,p:620}];
-var CL=[
-  {label:'Immacolata Concezione',from:[2026,12,8],to:[2026,12,8]},
-  {label:'Vacanze di Natale',from:[2026,12,21],to:[2026,12,31]},
-  {label:'Vacanze di Natale',from:[2027,1,1],to:[2027,1,9]},
-  {label:'Vacanze di Pasqua',from:[2027,3,26],to:[2027,4,2]},
-  {label:'Festa della Repubblica',from:[2027,6,2],to:[2027,6,2]},
-  {label:'Festa di San Francesco',from:[2027,10,4],to:[2027,10,4]},
-  {label:'Immacolata Concezione',from:[2027,12,8],to:[2027,12,8]},
-  {label:'Vacanze di Natale',from:[2027,12,20],to:[2027,12,31]},
-];
-var MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
-var SD=null,LS=0;
-function md(y,m,d){return new Date(y,m-1,d);}
-function isCl(date){
-  var t=new Date(date.getFullYear(),date.getMonth(),date.getDate());
-  for(var i=0;i<CL.length;i++){
-    var c=CL[i],f=md(c.from[0],c.from[1],c.from[2]),to=md(c.to[0],c.to[1],c.to[2]);
-    if(t>=f&&t<=to)return c.label;
-  }
-  return null;
-}
-function ppw(tiers,w){for(var i=0;i<tiers.length;i++){if(w>=tiers[i].f&&w<=tiers[i].t)return tiers[i].p;}return tiers[tiers.length-1].p;}
-function fmtD(d){
-  return d.getDate()+' '+MESI[d.getMonth()]+' '+d.getFullYear();
-}
-function calcEnd(start,weeks){
-  var d=new Date(start),cmap={},wc=0;
-  while(wc<weeks){
-    var allCl=true;
-    for(var day=0;day<5;day++){
-      var dd=new Date(d);dd.setDate(d.getDate()+day);
-      var cl=isCl(dd);
-      if(!cl)allCl=false;
-      else{if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}
-    }
-    if(!allCl)wc++;
-    d.setDate(d.getDate()+7);
-  }
-  var end=new Date(d);end.setDate(end.getDate()-3);
-  return{end:end,cmap:cmap};
-}
-function getTiers(){return LS===18?TS:LS===22?TI:TSI;}
-function getCourse(){
-  if(LS===18)return'Standard';
-  if(LS===22){var r=document.querySelector('input[name=s22]:checked');return r?r.value:'Intensivo';}
-  if(LS===26){var r=document.querySelector('input[name=s26]:checked');return r?r.value:'Super intensivo';}
-  return'';
-}
-function tierLbl(tiers,w){
-  for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.f&&w<=t.t)return t.f===t.t?t.f+' settimana':t.t===48?'da '+t.f+' settimane in su':'da '+t.f+' a '+t.t+' settimane';}
-  return'';
-}
-window.onCalc=function(){
-  if(!SD||!LS){
-    document.getElementById('dw-lines').innerHTML='<div class="dw-empty">Seleziona una data di inizio e il tipo di corso per vedere il riepilogo.</div>';
-    document.getElementById('dw-total').textContent='—';
-    document.getElementById('dw-cta').disabled=true;
-    document.getElementById('dw-cw').innerHTML='';
-    return;
-  }
-  var w=Math.max(1,Math.min(48,parseInt(document.getElementById('dw-weeks').value)||1));
-  var res=calcEnd(SD,w),tiers=getTiers(),rate=ppw(tiers,w),total=rate*w,course=getCourse(),lines='';
-  lines+='<div class="dw-rrow"><span>Data di inizio</span><span class="rv">'+fmtD(SD)+'</span></div>';
-  lines+='<div class="dw-rrow"><span>Data di fine</span><span class="rv">'+fmtD(res.end)+'</span></div>';
-  lines+='<div class="dw-rrow"><span>Durata</span><span class="rv">'+w+' settiman'+(w===1?'a':'e')+'</span></div>';
-  lines+='<div class="dw-rrow"><span>Corso</span><span class="rv">'+course+' · '+LS+' lezioni/sett.</span></div>';
-  lines+='<div class="dw-rrow"><span>Tariffa</span><span class="rv">€'+rate+'/sett. <span style="font-size:11px;color:#bbb">(tariffa '+tierLbl(tiers,w)+')</span></span></div>';
-  document.getElementById('dw-lines').innerHTML=lines;
-  document.getElementById('dw-total').textContent='€ '+total.toLocaleString('it-IT');
-  document.getElementById('dw-cta').disabled=false;
-  var ck=Object.keys(res.cmap),cwrap=document.getElementById('dw-cw');
-  if(ck.length){
-    var h='<div class="dw-warn"><div class="dw-warn-t"><i class="ti ti-alert-triangle" style="font-size:13px"></i> Chiusure durante il tuo soggiorno</div><ul>';
-    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' giorn'+(res.cmap[k]===1?'o':'i')+' (il corso viene prolungato di conseguenza)</li>';});
-    cwrap.innerHTML=h+'</ul></div>';
-  } else cwrap.innerHTML='';
-};
-window.selL=function(n){
-  LS=n;
-  ['18','22','26'].forEach(function(x){document.getElementById('dwbtn'+x).classList.toggle('act',parseInt(x)===n);});
-  document.getElementById('sub22').style.display=n===22?'block':'none';
-  document.getElementById('sub26').style.display=n===26?'block':'none';
-  onCalc();
-};
-window.onSS=function(){
-  var v=document.getElementById('dw-startsel').value;
-  document.getElementById('dw-cf').style.display=v==='custom'?'flex':'none';
-  if(v&&v!=='custom'){var p=v.split('-');SD=new Date(+p[0],+p[1]-1,+p[2]);}
-  else if(v!=='custom')SD=null;
-  onCalc();
-};
-window.onCD=function(){
-  var v=document.getElementById('dw-cd').value;
-  if(v){
-    var p=v.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);
-    if(d.getDay()!==1){alert('Seleziona un lunedì — i corsi iniziano il lunedì.');return;}
-    SD=d;onCalc();
-  }
-};
-window.dwReq=function(){
-  if(!SD||!LS)return;
-  var w=Math.max(1,Math.min(48,parseInt(document.getElementById('dw-weeks').value)||1));
-  var res=calcEnd(SD,w),total=document.getElementById('dw-total').textContent;
-  var s=encodeURIComponent('Richiesta preventivo corso');
-  var b=encodeURIComponent('Inizio: '+fmtD(SD)+'\nFine: '+fmtD(res.end)+'\nDurata: '+w+' settiman'+(w===1?'a':'e')+'\nCorso: '+getCourse()+' ('+LS+' lezioni/sett.)\nCosto stimato: '+total);
-  window.location.href='mailto:info@aliassisi.it?subject='+s+'&body='+b;
-};
-document.getElementById('dw-weeks').addEventListener('input',onCalc);
-})();
-</script>				</div>
+					<!-- comparatore -->
+<link rel="stylesheet" href="../assets/alia/comparatore.css?v=d8e37cde">
+<div id="cmp-wrap" class="ali-ancora"></div>
+<script id="cmp-dati" type="application/json">{"lingua":"it","configuratore":"../configuratore/index.html","date_inizio":["2026-11-30","2027-02-01","2027-03-01","2027-04-05","2027-05-03","2027-05-31","2027-06-28","2027-07-26","2027-08-23","2027-09-20","2027-10-18","2027-11-15"],"chiusure":[{"dal":"2026-12-08","al":"2026-12-08","nome":"Immacolata Concezione"},{"dal":"2026-12-21","al":"2026-12-31","nome":"vacanze di Natale"},{"dal":"2027-01-01","al":"2027-01-09","nome":"vacanze di Natale"},{"dal":"2027-03-26","al":"2027-04-02","nome":"vacanze di Pasqua"},{"dal":"2027-06-02","al":"2027-06-02","nome":"Festa nazionale"},{"dal":"2027-10-04","al":"2027-10-04","nome":"festa di S. Francesco"},{"dal":"2027-12-08","al":"2027-12-08","nome":"Immacolata Concezione"},{"dal":"2027-12-20","al":"2027-12-31","nome":"vacanze di Natale"}],"attivita_settimanali":["Lezione fuori dalla classe: conversazioni, visite guidate ad Assisi e Italia contemporanea","Lezione di pronuncia"],"attivita":[{"nome":"Laboratorio di pasta","date":["2027-04-12","2027-05-24","2027-07-19","2027-09-06"]},{"nome":"Manoscritti e miniature","date":["2027-03-12","2027-05-07","2027-07-23","2027-09-10","2027-10-15","2027-11-12"]},{"nome":"Rilegatura","date":["2027-02-19","2027-05-21","2027-06-18","2027-07-30","2027-10-22","2027-11-26"]},{"nome":"Ora et labora – I Benedettini e la vita monastica oggi","date":["2027-04-23","2027-06-25","2027-07-16","2027-08-06","2027-10-08","2027-11-19"]},{"nome":"Assisi sotterranea","date":["2027-02-26","2027-03-19","2027-04-09","2027-04-16","2027-05-14","2027-06-11","2027-07-09","2027-08-27","2027-09-17","2027-09-24","2027-10-29","2027-11-05"]}],"gruppi":[{"ore":18,"gruppo":18,"individuali":0,"tariffe":[{"from":1,"to":1,"ppw":390},{"from":2,"to":2,"ppw":360},{"from":3,"to":7,"ppw":320},{"from":8,"to":48,"ppw":300}],"varianti":[{"id":"standard","nome":"Standard","nota":""}]},{"ore":22,"gruppo":18,"individuali":4,"tariffe":[{"from":1,"to":1,"ppw":550},{"from":2,"to":2,"ppw":520},{"from":3,"to":7,"ppw":480},{"from":8,"to":48,"ppw":460}],"varianti":[{"id":"intensivo","nome":"Intensivo","nota":""},{"id":"esame_intensivo","nome":"Preparazione all’esame","nota":"CILS, Roma Tre"},{"id":"tematico_22","nome":"Tematico","nota":"Letteratura, cinema, arte, archeologia, città d’arte"},{"id":"religiosi_22","nome":"Corso per religiosi","nota":""}]},{"ore":26,"gruppo":18,"individuali":8,"tariffe":[{"from":1,"to":1,"ppw":710},{"from":2,"to":2,"ppw":680},{"from":3,"to":7,"ppw":640},{"from":8,"to":48,"ppw":620}],"varianti":[{"id":"super_intensivo","nome":"Super intensivo","nota":""},{"id":"esame_super","nome":"Preparazione all’esame","nota":"CILS, Roma Tre"},{"id":"tematico_26","nome":"Tematico","nota":"Letteratura, cinema, arte, archeologia, città d’arte"},{"id":"religiosi_26","nome":"Corso per religiosi","nota":""}]}]}</script>
+<script src="../assets/alia/comparatore.js?v=e8c707a1"></script>
+<!-- /comparatore -->				</div>
 				</div>
 					</div>
 		</div>
