@@ -416,6 +416,11 @@ HOME_CSS = """<style id="home-hero">
 .ali-home-mobile-video{position:absolute;inset:0;z-index:0;overflow:hidden}
 .ali-home-mobile-video video{width:100%;height:100%;object-fit:cover}
 .elementor-element-1220c9a .elementor-container{position:relative;z-index:1}
+/* Title and button are one group. A stacked button would stretch to the width of the title. */
+rs-group rs-layer.rev-btn{width:fit-content!important;max-width:100%}
+/* Slider dots: bottom middle at every width. Slider Revolution shifts the
+   desktop ones 600px left of the centre, which falls off the screen when narrow. */
+#rev_slider_9_1_wrapper rs-bullets.tp-bullets{left:50%!important;top:100%!important;transform:translate(-50%,-48px)!important}
 </style>
 """
 for page in ("index.html", "en/home/index.html"):
