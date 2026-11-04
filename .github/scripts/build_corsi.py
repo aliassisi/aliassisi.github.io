@@ -4,7 +4,7 @@
 Usage:
   python3 -I .github/scripts/build_corsi.py SITE_DIR [--oggi YYYY-MM-DD]
 
-Each course page keeps its crawled WordPress page: header, menu, footer,
+Each course page keeps its WordPress page markup: header, menu, footer,
 language links, global CSS and JS. Only the content of <div id="main"> is
 replaced, with a template filled from the course's block in
 SITE_DIR/data/alia.json:
@@ -27,7 +27,7 @@ The page head gets a link to assets/alia/alia-course.css
 Start dates before today are left out, and so are closures that have ended.
 --oggi sets "today", for tests.
 
-Safe to run again on a page it already changed. Run it after every crawl.
+Safe to run again on a page it already changed. Run it after editing data/alia.json.
 """
 import argparse
 import datetime
@@ -339,7 +339,7 @@ def in_wordpress(s, blocco_html, css_href, p, hero):
     else:
         m = re.search(r'(<div id="main" role="main"[^>]*>\n)(.*?)(?=[ \t]*</div><!-- #main -->)', s, re.S)
         if not m:
-            sys.exit(f'{p}: no <div id="main"> found. Is it the crawled WordPress page?')
+            sys.exit(f'{p}: no <div id="main"> found. Is it a course page?')
         testata = testata_wordpress(m.group(2))
         if not testata:
             sys.exit(f"{p}: no Elementor top section found in <div id=\"main\">.")
