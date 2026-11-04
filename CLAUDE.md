@@ -75,6 +75,15 @@ and run the build script.
   `python3 -I .github/scripts/build_laboratori.py .` after editing. Past dates are
   left out at build time, and a small script on the page hides dates that pass later.
 
+## Search engines (SEO)
+- Deploy and preview run `.github/scripts/build_seo.py` on their copy of the site.
+  It adds canonical, hreflang, meta description, Open Graph and (on the homes) the
+  school's JSON-LD, and writes `sitemap.xml` and `robots.txt`. Nothing is committed.
+- Titles and descriptions: `data/seo.json`, keyed by page folder (`""` is the IT home).
+  Course pages without an entry use their `"hero"` from `data/alia.json`.
+  New page: add it there. Duplicate page: add it to `"canonical"`.
+- To see the result locally: copy the site to a temp folder and run the script on it.
+
 ## Gotchas
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.

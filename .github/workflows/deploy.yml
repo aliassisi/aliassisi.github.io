@@ -28,6 +28,9 @@ jobs:
           mkdir _site
           rsync -a --exclude '.git' --exclude '.github' --exclude '.claude' --exclude 'CLAUDE.md' --exclude '_site' ./ _site/
 
+      - name: Add search engine tags, sitemap.xml and robots.txt
+        run: python3 -I .github/scripts/build_seo.py _site
+
       - name: Rebuild the search index
         run: npx --yes pagefind@1.5.2 --site _site
 
