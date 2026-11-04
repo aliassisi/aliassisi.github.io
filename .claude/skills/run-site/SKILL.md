@@ -36,9 +36,9 @@ It exits 1 on any missing target that is not in `.github/scripts/known_broken.tx
 The hook runs it after each HTML or CSS edit.
 
 ## Compare with the PR preview and production
-- Preview: `https://aliassisi.github.io/pr-preview/pr-N/` (built by the PR workflow).
+- Preview: `https://aliassisi.it/pr-preview/pr-N/` (built by the PR workflow).
   It copies only uploads the PR changed. Other media loads from production.
-- Production: `https://aliassisi.github.io/`. Deploy runs on push to `main`.
+- Production: `https://aliassisi.it/`. Deploy runs on push to `main`.
 - `gh pr checks N` shows the preview run.
 - Check media by URL: `curl -sI URL | head -1`.
 

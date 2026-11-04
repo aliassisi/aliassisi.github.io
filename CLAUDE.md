@@ -1,7 +1,7 @@
 # ALIA Assisi website
 
 A static copy of the WordPress site at aliassisi.it (Elementor, Vamtam theme).
-It is served by GitHub Pages at https://aliassisi.github.io/. Italian pages are at the
+It is served by GitHub Pages at https://aliassisi.it/. Italian pages are at the
 root. English pages are under `en/`. There is no backend.
 
 ## Layout
@@ -13,7 +13,7 @@ root. English pages are under `en/`. There is no backend.
 
 ## How changes ship
 1. Branch, edit, open a PR.
-2. The PR gets a preview at `https://aliassisi.github.io/pr-preview/pr-N/`.
+2. The PR gets a preview at `https://aliassisi.it/pr-preview/pr-N/`.
 3. Merge to `main`. The "Deploy production" workflow publishes to `gh-pages`.
 `.claude/` and `CLAUDE.md` are not published.
 
