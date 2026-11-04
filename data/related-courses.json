@@ -66,9 +66,9 @@
     },
     "privati": {
       "it": {"titolo": "Privati", "url": "product/private",
-             "sottotitolo": ["Lezioni da 50 minuti", "Tutti i livelli · 1–9 studenti"]},
+             "sottotitolo": ["Lezioni da 50 minuti", "Tutti i livelli"]},
       "en": {"titolo": "Private", "url": "en/product/private",
-             "sottotitolo": ["50-minute lessons", "All levels · 1–9 students"]},
+             "sottotitolo": ["50-minute lessons", "All levels"]},
       "suggerimenti": ["super_intensivo", "online", "programmi"]
     },
     "online": {
