@@ -10,7 +10,7 @@
   var box = document.querySelector('.ali-ev[data-src]');
   if (!box) return;
   var en = box.getAttribute('data-lang') === 'en';
-  var MAX = 6, MIN = 1;
+  var MAX = 6, MIN = 1, ONGOING = 2;
   var root = box.getAttribute('data-src').replace(/data\/eventi-assisi\.json$/, '');
   var MONTHS = en
     ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -94,8 +94,11 @@
       // Started events sort as if they started today.
       var key = function (ev) { return ev.inizio < now ? now : ev.inizio; };
       var list = (data.eventi || []).filter(function (ev) { return (ev.fine || ev.inizio) >= now; })
-        .sort(function (a, b) { return (key(a) + (a.ora || '99')).localeCompare(key(b) + (b.ora || '99')); })
-        .slice(0, MAX);
+        .sort(function (a, b) { return (key(a) + (a.ora || '99')).localeCompare(key(b) + (b.ora || '99')); });
+      // At most ONGOING started events (those ending first), so dated events keep their place.
+      var started = list.filter(function (ev) { return ev.inizio < now; })
+        .sort(function (a, b) { return a.fine.localeCompare(b.fine); }).slice(0, ONGOING);
+      list = list.filter(function (ev) { return ev.inizio >= now || started.indexOf(ev) >= 0; }).slice(0, MAX);
       if (data.aggiornato && note) note.textContent = T.updated + longDate(data.aggiornato) + '. ' + T.check;
       if (list.length < MIN) return;
       var grid = box.querySelector('.ali-ev-g6');
