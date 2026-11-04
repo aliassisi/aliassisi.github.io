@@ -41,9 +41,11 @@
     }
   }
 
-  function card(ev) {
+  function card(ev, now) {
     var c = el('article', 'ali-ev-c');
-    var s = parts(ev.inizio);
+    // Already started (an exhibition): the badge shows the end date.
+    var going = ev.inizio < now && ev.fine && ev.fine !== ev.inizio;
+    var s = parts(going ? ev.fine : ev.inizio);
     var ph = el('div', 'ali-ev-ph');
     if (ev.immagine) {
       var img = el('img');
@@ -55,6 +57,7 @@
       ph.className += ' ali-ev-noimg';
     }
     var date = el('div', 'ali-ev-d');
+    if (going) date.appendChild(el('span', 'ali-ev-f', T.until));
     date.appendChild(el('span', 'ali-ev-g', String(s.d)));
     date.appendChild(el('span', 'ali-ev-m', MONTHS[s.m]));
     ph.appendChild(date);
@@ -64,7 +67,7 @@
     var bd = el('div', 'ali-ev-bd');
     bd.appendChild(el('h3', '', ev.titolo));
     var when = ev.ora || '';
-    if (ev.fine && ev.fine !== ev.inizio) {
+    if (!going && ev.fine && ev.fine !== ev.inizio) {
       var f = parts(ev.fine);
       when = (T.until + ' ' + f.d + ' ' + MONTHS[f.m] + (when ? ' · ' + when : ''));
     }
@@ -88,13 +91,15 @@
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (data) {
       var now = today();
+      // Started events sort as if they started today.
+      var key = function (ev) { return ev.inizio < now ? now : ev.inizio; };
       var list = (data.eventi || []).filter(function (ev) { return (ev.fine || ev.inizio) >= now; })
-        .sort(function (a, b) { return (a.inizio + (a.ora || '99')).localeCompare(b.inizio + (b.ora || '99')); })
+        .sort(function (a, b) { return (key(a) + (a.ora || '99')).localeCompare(key(b) + (b.ora || '99')); })
         .slice(0, MAX);
       if (data.aggiornato && note) note.textContent = T.updated + longDate(data.aggiornato) + '. ' + T.check;
       if (list.length < MIN) return;
       var grid = box.querySelector('.ali-ev-g6');
-      list.forEach(function (ev) { grid.appendChild(card(ev)); });
+      list.forEach(function (ev) { grid.appendChild(card(ev, now)); });
       grid.hidden = false;
       box.querySelector('.ali-ev-anno').hidden = true;
     })

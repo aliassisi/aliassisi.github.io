@@ -2,6 +2,19 @@
   "aggiornato": "2026-11-04",
   "eventi": [
     {
+      "inizio": "2026-04-24",
+      "fine": "2027-01-10",
+      "ora": "",
+      "titolo": "Franciscus. Fratello in arte",
+      "luogo": "Rocca Maggiore, Assisi",
+      "descrizione_it": "Mostra di Michelangelo Pistoletto su arte, spiritualità e responsabilità sociale, per l’ottavo centenario di San Francesco.",
+      "descrizione_en": "Michelangelo Pistoletto exhibition on art, spirituality and social responsibility, for the 800th anniversary of Saint Francis.",
+      "link": "https://www.visit-assisi.it/eventi/evento/franciscus-fratello-in-arte-ad-assisi-mostra-inedita-di-michelangelo-pistoletto/",
+      "immagine": "https://www.visit-assisi.it/eventi/wp-content/uploads/Michelangelo-pistoletto-franciscus-fratello-in-arte-proroga-locandina.webp",
+      "nota_it": "Mostra",
+      "nota_en": "Exhibition"
+    },
+    {
       "inizio": "2026-11-04",
       "fine": "2026-11-04",
       "ora": "21:00",
