@@ -17,7 +17,7 @@
       {"titolo": "VIVERE AD ASSISI", "sotto": [
         {"titolo": "ATTIVITÀ, FACILITIES E LABORATORI", "url": "attivita-facilities-e-laboratori/"},
         {"titolo": "ALLOGGIO", "url": "accommodation/"},
-        {"titolo": "COSA SUCCEDE AD ASSISI", "url": "vivere-ad-assisi/"}
+        {"titolo": "COSA SUCCEDE AD ASSISI E DINTORNI", "url": "vivere-ad-assisi/"}
       ]},
       {"titolo": "ISCRIZIONE", "sotto": [
         {"titolo": "CALENDARIO E COSTI", "url": "calendar-and-fees/"},
@@ -46,7 +46,7 @@
       {"titolo": "LIFE IN ASSISI", "sotto": [
         {"titolo": "ACTIVITIES, FACILITIES AND WORKSHOPS", "url": "en/school-activity/"},
         {"titolo": "ACCOMMODATION", "url": "en/accommodation/"},
-        {"titolo": "WHAT'S ON IN ASSISI", "url": "en/life-in-assisi/"}
+        {"titolo": "WHAT'S ON IN AND AROUND ASSISI", "url": "en/life-in-assisi/"}
       ]},
       {"titolo": "ADMISSIONS", "sotto": [
         {"titolo": "CALENDAR AND FEES", "url": "en/calendar-and-fees/"},
