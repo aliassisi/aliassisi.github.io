@@ -3,7 +3,7 @@
 
 Usage: python3 -I .github/scripts/legal_pages.py SITE_DIR
 
-postprocess.py runs it after the text fixes (step 7o). Each page is a copy of
+Run it by hand. Each page is a copy of
 the visa page in its language (visa-information/index.html or
 en/visa-information/index.html), so it has the site header, menu and footer.
 The copy gets its own title, meta description and banner title. The banner

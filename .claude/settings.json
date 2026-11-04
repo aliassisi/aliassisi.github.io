@@ -3,10 +3,7 @@
     "allow": [
       "Bash(python3 -m http.server:*)",
       "Bash(python3 -I .github/scripts/check_links.py:*)",
-      "Bash(python3 -I .github/scripts/cleanup.py:*)",
-      "Bash(python3 -I .github/scripts/postprocess.py:*)",
       "Bash(python3 -I .github/scripts/build_preview.py:*)",
-      "Bash(bash .github/scripts/crawl.sh:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",

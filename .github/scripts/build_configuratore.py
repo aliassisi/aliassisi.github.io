@@ -5,7 +5,7 @@ Usage:
   python3 -I .github/scripts/build_configuratore.py SITE_DIR
 
 The configurator is configuratore/index.html (Italian) and
-en/configuratore/index.html (English). Each page keeps its crawled WordPress
+en/configuratore/index.html (English). Each page keeps its WordPress
 page; only the HTML widget with the configurator is replaced by:
   - a link to assets/alia/configuratore.css (source: .github/templates/configuratore.css)
   - <div id="cfg-wrap">, filled by assets/alia/configuratore.js

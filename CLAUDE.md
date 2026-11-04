@@ -1,6 +1,6 @@
 # ALIA Assisi website
 
-A static copy of the WordPress site at aliassisi.it (Elementor, Vamtam theme).
+A static site, first copied from the WordPress site at aliassisi.it (Elementor, Vamtam theme).
 It is served by GitHub Pages at https://aliassisi.github.io/. Italian pages are at the
 root. English pages are under `en/`. There is no backend.
 
@@ -9,7 +9,7 @@ root. English pages are under `en/`. There is no backend.
 - Files: `assets/plugins`, `assets/themes`, `assets/uploads`, `assets/core`
   (they were `wp-content/*` and `wp-includes`).
 - `pagefind/`: search index. Deploy rebuilds it. Do not edit it.
-- `.github/scripts/`: the build and check scripts (`cleanup.py`, `postprocess.py`, `prune_plugins.py`, `check_links.py`, `runtime_check.py`). `.github/crawl/`: the URL lists.
+- `.github/scripts/`: the build and check scripts (`build_*.py`, `legal_pages.py`, `faq_jsonld.py`, `check_links.py`, `runtime_check.py`).
 
 ## How changes ship
 1. Branch, edit, open a PR.
@@ -17,15 +17,10 @@ root. English pages are under `en/`. There is no backend.
 3. Merge to `main`. The "Deploy production" workflow publishes to `gh-pages`.
 `.claude/` and `CLAUDE.md` are not published.
 
-## Two ways to edit (for now)
-- **Re-crawl:** content changes happen in WordPress. Run
-  `bash .github/scripts/crawl.sh`. It crawls, runs `cleanup.py` then
-  `postprocess.py`, and replaces the site files. The raw crawl lives outside the repo,
-  in `../aliassisi-crawl`.
-- **Edit HTML directly:** fine for a quick fix. But a re-crawl wipes it.
-  If the fix should last, also add a rule to `.github/scripts/postprocess.py`.
-  Prefer the rule. Run it as `python3 -I .github/scripts/postprocess.py SITE_DIR`
-  on a fresh `cleanup.py` output, never twice on the same folder.
+## How to edit
+The HTML in this repo is the source. The old WordPress site is gone, so there is no re-crawl.
+Edit the page directly. For pages built from data (see below), edit `data/*.json`
+and run the build script.
 
 ## Check your work
 - `python3 -I .github/scripts/check_links.py .` finds missing link targets.
@@ -85,8 +80,6 @@ root. English pages are under `en/`. There is no backend.
   and inside `&quot;` data attributes. Change all three.
 - Keep the WordPress body classes. Elementor CSS selects on them.
 - The contact and newsletter forms post nowhere yet. Do not rely on them.
-- `alia.evonove.webfactional.com` must never appear. `postprocess.py` fails if it does.
-- Links to old aliassisi.it pages and files still exist. They work only while WordPress is online.
 - `build_preview.py` rewrites paths for previews. If you change how media is linked,
   test a PR preview, not only the local server.
 

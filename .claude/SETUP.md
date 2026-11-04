@@ -36,10 +36,10 @@ brew --version
 brew install gh
 ```
 
-### Python 3 and wget
-The site scripts need Python 3. The re-crawl script needs `wget` and `rsync`.
+### Python 3
+The site scripts need Python 3.
 ```bash
-brew install python wget rsync
+brew install python
 ```
 
 ### Node.js
@@ -85,9 +85,6 @@ gh repo clone aliassisi/aliassisi.github.io
 ```
 The folder is `~/dev/aliassisi.github.io`.
 
-If you plan to re-crawl WordPress, the raw crawl is stored next to the repo,
-in `~/dev/aliassisi-crawl`. The script creates it for you.
-
 ## 6. Open the project in Claude Desktop
 1. Open Claude Desktop and go to the Code tab.
 2. Choose the folder `~/dev/aliassisi.github.io`.
@@ -116,8 +113,7 @@ Never push straight to `main`.
 
 ## 8. Good habits
 - Ask Claude to say what it did not check.
-- A re-crawl wipes direct HTML edits. If a fix must last, ask Claude to add a rule
-  to `.github/scripts/postprocess.py` too.
+- The HTML in the repo is the source. Edit it directly, or edit `data/*.json` and run the build script.
 - The contact and newsletter forms do not work yet.
 - Do not edit the `pagefind/` folder. The deploy rebuilds it.
 
