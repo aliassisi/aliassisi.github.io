@@ -194,6 +194,9 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://aliassisi.it/guestbook/"/>
   </url>
   <url>
+    <loc>https://aliassisi.it/en/universities/</loc>
+  </url>
+  <url>
     <loc>https://aliassisi.it/en/visa-information/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://aliassisi.it/en/visa-information/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://aliassisi.it/visa-information/"/>
