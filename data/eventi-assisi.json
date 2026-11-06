@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-11-04",
+  "aggiornato": "2026-11-06",
   "eventi": [
     {
       "inizio": "2026-04-24",
@@ -203,6 +203,19 @@
       "nota_en": "Free entry"
     },
     {
+      "inizio": "2026-11-29",
+      "fine": "2026-11-29",
+      "ora": "21:15",
+      "titolo": "La Cantautrice fantasma",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Ivan Talarico. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Ivan Talarico. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
       "inizio": "2026-12-05",
       "fine": "2026-12-05",
       "ora": "21:15",
@@ -236,6 +249,19 @@
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/08---oblivion-_teatro_lyrick.jpg"
     },
     {
+      "inizio": "2026-12-11",
+      "fine": "2026-12-11",
+      "ora": "21:15",
+      "titolo": "Aldilà di tutto",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Valentina Picello e Chiara Stoppa. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Valentina Picello and Chiara Stoppa. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
       "inizio": "2026-12-18",
       "fine": "2026-12-18",
       "ora": "21:15",
@@ -258,6 +284,19 @@
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/10---il-lago-dei-cigni-_teatro_lyrick.jpg"
     },
     {
+      "inizio": "2026-12-29",
+      "fine": "2026-12-29",
+      "ora": "17:00",
+      "titolo": "Un Babbo a Natale",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Enrico Desimoni e Lucia Palozzi. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Enrico Desimoni and Lucia Palozzi. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
       "inizio": "2027-01-02",
       "fine": "2027-01-02",
       "ora": "21:15",
@@ -267,6 +306,19 @@
       "descrizione_en": "Rocco Papaleo and his band: comedy, stories and music.",
       "link": "https://www.teatrolyrick.com/",
       "immagine": ""
+    },
+    {
+      "inizio": "2027-01-04",
+      "fine": "2027-01-04",
+      "ora": "21:15",
+      "titolo": "La vie en rose",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Giulia Zeetti e Mirco Bonucci. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Giulia Zeetti and Mirco Bonucci. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
     },
     {
       "inizio": "2027-01-05",
@@ -302,6 +354,19 @@
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/13---all-you-need-is-love-_teatro_lyrick.jpg"
     },
     {
+      "inizio": "2027-01-17",
+      "fine": "2027-01-17",
+      "ora": "18:00",
+      "titolo": "Per sempre",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Alessandro Bandini. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Alessandro Bandini. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
       "inizio": "2027-01-19",
       "fine": "2027-01-19",
       "ora": "21:15",
@@ -333,6 +398,19 @@
       "descrizione_en": "Comedy directed by Fausto Brizzi.",
       "link": "https://www.teatrolyrick.com/notte-prima-degli-esami",
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/15---notte-prima-degli-esami-_teatro_lyrick.jpg"
+    },
+    {
+      "inizio": "2027-01-27",
+      "fine": "2027-01-27",
+      "ora": "21:15",
+      "titolo": "Isidoro",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Enrico Ianniello. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Enrico Ianniello. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
     },
     {
       "inizio": "2027-01-29",
@@ -368,6 +446,19 @@
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/17---paolo-kessisoglu-_teatro_lyrick.jpg"
     },
     {
+      "inizio": "2027-02-12",
+      "fine": "2027-02-12",
+      "ora": "21:15",
+      "titolo": "d-Eversivo",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Eleonora Danco. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Eleonora Danco. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
       "inizio": "2027-02-13",
       "fine": "2027-02-13",
       "ora": "21:15",
@@ -390,6 +481,32 @@
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/18b---vincenzo-schettini-_teatro_lyrick.jpg"
     },
     {
+      "inizio": "2027-02-26",
+      "fine": "2027-02-26",
+      "ora": "21:15",
+      "titolo": "Metamorfosi del suono e dell’ombra",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Radia. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Radia. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
+      "inizio": "2027-02-27",
+      "fine": "2027-02-27",
+      "ora": "21:15",
+      "titolo": "C’era una volta il Jazz",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Kali Sisters. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Kali Sisters. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
+    },
+    {
       "inizio": "2027-03-06",
       "fine": "2027-03-06",
       "ora": "21:15",
@@ -399,6 +516,19 @@
       "descrizione_en": "Marco Goldin on Monet.",
       "link": "https://www.teatrolyrick.com/marco-goldin-monet",
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/19---monet-marco-goldin-_teatro_lyrick.jpg"
+    },
+    {
+      "inizio": "2027-03-06",
+      "fine": "2027-03-06",
+      "ora": "20:30",
+      "titolo": "Saga Salsa",
+      "luogo": "Ristorante San Francesco, Assisi",
+      "descrizione_it": "Con Qui e Ora. Stagione “Fare luce” del Piccolo Teatro degli Instabili (in trasferta al Ristorante San Francesco). Biglietti su liveticket.it.",
+      "descrizione_en": "With Qui and Ora. “Fare luce” season of the Piccolo Teatro degli Instabili (held at Ristorante San Francesco). Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
     },
     {
       "inizio": "2027-03-09",
@@ -421,6 +551,19 @@
       "descrizione_en": "Comedy with Panpers.",
       "link": "https://www.teatrolyrick.com/panpers",
       "immagine": "https://www.teatrolyrick.com/images/home/stagione-home/spettacoli-quadrate/21---panpers-_teatro_lyrick.jpg"
+    },
+    {
+      "inizio": "2027-03-18",
+      "fine": "2027-03-18",
+      "ora": "21:15",
+      "titolo": "All’ombra dell’ultimo Sole",
+      "luogo": "Piccolo Teatro degli Instabili, Assisi",
+      "descrizione_it": "Con Tony Laudadio e Ferruccio Spinetti. Stagione “Fare luce” del Piccolo Teatro degli Instabili. Biglietti su liveticket.it.",
+      "descrizione_en": "With Tony Laudadio and Ferruccio Spinetti. “Fare luce” season of the Piccolo Teatro degli Instabili. Tickets on liveticket.it.",
+      "link": "https://www.liveticket.it/teatroinstabili",
+      "immagine": "",
+      "nota_it": "Teatro",
+      "nota_en": "Theatre"
     },
     {
       "inizio": "2027-03-19",
