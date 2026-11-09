@@ -28,6 +28,8 @@
    The line under them is the top border of the copyright row. */
 .elementor-location-footer .elementor-element.elementor-element-045bb98 > .elementor-container{display:block;max-width:none}
 .elementor-location-footer ul.ali-loghi{list-style:none;margin:0;padding:28px 0;display:flex;flex-wrap:wrap;justify-content:space-evenly;align-items:center;gap:28px 32px;border-top:1px solid var(--e-global-color-faf2f7e,#3F4D82)}
+/* English footer: the partner universities sit on their own row below. */
+.elementor-location-footer ul.ali-loghi--uni{border-top:0;padding-top:0}
 .ali-loghi li{margin:0;padding:0;flex:none;width:180px;height:80px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .ali-loghi li::before{content:none}
 .ali-loghi img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;object-position:center}
@@ -41,4 +43,5 @@ img[src*="certit.png"]{transform:scale(.75)}
 @media(max-width:767px){
 .elementor-location-footer ul.ali-loghi{justify-content:center;gap:20px 24px;padding:24px 0}
 .ali-loghi li{width:140px;height:64px}
+.elementor-location-footer ul.ali-loghi--uni{padding-top:0}
 }
