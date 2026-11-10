@@ -4,7 +4,7 @@
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
-    border-top: 1px solid #3F4D82;
+    border-top: 1px solid #3D5570;
   
 }
 
@@ -16,7 +16,7 @@
      background-color: #f3f3f3;
 }
 .background-cell-color{
-    background-color: #3F4D82;
+    background-color: #3D5570;
     color: #FEC15F;
     text-align: left;
 }
@@ -31,7 +31,7 @@
 
 
 .styled-table tbody tr:last-of-type {
-    border-bottom: 1px solid #3F4D82;
+    border-bottom: 1px solid #3D5570;
 }
 .styled-table tbody tr.active-row {
     font-weight: bold;

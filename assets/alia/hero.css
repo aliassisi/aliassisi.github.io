@@ -13,7 +13,7 @@
 .elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p):last-child{margin-bottom:0}
 
 /* A little more blue behind the text, so the yellow stays readable */
-.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) > .elementor-background-overlay{background-image:linear-gradient(82deg,#3F4D82 0%,rgba(63,77,130,.75) 50%,rgba(63,77,130,.15) 100%)}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) > .elementor-background-overlay{background-image:linear-gradient(82deg,#3D5570 0%,rgba(61,85,112,.75) 50%,rgba(61,85,112,.15) 100%)}
 
 @media(min-width:768px){
 .elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:60px}
@@ -61,6 +61,6 @@
 
 /* Menu: Configuratore is the last item of Corsi. It is a tool, not a course:
    a thin line above it, the site blue, a bit bolder, and an arrow. */
-.elementor-location-header .elementor-nav-menu li.ali-menu-tool{border-top:1px solid rgba(59,74,138,.3) !important}
-.elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item{color:#3b4a8a !important;font-weight:600 !important}
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool{border-top:1px solid rgba(58,82,118,.3) !important}
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item{color:#3A5276 !important;font-weight:600 !important}
 .elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item::after{content:"\00a0\2192";display:inline;position:static;opacity:1;background:none;width:auto;height:auto;transform:none}

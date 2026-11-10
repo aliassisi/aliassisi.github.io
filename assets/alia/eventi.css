@@ -1,6 +1,6 @@
 /* Vivere ad Assisi / Life in Assisi: intro and "Cosa succede ad Assisi".
    Navy and yellow as the Intensivi cards (.ali-int). Limited to .ali-vita. */
-.ali-vita{--navy:#3b4a8a;--giallo:#ffbf00;--linea:#cfc8bd;color:var(--navy);max-width:1100px;margin:0 auto;padding:56px 16px 64px;line-height:1.6}
+.ali-vita{--navy:#3A5276;--giallo:#ffbf00;--linea:#cfc8bd;color:var(--navy);max-width:1100px;margin:0 auto;padding:56px 16px 64px;line-height:1.6}
 .ali-vita *{box-sizing:border-box}
 .ali-vita p{margin:0}
 .ali-vita h2,.ali-vita h3{color:var(--navy);font-weight:400;margin:0}
