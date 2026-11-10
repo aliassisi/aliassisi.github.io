@@ -1,6 +1,6 @@
 /* Pagine dei corsi dentro WordPress (build_corsi.py): stili limitati a .ali-course, non toccano header, menu e footer del sito.
    Richiede i font Cormorant Garamond (300, 400, 600) e Inter (300, 400, 600) già caricati dal sito. */
-.ali-course{--sand:#F0EAE5; --sand2:#E7DED6; --ink:#3F4D82; --deep:#2B3A7A; --gold:#FEC15F;
+.ali-course{--sand:#F0EAE5; --sand2:#E7DED6; --ink:#3D5570; --deep:#2D4058; --gold:#FEC15F;
   --line:#D9D0C8; --white:#fff;
   --serif:"Cormorant Garamond",Georgia,serif; --sans:Inter,system-ui,sans-serif;}
 .ali-course *{box-sizing:border-box}
@@ -90,7 +90,7 @@
 .ali-course .fold.sub .fold-body{margin-top:14px}
 .ali-course .narrow-l{max-width:860px}
 .ali-course .book{display:grid;grid-template-columns:200px 1fr;gap:36px;align-items:start;max-width:860px}
-.ali-course .book img{width:100%;height:auto;box-shadow:0 8px 24px rgba(43,58,122,.18)}
+.ali-course .book img{width:100%;height:auto;box-shadow:0 8px 24px rgba(45,64,88,.18)}
 .ali-course .book ul{margin:0 0 1em;padding-left:1.2em}
 .ali-course .book li{margin:2px 0}
 @media(max-width:620px){.ali-course .book{grid-template-columns:1fr;gap:20px}.ali-course .book img{max-width:180px}}
@@ -122,7 +122,7 @@
 .ali-course .others a:hover b{text-decoration:underline;text-underline-offset:4px}
 .ali-course .others small{text-align:right;align-self:center}
 .ali-course .media{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
-.ali-course .media img{width:100%;height:auto;box-shadow:0 8px 24px rgba(43,58,122,.18)}
+.ali-course .media img{width:100%;height:auto;box-shadow:0 8px 24px rgba(45,64,88,.18)}
 @media(max-width:800px){.ali-course .media{grid-template-columns:1fr;gap:24px}}
 .ali-course .video{position:relative;aspect-ratio:16/9;max-width:860px;background:var(--deep)}
 .ali-course .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}

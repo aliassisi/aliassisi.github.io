@@ -29,7 +29,7 @@
     font-family: sans-serif;
    /* min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
-    border-top: 1px solid #3F4D82;
+    border-top: 1px solid #3D5570;
   
 }
 
@@ -38,7 +38,7 @@
     background-color: #f3f3f3;
 }
 .background-cell-color{
-    background-color: #3F4D82;
+    background-color: #3D5570;
     color: #FEC15F;
     text-align: center;
 }
@@ -56,7 +56,7 @@
 }
 
 .styled-table tbody tr:last-of-type {
-    border-bottom: 1px solid #3F4D82;
+    border-bottom: 1px solid #3D5570;
 }
 .wp-block-table.is-style-stripes tr:first-child, tr:first-child {
-    border-top: 1px solid #3F4D82;}/* End custom CSS */
+    border-top: 1px solid #3D5570;}/* End custom CSS */
