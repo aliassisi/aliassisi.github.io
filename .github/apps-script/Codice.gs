@@ -3,7 +3,8 @@
  * Riceve le iscrizioni dal configuratore del sito, le scrive nel foglio
  * "Iscrizioni", salva il passaporto in una cartella Drive privata e manda
  * due email: la conferma allo studente e l'avviso allo staff.
- * Dal menu "ALIA" del foglio si creano i diplomi in PDF.
+ * Dal menu "ALIA" del foglio si creano diplomi e attestati in PDF.
+ * Il gestionale (la pagina per lo staff) è in Gestionale.gs e Pagina.html.
  *
  * Source: .github/apps-script/Codice.gs nel repository del sito.
  * Come installarlo: .github/apps-script/ISTRUZIONI.md.
@@ -79,7 +80,8 @@ function doPost(e) {
 }
 
 function doGet() {
-  return risposta({ok: true, servizio: 'Iscrizioni ALIA'});
+  // Chi è dello staff vede il gestionale; gli altri solo questa risposta.
+  return paginaGestionale() || risposta({ok: true, servizio: 'Iscrizioni ALIA'});
 }
 
 function risposta(o) {
@@ -138,6 +140,8 @@ function scriviRiga(id, x, link) {
     f_cf: f.codice_fiscale, f_piva: f.piva, f_sdi: f.sdi, f_email: f.email,
     note: x.note, lingua: x.lingua
   };
+  // Un testo che comincia con = + - @ diventerebbe una formula: testo() (Gestionale.gs) lo scrive come testo.
+  Object.keys(v).forEach(function (k) { if (typeof v[k] === 'string') v[k] = testo(v[k], 3000); });
   DATE.forEach(function (k) { v[k] = data(v[k]); });
   var foglio = SpreadsheetApp.getActive().getSheetByName('Iscrizioni');
   var r = foglio.getLastRow() + 1;
@@ -207,37 +211,20 @@ function mandaEmail(id, x, link) {
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('ALIA')
+    .addItem('Apri il gestionale', 'apriGestionale')
     .addItem('Crea il diploma della riga selezionata', 'creaDiploma')
+    .addItem('Crea l’attestato della riga selezionata', 'creaAttestato')
     .addSeparator()
     .addItem('Prepara il foglio (solo la prima volta)', 'configura')
     .addToUi();
 }
 
-function creaDiploma() {
-  var ui = SpreadsheetApp.getUi(), foglio = SpreadsheetApp.getActiveSheet();
-  if (foglio.getName() !== 'Iscrizioni') { ui.alert('Apri il foglio "Iscrizioni" e seleziona la riga dello studente.'); return; }
-  var r = foglio.getActiveRange().getRow();
-  if (r < 2) { ui.alert('Seleziona la riga dello studente.'); return; }
-  var valori = foglio.getRange(r, 1, 1, COLONNE.length).getValues()[0], v = {};
-  COLONNE.forEach(function (c, i) { v[c[0]] = valori[i]; });
-  if (!v.livello_finale) { ui.alert('Scrivi prima il livello raggiunto nella colonna "Livello raggiunto".'); return; }
-  var p = props(), numero = nuovoNumero('diplomi', 'D');
-  var cartella = DriveApp.getFolderById(p.getProperty('cartella_diplomi'));
-  var copia = DriveApp.getFileById(p.getProperty('modello_diploma')).makeCopy('Diploma ' + v.id, cartella);
-  var doc = DocumentApp.openById(copia.getId()), corpo = doc.getBody();
-  var sost = {
-    nome: v.nome + ' ' + v.cognome, corso: v.corso_nome + (v.tema ? ' – ' + v.tema : ''),
-    dal: v.inizio instanceof Date ? dataTesto(v.inizio) : String(v.inizio || ''),
-    al: v.fine instanceof Date ? dataTesto(v.fine) : String(v.fine || ''),
-    lezioni: String(v.lezioni_totali || ''), livello: String(v.livello_finale),
-    numero: numero, data: dataTesto(new Date())
-  };
-  Object.keys(sost).forEach(function (k) { corpo.replaceText('\\{\\{' + k + '\\}\\}', sost[k]); });
-  doc.saveAndClose();
-  var pdf = cartella.createFile(copia.getAs('application/pdf')).setName('Diploma ' + v.id + ' ' + v.cognome + ' ' + v.nome + '.pdf');
-  copia.setTrashed(true);
-  foglio.getRange(r, colonna('diploma')).setValue(pdf.getUrl());
-  ui.alert('Diploma ' + numero + ' creato. Il link è nella colonna "Diploma".');
+function apriGestionale() {
+  var url = props().getProperty('url_gestionale');
+  var ui = SpreadsheetApp.getUi();
+  if (!url) { ui.alert('Il link del gestionale non è ancora impostato (ISTRUZIONI.md, punto 5).'); return; }
+  ui.showModelessDialog(HtmlService.createHtmlOutput('<p style="font-family:sans-serif"><a href="' +
+    url.replace(/[<>"&]/g, '') + '" target="_blank">Apri il gestionale</a></p>').setWidth(260).setHeight(80), 'Gestionale ALIA');
 }
 
 /* ---------- PRIMA CONFIGURAZIONE ---------- */
@@ -283,5 +270,6 @@ function configura() {
     doc.saveAndClose();
     p.setProperty('modello_diploma', doc.getId());
   }
-  SpreadsheetApp.getUi().alert('Foglio pronto. Le cartelle "ALIA – Passaporti (privata)", "ALIA – Diplomi" e il documento "ALIA – Modello del diploma" sono nel tuo Drive.');
+  configuraGestionale();
+  SpreadsheetApp.getUi().alert('Foglio pronto. Le cartelle "ALIA – Passaporti (privata)", "ALIA – Diplomi" e i modelli del diploma e dell’attestato sono nel tuo Drive.');
 }
