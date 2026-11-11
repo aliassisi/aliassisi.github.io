@@ -85,6 +85,9 @@ and run the build script.
 - To see the result locally: copy the site to a temp folder and run the script on it.
 
 ## Gotchas
+- Colours: ardesia `#3D5570` for titles, boxes, buttons and the logo. Long text is dark ardesia
+  `#2D4058` at weight 400 (rule at the end of `assets/alia/footer.css`, plus each custom
+  block's base rule). New text blocks should follow this.
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.
 - Keep the WordPress body classes. Elementor CSS selects on them.
