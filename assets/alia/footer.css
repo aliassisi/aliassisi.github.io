@@ -40,8 +40,6 @@
 /* The Cert.it logo is wide and dense: shown at full size it outweighs the others.
    This applies wherever it appears (footer, logo galleries, exam pages). */
 img[src*="certit.png"]{transform:scale(.75)}
-/* The footer Cert.it logo links to Roma Tre: the link fills the logo box. */
-.ali-loghi li > a{display:block;width:100%;height:100%}
 /* Cert.it logo in page content (exam pages, home): on the page background
    (the PNG is transparent), never cropped, filtered, shadowed or recoloured.
    Caption below. */
