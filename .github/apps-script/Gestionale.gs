@@ -19,14 +19,15 @@ var GIORNI = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
 /* Le schede del gestionale: [chiave, intestazione]. */
 var SCHEMI = {
   Classi: [['id', 'ID'], ['nome', 'Nome'], ['aula', 'Aula'], ['livello', 'Livello'],
-    ['insegnante', 'Insegnante'], ['inizio', 'Inizio'], ['fine', 'Fine'], ['orario', 'Orario'], ['note', 'Note'], ['tipo', 'Tipo']],
+    ['insegnante', 'Insegnante'], ['inizio', 'Inizio'], ['fine', 'Fine'], ['orario', 'Orario'], ['note', 'Note'], ['tipo', 'Tipo'],
+    ['modalita', 'Modalità'], ['link', 'Link online']],
   Assegnazioni: [['iscrizione', 'N. iscrizione'], ['classe', 'Classe'], ['dal', 'Dal'], ['al', 'Al']],
   Registro: [['id', 'ID'], ['classe', 'Classe'], ['data', 'Data'], ['orario', 'Orario'], ['ore', 'Ore'],
     ['volume', 'Volume/Capitolo'], ['novita', 'Novità'], ['ascolto', 'Attività ascolto'],
     ['lettura', 'Attività lettura'], ['scritta', 'Attività prod. scritta'], ['orale', 'Attività prod. orale'],
     ['ripetuto', 'Ripetuto'], ['da_ripetere', 'Da ripetere'], ['note', 'Note'], ['assenti', 'Assenti'],
     ['insegnante', 'Insegnante'], ['modificato', 'Modificato'],
-    ['ora_inizio', 'Ora inizio'], ['ora_fine', 'Ora fine'], ['aula', 'Aula'], ['stato', 'Stato']],
+    ['ora_inizio', 'Ora inizio'], ['ora_fine', 'Ora fine'], ['aula', 'Aula'], ['stato', 'Stato'], ['link', 'Link online']],
   Fatture: [['fic_id', 'ID Fatture in Cloud'], ['tipo', 'Tipo'], ['numero', 'Numero'], ['data', 'Data'],
     ['cliente', 'Cliente'], ['email', 'Email'], ['importo', 'Importo'], ['da_pagare', 'Da pagare'],
     ['scadenza', 'Prossima scadenza'], ['iscrizione', 'N. iscrizione'], ['abbinata', 'Abbinata'], ['aggiornata', 'Aggiornata']],
@@ -49,7 +50,10 @@ var IMPOSTAZIONI = {
   benvenuto: 'no', benvenuto_giorni: '7',
   testo_benvenuto_it: 'Ciao {{nome}},\n\nil tuo corso comincia il {{inizio}}. Ti aspettiamo il primo giorno alle 8:45 in via Giotto 1, Assisi.\n\nA presto,\nAccademia Lingua Italiana Assisi',
   testo_benvenuto_en: 'Dear {{nome}},\n\nyour course starts on {{inizio}}. We expect you on the first day at 8:45 in via Giotto 1, Assisi.\n\nBest wishes,\nAccademia Lingua Italiana Assisi',
-  riepilogo: 'si', url_gestionale: ''
+  riepilogo: 'si', url_gestionale: '',
+  link_online: 'no', link_ore: '24',
+  testo_link_it: 'Ciao {{nome}},\n\nla tua lezione online è {{quando}} (ora italiana).\n\nEntra da qui: {{link}}\n\nA presto,\nAccademia Lingua Italiana Assisi',
+  testo_link_en: 'Dear {{nome}},\n\nyour online lesson is on {{quando}} (Italian time).\n\nJoin here: {{link}}\n\nBest wishes,\nAccademia Lingua Italiana Assisi'
 };
 
 /* ---------- ACCESSO ---------- */
@@ -193,7 +197,7 @@ function carica() {
     documenti: leggi('Documenti'),
     impostazioni: imp,
     fic_token: !!p.getProperty('fic_token'),
-    invii_attivi: ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'ogniGiorno'; }),
+    invii_attivi: ['ogniGiorno', 'ogniOra'].every(function (h) { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === h; }); }),
     foglio: SpreadsheetApp.getActive().getUrl(),
     stati: STATI, livelli: LIVELLI, stati_lezione: STATI_LEZIONE
   };
@@ -242,7 +246,7 @@ function salvaClasse(c) {
   if (!c.inizio || !c.fine || c.fine < c.inizio) throw new Error('Controlla le date della classe');
   var o = {nome: testo(c.nome, 200), aula: testo(c.aula, 50), livello: testo(c.livello, 50), insegnante: testo(c.insegnante, 200),
     inizio: c.inizio, fine: c.fine, orario: testo(c.orario, 200), note: testo(c.note, 2000),
-    tipo: c.tipo === 'privato' ? 'privato' : 'gruppo'};
+    tipo: c.tipo === 'privato' ? 'privato' : 'gruppo', modalita: c.modalita === 'online' ? 'online' : 'in sede', link: link(c.link)};
   return conBlocco(function () {
     if (c.id) {
       var r = trova('Classi', 'id', c.id);
@@ -303,6 +307,14 @@ function ora(s) {
 }
 function minuti(hhmm) { var p = String(hhmm).split(':'); return +p[0] * 60 + +p[1]; }
 
+/* Un link per le lezioni online (Zoom, Meet…): solo https. */
+function link(s) {
+  s = String(s || '').trim();
+  if (!s) return '';
+  if (!/^https:\/\/[^\s<>"']+$/.test(s) || s.length > 500) throw new Error('Il link deve cominciare con https:// e non avere spazi');
+  return s;
+}
+
 /* I campi di una lezione, controllati. Se mancano le ore, si calcolano da inizio e fine. */
 function lezioneDa(l) {
   var o = {classe: l.classe, data: l.data, assenti: (l.assenti || []).join(', '), modificato: new Date()};
@@ -315,6 +327,7 @@ function lezioneDa(l) {
   if (!(ore >= 0 && ore <= 12)) throw new Error('Ore non valide');
   o.ore = Math.round(ore * 100) / 100;
   o.stato = l.stato || 'fatta';
+  o.link = link(l.link);
   if (STATI_LEZIONE.indexOf(o.stato) < 0) throw new Error('Stato della lezione non valido');
   return o;
 }
@@ -356,8 +369,9 @@ function creaPrivato(iscrizione) {
     if (!v) throw new Error('Iscrizione non trovata');
     var dal = v.inizio || oggiIso(), al = v.fine || piuGiorni(dal, 27);
     var id = nuovoNumero('classi', 'C');
-    aggiungi('Classi', {id: id, nome: 'Privato – ' + v.cognome + ' ' + v.nome, aula: '', livello: v.livello, insegnante: '',
-      inizio: dal, fine: al, orario: '', note: v.formula ? String(v.formula) : '', tipo: 'privato'});
+    var online = /online/i.test(String(v.corso_nome) + ' ' + String(v.formula) + ' ' + String(v.tema));
+    aggiungi('Classi', {id: id, nome: (online ? 'Online – ' : 'Privato – ') + v.cognome + ' ' + v.nome, aula: '', livello: v.livello, insegnante: '',
+      inizio: dal, fine: al, orario: '', note: v.formula ? String(v.formula) : '', tipo: 'privato', modalita: online ? 'online' : 'in sede', link: ''});
     aggiungi('Assegnazioni', {iscrizione: v.id, classe: id, dal: dal, al: al});
     var d = carica();
     d.creata = id;
@@ -380,7 +394,7 @@ function pianificaLezioni(p) {
     var nuove = [], g = p.dal;
     while (g <= p.al && nuove.length < quante) {
       var o = lezioneDa({classe: p.classe, data: g, ora_inizio: p.ora_inizio, ora_fine: p.ora_fine, ore: p.ore,
-        aula: p.aula, insegnante: p.insegnante, stato: 'prevista'});
+        aula: p.aula, insegnante: p.insegnante, link: p.link, stato: 'prevista'});
       if (giorni.indexOf(giorno(g).getDay()) >= 0 && !gia[g + ' ' + o.ora_inizio]) {
         o.id = nuovoNumero('lezioni', 'L');
         nuove.push(SCHEMI.Registro.map(function (c) { return valoreCella(c[0], o[c[0]]); }));
@@ -401,17 +415,23 @@ function mandaCalendario(iscrizione) {
   autorizzato();
   var v = trova('Iscrizioni', 'id', iscrizione);
   if (!v || !v.email) throw new Error('Manca l’email dello studente');
-  var oggi = oggiIso(), en = v.lingua === 'en';
+  var oggi = oggiIso(), en = v.lingua === 'en', classi = {};
+  leggi('Classi').forEach(function (c) { classi[c.id] = c; });
   var mie = leggi('Assegnazioni').filter(function (a) { return a.iscrizione === v.id; });
   var lez = leggi('Registro').filter(function (l) {
     return l.data >= oggi && l.stato === 'prevista' && mie.some(function (a) { return a.classe === l.classe && l.data >= a.dal && l.data <= a.al; });
   }).sort(function (a, b) { return (a.data + a.ora_inizio) < (b.data + b.ora_inizio) ? -1 : 1; });
   if (!lez.length) throw new Error('Nessuna lezione in programma');
+  lez.forEach(function (l) { l.online = linkDi(l, classi[l.classe]); });
+  var unico = lez.every(function (l) { return l.online && l.online === lez[0].online; });
   var righe = lez.map(function (l) {
     var d = giorno(l.data);
     return '- ' + (en ? Utilities.formatDate(d, fusoOrario(), 'EEE d MMM yyyy') : GIORNI[d.getDay()] + ' ' + dataTesto(d)) +
-      (l.orario ? ', ' + l.orario : '') + (l.aula ? ', ' + l.aula : '') + (l.insegnante ? (en ? ', teacher ' : ', insegnante ') + l.insegnante : '');
+      (l.orario ? ', ' + l.orario : '') + (l.online ? ', online' + (unico ? '' : ': ' + l.online) : (l.aula ? ', ' + l.aula : '')) +
+      (l.insegnante ? (en ? ', teacher ' : ', insegnante ') + l.insegnante : '');
   });
+  if (lez.some(function (l) { return l.online; })) righe.push('', en ? 'Times are Italian time (Europe/Rome).' : 'Gli orari sono in ora italiana.');
+  if (unico) righe.push('', (en ? 'Link for the online lessons: ' : 'Link per le lezioni online: ') + lez[0].online);
   var corpo = (en ? ['Dear ' + v.nome + ',', '', 'here are your next lessons:', ''] : ['Ciao ' + v.nome + ',', '', 'ecco le tue prossime lezioni:', ''])
     .concat(righe, ['', en ? 'The attached file adds them to your calendar.' : 'Il file allegato le aggiunge al tuo calendario.',
       '', en ? 'Best wishes,' : 'A presto,', NOME_SCUOLA, EMAIL_STAFF]).join('\n');
@@ -436,10 +456,87 @@ function ics(lez, en) {
     r.push('BEGIN:VEVENT', 'UID:' + l.id + '@aliassisi.it', 'DTSTAMP:' + Utilities.formatDate(new Date(), 'UTC', "yyyyMMdd'T'HHmmss'Z'"),
       'DTSTART:' + utc(l.data, inizio), 'DTEND:' + utc(l.data, fine),
       'SUMMARY:' + (en ? 'Italian lesson – ALIA' : 'Lezione di italiano – ALIA'),
-      'LOCATION:' + ((l.aula ? l.aula + ' - ' : '') + NOME_SCUOLA + ' - Assisi').replace(/[;,\r\n]/g, ' '), 'END:VEVENT');
+      'LOCATION:' + (l.online ? l.online : ((l.aula ? l.aula + ' - ' : '') + NOME_SCUOLA + ' - Assisi').replace(/[;,\r\n]/g, ' ')));
+    if (l.online) r.push('URL:' + l.online, 'DESCRIPTION:' + (en ? 'Online lesson: ' : 'Lezione online: ') + l.online.replace(/([,;\\])/g, '\\$1'));
+    r.push('END:VEVENT');
   });
   r.push('END:VCALENDAR');
   return r.join('\r\n');
+}
+
+/* Il link di una lezione: il suo, o quello del corso se il corso è online. */
+function linkDi(l, c) { return l.link || (c && c.modalita === 'online' ? c.link : '') || ''; }
+
+/* Gli studenti di una lezione: quelli assegnati alla classe quel giorno. */
+function studentiDi(l, ass, isc) {
+  return ass.filter(function (a) { return a.classe === l.classe && a.dal <= l.data && a.al >= l.data; })
+    .map(function (a) { return isc[a.iscrizione]; }).filter(function (v) { return v && v.email && v.stato !== 'Annullata'; });
+}
+
+function inizioLezione(l) {
+  var d = giorno(l.data), m = minuti(l.ora_inizio || '09:00');
+  d.setHours(Math.floor(m / 60), m % 60, 0, 0);
+  return d;
+}
+
+function emailLink(l, v, url) {
+  var imp = impostazioni(), en = v.lingua === 'en', d = giorno(l.data);
+  var quando = en ? Utilities.formatDate(d, fusoOrario(), 'EEEE d MMMM') + (l.ora_inizio ? ' at ' + l.ora_inizio : '')
+    : GIORNI[d.getDay()] + ' ' + dataTesto(d) + (l.ora_inizio ? ' alle ' + l.ora_inizio : '');
+  return {
+    oggetto: en ? 'Your online lesson: ' + quando : 'La tua lezione online: ' + quando,
+    corpo: riempi(en ? imp.testo_link_en : imp.testo_link_it, {nome: v.nome, cognome: v.cognome, quando: quando, data: en ? l.data : dataTesto(d), ora: l.ora_inizio || '', link: url})
+  };
+}
+
+/* Ogni ora: il link a chi ha una lezione online nelle prossime N ore. Una volta per lezione e studente. */
+function linkLezioni(modo) {
+  var ore = +impostazioni().link_ore || 24, ora = new Date(), fino = new Date(ora.getTime() + ore * 3600000);
+  var classi = {}, isc = {}, ass = leggi('Assegnazioni'), prom = leggi('Promemoria'), n = 0;
+  leggi('Classi').forEach(function (c) { classi[c.id] = c; });
+  leggi('Iscrizioni').forEach(function (v) { isc[v.id] = v; });
+  leggi('Registro').forEach(function (l) {
+    var url = linkDi(l, classi[l.classe]);
+    if (!url || l.stato !== 'prevista') return;
+    var t = inizioLezione(l);
+    if (t < ora || t > fino) return;
+    studentiDi(l, ass, isc).forEach(function (v) {
+      var chiave = 'link:' + l.id + ':' + v.id;
+      if (giaInviato(prom, chiave)) return;
+      var e = emailLink(l, v, url);
+      try { invia(modo, v.email, e.oggetto, e.corpo); registra('link', chiave, v.id, v.email, modo === 'prova' ? 'prova' : 'inviato'); n++; }
+      catch (err) { registra('link', chiave, v.id, v.email, 'errore'); }
+    });
+  });
+  return n;
+}
+
+/* Dal gestionale: manda subito il link di una lezione ai suoi studenti. */
+function mandaLink(idLezione) {
+  autorizzato();
+  var l = trova('Registro', 'id', idLezione);
+  if (!l) throw new Error('Lezione non trovata');
+  var c = trova('Classi', 'id', l.classe), url = linkDi(l, c);
+  if (!url) throw new Error('Manca il link: scrivilo nel corso o nella lezione');
+  var isc = {}; leggi('Iscrizioni').forEach(function (v) { isc[v.id] = v; });
+  var st = studentiDi(l, leggi('Assegnazioni'), isc);
+  if (!st.length) throw new Error('Nessuno studente con email in questa lezione');
+  conBlocco(function () {
+    st.forEach(function (v) {
+      var e = emailLink(l, v, url);
+      MailApp.sendEmail({to: v.email, replyTo: EMAIL_STAFF, name: NOME_SCUOLA, subject: e.oggetto, body: e.corpo});
+      registra('link', 'link:' + l.id + ':' + v.id + ':manuale', v.id, v.email, 'inviato');
+    });
+  });
+  var d = carica();
+  d.inviate = st.length;
+  return d;
+}
+
+function ogniOra() {
+  var imp = impostazioni();
+  if (imp.link_online === 'no') return;
+  try { conBlocco(function () { linkLezioni(imp.link_online); }); } catch (err) { console.error(err); }
 }
 
 /* Ore e lezioni frequentate da uno studente: le lezioni delle sue classi, nei suoi giorni, meno le assenze. */
@@ -852,8 +949,9 @@ function ogniGiorno() {
 
 function attivaInvii() {
   autorizzato();
-  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'ogniGiorno') ScriptApp.deleteTrigger(t); });
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (['ogniGiorno', 'ogniOra'].indexOf(t.getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('ogniGiorno').timeBased().everyDays(1).atHour(8).inTimezone(fusoOrario()).create();
+  ScriptApp.newTrigger('ogniOra').timeBased().everyHours(1).create();
   return carica();
 }
 

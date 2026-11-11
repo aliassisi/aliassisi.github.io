@@ -101,7 +101,8 @@ Come funziona:
 
 ## 8. Email automatiche
 In **Email**:
-1. Premi **Attiva**: da quel momento lo script gira ogni mattina alle 8.
+1. Premi **Attiva**: da quel momento lo script gira ogni mattina alle 8 (e ogni ora per i link
+   delle lezioni online). Dopo questo aggiornamento premi **Attiva** di nuovo.
 2. Metti ogni tipo di email su **Prova** per qualche giorno: le email vanno a info@ con il
    destinatario vero nell'oggetto. Controlla testi e destinatari.
 3. Poi metti **Attive**.
@@ -146,6 +147,23 @@ Ogni corso individuale è una "classe" di tipo **Individuale o duo**, con le sue
    **persa** (lo studente non è venuto senza avvisare: conta come usata, non come frequentata).
 6. Per un duo: nel corso, **Aggiungi un secondo studente**.
 
+### Lezioni online
+Sono corsi individuali con **Modalità: Online** (se il corso del sito ha "online" nel nome, il
+gestionale lo crea già online).
+1. Nel corso, **Modifica** → incolla il **Link Zoom** (la vostra stanza Zoom o una riunione
+   ricorrente). Vale per tutte le lezioni del corso.
+2. Una lezione con un link diverso: aprila e scrivi il suo link. Va anche per una lezione online
+   dentro un corso in sede.
+3. Il link parte da solo: in **Email → Link delle lezioni online**, scegli quante ore prima
+   (di solito 24) e metti **Prova**, poi **Attive**. Lo script controlla ogni ora; ogni studente
+   riceve il link una volta per lezione.
+4. **Manda il link** accanto a una lezione lo manda subito.
+5. **Manda il calendario** mette il link nell'email e nel file per il calendario.
+
+Gli orari sono in ora italiana. Il file `.ics` li converte da solo sul telefono dello studente;
+nelle email c'è scritto "ora italiana". Il gestionale non crea le riunioni Zoom: il link lo
+scrivete voi.
+
 Il riepilogo del corso mostra lezioni acquistate, previste, fatte e quante ne restano da pianificare.
 Le ore dell'attestato contano solo le lezioni fatte.
 
@@ -164,7 +182,8 @@ Le ore dell'attestato contano solo le lezioni fatte.
   colonne e non rinominare le schede.
 
 ## Dopo un aggiornamento dello script
-Le schede Classi e Registro hanno colonne nuove (Tipo; Ora inizio, Ora fine, Aula, Stato).
+Le schede Classi e Registro hanno colonne nuove (Tipo, Modalità, Link online; Ora inizio, Ora fine,
+Aula, Stato, Link online).
 Il gestionale scrive da solo le intestazioni che mancano la prima volta che si apre. Le lezioni già
 scritte valgono come "fatte".
 
