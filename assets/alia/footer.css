@@ -63,3 +63,5 @@ img[src*="certit.png"]{transform:scale(.75)}
 .elementor-widget-html,
 .elementor-tab-content,
 .elementor-testimonial__text{color:#2D4058}
+/* The footer has short lines, not long text: keep it all ardesia. */
+.elementor-location-footer .elementor-widget-text-editor{color:#3D5570}
