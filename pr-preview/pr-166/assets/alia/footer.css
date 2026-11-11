@@ -56,10 +56,10 @@ img[src*="certit.png"]{transform:scale(.75)}
 .elementor-location-footer ul.ali-loghi--uni{padding-top:0}
 }
 
-/* Site-wide, not only the footer: long text in dark ardesia at normal weight,
-   easier to read than ardesia 300 on the beige background. Text on dark boxes
+/* Site-wide, not only the footer: long text in dark ardesia, easier to read
+   than ardesia on the beige background. Text on dark boxes
    keeps its own colour (Elementor sets it with more specific rules). */
 .elementor-widget-text-editor,
 .elementor-widget-html,
 .elementor-tab-content,
-.elementor-testimonial__text{color:#2D4058;font-weight:400}
+.elementor-testimonial__text{color:#2D4058}
