@@ -37,9 +37,21 @@
 .ali-loghi .ali-logo--miur img{transform:scale(1.3)}
 .ali-loghi .ali-logo--docente img{width:88%}
 .ali-loghi .ali-logo--cils img{height:92%}
-/* The Certit logo is wide and dense: shown at full size it outweighs the others.
+/* The Cert.it logo is wide and dense: shown at full size it outweighs the others.
    This applies wherever it appears (footer, logo galleries, exam pages). */
 img[src*="certit.png"]{transform:scale(.75)}
+/* The footer Cert.it logo links to Roma Tre: the link fills the logo box. */
+.ali-loghi li > a{display:block;width:100%;height:100%}
+/* Cert.it logo in page content (exam pages, home): on white, with clear space
+   around it, never cropped, filtered, shadowed or recoloured. Caption below. */
+.ali-certit{margin:0;display:inline-flex;flex-direction:column;align-items:center;gap:10px;max-width:100%;flex:none}
+.ali-certit .ali-certit-logo{display:block;background:#fff;padding:18px 22px;line-height:0;box-shadow:none;border:0}
+.ali-certit .ali-certit-logo img{display:block;width:200px;max-width:100%;height:auto;object-fit:contain;transform:none;filter:none;box-shadow:none;border-radius:0;opacity:1}
+/* Home strip: same visual weight as before next to the CILS logo. */
+.ali-fascia-loghi .ali-certit .ali-certit-logo{padding:10px 14px}
+.ali-fascia-loghi .ali-certit .ali-certit-logo img{width:150px}
+.ali-fascia-loghi{flex-wrap:wrap;justify-content:center;max-width:100%}
+.ali-certit figcaption{max-width:min(260px,100%);margin:0;padding:0;border:0;background:none;font:400 13px/1.45 Inter,sans-serif;color:#3D5570;text-align:center}
 @media(max-width:767px){
 .elementor-location-footer ul.ali-loghi{justify-content:center;gap:20px 24px;padding:24px 0}
 .ali-loghi li{width:140px;height:64px}
