@@ -83,7 +83,7 @@ dialog::backdrop{background:rgba(20,30,45,.45)}
 <header>
   <h1>Gestionale ALIA</h1>
   <nav id="schede"></nav>
-  <span class="chi" id="chi"></span>
+  <span class="chi"><span id="chi"></span> <button class="l" id="esci" style="color:#dbe4ee;display:none">Esci</button></span>
 </header>
 <main id="main"><p class="vuoto-msg">Carico i dati…</p></main>
 <dialog id="dlg"></dialog>
@@ -94,6 +94,9 @@ dialog::backdrop{background:rgba(20,30,45,.45)}
 var D = null;                 // i dati dal foglio (carica() in Gestionale.gs)
 var U = {scheda: 'oggi', cerca: '', stato: 'attivi', periodo: 'tutti', settimana: null, classeReg: '', docClasse: '', docDal: '', docAl: '', fattureTutte: false};
 try { var salvata = localStorage.getItem('alia-scheda'); if (salvata) U.scheda = salvata; } catch (e) {}
+/* La chiave dell'accesso (dopo il codice via email). Resta in questo browser 30 giorni. */
+var CHIAVE = '';
+try { CHIAVE = localStorage.getItem('alia-chiave') || ''; } catch (e) {}
 
 var SCHEDE = [['oggi', 'Oggi'], ['studenti', 'Studenti'], ['classi', 'Classi'], ['calendario', 'Calendario'], ['attivita', 'Attività'], ['registro', 'Registro'], ['alloggi', 'Alloggi'],
   ['pagamenti', 'Pagamenti'], ['documenti', 'Diplomi e attestati'], ['email', 'Email'], ['impostazioni', 'Impostazioni']];
@@ -123,10 +126,67 @@ function chiama(fn) {
   var args = Array.prototype.slice.call(arguments, 1);
   $('#attesa').style.display = 'block';
   return new Promise(function (ok, ko) {
-    var r = google.script.run.withSuccessHandler(function (d) { $('#attesa').style.display = 'none'; if (d && d.iscrizioni) { D = d; indici(); } ok(d); })
-      .withFailureHandler(function (e) { $('#attesa').style.display = 'none'; avviso(String(e && e.message || e), true); ko(e); });
+    google.script.run.withSuccessHandler(function (d) { $('#attesa').style.display = 'none'; if (d && d.iscrizioni) { D = d; indici(); } ok(d); })
+      .withFailureHandler(function (e) {
+        $('#attesa').style.display = 'none';
+        var m = String(e && e.message || e);
+        if (/ACCESSO/.test(m)) { accesso(); ko(e); return; }
+        avviso(m, true); ko(e);
+      }).api(CHIAVE, fn, args);
+  });
+}
+/* Una chiamata diretta (per l'accesso, che non ha ancora la chiave). */
+function diretta(fn) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return new Promise(function (ok, ko) {
+    var r = google.script.run.withSuccessHandler(ok).withFailureHandler(function (e) { avviso(String(e && e.message || e), true); ko(e); });
     r[fn].apply(r, args);
   });
+}
+
+/* ---------- ACCESSO ---------- */
+function accesso() {
+  CHIAVE = '';
+  try { localStorage.removeItem('alia-chiave'); } catch (e) {}
+  $('#schede').innerHTML = ''; $('#chi').textContent = ''; $('#esci').style.display = 'none';
+  var d = $('#dlg'); if (d.open) d.close();
+  $('#main').innerHTML = '<div class="card" style="max-width:420px;margin:40px auto"><h2>Entra nel gestionale</h2>' +
+    '<p class="tenue piccolo">Scrivi la tua email: se sei dello staff ti mandiamo un codice di 6 cifre.</p>' +
+    '<div class="campi" style="grid-template-columns:1fr">' + campo('a-email', 'Email', '', 'email', ' autocomplete="email"') + '</div>' +
+    '<div class="barra" style="margin-top:10px"><button class="b p" id="a-manda">Mandami il codice</button></div>' +
+    '<div id="a-passo2" style="display:none"><div class="campi" style="grid-template-columns:1fr">' + campo('a-codice', 'Codice ricevuto per email', '', 'text', ' inputmode="numeric" autocomplete="one-time-code" maxlength="6"') + '</div>' +
+    '<div class="barra" style="margin-top:10px"><button class="b p" id="a-entra">Entra</button><button class="l" id="a-ancora">Mandamelo di nuovo</button></div>' +
+    '<p class="tenue piccolo">Se non arriva, guarda nella posta indesiderata. Il codice vale 10 minuti.</p></div></div>';
+  var email = function () { return $('#a-email').value.trim(); };
+  var manda = function () {
+    if (!email()) { avviso('Scrivi la tua email', true); return; }
+    diretta('chiediCodice', email()).then(function () {
+      $('#a-passo2').style.display = ''; $('#a-codice').focus();
+      avviso('Se l’email è dello staff, il codice sta arrivando.');
+    });
+  };
+  $('#a-manda').onclick = manda; $('#a-ancora').onclick = manda;
+  $('#a-email').onkeydown = function (e) { if (e.key === 'Enter') manda(); };
+  var entra = function () {
+    diretta('verificaCodice', email(), $('#a-codice').value.trim()).then(function (r) {
+      CHIAVE = r.chiave;
+      try { localStorage.setItem('alia-chiave', CHIAVE); } catch (e) {}
+      $('#main').innerHTML = '<p class="vuoto-msg">Carico i dati…</p>';
+      avvio();
+    });
+  };
+  $('#a-entra').onclick = entra;
+  $('#a-codice').onkeydown = function (e) { if (e.key === 'Enter') entra(); };
+  $('#a-email').focus();
+}
+$('#esci').onclick = function () {
+  if (!confirm('Uscire dal gestionale su questo browser?')) return;
+  var k = CHIAVE;
+  diretta('esci', k).then(accesso, accesso);
+};
+function avvio() {
+  chiama('carica').then(function () { $('#esci').style.display = CHIAVE ? '' : 'none'; disegna(); })
+    .catch(function (e) { if (!/ACCESSO/.test(String(e && e.message || e))) $('#main').innerHTML = '<div class="card"><h2>Non riesco ad aprire il gestionale</h2><p>' + esc(e && e.message || e) + '</p></div>'; });
 }
 
 var ISC = {}, CLA = {};
@@ -1250,7 +1310,7 @@ DOPO.impostazioni = function () {
   };
 };
 
-chiama('carica').then(disegna).catch(function (e) { $('#main').innerHTML = '<div class="card"><h2>Non riesco ad aprire il gestionale</h2><p>' + esc(e && e.message || e) + '</p></div>'; });
+avvio();
 </script>
 </body>
 </html>

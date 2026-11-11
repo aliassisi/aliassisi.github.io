@@ -72,10 +72,41 @@ var IMPOSTAZIONI = {
 };
 
 /* ---------- ACCESSO ---------- */
+/* Si entra con un codice mandato per email a chi è nella lista dello staff (va bene anche un Gmail).
+   Dopo il codice il browser riceve una chiave valida 30 giorni; la pagina la manda con ogni richiesta (api). */
 
-function utente() { return String(Session.getActiveUser().getEmail() || '').toLowerCase(); }
+var UTENTE = null;          // chi sta facendo la richiesta, messo da api()
+var FIDATO = false;         // vero durante doPost (iscrizioni dal sito), i trigger e il menu del foglio
 
-function staff() {
+/* Nessuna funzione che legge o scrive dati gira senza un utente (api) o un contesto fidato.
+   Serve perché la pagina, aperta da chiunque abbia il link, può chiamare ogni funzione dello script. */
+function riservato() { if (!UTENTE && !FIDATO) throw new Error('ACCESSO'); }
+
+/* Dal menu del foglio: chi lo usa deve essere dello staff. */
+function daMenu() {
+  var u = '';
+  try { u = String(Session.getActiveUser().getEmail() || '').toLowerCase(); } catch (e) {}
+  if (!u || listaStaff_().indexOf(u) < 0) throw new Error('Solo lo staff può usare questo menu.');
+  FIDATO = true;
+}
+
+/* Un trigger vero porta il suo id; una chiamata dalla pagina no. */
+function daTrigger(e) {
+  return !!(e && e.triggerUid && ScriptApp.getProjectTriggers().some(function (t) { return t.getUniqueId() === String(e.triggerUid); }));
+}
+var GIORNI_SESSIONE = 30;
+var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaClasse', 'eliminaClasse', 'assegna', 'togliAssegnazione',
+  'salvaLezione', 'eliminaLezione', 'creaPrivato', 'pianificaLezioni', 'mandaCalendario', 'mandaLink', 'annullaLezione', 'recuperaLezione',
+  'creaDocumenti', 'sincronizzaFIC', 'abbinaFattura', 'mandaPromemoria', 'attivaInvii', 'emailClasse', 'salvaImpostazioni',
+  'salvaAlloggio', 'eliminaAlloggio', 'prenotaAlloggio', 'togliSoggiorno', 'mandaAlloggio',
+  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento'];
+
+function utente() {
+  if (UTENTE) return UTENTE;
+  try { return String(Session.getActiveUser().getEmail() || '').toLowerCase(); } catch (e) { return ''; }
+}
+
+function listaStaff_() {
   var l = String(props().getProperty('staff') || '').toLowerCase().split(/[\s,;]+/).filter(String);
   l.push(EMAIL_STAFF.toLowerCase());
   try { l.push(String(Session.getEffectiveUser().getEmail()).toLowerCase()); } catch (e) {}
@@ -84,30 +115,88 @@ function staff() {
 
 function autorizzato() {
   var u = utente();
-  if (!u || staff().indexOf(u) < 0) throw new Error('Non autorizzato. Apri il gestionale con un account dello staff (' + (u || 'nessun account') + ').');
+  if (!u || listaStaff_().indexOf(u) < 0) throw new Error('ACCESSO');
   return u;
 }
 
-/* Chiamata da doGet in Codice.gs: la pagina allo staff; agli altri una pagina che dice perché non entrano
-   (il sito non usa doGet: manda le iscrizioni con doPost). */
+/* Chiamata da doGet in Codice.gs: la pagina (con il suo accesso) a chiunque apra il link. I dati arrivano solo dopo l'accesso. */
 function paginaGestionale() {
-  var u = utente();
-  if (u && staff().indexOf(u) >= 0) {
-    return HtmlService.createHtmlOutputFromFile('Pagina')
-      .setTitle('Gestionale ALIA')
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  return HtmlService.createHtmlOutputFromFile('Pagina')
+    .setTitle('Gestionale ALIA')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+/* L'unica porta della pagina: controlla la chiave, poi chiama la funzione chiesta. */
+function api(chiave, fn, args) {
+  if (FUNZIONI_PAGINA.indexOf(fn) < 0) throw new Error('Funzione sconosciuta');
+  var u = utenteDaChiave(chiave);
+  if (!u) {
+    // Un account aliassisi.it riconosciuto da Google (deployment "all'interno di aliassisi.it") entra senza codice.
+    u = utente();
+    if (!u || listaStaff_().indexOf(u) < 0) throw new Error('ACCESSO');
   }
-  var t = u
-    ? '<p>Sei entrato come <b>' + u.replace(/[<>&"]/g, '') + '</b>, che non è nella lista dello staff.</p>' +
-      '<p>Entra con un account dello staff (per esempio info@aliassisi.it), oppure chiedi di essere aggiunto: ' +
-      'Impostazioni → “Email dello staff”.</p>'
-    : '<p>Google non dice al gestionale chi sei.</p><p>Di solito il motivo è il deployment. In Apps Script: ' +
-      '<b>Esegui il deployment → Gestisci deployment</b> → matita → <b>Chi può accedere: Chiunque all’interno di aliassisi.it</b>, ' +
-      '<b>Esegui come: Me</b> → Versione: Nuova versione → Esegui il deployment. Poi apri l’URL che compare lì ' +
-      '(contiene <code>/a/macros/aliassisi.it/</code>).</p><p>Se nel browser sono aperti più account Google, usa una finestra ' +
-      'privata con il solo account aliassisi.it.</p>';
-  return HtmlService.createHtmlOutput('<div style="font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px">' +
-    '<h1 style="font-size:22px">Gestionale ALIA</h1>' + t + '</div>').setTitle('Gestionale ALIA');
+  UTENTE = u;
+  try { return globalThis[fn].apply(null, args || []); } finally { UTENTE = null; }
+}
+
+function normaleEmail(e) { return String(e || '').trim().toLowerCase(); }
+
+/* Primo passo: un codice di 6 cifre per email, valido 10 minuti. La risposta è la stessa se l'email non è dello staff. */
+function chiediCodice(email) {
+  email = normaleEmail(email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Scrivi un indirizzo email valido');
+  var cache = CacheService.getScriptCache(), quante = +(cache.get('codici:' + email) || 0);
+  if (quante >= 5) throw new Error('Troppi codici chiesti. Riprova tra un’ora.');
+  cache.put('codici:' + email, String(quante + 1), 3600);
+  if (listaStaff_().indexOf(email) >= 0) {
+    var codice = ('00000' + Math.floor(Math.random() * 1000000)).slice(-6);
+    cache.put('codice:' + email, JSON.stringify({c: codice, t: 0}), 600);
+    MailApp.sendEmail({to: email, name: 'Gestionale ALIA', subject: 'Codice per il gestionale: ' + codice,
+      body: 'Il tuo codice per entrare nel gestionale ALIA è ' + codice + '.\n\nVale 10 minuti. Se non l’hai chiesto tu, ignora questa email.'});
+  }
+  return {ok: true};
+}
+
+/* Secondo passo: il codice giusto dà una chiave per 30 giorni. */
+function verificaCodice(email, codice) {
+  email = normaleEmail(email);
+  var cache = CacheService.getScriptCache(), k = 'codice:' + email, x = cache.get(k);
+  if (!x) throw new Error('Codice scaduto o non chiesto. Chiedine uno nuovo.');
+  x = JSON.parse(x);
+  if (x.t >= 5) { cache.remove(k); throw new Error('Troppi tentativi. Chiedi un codice nuovo.'); }
+  if (String(codice || '').replace(/\D/g, '') !== x.c) {
+    x.t++; cache.put(k, JSON.stringify(x), 600);
+    throw new Error('Codice sbagliato');
+  }
+  cache.remove(k);
+  if (listaStaff_().indexOf(email) < 0) throw new Error('ACCESSO');
+  var chiave = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '');
+  props().setProperty('sessione_' + chiave, JSON.stringify({email: email, scade: Date.now() + GIORNI_SESSIONE * 86400000}));
+  puliziaSessioni();
+  return {chiave: chiave, email: email};
+}
+
+function utenteDaChiave(chiave) {
+  if (!chiave || !/^[a-f0-9]{64}$/.test(String(chiave))) return '';
+  var x = props().getProperty('sessione_' + chiave);
+  if (!x) return '';
+  x = JSON.parse(x);
+  if (x.scade < Date.now() || listaStaff_().indexOf(x.email) < 0) { props().deleteProperty('sessione_' + chiave); return ''; }
+  return x.email;
+}
+
+function esci(chiave) {
+  if (chiave && /^[a-f0-9]{64}$/.test(String(chiave))) props().deleteProperty('sessione_' + chiave);
+  return {ok: true};
+}
+
+/* Toglie le sessioni scadute (le proprietà dello script hanno un limite di spazio). */
+function puliziaSessioni() {
+  var p = props(), tutte = p.getProperties(), ora = Date.now();
+  Object.keys(tutte).forEach(function (k) {
+    if (k.indexOf('sessione_') !== 0) return;
+    try { if (JSON.parse(tutte[k]).scade < ora) p.deleteProperty(k); } catch (e) { p.deleteProperty(k); }
+  });
 }
 
 /* ---------- SCHEDE ---------- */
@@ -133,6 +222,7 @@ function piuGiorni(isoData, n) {
 function giorniTra(a, b) { return Math.round((giorno(b) - giorno(a)) / 86400000); }
 
 function scheda(nome) {
+  riservato();
   var s = SpreadsheetApp.getActive().getSheetByName(nome);
   if (!s) throw new Error('Manca la scheda "' + nome + '". Lancia ALIA → Prepara il foglio.');
   return s;
@@ -194,6 +284,7 @@ function testo(v, max) {
 /* ---------- CARICAMENTO ---------- */
 
 function impostazioni() {
+  riservato();
   var p = props().getProperties(), o = {};
   Object.keys(IMPOSTAZIONI).forEach(function (k) { o[k] = p[k] !== undefined ? p[k] : IMPOSTAZIONI[k]; });
   return o;
@@ -201,6 +292,7 @@ function impostazioni() {
 
 /* Le colonne aggiunte dopo l'installazione: scrive le intestazioni che mancano. */
 function intestazioni() {
+  riservato();
   var ss = SpreadsheetApp.getActive();
   Object.keys(SCHEMI).forEach(function (nome) {
     var s = ss.getSheetByName(nome), cols = SCHEMI[nome];
@@ -657,7 +749,9 @@ function annullaLezione(id, nuova, avvisa, gia) {
   return d;
 }
 
-function ogniOra() {
+function ogniOra(e) {
+  if (!daTrigger(e)) return;
+  FIDATO = true;
   var imp = impostazioni();
   if (imp.link_online === 'no') return;
   try { conBlocco(function () { linkLezioni(imp.link_online); }); } catch (err) { console.error(err); }
@@ -997,6 +1091,7 @@ function sostituisci(el, campi) {
 
 /* Copia il modello (Documenti o Presentazioni Google), una pagina per studente, e lo salva in PDF. */
 function generaPdf(modelloId, elenco, nome) {
+  riservato();
   var cartella = DriveApp.getFolderById(props().getProperty('cartella_diplomi'));
   var file = DriveApp.getFileById(modelloId), tipo = file.getMimeType();
   var copia = file.makeCopy(nome, cartella);
@@ -1039,6 +1134,7 @@ function generaPdf(modelloId, elenco, nome) {
 function creaDiploma() { creaDaRiga('diploma'); }
 function creaAttestato() { creaDaRiga('attestato'); }
 function creaDaRiga(tipo) {
+  daMenu();
   var ui = SpreadsheetApp.getUi(), foglio = SpreadsheetApp.getActiveSheet();
   if (foglio.getName() !== 'Iscrizioni') { ui.alert('Apri il foglio "Iscrizioni" e seleziona la riga dello studente.'); return; }
   var r = foglio.getActiveRange().getRow();
@@ -1053,6 +1149,7 @@ function creaDaRiga(tipo) {
 /* ---------- FATTURE IN CLOUD ---------- */
 
 function fic(percorso) {
+  riservato();
   var token = props().getProperty('fic_token');
   if (!token) throw new Error('Manca il token di Fatture in Cloud: impostalo in Impostazioni.');
   for (var tentativo = 0; tentativo < 3; tentativo++) {
@@ -1182,6 +1279,7 @@ function riempi(t, campi) {
 
 /* modo: "si" manda allo studente, "prova" manda allo staff con il destinatario nell'oggetto. */
 function invia(modo, a, oggetto, corpo) {
+  riservato();
   if (modo === 'prova') MailApp.sendEmail({to: EMAIL_STAFF, name: NOME_SCUOLA, subject: '[PROVA → ' + a + '] ' + oggetto, body: corpo});
   else MailApp.sendEmail({to: a, replyTo: EMAIL_STAFF, name: NOME_SCUOLA, subject: oggetto, body: corpo});
 }
@@ -1321,7 +1419,9 @@ function riepilogoStaff() {
 }
 
 /* Il trigger di ogni mattina. Ogni parte va avanti anche se un'altra si ferma. */
-function ogniGiorno() {
+function ogniGiorno(e) {
+  if (!daTrigger(e)) return;
+  FIDATO = true;
   var imp = impostazioni();
   [
     function () { if (imp.promemoria !== 'no' && props().getProperty('fic_token')) { aggiornaFIC(); conBlocco(function () { promemoriaPagamenti(imp.promemoria); }); } },
@@ -1386,6 +1486,7 @@ function salvaImpostazioni(o) {
 
 /* Le schede del gestionale e il modello dell'attestato. Chiamata da configura() in Codice.gs. */
 function configuraGestionale() {
+  riservato();
   var ss = SpreadsheetApp.getActive(), p = props();
   Object.keys(SCHEMI).forEach(function (nome) {
     var s = ss.getSheetByName(nome) || ss.insertSheet(nome);

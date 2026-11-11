@@ -68,20 +68,28 @@ Il modulo del sito usa il deployment che c'è già. Va aggiornato, l'indirizzo n
 **Esegui come: Me**, **Chi può accedere: Chiunque**. L'URL va in `data/configuratore.json`,
 campo `"invio"`, poi `python3 -I .github/scripts/build_configuratore.py .`)
 
-## 5. Pubblica il gestionale
-Un secondo deployment dello stesso script, aperto solo agli account aliassisi.it:
-1. **Esegui il deployment → Nuovo deployment → App web**.
-2. Descrizione `Gestionale`. **Esegui come: Me (info@aliassisi.it)**.
-   **Chi può accedere: Chiunque all'interno di aliassisi.it**.
-3. **Esegui il deployment** e copia l'URL (finisce con `/exec`). Salvalo nei preferiti.
-4. Apri l'URL. Vai in **Impostazioni** e incollalo in "Link di questo gestionale".
+## 5. Il link del gestionale
+Il gestionale è lo stesso deployment del sito (punto 4, **Chi può accedere: Chiunque**): il suo URL
+`/exec` aperto nel browser mostra il gestionale. Salvalo nei preferiti. Il modulo del sito continua a
+mandare le iscrizioni allo stesso indirizzo.
 
-Chi apre il link deve essere nella lista dello staff (punto 6), se no vede solo una riga di testo.
-info@aliassisi.it è sempre nella lista.
+(Per una prova su una copia del foglio: nella copia, **Nuovo deployment → App web**, **Esegui come:
+Me**, **Chi può accedere: Chiunque**, e si usa l'URL di quel deployment.)
+
+**Come si entra:** si apre il link, si scrive la propria email e arriva un codice di 6 cifre (vale
+10 minuti). Dopo il codice quel browser resta collegato 30 giorni; **Esci** in alto a destra lo
+scollega. Il codice arriva solo agli indirizzi della lista dello staff: vanno bene anche Gmail e
+altri indirizzi non aliassisi.it. info@aliassisi.it è sempre nella lista.
+
+Chi non ha il codice non vede niente: la pagina chiede l'email e basta. Ogni funzione dello script
+controlla l'accesso; senza accesso funzionano solo l'invio delle iscrizioni dal sito, i trigger
+automatici e il menu ALIA del foglio (per chi apre il foglio).
 
 ## 6. Staff e aule
-In **Impostazioni**: le email dello staff (per esempio `segreteria@aliassisi.it, laura@aliassisi.it`)
-e i nomi delle aule. Devono essere account aliassisi.it.
+In **Impostazioni**: le email dello staff, separate da virgola (per esempio
+`segreteria@aliassisi.it, laura.rossi@gmail.com`), e i nomi delle aule. Chi viene tolto dalla lista
+non entra più, anche se era collegato. (La lista si può scrivere anche in Apps Script, Impostazioni
+progetto → Proprietà script → `staff`.)
 
 ## 7. Collega Fatture in Cloud
 Serve un token di Fatture in Cloud che può solo leggere.
@@ -270,7 +278,10 @@ di **tutti e due** i deployment (sito e gestionale). Gli URL restano gli stessi.
 - Google Workspace: circa 1.500 email al giorno.
 - Fatture in Cloud: 1.000 richieste all'ora. Un aggiornamento ne usa poche.
 - Un PDF di diplomi o attestati: al massimo 60 studenti per volta.
-- Il gestionale si apre con un account aliassisi.it nella lista dello staff.
+- Il gestionale si apre con un codice via email, solo per chi è nella lista dello staff. Al massimo
+  5 codici all'ora per indirizzo, 5 tentativi per codice.
+- I trigger automatici (ogni mattina, ogni ora) partono solo da soli: lanciare `ogniGiorno` o
+  `ogniOra` a mano dall'editor non fa niente.
 - File del passaporto: PDF, JPG o PNG, al massimo 5 MB.
 - Al massimo 5 iscrizioni all'ora dallo stesso indirizzo email (contro lo spam).
 - Se lo script non risponde, il modulo del sito apre l'email già scritta, come prima.

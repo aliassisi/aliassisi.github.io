@@ -56,6 +56,7 @@ function euro(n) { return (n === null || n === undefined || n === '') ? '' : Num
 /* ---------- RICEZIONE ---------- */
 
 function doPost(e) {
+  FIDATO = true;  // il sito manda le iscrizioni: è la sua porta, aperta a tutti
   try {
     var x = JSON.parse(e.postData.contents);
     // Il campo "sito" è invisibile alle persone: se è pieno, l'ha compilato un programma.
@@ -76,6 +77,8 @@ function doPost(e) {
   } catch (err) {
     console.error(err);
     return risposta({ok: false, errore: String(err && err.message || err)});
+  } finally {
+    FIDATO = false;
   }
 }
 
@@ -105,6 +108,7 @@ function controlla(x) {
 }
 
 function nuovoNumero(nome, prefisso) {
+  riservato();
   var anno = new Date().getFullYear(), chiave = 'contatore_' + nome + '_' + anno;
   var n = +(props().getProperty(chiave) || 0) + 1;
   props().setProperty(chiave, String(n));
@@ -112,6 +116,7 @@ function nuovoNumero(nome, prefisso) {
 }
 
 function salvaPassaporto(id, x) {
+  riservato();
   var f = x.file_passaporto, est = TIPI_FILE[f.tipo];
   if (!est) throw new Error('Il passaporto deve essere PDF, JPG o PNG');
   var byte = Utilities.base64Decode(f.dati);
@@ -122,6 +127,7 @@ function salvaPassaporto(id, x) {
 }
 
 function scriviRiga(id, x, link) {
+  riservato();
   var f = x.fattura || {};
   var v = {
     id: id, ricevuta: new Date(), stato: STATI[0],
@@ -169,6 +175,7 @@ function righeRiepilogo(x, en) {
 }
 
 function mandaEmail(id, x, link) {
+  riservato();
   var en = x.lingua === 'en';
   try {
     var allo = en
@@ -220,6 +227,7 @@ function onOpen() {
 }
 
 function apriGestionale() {
+  daMenu();
   var url = props().getProperty('url_gestionale');
   var ui = SpreadsheetApp.getUi();
   if (!url) { ui.alert('Il link del gestionale non è ancora impostato (ISTRUZIONI.md, punto 5).'); return; }
@@ -232,6 +240,7 @@ function apriGestionale() {
 /* Crea i fogli, le cartelle private su Drive e il modello del diploma.
    Si può rilanciare: non rifà quello che esiste già. */
 function configura() {
+  daMenu();
   var ss = SpreadsheetApp.getActive(), p = props();
   ss.setSpreadsheetTimeZone('Europe/Rome');
 
