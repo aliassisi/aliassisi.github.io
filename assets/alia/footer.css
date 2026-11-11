@@ -55,3 +55,13 @@ img[src*="certit.png"]{transform:scale(.75)}
 .ali-loghi li{width:140px;height:64px}
 .elementor-location-footer ul.ali-loghi--uni{padding-top:0}
 }
+
+/* Site-wide, not only the footer: long text in dark ardesia, easier to read
+   than ardesia on the beige background. Text on dark boxes
+   keeps its own colour (Elementor sets it with more specific rules). */
+.elementor-widget-text-editor,
+.elementor-widget-html,
+.elementor-tab-content,
+.elementor-testimonial__text{color:#2D4058}
+/* The footer has short lines, not long text: keep it all ardesia. */
+.elementor-location-footer .elementor-widget-text-editor{color:#3D5570}
