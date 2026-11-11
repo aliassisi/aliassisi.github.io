@@ -86,7 +86,7 @@ and run the build script.
 
 ## Gotchas
 - Colours: ardesia `#3D5570` for titles, boxes, buttons and the logo. Long text is dark ardesia
-  `#2D4058` at weight 400 (rule at the end of `assets/alia/footer.css`, plus each custom
+  `#2D4058`, weight 300 (rule at the end of `assets/alia/footer.css`, plus each custom
   block's base rule). New text blocks should follow this.
 - A path shows up in three forms: plain `assets/uploads/x`, JSON `\/assets\/uploads\/x`,
   and inside `&quot;` data attributes. Change all three.
