@@ -10,6 +10,9 @@ Il **gestionale** è una pagina per lo staff, sopra lo stesso foglio:
 - **Studenti**: tutte le iscrizioni, stato, prezzo, livello raggiunto, classi, fatture, documenti;
   si possono aggiungere iscrizioni arrivate per email o da agenzie;
 - **Classi**: il planning per aula e per settimana (5 aule), chi è senza classe, l'email a una classe;
+  i corsi individuali (privati, duo, online) hanno il loro calendario di lezioni;
+- **Calendario**: la settimana giorno per giorno, classi e lezioni individuali, per insegnante o per
+  aula; segna in rosso stesso insegnante o stessa aula alla stessa ora;
 - **Registro**: le lezioni di ogni classe (le stesse colonne del vecchio registro) e le assenze;
   da qui si calcolano le ore per l'attestato;
 - **Pagamenti**: fatture e proforma lette da Fatture in Cloud, abbinate agli studenti, promemoria;
@@ -128,6 +131,24 @@ Ogni email mandata è una riga della scheda **Promemoria**.
 - Il primo modello del diploma usava `{{nome}}` per nome e cognome. "Prepara il foglio" lo ha
   cambiato in `{{nome}} {{cognome}}`.
 
+## Corsi individuali (privati, duo, online)
+Ogni corso individuale è una "classe" di tipo **Individuale o duo**, con le sue lezioni.
+1. Lo studente compare in **Oggi → Corsi individuali da pianificare** (sono le iscrizioni dal sito
+   con una formula, o con "privat", "individ", "immersion", "online" nel nome del corso).
+2. Apri lo studente → **Crea il corso individuale**.
+3. Nel corso, **Pianifica le lezioni**: dal… al…, i giorni della settimana, ora di inizio e di fine,
+   aula, insegnante, quante lezioni (di solito quelle che restano dalle acquistate). Si possono
+   pianificare in più volte, con orari diversi, o aggiungere una lezione sola.
+4. **Manda il calendario** allo studente: un'email con le prossime lezioni e un file `.ics` che le
+   mette nel calendario del telefono.
+5. Dopo ogni lezione: apri la lezione (dal corso, dal **Calendario** o dal **Registro**), scrivi
+   cosa si è fatto e salva: diventa **fatta**. Gli altri stati: **annullata** (non conta) e
+   **persa** (lo studente non è venuto senza avvisare: conta come usata, non come frequentata).
+6. Per un duo: nel corso, **Aggiungi un secondo studente**.
+
+Il riepilogo del corso mostra lezioni acquistate, previste, fatte e quante ne restano da pianificare.
+Le ore dell'attestato contano solo le lezioni fatte.
+
 ## Come si lavora ogni giorno
 - **Nuova iscrizione dal sito**: arriva un'email a info@ e la vedi in **Oggi** e in **Studenti**
   con lo stato "Nuova". Aprila, controlla, cambia lo stato in "Confermata".
@@ -141,6 +162,11 @@ Ogni email mandata è una riga della scheda **Promemoria**.
 - **Fine corso**: **Diplomi e attestati**.
 - Il foglio Google resta: si può filtrare, ordinare, esportare. Non cambiare l'ordine delle
   colonne e non rinominare le schede.
+
+## Dopo un aggiornamento dello script
+Le schede Classi e Registro hanno colonne nuove (Tipo; Ora inizio, Ora fine, Aula, Stato).
+Il gestionale scrive da solo le intestazioni che mancano la prima volta che si apre. Le lezioni già
+scritte valgono come "fatte".
 
 ## Se cambi lo script
 Dopo una modifica: incolla i file, salva, poi **Gestisci deployment** e fai una **Nuova versione**

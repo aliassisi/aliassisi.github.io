@@ -10,17 +10,23 @@
 
 var FIC_API = 'https://api-v2.fattureincloud.it';
 var LIVELLI = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+/* Lo stato di una lezione. Le lezioni dei gruppi si scrivono già fatte; quelle dei privati si pianificano
+   (prevista) e poi diventano fatta, annullata (non si conta) o persa (lo studente non è venuto senza avvisare:
+   la lezione si conta come usata ma non frequentata). */
+var STATI_LEZIONE = ['prevista', 'fatta', 'annullata', 'persa'];
+var GIORNI = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
 
 /* Le schede del gestionale: [chiave, intestazione]. */
 var SCHEMI = {
   Classi: [['id', 'ID'], ['nome', 'Nome'], ['aula', 'Aula'], ['livello', 'Livello'],
-    ['insegnante', 'Insegnante'], ['inizio', 'Inizio'], ['fine', 'Fine'], ['orario', 'Orario'], ['note', 'Note']],
+    ['insegnante', 'Insegnante'], ['inizio', 'Inizio'], ['fine', 'Fine'], ['orario', 'Orario'], ['note', 'Note'], ['tipo', 'Tipo']],
   Assegnazioni: [['iscrizione', 'N. iscrizione'], ['classe', 'Classe'], ['dal', 'Dal'], ['al', 'Al']],
   Registro: [['id', 'ID'], ['classe', 'Classe'], ['data', 'Data'], ['orario', 'Orario'], ['ore', 'Ore'],
     ['volume', 'Volume/Capitolo'], ['novita', 'Novità'], ['ascolto', 'Attività ascolto'],
     ['lettura', 'Attività lettura'], ['scritta', 'Attività prod. scritta'], ['orale', 'Attività prod. orale'],
     ['ripetuto', 'Ripetuto'], ['da_ripetere', 'Da ripetere'], ['note', 'Note'], ['assenti', 'Assenti'],
-    ['insegnante', 'Insegnante'], ['modificato', 'Modificato']],
+    ['insegnante', 'Insegnante'], ['modificato', 'Modificato'],
+    ['ora_inizio', 'Ora inizio'], ['ora_fine', 'Ora fine'], ['aula', 'Aula'], ['stato', 'Stato']],
   Fatture: [['fic_id', 'ID Fatture in Cloud'], ['tipo', 'Tipo'], ['numero', 'Numero'], ['data', 'Data'],
     ['cliente', 'Cliente'], ['email', 'Email'], ['importo', 'Importo'], ['da_pagare', 'Da pagare'],
     ['scadenza', 'Prossima scadenza'], ['iscrizione', 'N. iscrizione'], ['abbinata', 'Abbinata'], ['aggiornata', 'Aggiornata']],
@@ -161,9 +167,20 @@ function impostazioni() {
   return o;
 }
 
+/* Le colonne aggiunte dopo l'installazione: scrive le intestazioni che mancano. */
+function intestazioni() {
+  ['Classi', 'Registro'].forEach(function (nome) {
+    var s = SpreadsheetApp.getActive().getSheetByName(nome), cols = SCHEMI[nome];
+    if (!s || s.getRange(1, cols.length).getValue() === cols[cols.length - 1][1]) return;
+    s.getRange(1, 1, 1, cols.length).setValues([cols.map(function (c) { return c[1]; })])
+      .setFontWeight('bold').setBackground('#3d5570').setFontColor('#ffffff');
+  });
+}
+
 /* Tutto quello che serve alla pagina, in una chiamata. */
 function carica() {
   var u = autorizzato();
+  intestazioni();
   var imp = impostazioni(), p = props();
   return {
     utente: u, oggi: oggiIso(),
@@ -178,7 +195,7 @@ function carica() {
     fic_token: !!p.getProperty('fic_token'),
     invii_attivi: ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'ogniGiorno'; }),
     foglio: SpreadsheetApp.getActive().getUrl(),
-    stati: STATI, livelli: LIVELLI
+    stati: STATI, livelli: LIVELLI, stati_lezione: STATI_LEZIONE
   };
 }
 
@@ -224,7 +241,8 @@ function salvaClasse(c) {
   if (!c.nome) throw new Error('Manca il nome della classe');
   if (!c.inizio || !c.fine || c.fine < c.inizio) throw new Error('Controlla le date della classe');
   var o = {nome: testo(c.nome, 200), aula: testo(c.aula, 50), livello: testo(c.livello, 50), insegnante: testo(c.insegnante, 200),
-    inizio: c.inizio, fine: c.fine, orario: testo(c.orario, 200), note: testo(c.note, 2000)};
+    inizio: c.inizio, fine: c.fine, orario: testo(c.orario, 200), note: testo(c.note, 2000),
+    tipo: c.tipo === 'privato' ? 'privato' : 'gruppo'};
   return conBlocco(function () {
     if (c.id) {
       var r = trova('Classi', 'id', c.id);
@@ -275,15 +293,36 @@ function togliAssegnazione(iscrizione, classe) {
 
 /* ---------- REGISTRO ---------- */
 
-var CAMPI_LEZIONE = ['orario', 'volume', 'novita', 'ascolto', 'lettura', 'scritta', 'orale', 'ripetuto', 'da_ripetere', 'note', 'insegnante'];
+var CAMPI_LEZIONE = ['volume', 'novita', 'ascolto', 'lettura', 'scritta', 'orale', 'ripetuto', 'da_ripetere', 'note', 'insegnante', 'aula'];
+
+function ora(s) {
+  if (!s) return '';
+  var m = String(s).match(/^(\d{1,2})[:.](\d{2})$/);
+  if (!m || +m[1] > 23 || +m[2] > 59) throw new Error('Ora non valida: ' + s);
+  return ('0' + (+m[1])).slice(-2) + ':' + m[2];
+}
+function minuti(hhmm) { var p = String(hhmm).split(':'); return +p[0] * 60 + +p[1]; }
+
+/* I campi di una lezione, controllati. Se mancano le ore, si calcolano da inizio e fine. */
+function lezioneDa(l) {
+  var o = {classe: l.classe, data: l.data, assenti: (l.assenti || []).join(', '), modificato: new Date()};
+  CAMPI_LEZIONE.forEach(function (k) { o[k] = testo(l[k], 2000); });
+  o.ora_inizio = ora(l.ora_inizio); o.ora_fine = ora(l.ora_fine);
+  if (o.ora_inizio && o.ora_fine && minuti(o.ora_fine) <= minuti(o.ora_inizio)) throw new Error('L’ora di fine viene prima dell’inizio');
+  o.orario = o.ora_inizio && o.ora_fine ? o.ora_inizio + '–' + o.ora_fine : testo(l.orario, 200);
+  var ore = l.ore === '' || l.ore === undefined || l.ore === null
+    ? (o.ora_inizio && o.ora_fine ? (minuti(o.ora_fine) - minuti(o.ora_inizio)) / 60 : NaN) : Number(l.ore);
+  if (!(ore >= 0 && ore <= 12)) throw new Error('Ore non valide');
+  o.ore = Math.round(ore * 100) / 100;
+  o.stato = l.stato || 'fatta';
+  if (STATI_LEZIONE.indexOf(o.stato) < 0) throw new Error('Stato della lezione non valido');
+  return o;
+}
 
 function salvaLezione(l) {
   var u = autorizzato();
   if (!l.classe || !l.data) throw new Error('Mancano classe o data');
-  var ore = Number(l.ore);
-  if (!(ore >= 0 && ore <= 12)) throw new Error('Ore non valide');
-  var o = {classe: l.classe, data: l.data, ore: ore, assenti: (l.assenti || []).join(', '), modificato: new Date()};
-  CAMPI_LEZIONE.forEach(function (k) { o[k] = testo(l[k], 2000); });
+  var o = lezioneDa(l);
   return conBlocco(function () {
     var c = trova('Classi', 'id', l.classe);
     if (!c) throw new Error('Classe non trovata');
@@ -309,13 +348,109 @@ function eliminaLezione(id) {
   });
 }
 
+/* Un corso privato (o per due) per uno studente: la classe e l'assegnazione insieme. */
+function creaPrivato(iscrizione) {
+  autorizzato();
+  return conBlocco(function () {
+    var v = trova('Iscrizioni', 'id', iscrizione);
+    if (!v) throw new Error('Iscrizione non trovata');
+    var dal = v.inizio || oggiIso(), al = v.fine || piuGiorni(dal, 27);
+    var id = nuovoNumero('classi', 'C');
+    aggiungi('Classi', {id: id, nome: 'Privato – ' + v.cognome + ' ' + v.nome, aula: '', livello: v.livello, insegnante: '',
+      inizio: dal, fine: al, orario: '', note: v.formula ? String(v.formula) : '', tipo: 'privato'});
+    aggiungi('Assegnazioni', {iscrizione: v.id, classe: id, dal: dal, al: al});
+    var d = carica();
+    d.creata = id;
+    return d;
+  });
+}
+
+/* Crea le lezioni previste di un corso nei giorni della settimana scelti, dal ... al ..., al massimo "quante". */
+function pianificaLezioni(p) {
+  autorizzato();
+  if (!p.dal || !p.al || p.al < p.dal) throw new Error('Controlla le date');
+  var giorni = (p.giorni || []).map(Number).filter(function (g) { return g >= 0 && g <= 6; });
+  if (!giorni.length) throw new Error('Scegli almeno un giorno della settimana');
+  if (giorniTra(p.dal, p.al) > 370) throw new Error('Al massimo un anno');
+  var quante = p.quante ? Math.min(+p.quante, 300) : 300;
+  return conBlocco(function () {
+    if (!trova('Classi', 'id', p.classe)) throw new Error('Classe non trovata');
+    var gia = {};
+    leggi('Registro').forEach(function (l) { if (l.classe === p.classe && l.stato !== 'annullata') gia[l.data + ' ' + (l.ora_inizio || '')] = true; });
+    var nuove = [], g = p.dal;
+    while (g <= p.al && nuove.length < quante) {
+      var o = lezioneDa({classe: p.classe, data: g, ora_inizio: p.ora_inizio, ora_fine: p.ora_fine, ore: p.ore,
+        aula: p.aula, insegnante: p.insegnante, stato: 'prevista'});
+      if (giorni.indexOf(giorno(g).getDay()) >= 0 && !gia[g + ' ' + o.ora_inizio]) {
+        o.id = nuovoNumero('lezioni', 'L');
+        nuove.push(SCHEMI.Registro.map(function (c) { return valoreCella(c[0], o[c[0]]); }));
+      }
+      g = piuGiorni(g, 1);
+    }
+    if (!nuove.length) throw new Error('Nessuna lezione nuova in quei giorni');
+    var s = scheda('Registro');
+    s.getRange(s.getLastRow() + 1, 1, nuove.length, SCHEMI.Registro.length).setValues(nuove);
+    var d = carica();
+    d.create = nuove.length;
+    return d;
+  });
+}
+
+/* Le prossime lezioni di uno studente per email, con un file .ics per il calendario del telefono. */
+function mandaCalendario(iscrizione) {
+  autorizzato();
+  var v = trova('Iscrizioni', 'id', iscrizione);
+  if (!v || !v.email) throw new Error('Manca l’email dello studente');
+  var oggi = oggiIso(), en = v.lingua === 'en';
+  var mie = leggi('Assegnazioni').filter(function (a) { return a.iscrizione === v.id; });
+  var lez = leggi('Registro').filter(function (l) {
+    return l.data >= oggi && l.stato === 'prevista' && mie.some(function (a) { return a.classe === l.classe && l.data >= a.dal && l.data <= a.al; });
+  }).sort(function (a, b) { return (a.data + a.ora_inizio) < (b.data + b.ora_inizio) ? -1 : 1; });
+  if (!lez.length) throw new Error('Nessuna lezione in programma');
+  var righe = lez.map(function (l) {
+    var d = giorno(l.data);
+    return '- ' + (en ? Utilities.formatDate(d, fusoOrario(), 'EEE d MMM yyyy') : GIORNI[d.getDay()] + ' ' + dataTesto(d)) +
+      (l.orario ? ', ' + l.orario : '') + (l.aula ? ', ' + l.aula : '') + (l.insegnante ? (en ? ', teacher ' : ', insegnante ') + l.insegnante : '');
+  });
+  var corpo = (en ? ['Dear ' + v.nome + ',', '', 'here are your next lessons:', ''] : ['Ciao ' + v.nome + ',', '', 'ecco le tue prossime lezioni:', ''])
+    .concat(righe, ['', en ? 'The attached file adds them to your calendar.' : 'Il file allegato le aggiunge al tuo calendario.',
+      '', en ? 'Best wishes,' : 'A presto,', NOME_SCUOLA, EMAIL_STAFF]).join('\n');
+  MailApp.sendEmail({to: v.email, replyTo: EMAIL_STAFF, name: NOME_SCUOLA,
+    subject: en ? 'Your lessons at ALIA' : 'Le tue lezioni all’ALIA', body: corpo,
+    attachments: [Utilities.newBlob(ics(lez, en), 'text/calendar', 'lezioni-alia.ics')]});
+  registra('calendario', 'calendario:' + v.id + ':' + oggi, v.id, v.email, 'inviato');
+  return carica();
+}
+
+/* Un file iCalendar: gli orari in UTC, così ogni telefono li mette all'ora giusta. */
+function ics(lez, en) {
+  var utc = function (data, hhmm) {
+    var d = giorno(data), m = minuti(hhmm);
+    d.setHours(Math.floor(m / 60), m % 60, 0, 0);
+    return Utilities.formatDate(d, 'UTC', "yyyyMMdd'T'HHmmss'Z'");
+  };
+  var r = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ALIA//Gestionale//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  lez.forEach(function (l) {
+    var inizio = l.ora_inizio || '09:00', fine = l.ora_fine;
+    if (!fine) { var m = minuti(inizio) + Math.round((Number(l.ore) || 1) * 60); fine = Math.floor(m / 60) + ':' + ('0' + m % 60).slice(-2); }
+    r.push('BEGIN:VEVENT', 'UID:' + l.id + '@aliassisi.it', 'DTSTAMP:' + Utilities.formatDate(new Date(), 'UTC', "yyyyMMdd'T'HHmmss'Z'"),
+      'DTSTART:' + utc(l.data, inizio), 'DTEND:' + utc(l.data, fine),
+      'SUMMARY:' + (en ? 'Italian lesson – ALIA' : 'Lezione di italiano – ALIA'),
+      'LOCATION:' + ((l.aula ? l.aula + ' - ' : '') + NOME_SCUOLA + ' - Assisi').replace(/[;,\r\n]/g, ' '), 'END:VEVENT');
+  });
+  r.push('END:VCALENDAR');
+  return r.join('\r\n');
+}
+
 /* Ore e lezioni frequentate da uno studente: le lezioni delle sue classi, nei suoi giorni, meno le assenze. */
 function frequenza(id, ass, reg) {
   var ore = 0, lezioni = 0, totOre = 0;
   ass.filter(function (a) { return a.iscrizione === id; }).forEach(function (a) {
     reg.forEach(function (l) {
       if (l.classe !== a.classe || l.data < a.dal || l.data > a.al) return;
+      if (l.stato === 'prevista' || l.stato === 'annullata') return;
       totOre += Number(l.ore) || 0;
+      if (l.stato === 'persa') return;
       var assenti = String(l.assenti || '').split(/\s*,\s*/);
       if (assenti.indexOf(id) >= 0) return;
       ore += Number(l.ore) || 0; lezioni++;
