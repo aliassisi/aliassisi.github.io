@@ -143,9 +143,24 @@ Ogni corso individuale è una "classe" di tipo **Individuale o duo**, con le sue
 4. **Manda il calendario** allo studente: un'email con le prossime lezioni e un file `.ics` che le
    mette nel calendario del telefono.
 5. Dopo ogni lezione: apri la lezione (dal corso, dal **Calendario** o dal **Registro**), scrivi
-   cosa si è fatto e salva: diventa **fatta**. Gli altri stati: **annullata** (non conta) e
-   **persa** (lo studente non è venuto senza avvisare: conta come usata, non come frequentata).
+   cosa si è fatto e salva: diventa **fatta**. Gli altri stati: **annullata** (non conta e
+   si recupera, vedi sotto) e **persa** (lo studente non è venuto senza avvisare: conta come usata,
+   non come frequentata).
 6. Per un duo: nel corso, **Aggiungi un secondo studente**.
+
+### Lezioni annullate
+Una lezione annullata non si perde: si recupera.
+1. Accanto alla lezione, **Annulla** (o stato "annullata"). Il gestionale chiede conferma.
+2. **Fissa subito il recupero**: propone il primo giorno libero alla stessa ora (né lo studente né
+   l'insegnante hanno altro). Cambialo se serve. Oppure togli la spunta e fissalo dopo con
+   **Fissa il recupero**.
+3. **Avvisa lo studente**: un'email con la lezione annullata e il recupero, e un file che toglie la
+   lezione dal suo calendario (e aggiunge il recupero). Il file per togliere funziona se lo studente
+   aveva aggiunto la lezione dal nostro file; con Google Calendar e Apple di solito sì, con altre app
+   non è provato.
+4. Le lezioni annullate senza recupero sono in **Oggi → Lezioni annullate da recuperare** e nel
+   corso ("da recuperare").
+5. Se il recupero cade dopo la fine del corso, il corso e le date dello studente si allungano da soli.
 
 ### Lezioni online
 Sono corsi individuali con **Modalità: Online** (se il corso del sito ha "online" nel nome, il
@@ -183,7 +198,7 @@ Le ore dell'attestato contano solo le lezioni fatte.
 
 ## Dopo un aggiornamento dello script
 Le schede Classi e Registro hanno colonne nuove (Tipo, Modalità, Link online; Ora inizio, Ora fine,
-Aula, Stato, Link online).
+Aula, Stato, Link online, Recupero della lezione).
 Il gestionale scrive da solo le intestazioni che mancano la prima volta che si apre. Le lezioni già
 scritte valgono come "fatte".
 

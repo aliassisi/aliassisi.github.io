@@ -14,7 +14,7 @@ var LIVELLI = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
    (prevista) e poi diventano fatta, annullata (non si conta) o persa (lo studente non è venuto senza avvisare:
    la lezione si conta come usata ma non frequentata). */
 var STATI_LEZIONE = ['prevista', 'fatta', 'annullata', 'persa'];
-var GIORNI = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+var GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
 
 /* Le schede del gestionale: [chiave, intestazione]. */
 var SCHEMI = {
@@ -27,7 +27,8 @@ var SCHEMI = {
     ['lettura', 'Attività lettura'], ['scritta', 'Attività prod. scritta'], ['orale', 'Attività prod. orale'],
     ['ripetuto', 'Ripetuto'], ['da_ripetere', 'Da ripetere'], ['note', 'Note'], ['assenti', 'Assenti'],
     ['insegnante', 'Insegnante'], ['modificato', 'Modificato'],
-    ['ora_inizio', 'Ora inizio'], ['ora_fine', 'Ora fine'], ['aula', 'Aula'], ['stato', 'Stato'], ['link', 'Link online']],
+    ['ora_inizio', 'Ora inizio'], ['ora_fine', 'Ora fine'], ['aula', 'Aula'], ['stato', 'Stato'], ['link', 'Link online'],
+    ['recupero_di', 'Recupero della lezione']],
   Fatture: [['fic_id', 'ID Fatture in Cloud'], ['tipo', 'Tipo'], ['numero', 'Numero'], ['data', 'Data'],
     ['cliente', 'Cliente'], ['email', 'Email'], ['importo', 'Importo'], ['da_pagare', 'Da pagare'],
     ['scadenza', 'Prossima scadenza'], ['iscrizione', 'N. iscrizione'], ['abbinata', 'Abbinata'], ['aggiornata', 'Aggiornata']],
@@ -339,7 +340,8 @@ function salvaLezione(l) {
   return conBlocco(function () {
     var c = trova('Classi', 'id', l.classe);
     if (!c) throw new Error('Classe non trovata');
-    if (!o.insegnante) o.insegnante = c.insegnante || u;
+    if (!o.insegnante) o.insegnante = c.insegnante || '';
+    estendiCorso(l.classe, o.data, o.data);
     if (l.id) {
       var r = trova('Registro', 'id', l.id);
       if (!r) throw new Error('Lezione non trovata');
@@ -359,6 +361,21 @@ function eliminaLezione(id) {
     if (r) scheda('Registro').deleteRow(r._r);
     return carica();
   });
+}
+
+/* Un corso individuale si allunga se una lezione (un recupero, per esempio) cade fuori dalle sue date:
+   si spostano la fine (o l'inizio) del corso e le date degli studenti che arrivavano fino lì. */
+function estendiCorso(classe, dal, al) {
+  var c = trova('Classi', 'id', classe);
+  if (!c || c.tipo !== 'privato' || (dal >= c.inizio && al <= c.fine)) return;
+  leggi('Assegnazioni').forEach(function (a) {
+    if (a.classe !== classe) return;
+    var o = {};
+    if (al > c.fine && a.al >= c.fine) o.al = al;
+    if (dal < c.inizio && a.dal <= c.inizio) o.dal = dal;
+    if (o.al || o.dal) aggiorna('Assegnazioni', a._r, o);
+  });
+  aggiorna('Classi', c._r, {inizio: dal < c.inizio ? dal : c.inizio, fine: al > c.fine ? al : c.fine});
 }
 
 /* Un corso privato (o per due) per uno studente: la classe e l'assegnazione insieme. */
@@ -404,6 +421,8 @@ function pianificaLezioni(p) {
     if (!nuove.length) throw new Error('Nessuna lezione nuova in quei giorni');
     var s = scheda('Registro');
     s.getRange(s.getLastRow() + 1, 1, nuove.length, SCHEMI.Registro.length).setValues(nuove);
+    var date = nuove.map(function (r) { return iso(r[2]); }).sort();
+    estendiCorso(p.classe, date[0], date[date.length - 1]);
     var d = carica();
     d.create = nuove.length;
     return d;
@@ -443,13 +462,14 @@ function mandaCalendario(iscrizione) {
 }
 
 /* Un file iCalendar: gli orari in UTC, così ogni telefono li mette all'ora giusta. */
-function ics(lez, en) {
+/* annulla: true fa un file che toglie le lezioni dal calendario (stesso UID, METHOD:CANCEL). */
+function ics(lez, en, annulla) {
   var utc = function (data, hhmm) {
     var d = giorno(data), m = minuti(hhmm);
     d.setHours(Math.floor(m / 60), m % 60, 0, 0);
     return Utilities.formatDate(d, 'UTC', "yyyyMMdd'T'HHmmss'Z'");
   };
-  var r = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ALIA//Gestionale//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  var r = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ALIA//Gestionale//IT', 'CALSCALE:GREGORIAN', annulla ? 'METHOD:CANCEL' : 'METHOD:PUBLISH'];
   lez.forEach(function (l) {
     var inizio = l.ora_inizio || '09:00', fine = l.ora_fine;
     if (!fine) { var m = minuti(inizio) + Math.round((Number(l.ore) || 1) * 60); fine = Math.floor(m / 60) + ':' + ('0' + m % 60).slice(-2); }
@@ -458,6 +478,7 @@ function ics(lez, en) {
       'SUMMARY:' + (en ? 'Italian lesson – ALIA' : 'Lezione di italiano – ALIA'),
       'LOCATION:' + (l.online ? l.online : ((l.aula ? l.aula + ' - ' : '') + NOME_SCUOLA + ' - Assisi').replace(/[;,\r\n]/g, ' ')));
     if (l.online) r.push('URL:' + l.online, 'DESCRIPTION:' + (en ? 'Online lesson: ' : 'Lezione online: ') + l.online.replace(/([,;\\])/g, '\\$1'));
+    if (annulla) r.push('STATUS:CANCELLED', 'SEQUENCE:1');
     r.push('END:VEVENT');
   });
   r.push('END:VCALENDAR');
@@ -530,6 +551,72 @@ function mandaLink(idLezione) {
   });
   var d = carica();
   d.inviate = st.length;
+  return d;
+}
+
+function quandoTesto(l, en) {
+  var d = giorno(l.data);
+  return en ? Utilities.formatDate(d, fusoOrario(), 'EEEE d MMMM') + (l.ora_inizio ? ' at ' + l.ora_inizio : '')
+    : GIORNI[d.getDay()] + ' ' + dataTesto(d) + (l.ora_inizio ? ' alle ' + l.ora_inizio : '');
+}
+
+/* Annulla una lezione. Non si perde: si recupera. Con "nuova" ({data, ora_inizio, ora_fine}) crea subito il
+   recupero; con "avvisa" manda allo studente l'email con un file che toglie la lezione dal calendario
+   (e, se c'è, uno che aggiunge il recupero). */
+function recuperaLezione(id, nuova, avvisa) {
+  if (!nuova || !nuova.data) throw new Error('Scrivi la data del recupero');
+  return annullaLezione(id, nuova, avvisa, true);
+}
+
+/* gia: la lezione è già annullata e si fissa solo il recupero. */
+function annullaLezione(id, nuova, avvisa, gia) {
+  autorizzato();
+  var esito = conBlocco(function () {
+    var l = trova('Registro', 'id', id);
+    if (!l) throw new Error('Lezione non trovata');
+    if (!gia && l.stato === 'fatta') throw new Error('La lezione risulta già fatta');
+    if (gia && l.stato !== 'annullata') throw new Error('La lezione non è annullata');
+    if (gia && leggi('Registro').some(function (x) { return x.recupero_di === l.id && x.stato !== 'annullata'; })) throw new Error('Il recupero di questa lezione c’è già');
+    var c = trova('Classi', 'id', l.classe), rec = null;
+    if (nuova && nuova.data) {
+      rec = lezioneDa({classe: l.classe, data: nuova.data, ora_inizio: nuova.ora_inizio || l.ora_inizio, ora_fine: nuova.ora_fine || l.ora_fine,
+        ore: (nuova.ora_inizio || nuova.ora_fine) ? '' : l.ore, aula: l.aula, insegnante: l.insegnante, link: l.link, stato: 'prevista'});
+      rec.id = nuovoNumero('lezioni', 'L');
+      rec.recupero_di = l.id;
+      aggiungi('Registro', rec);
+      estendiCorso(l.classe, rec.data, rec.data);
+    }
+    if (!gia) aggiorna('Registro', l._r, {stato: 'annullata', modificato: new Date()});
+    return {l: l, c: c, rec: rec};
+  });
+  var inviate = 0;
+  if (avvisa) {
+    var isc = {}; leggi('Iscrizioni').forEach(function (v) { isc[v.id] = v; });
+    var l = esito.l, rec = esito.rec, url = linkDi(l, esito.c);
+    l.online = url;
+    if (rec) rec.online = linkDi(rec, esito.c);
+    studentiDi(l, leggi('Assegnazioni'), isc).forEach(function (v) {
+      var en = v.lingua === 'en';
+      // (gli studenti sono quelli della lezione annullata)
+      var corpo = (en
+        ? ['Dear ' + v.nome + ',', '', gia ? 'about your cancelled lesson of ' + quandoTesto(l, true) + ':' : 'your lesson on ' + quandoTesto(l, true) + ' (Italian time) is cancelled.', '',
+           rec ? 'We will make it up on ' + quandoTesto(rec, true) + '.' : 'We will make it up: we will write to you with the new date.']
+        : ['Ciao ' + v.nome + ',', '', gia ? 'per la lezione annullata di ' + quandoTesto(l, false) + ':' : 'la lezione di ' + quandoTesto(l, false) + ' è annullata.', '',
+           rec ? 'La recuperiamo ' + quandoTesto(rec, false) + '.' : 'La recuperiamo: ti scriviamo con la nuova data.']);
+      if (rec && rec.online) corpo.push((en ? 'Link: ' : 'Link: ') + rec.online);
+      corpo.push('', en ? 'The attached file updates your calendar.' : 'Il file allegato aggiorna il tuo calendario.', '', en ? 'Best wishes,' : 'A presto,', NOME_SCUOLA, EMAIL_STAFF);
+      var allegati = gia ? [] : [Utilities.newBlob(ics([l], en, true), 'text/calendar', 'lezione-annullata.ics')];
+      if (rec) allegati.push(Utilities.newBlob(ics([rec], en), 'text/calendar', 'recupero.ics'));
+      MailApp.sendEmail({to: v.email, replyTo: EMAIL_STAFF, name: NOME_SCUOLA, body: corpo.join('\n'), attachments: allegati,
+        subject: gia ? (en ? 'Make-up lesson: ' + quandoTesto(rec, true) : 'Recupero della lezione: ' + quandoTesto(rec, false))
+          : (en ? 'Lesson cancelled: ' + quandoTesto(l, true) : 'Lezione annullata: ' + quandoTesto(l, false))});
+      registra(gia ? 'recupero' : 'annullata', (gia ? 'recupero:' : 'annullata:') + l.id + ':' + v.id, v.id, v.email, 'inviato');
+      inviate++;
+    });
+  }
+  var d = carica();
+  d.inviate = inviate;
+  d.recupero = esito.rec ? esito.rec.id : '';
   return d;
 }
 

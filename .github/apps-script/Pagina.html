@@ -155,6 +155,11 @@ function contaLez(lez) {
   return n;
 }
 function statoLez(s) { s = s || 'fatta'; return '<span class="tag ' + ({prevista: '', fatta: 'ok', annullata: 'err', persa: 'att'}[s] || '') + '">' + esc(s) + '</span>'; }
+/* Le lezioni annullate che non hanno ancora un recupero. */
+function daRecuperare(lez) {
+  return lez.filter(function (l) { return l.stato === 'annullata' && !D.registro.some(function (x) { return x.recupero_di === l.id && x.stato !== 'annullata'; }); });
+}
+function recuperoDi(l) { return D.registro.filter(function (x) { return x.recupero_di === l.id && x.stato !== 'annullata'; })[0]; }
 function giornoSett(iso) { return ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'][dataDa(iso).getUTCDay()]; }
 function frequenza(id) {
   var ore = 0, lez = 0, tot = 0;
@@ -208,6 +213,7 @@ VISTE.oggi = function () {
   var md = [], i; for (i = 0; i < 7; i++) md.push(piu(lun, i).slice(5));
   var compl = att.filter(function (v) { return v.nascita && md.indexOf(v.nascita.slice(5)) >= 0 && sovrap(v.inizio, v.fine, lun, dom); });
   var indOggi = impegni(o).filter(function (x) { return x.lez && x.stato !== 'annullata'; });
+  var recuperi = daRecuperare(D.registro.filter(function (l) { return privato(CLA[l.classe]); }));
   var daPian = att.filter(function (v) { return individuale(v) && v.fine >= o && !lezioniDi(v.id).some(function (l) { return privato(CLA[l.classe]); }); });
   function scheda(titolo, n, righe, vuoto) {
     return '<div class="card"><div class="tenue">' + titolo + '</div><div class="num">' + n + '</div>' +
@@ -222,6 +228,7 @@ VISTE.oggi = function () {
     scheda('Iscrizioni nuove da confermare', nuove.length, nuove.map(function (v) { return riga(v, v.corso_nome + ' · ' + gg(v.inizio)); }), 'Nessuna.') +
     scheda('Pagamenti scaduti', scad.length, scad.map(function (f) { var v = ISC[f.iscrizione]; return '<li>' + (v ? linkStud(v) : esc(f.cliente)) + ' <span class="tenue piccolo">' + esc(f.numero) + ' · ' + euro(f.da_pagare) + ' · ' + gg(f.scadenza) + '</span></li>'; }), D.fic_token ? 'Nessuno.' : 'Collega Fatture in Cloud in Impostazioni.') +
     scheda('Lezioni individuali oggi', indOggi.length, indOggi.map(function (x) { return '<li><button class="l" data-classe="' + esc(x.classe.id) + '">' + esc(x.titolo) + '</button> <span class="tenue piccolo">' + esc([x.inizio && x.inizio + '–' + x.fine, x.aula, x.ins].filter(Boolean).join(' · ')) + '</span></li>'; }), 'Nessuna.') +
+    scheda('Lezioni annullate da recuperare', recuperi.length, recuperi.map(function (l) { return '<li><button class="l" data-classe="' + esc(l.classe) + '">' + esc(CLA[l.classe].nome) + '</button> <span class="tenue piccolo">annullata ' + giornoSett(l.data) + ' ' + gg(l.data) + '</span></li>'; }), 'Nessuna.') +
     scheda('Corsi individuali da pianificare', daPian.length, daPian.map(function (v) { return riga(v, (v.formula || v.corso_nome) + ' · ' + gg(v.inizio) + (v.lezioni_totali ? ' · ' + v.lezioni_totali + ' lezioni' : '')); }), 'Nessuno.') +
     scheda('Compleanni questa settimana', compl.length, compl.map(function (v) { return riga(v, gg(v.nascita)); }), 'Nessuno.') +
     '</div>';
@@ -453,14 +460,19 @@ function sezioneLezioni(c, ass) {
   var lez = D.registro.filter(function (l) { return l.classe === c.id; }).sort(perDataOra);
   var n = contaLez(lez), comprate = ass.length ? Number(ISC[ass[0].iscrizione].lezioni_totali) || 0 : 0;
   var usate = n.prevista + n.fatta + n.persa, resto = comprate ? Math.max(comprate - usate, 0) : '';
-  var conf = conflitti();
+  var conf = conflitti(), dr = daRecuperare(lez).length;
   var dal = c.inizio > D.oggi ? c.inizio : D.oggi;
   return '<h3>Lezioni</h3><div class="piccolo">' + (comprate ? 'Acquistate <b>' + comprate + '</b> · ' : '') + 'previste <b>' + n.prevista + '</b> · fatte <b>' + n.fatta + '</b>' +
-    (n.persa ? ' · perse ' + n.persa : '') + (n.annullata ? ' · annullate ' + n.annullata : '') + (comprate ? (usate > comprate ? ' · <span class="tag err">' + (usate - comprate) + ' oltre le acquistate</span>' : ' · <b>da pianificare ' + resto + '</b>') : '') + ' · ore fatte ' + n.ore_fatte + '</div>' +
+    (n.persa ? ' · perse ' + n.persa : '') + (n.annullata ? ' · annullate ' + n.annullata : '') + (dr ? ' · <span class="tag att">da recuperare ' + dr + '</span>' : '') + (comprate ? (usate > comprate ? ' · <span class="tag err">' + (usate - comprate) + ' oltre le acquistate</span>' : ' · <b>da pianificare ' + resto + '</b>') : '') + ' · ore fatte ' + n.ore_fatte + '</div>' +
     (lez.length ? '<div class="scroll" style="margin-top:8px"><table><thead><tr><th>Giorno</th><th>Ora</th><th>Aula</th><th>Insegnante</th><th>Stato</th><th></th></tr></thead><tbody>' + lez.map(function (l) {
-      return '<tr><td>' + giornoSett(l.data) + ' ' + ggA(l.data) + '</td><td>' + esc(l.orario) + (conf[l.id] ? ' <span class="tag err" title="' + esc(conf[l.id]) + '">sovrapposta</span>' : '') + '</td><td>' + (linkDi(l, c) ? 'online' : esc(l.aula)) + '</td><td>' + esc(l.insegnante) + '</td>' +
+      var rec = l.stato === 'annullata' ? recuperoDi(l) : null, orig = l.recupero_di ? lezioneDaId(l.recupero_di) : null;
+      var nota = l.stato === 'annullata' ? (rec ? ' <span class="tag">recuperata il ' + ggA(rec.data) + '</span>' : ' <span class="tag att">da recuperare</span>') :
+        (orig ? ' <span class="tag">recupero del ' + ggA(orig.data) + '</span>' : '');
+      return '<tr><td>' + giornoSett(l.data) + ' ' + ggA(l.data) + nota + '</td><td>' + esc(l.orario) + (conf[l.id] ? ' <span class="tag err" title="' + esc(conf[l.id]) + '">sovrapposta</span>' : '') + '</td><td>' + (linkDi(l, c) ? 'online' : esc(l.aula)) + '</td><td>' + esc(l.insegnante) + '</td>' +
         '<td><select data-statolez="' + esc(l.id) + '">' + D.stati_lezione.map(function (s) { return '<option' + ((l.stato || 'fatta') === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></td>' +
         '<td><button class="b piccolo" data-apri="' + esc(l.id) + '">Apri</button>' +
+        (l.stato === 'prevista' ? ' <button class="b piccolo r" data-annulla="' + esc(l.id) + '">Annulla</button>' : '') +
+        (l.stato === 'annullata' && !recuperoDi(l) ? ' <button class="b piccolo" data-recupera="' + esc(l.id) + '">Fissa il recupero</button>' : '') +
         (linkDi(l, c) && l.stato === 'prevista' && l.data >= D.oggi ? ' <button class="b piccolo" data-zoom="' + esc(l.id) + '">Manda il link</button>' : '') + '</td></tr>';
     }).join('') + '</tbody></table></div>' : '<div class="vuoto-msg">Nessuna lezione. Pianificale qui sotto.</div>') +
     '<details' + (lez.length ? '' : ' open') + ' style="margin-top:10px"><summary><b>Pianifica le lezioni</b></summary><div class="campi" style="margin-top:8px">' +
@@ -511,8 +523,12 @@ function apriClasse(id) {
     chiama('emailClasse', id, o, t).then(function (r) { avviso('Email mandate: ' + r.inviate); });
   };
   if (!privato(c)) return;
+  $$('[data-annulla]', d).forEach(function (b) { b.onclick = function () { annulla(b.getAttribute('data-annulla'), function () { apriClasse(id); }); }; });
+  $$('[data-recupera]', d).forEach(function (b) { b.onclick = function () { recupera(b.getAttribute('data-recupera'), function () { apriClasse(id); }); }; });
   $$('[data-statolez]', d).forEach(function (s) { s.onchange = function () {
-    var l = lezioneDaId(s.getAttribute('data-statolez')), o = perSalvare(l); o.stato = s.value;
+    var l = lezioneDaId(s.getAttribute('data-statolez')), o = perSalvare(l);
+    if (s.value === 'annullata') { s.value = l.stato || 'fatta'; annulla(l.id, function () { apriClasse(id); }); return; }
+    o.stato = s.value;
     chiama('salvaLezione', o).then(function () { avviso('Lezione: ' + s.value); disegna(); apriClasse(id); });
   }; });
   $$('[data-zoom]', d).forEach(function (b) { b.onclick = function () {
@@ -651,6 +667,54 @@ function perSalvare(l) {
   return o;
 }
 
+/* Annullare una lezione: conferma, recupero subito o dopo, email allo studente. */
+function annulla(lid, dopo) { finestraRecupero(lid, true, dopo); }
+function recupera(lid, dopo) { finestraRecupero(lid, false, dopo); }
+/* Il primo giorno libero (non domenica) dopo la lezione, alla stessa ora: né la classe né l'insegnante hanno altro. */
+function primoLibero(l) {
+  var c = CLA[l.classe], ins = l.insegnante || c.insegnante, g = l.data > D.oggi ? l.data : D.oggi, i;
+  if (!l.ora_inizio || !l.ora_fine) return piu(g, 7);
+  for (i = 0; i < 60; i++) {
+    g = piu(g, 1);
+    if (dataDa(g).getUTCDay() === 0) continue;
+    var occupato = impegni(g).some(function (x) {
+      if (x.stato === 'annullata' || !x.inizio || !x.fine) return false;
+      if (!(x.classe.id === l.classe || (ins && x.ins === ins))) return false;
+      return aMin(x.inizio) < aMin(l.ora_fine) && aMin(l.ora_inizio) < aMin(x.fine);
+    });
+    if (!occupato) return g;
+  }
+  return piu(l.data, 7);
+}
+function finestraRecupero(lid, annullare, dopo) {
+  var l = lezioneDaId(lid), c = CLA[l.classe];
+  var st = assDiClasse(c.id).filter(function (a) { return ISC[a.iscrizione] && a.dal <= l.data && a.al >= l.data; }).map(function (a) { return ISC[a.iscrizione]; });
+  var prossima = primoLibero(l);
+  var quando = giornoSett(l.data) + ' ' + ggA(l.data) + (l.orario ? ', ' + l.orario : '');
+  var corpo = '<p>' + (annullare ? 'Annullare la lezione di <b>' + esc(quando) + '</b>' : 'Recupero della lezione annullata di <b>' + esc(quando) + '</b>') +
+    (st.length ? ' (' + esc(st.map(nome).join(', ')) + ')' : '') + '?</p>' +
+    (annullare ? '<p class="tenue piccolo">Non si perde: resta da recuperare finché non fissi il recupero.</p><label class="checks" style="margin:8px 0"><input type="checkbox" id="a-subito" checked> Fissa subito il recupero</label>' : '') +
+    '<div class="campi" id="a-campi">' + campo('a-data', 'Data del recupero', prossima, 'date') + campo('a-inizio', 'Ora inizio', l.ora_inizio, 'time') + campo('a-fine', 'Ora fine', l.ora_fine, 'time') + '</div>' +
+    '<label class="checks" style="margin:12px 0"><input type="checkbox" id="a-avvisa"' + (st.some(function (v) { return v.email; }) ? ' checked' : ' disabled') + '> ' +
+    (annullare ? 'Avvisa lo studente per email (con il file che aggiorna il suo calendario)' : 'Manda allo studente la nuova data') + '</label>';
+  var d = dialogo(annullare ? 'Annulla la lezione' : 'Fissa il recupero', corpo, '<button class="b p" id="a-ok">' + (annullare ? 'Annulla la lezione' : 'Salva il recupero') + '</button>');
+  if (annullare) $('#a-subito', d).onchange = function () { $('#a-campi', d).style.display = this.checked ? '' : 'none'; };
+  $('#a-ok', d).onclick = function () {
+    var subito = !annullare || $('#a-subito', d).checked;
+    var nuova = subito ? {data: $('#a-data', d).value, ora_inizio: $('#a-inizio', d).value, ora_fine: $('#a-fine', d).value} : null;
+    if (subito && !nuova.data) { avviso('Scrivi la data del recupero', true); return; }
+    var avvisa = $('#a-avvisa', d).checked;
+    var fatto = function (r) {
+      d.close(); disegna();
+      var conf = r && r.recupero ? conflitti()[r.recupero] : '';
+      avviso((annullare ? 'Lezione annullata' : 'Recupero fissato') + (r && r.inviate ? ', email mandata' : '') + (conf ? '. Attenzione, il recupero si sovrappone: ' + conf : ''), !!conf);
+      if (dopo) dopo();
+    };
+    if (annullare) chiama('annullaLezione', lid, nuova, avvisa).then(fatto);
+    else chiama('recuperaLezione', lid, nuova, avvisa).then(fatto);
+  };
+}
+
 function lezione(id, classeId, dopo) {
   var c = CLA[classeId];
   var prec = D.registro.filter(function (l) { return l.classe === c.id; }).sort(perDataOra).slice(-1)[0];
@@ -686,6 +750,11 @@ function lezione(id, classeId, dopo) {
       assenti: $$('#l-assenti input:checked', d).map(function (i) { return i.value; })};
     COL_REG.forEach(function (k) { x[k[0]] = $('#l-' + k[0], d).value; });
     if (!x.data) { avviso('Scrivi la data', true); return; }
+    if (id && x.stato === 'annullata' && l.stato !== 'annullata') {
+      x.stato = l.stato || 'prevista';
+      chiama('salvaLezione', x).then(function () { disegna(); annulla(id, dopo); });
+      return;
+    }
     chiama('salvaLezione', x).then(function () { d.close(); avviso('Lezione salvata'); disegna(); if (dopo) dopo(); });
   };
   if (id) $('#l-elimina', d).onclick = function () { if (confirm('Eliminare questa lezione?')) chiama('eliminaLezione', id).then(function () { d.close(); disegna(); if (dopo) dopo(); }); };
