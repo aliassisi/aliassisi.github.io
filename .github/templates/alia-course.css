@@ -5,7 +5,7 @@
   --serif:"Cormorant Garamond",Georgia,serif; --sans:Inter,system-ui,sans-serif;}
 .ali-course *{box-sizing:border-box}
 @media(prefers-reduced-motion:reduce){.ali-course *{transition:none!important}}
-.ali-course{background:var(--sand);color:var(--ink);font:300 16px/1.7 var(--sans);letter-spacing:.2px}
+.ali-course{background:var(--sand);color:var(--deep);font:300 16px/1.7 var(--sans);letter-spacing:.2px}
 .ali-course a{color:inherit}
 .ali-course img{max-width:100%;display:block}
 .ali-course :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
