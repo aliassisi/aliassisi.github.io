@@ -52,6 +52,7 @@ tr.cl:hover td{background:var(--blu-f)}
 .cal{table-layout:fixed;min-width:840px}.cal th,.cal td{border-right:1px solid var(--linea)}.cal td{height:120px}
 .blocco .tag{white-space:normal;margin-top:2px}
 .occ{table-layout:fixed;min-width:980px}.occ th,.occ td{padding:3px 2px;text-align:center;border-right:1px solid var(--linea);font-size:11px}.occ th:first-child,.occ td:first-child{width:190px;text-align:left;padding:5px 8px;font-size:13px}.occ th.dom{color:var(--err)}.occ td.parz{background:#cfe9d8;cursor:pointer}.occ td.pieno{background:#7cc196;cursor:pointer}.occ td.troppi{background:#e8857f;cursor:pointer}.occ td span{display:block;white-space:nowrap;overflow:visible;font-size:11px;text-align:left;position:relative;z-index:1}.occ td.oggi{box-shadow:inset 0 0 0 2px var(--ardesia)}
+.tag.ev{background:#efe7f7;color:#5b3a86}.blocco.ev{border-left-color:#7c5aa6;background:#f3edf9}.chiuso{background:var(--err-f);color:var(--err);border-radius:4px;padding:3px 6px;font-size:12px;margin-bottom:4px}
 .cal th.oggi{color:var(--ardesia);background:var(--blu-f)}
 details summary{cursor:pointer}
 .campi{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 14px}
@@ -94,7 +95,7 @@ var D = null;                 // i dati dal foglio (carica() in Gestionale.gs)
 var U = {scheda: 'oggi', cerca: '', stato: 'attivi', periodo: 'tutti', settimana: null, classeReg: '', docClasse: '', docDal: '', docAl: '', fattureTutte: false};
 try { var salvata = localStorage.getItem('alia-scheda'); if (salvata) U.scheda = salvata; } catch (e) {}
 
-var SCHEDE = [['oggi', 'Oggi'], ['studenti', 'Studenti'], ['classi', 'Classi'], ['calendario', 'Calendario'], ['registro', 'Registro'], ['alloggi', 'Alloggi'],
+var SCHEDE = [['oggi', 'Oggi'], ['studenti', 'Studenti'], ['classi', 'Classi'], ['calendario', 'Calendario'], ['attivita', 'Attività'], ['registro', 'Registro'], ['alloggi', 'Alloggi'],
   ['pagamenti', 'Pagamenti'], ['documenti', 'Diplomi e attestati'], ['email', 'Email'], ['impostazioni', 'Impostazioni']];
 var MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 
@@ -215,6 +216,9 @@ VISTE.oggi = function () {
   var compl = att.filter(function (v) { return v.nascita && md.indexOf(v.nascita.slice(5)) >= 0 && sovrap(v.inizio, v.fine, lun, dom); });
   var indOggi = impegni(o).filter(function (x) { return x.lez && x.stato !== 'annullata'; });
   var sistemare = daSistemare();
+  var evSett = D.eventi.filter(function (e) { return e.tipo !== 'chiusura' && e.dal >= o && e.dal <= piu(o, 7); }).sort(function (a, b) { return a.dal < b.dal ? -1 : 1; });
+  var chiusure = D.eventi.filter(function (e) { return e.tipo === 'chiusura' && e.al >= o && e.dal <= piu(o, 30); }).sort(function (a, b) { return a.dal < b.dal ? -1 : 1; });
+  var oggiChiuso = chiusura(o);
   var arriviAll = D.soggiorni.filter(function (x) { return x.arrivo >= o && x.arrivo <= piu(o, 7); }).sort(function (a, b) { return a.arrivo < b.arrivo ? -1 : 1; });
   var recuperi = daRecuperare(D.registro.filter(function (l) { return privato(CLA[l.classe]); }));
   var daPian = att.filter(function (v) { return individuale(v) && v.fine >= o && !lezioniDi(v.id).some(function (l) { return privato(CLA[l.classe]); }); });
@@ -223,7 +227,10 @@ VISTE.oggi = function () {
       (righe.length ? '<ul class="lista">' + righe.slice(0, 12).join('') + '</ul>' + (righe.length > 12 ? '<div class="tenue piccolo">e altri ' + (righe.length - 12) + '</div>' : '') : '<div class="tenue piccolo">' + vuoto + '</div>') + '</div>';
   }
   var riga = function (v, extra) { return '<li>' + linkStud(v) + ' <span class="tenue piccolo">' + esc(extra) + '</span></li>'; };
-  return '<h2>Oggi, ' + gg(o) + '</h2><div class="griglia">' +
+  var evRiga = function (e) { return '<li><button class="l" data-evoggi="' + esc(e.id) + '">' + esc(e.nome) + '</button> <span class="tenue piccolo">' + giornoSett(e.dal) + ' ' + gg(e.dal) + ' · ' + (e.ora ? esc(e.ora) : 'orario da decidere') + ' · ' + iscrittiA(e.id).length + ' iscritti</span></li>'; };
+  return '<h2>Oggi, ' + gg(o) + '</h2>' + (oggiChiuso ? '<div class="chiuso" style="font-size:14px;padding:8px 12px;margin-bottom:12px">Oggi la scuola è chiusa: ' + esc(oggiChiuso.nome) + '</div>' : '') + '<div class="griglia">' +
+    scheda('Laboratori e attività entro 7 giorni', evSett.length, evSett.map(evRiga), 'Nessuno.') +
+    (chiusure.length ? scheda('Chiusure nei prossimi 30 giorni', chiusure.length, chiusure.map(function (e) { return '<li>' + esc(e.nome) + ' <span class="tenue piccolo">' + gg(e.dal) + (e.al !== e.dal ? ' – ' + gg(e.al) : '') + '</span></li>'; }), '') : '') +
     scheda('In corso oggi', inCorso.length, inCorso.map(function (v) { return riga(v, v.corso_nome + ' · fino al ' + gg(v.fine)); }), 'Nessuno studente in corso.') +
     scheda('Arrivano nei prossimi 14 giorni', arrivi.length, arrivi.map(function (v) { return riga(v, gg(v.inizio) + ' · ' + v.corso_nome + (v.livello ? ' · ' + v.livello : '')); }), 'Nessun arrivo.') +
     scheda('Senza classe questa settimana', senza.length, senza.map(function (v) { return riga(v, gg(v.inizio) + '–' + gg(v.fine) + (v.livello ? ' · ' + v.livello : '')); }), 'Tutti hanno una classe.') +
@@ -261,6 +268,7 @@ VISTE.studenti = function () {
       return '<tr class="cl" data-stud="' + esc(v.id) + '"><td class="piccolo tenue">' + esc(v.id) + '</td><td>' + esc(nome(v)) + '<div class="tenue piccolo">' + esc(v.nazionalita) + '</div></td><td>' + esc(v.corso_nome) + (v.tema ? '<div class="tenue piccolo">' + esc(v.tema) + '</div>' : '') + '</td><td>' + gg(v.inizio) + ' – ' + gg(v.fine) + '</td><td>' + esc(v.livello) + (v.livello_finale ? ' → <b>' + esc(v.livello_finale) + '</b>' : '') + '</td><td>' + (cl ? esc(cl) : (sovrap(v.inizio, v.fine, o, '9999') && attiva(v) ? '<span class="tag att">da assegnare</span>' : '')) + '</td><td>' + statoTag(v.stato) + '</td><td>' + (Number(v.residuo) > 0 ? euro(v.residuo) : '') + '</td></tr>';
     }).join('') || '<tr><td colspan="8" class="vuoto-msg">Nessuna iscrizione.</td></tr>') + '</tbody></table></div>';
 };
+DOPO.oggi = function () { $$('[data-evoggi]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evoggi')); }; }); };
 DOPO.studenti = function () {
   $('#fstato').value = U.stato; $('#fperiodo').value = U.periodo;
   $('#cerca').oninput = function () { U.cerca = this.value; var p = this.selectionStart; disegna(); var c = $('#cerca'); c.focus(); c.setSelectionRange(p, p); };
@@ -319,6 +327,8 @@ function apriStudente(id) {
     (vuoleAlloggio(v) || soggiorniDi(id).length ? '<h3>Alloggio</h3><div class="piccolo">' + (v.alloggio ? 'Ha chiesto: <b>' + esc(v.alloggio) + '</b>' + (v.settimane_alloggio ? ', ' + esc(v.settimane_alloggio) + ' settimane' : '') : '') + '</div>' +
       (soggiorniDi(id).length ? '<ul class="lista">' + soggiorniDi(id).map(function (x) { var a = alloggioId(x.alloggio); return '<li>' + esc(a ? a.nome : x.alloggio) + ' <span class="tenue">' + gg(x.arrivo) + ' → ' + gg(x.partenza) + '</span>' + (x.note ? ' <span class="tenue piccolo">' + esc(x.note) + '</span>' : '') + ' <button class="b piccolo" data-modsog="' + esc(x.id) + '">Modifica</button> <button class="b piccolo r" data-togsog="' + esc(x.id) + '">Togli</button></li>'; }).join('') + '</ul>' : '<div class="vuoto-msg">Non ancora assegnato.</div>') +
       '<div class="barra"><button class="b" id="s-alloggio">Assegna un alloggio</button>' + (soggiorniDi(id).length ? '<button class="b" id="s-mandaall">Manda i dettagli dell’alloggio</button>' : '') + '</div>' : '') +
+    (function () { var ev = D.partecipanti.filter(function (p) { return p.iscrizione === id; }).map(function (p) { return eventoId(p.evento); }).filter(Boolean);
+      return ev.length ? '<h3>Laboratori e attività</h3><ul class="lista">' + ev.map(function (e) { return '<li>' + esc(e.nome) + ' <span class="tenue piccolo">' + giornoSett(e.dal) + ' ' + gg(e.dal) + (e.ora ? ' · ' + esc(e.ora) : '') + '</span></li>'; }).join('') + '</ul>' : ''; })() +
     '<h3>Fatture e proforma</h3>' + (fatt.length ? '<ul class="lista">' + fatt.map(function (x) {
       return '<li>' + esc(x.tipo) + ' ' + esc(x.numero) + ' del ' + gg(x.data) + ' · ' + euro(x.importo) + (x.da_pagare > 0 ? ' · <span class="tag ' + (x.scadenza < D.oggi ? 'err' : 'att') + '">da pagare ' + euro(x.da_pagare) + ' entro ' + gg(x.scadenza) + '</span>' : ' · <span class="tag ok">pagata</span>') + '</li>';
     }).join('') + '</ul>' : '<div class="vuoto-msg">Nessuna fattura abbinata.</div>') +
@@ -387,7 +397,8 @@ VISTE.classi = function () {
     '<span class="spazio"></span><button class="b p" id="nuovaclasse">Nuova classe</button></div>' +
     '<div class="scroll"><table class="planning"><thead><tr><th>Aula</th>' + sett.map(function (s) {
       var n = att.filter(function (v) { return sovrap(v.inizio, v.fine, s, piu(s, 6)); }).length;
-      return '<th>' + gg(s) + ' – ' + gg(piu(s, 4)) + '<div class="tenue">' + n + ' studenti</div></th>';
+      var ch = D.eventi.filter(function (e) { return e.tipo === 'chiusura' && e.dal <= piu(s, 5) && e.al >= s; });
+      return '<th>' + gg(s) + ' – ' + gg(piu(s, 4)) + '<div class="tenue">' + n + ' studenti</div>' + ch.map(function (e) { return '<div class="chiuso">' + esc(e.nome) + (e.dal === e.al ? ' ' + gg(e.dal) : '') + '</div>'; }).join('') + '</th>';
     }).join('') + '</tr></thead><tbody>';
   var blocco = function (c, s, fine, extra) {
     var st = assDiClasse(c.id).filter(function (a) { return sovrap(a.dal, a.al, s, fine) && ISC[a.iscrizione] && attiva(ISC[a.iscrizione]); });
@@ -564,7 +575,7 @@ function apriClasse(id) {
       giorni: $$('.p-g:checked', d).map(function (i) { return +i.value; })};
     chiama('pianificaLezioni', p).then(function (r) {
       var n = Object.keys(conflitti()).filter(function (k) { var l = lezioneDaId(k); return l && l.classe === id; }).length;
-      avviso('Create ' + r.create + ' lezioni' + (n ? '. Attenzione: ' + n + ' si sovrappongono ad altre lezioni.' : ''), !!n);
+      avviso('Create ' + r.create + ' lezioni' + (r.chiusi ? ' (saltati ' + r.chiusi + ' giorni di chiusura)' : '') + (n ? '. Attenzione: ' + n + ' si sovrappongono ad altre lezioni.' : ''), !!n);
       disegna(); apriClasse(id);
     });
   };
@@ -576,7 +587,7 @@ function aMin(h) { var p = h.split(':'); return +p[0] * 60 + +p[1]; }
 /* Gli impegni di un giorno: le classi di gruppo (lun–ven, con il loro orario) e le lezioni dei corsi individuali. */
 function impegni(g) {
   var dow = dataDa(g).getUTCDay(), r = [];
-  if (dow >= 1 && dow <= 5) D.classi.forEach(function (c) {
+  if (dow >= 1 && dow <= 5 && !chiusura(g)) D.classi.forEach(function (c) {
     if (privato(c) || c.inizio > g || c.fine < g) return;
     var o = orarioDi(c.orario);
     r.push({id: 'g:' + c.id + ':' + g, classe: c, titolo: c.nome, inizio: o[0], fine: o[1], aula: online(c) ? 'online' : c.aula, ins: c.insegnante, stato: ''});
@@ -587,6 +598,10 @@ function impegni(g) {
     var st = assDiClasse(c.id).filter(function (a) { return ISC[a.iscrizione] && a.dal <= g && a.al >= g; }).map(function (a) { return ISC[a.iscrizione].nome + ' ' + ISC[a.iscrizione].cognome; });
     var url = linkDi(l, c);
     r.push({id: l.id, lez: l, classe: c, titolo: st.join(' e ') || c.nome, inizio: l.ora_inizio || '', fine: l.ora_fine || '', aula: url ? 'online' : (l.aula || c.aula), ins: l.insegnante || c.insegnante, stato: l.stato || 'fatta', link: url});
+  });
+  eventiDel(g).forEach(function (e) {
+    var o = orarioDi(e.ora);
+    r.push({id: 'e:' + e.id, evento: e, classe: {id: ''}, titolo: e.nome, inizio: o[0], fine: o[1], ora: e.ora, aula: e.luogo, ins: e.responsabile, stato: ''});
   });
   return r.sort(function (a, b) { return (a.inizio || '99') < (b.inizio || '99') ? -1 : 1; });
 }
@@ -624,14 +639,17 @@ VISTE.calendario = function () {
       if (f.indexOf('aula:') === 0) return x.aula === f.slice(5);
       return true;
     });
-    h += '<td>' + (e.map(function (x) {
+    var chiuso = chiusura(piu(lun, i));
+    h += '<td>' + (chiuso ? '<div class="chiuso">Chiuso: ' + esc(chiuso.nome) + '</div>' : '') + (e.map(function (x) {
+      if (x.evento) return '<button class="blocco ev" data-evcal="' + esc(x.evento.id) + '"><b>' + esc(x.ora || 'orario da decidere') + '</b>' + esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) +
+        ' · ' + iscrittiA(x.evento.id).length + ' iscritti</button>';
       return '<button class="blocco' + (x.lez ? ' priv' : '') + (x.stato === 'prevista' ? ' prev' : '') + (x.stato === 'annullata' ? ' annul' : '') + (conf[x.id] ? ' conf' : '') + '" ' +
         (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + '</b>' +
         esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) + (x.lez && x.stato !== 'fatta' ? ' · ' + esc(x.stato) : '') +
         (conf[x.id] ? '<br><span class="tag err">' + esc(conf[x.id]) + '</span>' : '') + '</button>';
-    }).join('') || '<span class="tenue piccolo">—</span>') + '</td>';
+    }).join('') || (chiuso ? '' : '<span class="tenue piccolo">—</span>')) + '</td>';
   });
-  return h + '</tr></tbody></table></div><p class="tenue piccolo">Blu: classi di gruppo (lun–ven, con l’orario della classe). Verde: lezioni individuali; tratteggiate se previste. Rosso: stesso insegnante o stessa aula alla stessa ora.</p>';
+  return h + '</tr></tbody></table></div><p class="tenue piccolo">Blu: classi di gruppo (lun–ven, con l’orario della classe). Verde: lezioni individuali; tratteggiate se previste. Viola: laboratori e attività. Rosso: stesso insegnante o stessa aula alla stessa ora.</p>';
 };
 DOPO.calendario = function () {
   var lun = U.calSett || lunedi(D.oggi);
@@ -640,6 +658,7 @@ DOPO.calendario = function () {
   $('#cprec').onclick = function () { U.calSett = piu(lun, -7); disegna(); };
   $('#csucc').onclick = function () { U.calSett = piu(lun, 7); disegna(); };
   $('#coggi').onclick = function () { U.calSett = null; disegna(); };
+  $$('[data-evcal]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evcal')); }; });
   $$('[data-lezcal]').forEach(function (b) { b.onclick = function () { var l = lezioneDaId(b.getAttribute('data-lezcal')); lezione(l.id, l.classe); }; });
 };
 
@@ -692,7 +711,7 @@ function primoLibero(l) {
   if (!l.ora_inizio || !l.ora_fine) return piu(g, 7);
   for (i = 0; i < 60; i++) {
     g = piu(g, 1);
-    if (dataDa(g).getUTCDay() === 0) continue;
+    if (dataDa(g).getUTCDay() === 0 || chiusura(g)) continue;
     var occupato = impegni(g).some(function (x) {
       if (x.stato === 'annullata' || !x.inizio || !x.fine) return false;
       if (!(x.classe.id === l.classe || (ins && x.ins === ins))) return false;
@@ -717,6 +736,7 @@ function finestraRecupero(lid, annullare, dopo) {
   if (annullare) $('#a-subito', d).onchange = function () { $('#a-campi', d).style.display = this.checked ? '' : 'none'; };
   $('#a-ok', d).onclick = function () {
     var subito = !annullare || $('#a-subito', d).checked;
+    if (subito && chiusura($('#a-data', d).value) && !confirm('Quel giorno la scuola è chiusa (' + chiusura($('#a-data', d).value).nome + '). Continuare?')) return;
     var nuova = subito ? {data: $('#a-data', d).value, ora_inizio: $('#a-inizio', d).value, ora_fine: $('#a-fine', d).value} : null;
     if (subito && !nuova.data) { avviso('Scrivi la data del recupero', true); return; }
     var avvisa = $('#a-avvisa', d).checked;
@@ -766,6 +786,7 @@ function lezione(id, classeId, dopo) {
       assenti: $$('#l-assenti input:checked', d).map(function (i) { return i.value; })};
     COL_REG.forEach(function (k) { x[k[0]] = $('#l-' + k[0], d).value; });
     if (!x.data) { avviso('Scrivi la data', true); return; }
+    if (chiusura(x.data) && x.data !== l.data && !confirm('Il ' + ggA(x.data) + ' la scuola è chiusa (' + chiusura(x.data).nome + '). Salvare lo stesso?')) return;
     if (id && x.stato === 'annullata' && l.stato !== 'annullata') {
       x.stato = l.stato || 'prevista';
       chiama('salvaLezione', x).then(function () { disegna(); annulla(id, dopo); });
@@ -920,6 +941,83 @@ function modificaAlloggio(id) {
   if (id) $('#al-elimina', d).onclick = function () { if (confirm('Eliminare “' + a.nome + '”?')) chiama('eliminaAlloggio', id).then(function () { d.close(); disegna(); }); };
 }
 
+/* ---------- CHIUSURE, LABORATORI E ATTIVITÀ ---------- */
+function chiusura(g) { return D.eventi.filter(function (e) { return e.tipo === 'chiusura' && e.dal <= g && e.al >= g; })[0]; }
+function eventiDel(g) { return D.eventi.filter(function (e) { return e.tipo !== 'chiusura' && e.dal <= g && e.al >= g; }); }
+function eventoId(id) { return D.eventi.filter(function (e) { return e.id === id; })[0]; }
+function iscrittiA(id) { return D.partecipanti.filter(function (p) { return p.evento === id; }).map(function (p) { return ISC[p.iscrizione]; }).filter(Boolean); }
+function presentiIl(g) { return D.iscrizioni.filter(function (v) { return attiva(v) && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= g && v.fine >= g; }); }
+function tipoEv(t) { return {chiusura: '<span class="tag err">chiusura</span>', laboratorio: '<span class="tag ev">laboratorio</span>', attivita: '<span class="tag ev">attività</span>'}[t] || esc(t); }
+
+VISTE.attivita = function () {
+  var o = D.oggi, fin = U.evTutti ? '9999' : piu(o, 60);
+  var l = D.eventi.filter(function (e) { return U.evPassati ? e.al < o : (e.al >= o && e.dal <= fin); })
+    .sort(function (a, b) { return U.evPassati ? (a.dal > b.dal ? -1 : 1) : (a.dal < b.dal ? -1 : 1); });
+  var h = '<div class="barra"><button class="b" id="evsito">Aggiorna dal sito</button><select id="evfiltro"><option value="">Prossimi 60 giorni</option><option value="tutti">Tutti i prossimi</option><option value="passati">Passati</option></select>' +
+    '<span class="spazio"></span><button class="b" id="evchiusura">Nuova chiusura</button><button class="b p" id="evnuovo">Nuovo laboratorio o attività</button></div>' +
+    '<p class="tenue piccolo">Le chiusure e le date dei laboratori vengono dal sito (data/alia.json e data/laboratori.json): “Aggiorna dal sito” le legge. Orario, luogo e chi lo segue si scrivono qui, di volta in volta.</p>';
+  var mese = '';
+  h += '<div class="scroll"><table><thead><tr><th>Giorno</th><th>Tipo</th><th>Nome</th><th>Orario</th><th>Luogo</th><th>Chi lo segue</th><th>Iscritti</th><th>In corso quel giorno</th></tr></thead><tbody>' +
+    (l.map(function (e) {
+      var m = e.dal.slice(0, 7), r = '';
+      if (m !== mese) { mese = m; r += '<tr><td colspan="8" style="background:#fafbfc"><b>' + ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][+m.slice(5) - 1] + ' ' + m.slice(0, 4) + '</b></td></tr>'; }
+      var ch = e.tipo === 'chiusura', isc = ch ? [] : iscrittiA(e.id);
+      return r + '<tr class="cl" data-ev="' + esc(e.id) + '"><td>' + giornoSett(e.dal) + ' ' + gg(e.dal) + (e.al !== e.dal ? ' → ' + giornoSett(e.al) + ' ' + gg(e.al) : '') + '</td><td>' + tipoEv(e.tipo) + '</td><td>' + esc(e.nome) + '</td>' +
+        '<td>' + (ch ? '' : e.ora ? esc(e.ora) : '<span class="tag att">da decidere</span>') + '</td><td>' + esc(e.luogo) + '</td><td>' + esc(e.responsabile) + '</td>' +
+        '<td>' + (ch ? '' : isc.length + (e.posti ? '/' + esc(e.posti) : '')) + '</td><td>' + (ch ? '' : presentiIl(e.dal).length) + '</td></tr>';
+    }).join('') || '<tr><td colspan="8" class="vuoto-msg">Niente. Premi “Aggiorna dal sito”.</td></tr>') + '</tbody></table></div>';
+  return h;
+};
+DOPO.attivita = function () {
+  $('#evfiltro').value = U.evPassati ? 'passati' : U.evTutti ? 'tutti' : '';
+  $('#evfiltro').onchange = function () { U.evPassati = this.value === 'passati'; U.evTutti = this.value === 'tutti'; disegna(); };
+  $('#evsito').onclick = function () { chiama('importaDalSito').then(function (r) { avviso('Dal sito: ' + r.nuove + ' date nuove' + (r.tolte ? ', ' + r.tolte + ' tolte' : '')); disegna(); }); };
+  $('#evnuovo').onclick = function () { evento(null, 'laboratorio'); };
+  $('#evchiusura').onclick = function () { evento(null, 'chiusura'); };
+  $$('[data-ev]').forEach(function (r) { r.onclick = function () { evento(r.getAttribute('data-ev')); }; });
+};
+
+function evento(id, tipo, bozza) {
+  var e = bozza || (id ? eventoId(id) : null) || {tipo: tipo, nome: '', nome_en: '', dal: D.oggi, al: D.oggi, ora: '', luogo: '', responsabile: '', posti: '', note: ''};
+  var ch = e.tipo === 'chiusura';
+  var corpo = '<div class="campi">' + scelta('ev-tipo', 'Tipo', e.tipo, D.tipi_evento) + campo('ev-nome', 'Nome', e.nome) + campo('ev-nome_en', 'Nome in inglese', e.nome_en) +
+    campo('ev-dal', ch ? 'Dal' : 'Giorno', e.dal, 'date') + campo('ev-al', ch ? 'Al' : 'Fino al (se dura più giorni)', e.al, 'date') +
+    (ch ? '' : campo('ev-ora', 'Orario (es. 15:00–17:00)', e.ora) + campo('ev-luogo', 'Luogo / ritrovo', e.luogo) + campo('ev-responsabile', 'Chi lo segue', e.responsabile) + campo('ev-posti', 'Posti (vuoto = senza limite)', e.posti, 'number', ' min="1"')) +
+    campo('ev-note', 'Note', e.note, 'textarea') + '</div>' +
+    (e.origine === 'sito' ? '<p class="tenue piccolo">Questa data viene dal sito. Se la cambi o la elimini qui, “Aggiorna dal sito” la rimette: cambiala nel sito.</p>' : '');
+  if (id && !ch) {
+    var pres = presentiIl(e.dal), isc = iscrittiA(id).map(function (v) { return v.id; });
+    iscrittiA(id).forEach(function (v) { if (pres.indexOf(v) < 0) pres.push(v); });
+    corpo += '<h3>Iscritti (' + isc.length + (e.posti ? ' su ' + esc(e.posti) : '') + ')</h3>' + (pres.length ? '<div class="checks" id="ev-isc">' + pres.map(function (v) {
+      return '<label><input type="checkbox" value="' + esc(v.id) + '"' + (isc.indexOf(v.id) >= 0 ? ' checked' : '') + '> ' + esc(nome(v)) + '</label>';
+    }).join('') + '</div><div class="barra" style="margin-top:8px"><button class="b" id="ev-salvaisc">Salva gli iscritti</button></div>' : '<div class="vuoto-msg">Nessuno studente in corso quel giorno.</div>') +
+      '<h3>Email</h3><div class="campi">' + scelta('ev-chi', 'A chi', isc.length ? 'iscritti' : 'presenti', [['iscritti', 'Agli iscritti'], ['presenti', 'A tutti gli studenti in corso quel giorno']]) +
+      campo('ev-oggetto', 'Oggetto', e.nome + ' – ' + giornoSett(e.dal) + ' ' + gg(e.dal)) +
+      campo('ev-testo', 'Testo ({{nome}} = nome dello studente)', 'Ciao {{nome}},\n\n' + e.nome + ': ' + giornoSett(e.dal) + ' ' + ggA(e.dal) + (e.ora ? ', ' + e.ora : '') + (e.luogo ? ', ' + e.luogo : '') + '.\n\nA presto,\nAccademia Lingua Italiana Assisi', 'textarea') +
+      '</div><div class="barra" style="margin-top:8px"><button class="b" id="ev-email">Manda l’email</button></div>';
+  }
+  var d = dialogo(id ? esc(e.nome) : (ch ? 'Nuova chiusura' : 'Nuovo laboratorio o attività'), corpo, (id ? '<button class="b r" id="ev-elimina">Elimina</button>' : '') + '<button class="b p" id="ev-salva">Salva</button>');
+  $('#ev-tipo', d).onchange = function () { var x = raccogli(); delete x.id; evento(id, x.tipo, Object.assign({}, e, x)); };
+  function raccogli() {
+    var x = {id: id || ''};
+    ['tipo', 'nome', 'nome_en', 'dal', 'al', 'ora', 'luogo', 'responsabile', 'posti', 'note'].forEach(function (k) { var i = $('#ev-' + k, d); x[k] = i ? i.value.trim() : ''; });
+    return x;
+  }
+  $('#ev-salva', d).onclick = function () {
+    var x = raccogli();
+    chiama('salvaEvento', x).then(function (r) { avviso('Salvato'); disegna(); evento(r.evento); });
+  };
+  if (id) $('#ev-elimina', d).onclick = function () { if (confirm('Eliminare “' + e.nome + '” del ' + ggA(e.dal) + '?')) chiama('eliminaEvento', id).then(function () { d.close(); disegna(); }); };
+  if ($('#ev-salvaisc', d)) $('#ev-salvaisc', d).onclick = function () {
+    chiama('iscriviEvento', id, $$('#ev-isc input:checked', d).map(function (i) { return i.value; })).then(function () { avviso('Iscritti salvati'); disegna(); evento(id); });
+  };
+  if ($('#ev-email', d)) $('#ev-email', d).onclick = function () {
+    var chi = $('#ev-chi', d).value;
+    if (!confirm(chi === 'iscritti' ? 'Mandare l’email agli iscritti?' : 'Mandare l’email a tutti gli studenti in corso quel giorno?')) return;
+    chiama('emailEvento', id, chi, $('#ev-oggetto', d).value.trim(), $('#ev-testo', d).value).then(function (r) { avviso('Email mandate: ' + r.inviate); });
+  };
+}
+
 /* ---------- PAGAMENTI ---------- */
 VISTE.pagamenti = function () {
   if (!D.fic_token) return '<div class="card"><h2>Fatture in Cloud non è collegato</h2><p>Incolla il token in <button class="l" data-s="impostazioni">Impostazioni</button>. Come ottenerlo: ISTRUZIONI.md, punto 7.</p></div>';
@@ -1036,7 +1134,8 @@ VISTE.impostazioni = function () {
   var i = D.impostazioni;
   return '<div class="card"><h3 style="margin-top:0">Staff e aule</h3><div class="campi">' +
     campo('i-staff', 'Email dello staff che può aprire il gestionale (separate da virgola)', i.staff, 'textarea') +
-    campo('i-aule', 'Aule (separate da virgola)', i.aule) + campo('i-url_gestionale', 'Link di questo gestionale (per il menu del foglio e il riepilogo)', i.url_gestionale) + '</div></div>' +
+    campo('i-aule', 'Aule (separate da virgola)', i.aule) + campo('i-url_gestionale', 'Link di questo gestionale (per il menu del foglio e il riepilogo)', i.url_gestionale) +
+    campo('i-url_sito', 'Indirizzo del sito (da qui si leggono chiusure e laboratori)', i.url_sito) + '</div></div>' +
     '<div class="card"><h3 style="margin-top:0">Modelli di diploma e attestato</h3><p class="tenue piccolo">Un Documento o una Presentazione Google (per un diploma grafico, orizzontale, meglio una Presentazione). Se il modello è in Word o PowerPoint: caricalo su Drive, aprilo con Google e scegli File → Salva come Documenti/Presentazioni Google. Poi incolla qui il link. Scrivi i campi tra doppie graffe: {{nome}} {{cognome}} {{periodo}} {{livello}} {{corso}} {{ore}} {{data}} {{numero}}…</p><div class="campi">' +
     campo('i-modello_diploma', 'Link del modello del diploma', i.modello_diploma ? 'https://drive.google.com/open?id=' + i.modello_diploma : '') +
     campo('i-modello_attestato', 'Link del modello dell’attestato', i.modello_attestato ? 'https://drive.google.com/open?id=' + i.modello_attestato : '') + '</div></div>' +
@@ -1047,7 +1146,7 @@ VISTE.impostazioni = function () {
 DOPO.impostazioni = function () {
   $('#i-salva').onclick = function () {
     var o = {};
-    ['staff', 'aule', 'url_gestionale', 'modello_diploma', 'modello_attestato', 'fic_token'].forEach(function (k) { o[k] = $('#i-' + k).value.trim(); });
+    ['staff', 'aule', 'url_gestionale', 'url_sito', 'modello_diploma', 'modello_attestato', 'fic_token'].forEach(function (k) { o[k] = $('#i-' + k).value.trim(); });
     chiama('salvaImpostazioni', o).then(function () { avviso('Impostazioni salvate'); disegna(); });
   };
 };

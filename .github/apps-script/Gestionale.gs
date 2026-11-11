@@ -43,6 +43,11 @@ var SCHEMI = {
   Soggiorni: [['id', 'ID'], ['iscrizione', 'N. iscrizione'], ['alloggio', 'Alloggio'], ['arrivo', 'Arrivo'], ['partenza', 'Partenza'],
     ['note', 'Note'], ['modificato', 'Modificato']]
 };
+/* Chiusure della scuola, laboratori e attività. L'orario si decide di volta in volta (testo libero). */
+SCHEMI.Eventi = [['id', 'ID'], ['tipo', 'Tipo'], ['nome', 'Nome'], ['nome_en', 'Nome (inglese)'], ['dal', 'Dal'], ['al', 'Al'],
+  ['ora', 'Orario'], ['luogo', 'Luogo'], ['responsabile', 'Chi lo segue'], ['posti', 'Posti'], ['note', 'Note'], ['origine', 'Origine']];
+SCHEMI.Partecipanti = [['evento', 'Evento'], ['iscrizione', 'N. iscrizione']];
+var TIPI_EVENTO = [['chiusura', 'Chiusura'], ['laboratorio', 'Laboratorio'], ['attivita', 'Attività']];
 var TIPI_ALLOGGIO = [['singola', 'Camera singola'], ['singola_bagno', 'Camera singola con bagno'], ['doppia', 'Camera doppia'],
   ['doppia_bagno', 'Camera doppia con bagno'], ['indipendente', 'Appartamento indipendente']];
 var CHIAVI_DATA = ['inizio', 'fine', 'dal', 'al', 'data', 'arrivo', 'partenza', 'scadenza', 'nascita', 'scadenza_passaporto', 'ricevuta', 'modificato', 'aggiornata'];
@@ -59,7 +64,7 @@ var IMPOSTAZIONI = {
   benvenuto: 'no', benvenuto_giorni: '7',
   testo_benvenuto_it: 'Ciao {{nome}},\n\nil tuo corso comincia il {{inizio}}. Ti aspettiamo il primo giorno alle 8:45 in via Giotto 1, Assisi.\n\n{{alloggio}}\n\nA presto,\nAccademia Lingua Italiana Assisi',
   testo_benvenuto_en: 'Dear {{nome}},\n\nyour course starts on {{inizio}}. We expect you on the first day at 8:45 in via Giotto 1, Assisi.\n\n{{alloggio}}\n\nBest wishes,\nAccademia Lingua Italiana Assisi',
-  riepilogo: 'si', url_gestionale: '',
+  riepilogo: 'si', url_gestionale: '', url_sito: 'https://aliassisi.it',
   link_online: 'no', link_ore: '24',
   testo_link_it: 'Ciao {{nome}},\n\nla tua lezione online è {{quando}} (ora italiana).\n\nEntra da qui: {{link}}\n\nA presto,\nAccademia Lingua Italiana Assisi',
   testo_link_en: 'Dear {{nome}},\n\nyour online lesson is on {{quando}} (Italian time).\n\nJoin here: {{link}}\n\nBest wishes,\nAccademia Lingua Italiana Assisi'
@@ -207,6 +212,7 @@ function carica() {
     promemoria: leggi('Promemoria').slice(-300),
     documenti: leggi('Documenti'),
     alloggi: leggi('Alloggi'), soggiorni: leggi('Soggiorni'), tipi_alloggio: TIPI_ALLOGGIO,
+    eventi: leggi('Eventi'), partecipanti: leggi('Partecipanti'), tipi_evento: TIPI_EVENTO,
     impostazioni: imp,
     fic_token: !!p.getProperty('fic_token'),
     invii_attivi: ['ogniGiorno', 'ogniOra'].every(function (h) { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === h; }); }),
@@ -419,8 +425,13 @@ function pianificaLezioni(p) {
     if (!trova('Classi', 'id', p.classe)) throw new Error('Classe non trovata');
     var gia = {};
     leggi('Registro').forEach(function (l) { if (l.classe === p.classe && l.stato !== 'annullata') gia[l.data + ' ' + (l.ora_inizio || '')] = true; });
-    var nuove = [], g = p.dal;
+    var nuove = [], g = p.dal, chiusi = 0, chiusure = leggi('Eventi').filter(function (e) { return e.tipo === 'chiusura'; });
     while (g <= p.al && nuove.length < quante) {
+      if (chiusure.some(function (e) { return e.dal <= g && e.al >= g; })) {
+        if (giorni.indexOf(giorno(g).getDay()) >= 0) chiusi++;
+        g = piuGiorni(g, 1);
+        continue;
+      }
       var o = lezioneDa({classe: p.classe, data: g, ora_inizio: p.ora_inizio, ora_fine: p.ora_fine, ore: p.ore,
         aula: p.aula, insegnante: p.insegnante, link: p.link, stato: 'prevista'});
       if (giorni.indexOf(giorno(g).getDay()) >= 0 && !gia[g + ' ' + o.ora_inizio]) {
@@ -436,6 +447,7 @@ function pianificaLezioni(p) {
     estendiCorso(p.classe, date[0], date[date.length - 1]);
     var d = carica();
     d.create = nuove.length;
+    d.chiusi = chiusi;
     return d;
   });
 }
@@ -756,6 +768,125 @@ function mandaAlloggio(iscrizione) {
   MailApp.sendEmail({to: v.email, replyTo: EMAIL_STAFF, name: NOME_SCUOLA, subject: en ? 'Your accommodation in Assisi' : 'Il tuo alloggio ad Assisi', body: corpo});
   registra('alloggio', 'alloggio:' + v.id + ':' + oggiIso(), v.id, v.email, 'inviato');
   return carica();
+}
+
+/* ---------- CHIUSURE, LABORATORI E ATTIVITÀ ---------- */
+
+function chiave(e) { return e.tipo + '|' + normale(e.nome) + '|' + e.dal; }
+
+/* Legge dal sito le chiusure (data/alia.json) e le date dei laboratori (data/laboratori.json).
+   Tiene orario, luogo, chi lo segue, posti e note già scritti; toglie le date che il sito non ha più
+   (se nessuno è iscritto). */
+function importaDalSito() {
+  autorizzato();
+  var base = String(impostazioni().url_sito || 'https://aliassisi.it').replace(/\/+$/, '');
+  var leggiJson = function (f) {
+    var r = UrlFetchApp.fetch(base + '/data/' + f, {muteHttpExceptions: true, followRedirects: true});
+    if (r.getResponseCode() !== 200) throw new Error('Non riesco a leggere ' + base + '/data/' + f + ' (' + r.getResponseCode() + ')');
+    return JSON.parse(r.getContentText());
+  };
+  var sito = [];
+  (leggiJson('alia.json').chiusure || []).forEach(function (c) {
+    sito.push({tipo: 'chiusura', nome: c.it || 'Chiusura', nome_en: c.en || '', dal: c.dal, al: c.al || c.dal});
+  });
+  (leggiJson('laboratori.json').laboratori || []).forEach(function (l) {
+    (l.date || []).forEach(function (g) { sito.push({tipo: 'laboratorio', nome: l.nome_it, nome_en: l.nome_en || '', dal: g, al: g}); });
+  });
+  sito = sito.filter(function (e) { return /^\d{4}-\d{2}-\d{2}$/.test(e.dal) && /^\d{4}-\d{2}-\d{2}$/.test(e.al); });
+  return conBlocco(function () {
+    var ora = leggi('Eventi'), part = leggi('Partecipanti'), per = {}, nuove = 0, tolte = 0;
+    ora.forEach(function (e) { per[chiave(e)] = e; });
+    var visti = {};
+    sito.forEach(function (e) {
+      var k = chiave(e); visti[k] = true;
+      if (per[k]) return;
+      e.id = nuovoNumero('eventi', 'E'); e.origine = 'sito'; e.nome = testo(e.nome, 300); e.nome_en = testo(e.nome_en, 300);
+      aggiungi('Eventi', e); nuove++;
+    });
+    ora.filter(function (e) { return e.origine === 'sito' && !visti[chiave(e)] && !part.some(function (p) { return p.evento === e.id; }); })
+      .reverse().forEach(function (e) { scheda('Eventi').deleteRow(e._r); tolte++; });
+    var d = carica();
+    d.nuove = nuove; d.tolte = tolte;
+    return d;
+  });
+}
+
+function salvaEvento(e) {
+  autorizzato();
+  if (!TIPI_EVENTO.some(function (t) { return t[0] === e.tipo; })) throw new Error('Tipo sconosciuto');
+  if (!e.nome) throw new Error('Manca il nome');
+  if (!e.dal) throw new Error('Manca la data');
+  var al = e.al || e.dal;
+  if (al < e.dal) throw new Error('La fine viene prima dell’inizio');
+  var posti = e.posti === '' || e.posti === undefined ? '' : Number(e.posti);
+  if (posti !== '' && !(posti >= 1)) throw new Error('Posti non validi');
+  var o = {tipo: e.tipo, nome: testo(e.nome, 300), nome_en: testo(e.nome_en, 300), dal: e.dal, al: al, ora: testo(e.ora, 200),
+    luogo: testo(e.luogo, 300), responsabile: testo(e.responsabile, 200), posti: posti, note: testo(e.note, 3000)};
+  return conBlocco(function () {
+    if (e.id) {
+      var r = trova('Eventi', 'id', e.id);
+      if (!r) throw new Error('Evento non trovato');
+      aggiorna('Eventi', r._r, o);
+    } else {
+      o.id = nuovoNumero('eventi', 'E'); o.origine = 'manuale';
+      aggiungi('Eventi', o);
+    }
+    var d = carica();
+    d.evento = e.id || o.id;
+    return d;
+  });
+}
+
+function eliminaEvento(id) {
+  autorizzato();
+  return conBlocco(function () {
+    leggi('Partecipanti').filter(function (p) { return p.evento === id; }).reverse().forEach(function (p) { scheda('Partecipanti').deleteRow(p._r); });
+    var r = trova('Eventi', 'id', id);
+    if (r) scheda('Eventi').deleteRow(r._r);
+    return carica();
+  });
+}
+
+/* Gli iscritti a un laboratorio o un'attività: sostituisce l'elenco con "ids". */
+function iscriviEvento(evento, ids) {
+  autorizzato();
+  return conBlocco(function () {
+    var e = trova('Eventi', 'id', evento);
+    if (!e || e.tipo === 'chiusura') throw new Error('Evento non trovato');
+    ids = (ids || []).filter(function (x, i, a) { return a.indexOf(x) === i; });
+    if (e.posti && ids.length > Number(e.posti)) throw new Error('Posti: ' + e.posti + '. Iscritti scelti: ' + ids.length);
+    var isc = {}; leggi('Iscrizioni').forEach(function (v) { isc[v.id] = v; });
+    ids.forEach(function (x) { if (!isc[x]) throw new Error('Iscrizione non trovata: ' + x); });
+    leggi('Partecipanti').filter(function (p) { return p.evento === evento; }).reverse().forEach(function (p) { scheda('Partecipanti').deleteRow(p._r); });
+    ids.forEach(function (x) { aggiungi('Partecipanti', {evento: evento, iscrizione: x}); });
+    return carica();
+  });
+}
+
+/* Un'email sull'evento: agli iscritti, o a tutti gli studenti in corso quel giorno. */
+function emailEvento(evento, chi, oggetto, corpo) {
+  autorizzato();
+  if (!oggetto || !corpo) throw new Error('Scrivi oggetto e testo');
+  var e = trova('Eventi', 'id', evento);
+  if (!e) throw new Error('Evento non trovato');
+  var isc = leggi('Iscrizioni'), dest = {};
+  if (chi === 'iscritti') {
+    var ids = leggi('Partecipanti').filter(function (p) { return p.evento === evento; }).map(function (p) { return p.iscrizione; });
+    isc.forEach(function (v) { if (ids.indexOf(v.id) >= 0 && v.email) dest[String(v.email).toLowerCase()] = v; });
+  } else {
+    isc.forEach(function (v) { if (v.email && v.stato !== 'Annullata' && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= e.dal && v.fine >= e.dal) dest[String(v.email).toLowerCase()] = v; });
+  }
+  var n = 0;
+  Object.keys(dest).forEach(function (m) {
+    MailApp.sendEmail({to: m, replyTo: EMAIL_STAFF, name: NOME_SCUOLA, subject: String(oggetto).slice(0, 200),
+      body: riempi(String(corpo).slice(0, 10000), {nome: dest[m].nome})});
+    registra('evento', 'evento:' + evento + ':' + oggiIso(), dest[m].id, m, 'inviato');
+    n++;
+  });
+  if (!n) throw new Error('Nessun destinatario');
+  var d = carica();
+  d.inviate = n;
+  return d;
 }
 
 /* ---------- DIPLOMI E ATTESTATI ---------- */
@@ -1132,6 +1263,10 @@ function riepilogoStaff() {
   if (arrivi.length) r.push('Arrivi nei prossimi 7 giorni:', arrivi.map(nome).join('\n'), '');
   if (partenze.length) r.push('Finiscono nei prossimi 7 giorni (diplomi e attestati):', partenze.map(nome).join('\n'), '');
   if (nuove.length) r.push('Iscrizioni ancora "Nuova": ' + nuove.length, '');
+  var ev = leggi('Eventi').filter(function (e) { return e.tipo !== 'chiusura' && e.dal >= oggi && e.dal <= fra7; });
+  if (ev.length) r.push('Laboratori e attività della settimana:', ev.map(function (e) { return '- ' + dataTesto(giorno(e.dal)) + ': ' + e.nome + (e.ora ? ', ' + e.ora : ' (orario da decidere)'); }).join('\n'), '');
+  var ch = leggi('Eventi').filter(function (e) { return e.tipo === 'chiusura' && e.dal >= oggi && e.dal <= fra7; });
+  if (ch.length) r.push('Chiusure: ' + ch.map(function (e) { return e.nome + ' (' + dataTesto(giorno(e.dal)) + (e.al !== e.dal ? ' – ' + dataTesto(giorno(e.al)) : '') + ')'; }).join(', '), '');
   if (scadute.length) r.push('Fatture o proforma scadute e non pagate: ' + scadute.length + ' (' + euro(scadute.reduce(function (s, f) { return s + Number(f.da_pagare); }, 0)) + ')', '');
   if (!r.length) return;
   var url = impostazioni().url_gestionale;

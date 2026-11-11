@@ -12,7 +12,9 @@ Il **gestionale** è una pagina per lo staff, sopra lo stesso foglio:
 - **Classi**: il planning per aula e per settimana (5 aule), chi è senza classe, l'email a una classe;
   i corsi individuali (privati, duo, online) hanno il loro calendario di lezioni;
 - **Calendario**: la settimana giorno per giorno, classi e lezioni individuali, per insegnante o per
-  aula; segna in rosso stesso insegnante o stessa aula alla stessa ora;
+  aula; segna in rosso stesso insegnante o stessa aula alla stessa ora; mostra chiusure e laboratori;
+- **Attività**: chiusure della scuola, laboratori e attività, con orario e luogo decisi di volta in
+  volta, iscritti ed email ai partecipanti;
 - **Registro**: le lezioni di ogni classe (le stesse colonne del vecchio registro) e le assenze;
   da qui si calcolano le ore per l'attestato;
 - **Alloggi**: camere e appartamenti, chi sta dove notte per notte, chi ha chiesto un alloggio e
@@ -23,7 +25,7 @@ Il **gestionale** è una pagina per lo staff, sopra lo stesso foglio:
   della mattina per lo staff.
 
 I dati restano nel foglio Google (schede Iscrizioni, Pagamenti, Classi, Assegnazioni, Registro,
-Fatture, Promemoria, Documenti, Alloggi, Soggiorni). Non costa niente.
+Fatture, Promemoria, Documenti, Alloggi, Soggiorni, Eventi, Partecipanti). Non costa niente.
 
 Si fa con l'account **info@aliassisi.it**.
 
@@ -204,6 +206,29 @@ Le ore dell'attestato contano solo le lezioni fatte.
 I prezzi degli alloggi restano nel totale dell'iscrizione e nelle fatture: il gestionale non li
 calcola a parte.
 
+## Chiusure, laboratori e attività
+Le date di chiusura e le date dei laboratori sono già nel sito: `data/alia.json` (`chiusure`) e
+`data/laboratori.json`. Il gestionale le legge da lì, così non si scrivono due volte.
+1. **Attività → Aggiorna dal sito**. Da rifare dopo ogni modifica di quei file nel sito.
+   Orario, luogo, chi lo segue, posti e note scritti nel gestionale restano. Una data tolta dal sito
+   sparisce anche qui, se nessuno è iscritto.
+2. Orario e luogo si decidono di volta in volta: apri il laboratorio e scrivili (es. "15:00–17:00").
+   Finché manca, compare "orario da decidere" (anche nel riepilogo della mattina per lo staff).
+3. Le altre attività (lezione fuori dalla classe, cena, gita…) e le chiusure in più:
+   **Nuovo laboratorio o attività** o **Nuova chiusura**. Restano solo nel gestionale.
+4. **Iscritti**: spunta gli studenti (sono proposti quelli in corso quel giorno). Se ci sono i posti,
+   il gestionale non ne fa iscrivere di più.
+5. **Email**: agli iscritti o a tutti gli studenti in corso quel giorno, per esempio quando avete
+   deciso l'orario.
+
+Nei giorni di chiusura:
+- il calendario non mostra le classi di gruppo e segna "Chiuso";
+- **Pianifica le lezioni** salta quei giorni (e dice quanti);
+- il recupero di una lezione annullata non viene proposto in un giorno di chiusura;
+- una lezione messa a mano in un giorno di chiusura chiede conferma.
+
+Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizzo del sito").
+
 ## Come si lavora ogni giorno
 - **Nuova iscrizione dal sito**: arriva un'email a info@ e la vedi in **Oggi** e in **Studenti**
   con lo stato "Nuova". Aprila, controlla, cambia lo stato in "Confermata".
@@ -221,7 +246,7 @@ calcola a parte.
 ## Dopo un aggiornamento dello script
 Le schede Classi e Registro hanno colonne nuove (Tipo, Modalità, Link online; Ora inizio, Ora fine,
 Aula, Stato, Link online, Recupero della lezione).
-Ci sono anche due schede nuove, Alloggi e Soggiorni. Il gestionale crea le schede e scrive le
+Ci sono anche schede nuove: Alloggi, Soggiorni, Eventi, Partecipanti. Il gestionale crea le schede e scrive le
 intestazioni che mancano la prima volta che si apre. Le lezioni già scritte valgono come "fatte".
 Il testo dell'email prima dell'arrivo, se l'avete già cambiato, non ha `{{alloggio}}`: aggiungetelo voi.
 
