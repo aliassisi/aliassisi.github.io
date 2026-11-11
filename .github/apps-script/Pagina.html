@@ -163,19 +163,21 @@ function daRecuperare(lez) {
 }
 function recuperoDi(l) { return D.registro.filter(function (x) { return x.recupero_di === l.id && x.stato !== 'annullata'; })[0]; }
 function giornoSett(iso) { return ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'][dataDa(iso).getUTCDay()]; }
-function frequenza(id) {
-  var ore = 0, lez = 0, tot = 0;
-  assDi(id).forEach(function (a) {
+/* Ore e lezioni frequentate. Facoltativi: solo dal "da" al "a", solo nella classe "classe". */
+function frequenza(id, da, a, classe) {
+  var ore = 0, lez = 0, tot = 0, assenze = [];
+  assDi(id).forEach(function (x) {
+    if (classe && x.classe !== classe) return;
     D.registro.forEach(function (l) {
-      if (l.classe !== a.classe || l.data < a.dal || l.data > a.al) return;
+      if (l.classe !== x.classe || l.data < x.dal || l.data > x.al) return;
+      if ((da && l.data < da) || (a && l.data > a)) return;
       if (l.stato === 'prevista' || l.stato === 'annullata') return;
       tot += Number(l.ore) || 0;
-      if (l.stato === 'persa') return;
-      if (String(l.assenti || '').split(/\s*,\s*/).indexOf(id) >= 0) return;
+      if (l.stato === 'persa' || String(l.assenti || '').split(/\s*,\s*/).indexOf(id) >= 0) { assenze.push(l.data); return; }
       ore += Number(l.ore) || 0; lez++;
     });
   });
-  return {ore: ore, lezioni: lez, previste: tot};
+  return {ore: ore, lezioni: lez, previste: tot, assenze: assenze.sort()};
 }
 function statoTag(s) {
   var c = {Nuova: 'att', Confermata: '', Pagata: 'ok', 'In corso': 'ok', Conclusa: '', Annullata: 'err'}[s];
@@ -227,8 +229,15 @@ VISTE.oggi = function () {
       (righe.length ? '<ul class="lista">' + righe.slice(0, 12).join('') + '</ul>' + (righe.length > 12 ? '<div class="tenue piccolo">e altri ' + (righe.length - 12) + '</div>' : '') : '<div class="tenue piccolo">' + vuoto + '</div>') + '</div>';
   }
   var riga = function (v, extra) { return '<li>' + linkStud(v) + ' <span class="tenue piccolo">' + esc(extra) + '</span></li>'; };
-  var evRiga = function (e) { return '<li><button class="l" data-evoggi="' + esc(e.id) + '">' + esc(e.nome) + '</button> <span class="tenue piccolo">' + giornoSett(e.dal) + ' ' + gg(e.dal) + ' · ' + (e.ora ? esc(e.ora) : 'orario da decidere') + ' · ' + iscrittiA(e.id).length + ' iscritti</span></li>'; };
+  var evRiga = function (e) { return '<li><button class="l" data-evoggi="' + esc(e.id) + '">' + esc(e.nome) + '</button> <span class="tenue piccolo">' + giornoSett(e.dal) + ' ' + gg(e.dal) + ' · ' + (e.ora ? esc(e.ora) : 'orario da decidere') + ' · ' + esc(chiVa(e)) + '</span></li>'; };
   return '<h2>Oggi, ' + gg(o) + '</h2>' + (oggiChiuso ? '<div class="chiuso" style="font-size:14px;padding:8px 12px;margin-bottom:12px">Oggi la scuola è chiusa: ' + esc(oggiChiuso.nome) + '</div>' : '') + '<div class="griglia">' +
+    (function () { var da = [];
+      settimana(lunedi(o)).forEach(function (x) {
+        if (x.fatto) return;
+        if (x.senza.length) x.senza.forEach(function (c) { da.push('<li><button class="l" data-progoggi="' + D.settimanali.indexOf(x.a) + '" data-cl="' + esc(c.id) + '">' + esc(x.a.nome) + '</button> <span class="tenue piccolo">' + esc(c.nome) + '</span></li>'); });
+        else da.push('<li><button class="l" data-progoggi="' + D.settimanali.indexOf(x.a) + '">' + esc(x.a.nome) + '</button></li>');
+      });
+      return da.length ? scheda('Attività da programmare questa settimana', da.length, da, '') : ''; })() +
     scheda('Laboratori e attività entro 7 giorni', evSett.length, evSett.map(evRiga), 'Nessuno.') +
     (chiusure.length ? scheda('Chiusure nei prossimi 30 giorni', chiusure.length, chiusure.map(function (e) { return '<li>' + esc(e.nome) + ' <span class="tenue piccolo">' + gg(e.dal) + (e.al !== e.dal ? ' – ' + gg(e.al) : '') + '</span></li>'; }), '') : '') +
     scheda('In corso oggi', inCorso.length, inCorso.map(function (v) { return riga(v, v.corso_nome + ' · fino al ' + gg(v.fine)); }), 'Nessuno studente in corso.') +
@@ -268,7 +277,7 @@ VISTE.studenti = function () {
       return '<tr class="cl" data-stud="' + esc(v.id) + '"><td class="piccolo tenue">' + esc(v.id) + '</td><td>' + esc(nome(v)) + '<div class="tenue piccolo">' + esc(v.nazionalita) + '</div></td><td>' + esc(v.corso_nome) + (v.tema ? '<div class="tenue piccolo">' + esc(v.tema) + '</div>' : '') + '</td><td>' + gg(v.inizio) + ' – ' + gg(v.fine) + '</td><td>' + esc(v.livello) + (v.livello_finale ? ' → <b>' + esc(v.livello_finale) + '</b>' : '') + '</td><td>' + (cl ? esc(cl) : (sovrap(v.inizio, v.fine, o, '9999') && attiva(v) ? '<span class="tag att">da assegnare</span>' : '')) + '</td><td>' + statoTag(v.stato) + '</td><td>' + (Number(v.residuo) > 0 ? euro(v.residuo) : '') + '</td></tr>';
     }).join('') || '<tr><td colspan="8" class="vuoto-msg">Nessuna iscrizione.</td></tr>') + '</tbody></table></div>';
 };
-DOPO.oggi = function () { $$('[data-evoggi]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evoggi')); }; }); };
+DOPO.oggi = function () { $$('[data-progoggi]').forEach(function (b) { b.onclick = function () { programma(D.settimanali[+b.getAttribute('data-progoggi')], lunedi(D.oggi), b.getAttribute('data-cl')); }; }); $$('[data-evoggi]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evoggi')); }; }); };
 DOPO.studenti = function () {
   $('#fstato').value = U.stato; $('#fperiodo').value = U.periodo;
   $('#cerca').oninput = function () { U.cerca = this.value; var p = this.selectionStart; disegna(); var c = $('#cerca'); c.focus(); c.setSelectionRange(p, p); };
@@ -613,6 +622,7 @@ function conflitti() {
     var e = impegni(g).filter(function (x) { return x.inizio && x.fine && x.stato !== 'annullata'; });
     e.forEach(function (a, i) { e.slice(i + 1).forEach(function (b) {
       if (aMin(a.inizio) >= aMin(b.fine) || aMin(b.inizio) >= aMin(a.fine)) return;
+      if ((a.evento && classiEv(a.evento).indexOf(b.classe.id) >= 0) || (b.evento && classiEv(b.evento).indexOf(a.classe.id) >= 0)) return;
       var perche = a.ins && a.ins === b.ins ? 'stesso insegnante' : (a.aula && a.aula === b.aula && aul.indexOf(a.aula) >= 0 ? 'stessa aula' : '');
       if (!perche) return;
       out[a.id] = perche + ': ' + b.titolo + ' ' + b.inizio + '–' + b.fine;
@@ -642,7 +652,7 @@ VISTE.calendario = function () {
     var chiuso = chiusura(piu(lun, i));
     h += '<td>' + (chiuso ? '<div class="chiuso">Chiuso: ' + esc(chiuso.nome) + '</div>' : '') + (e.map(function (x) {
       if (x.evento) return '<button class="blocco ev" data-evcal="' + esc(x.evento.id) + '"><b>' + esc(x.ora || 'orario da decidere') + '</b>' + esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) +
-        ' · ' + iscrittiA(x.evento.id).length + ' iscritti</button>';
+        ' · ' + esc(chiVa(x.evento)) + '</button>';
       return '<button class="blocco' + (x.lez ? ' priv' : '') + (x.stato === 'prevista' ? ' prev' : '') + (x.stato === 'annullata' ? ' annul' : '') + (conf[x.id] ? ' conf' : '') + '" ' +
         (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + '</b>' +
         esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) + (x.lez && x.stato !== 'fatta' ? ' · ' + esc(x.stato) : '') +
@@ -673,24 +683,48 @@ VISTE.registro = function () {
     '<span class="spazio"></span><button class="b" onclick="window.print()">Stampa</button><button class="b p" id="nuovalez">Nuova lezione</button></div>';
   if (!U.classeReg) return h + '<div class="vuoto-msg">Crea prima una classe in Classi.</div>';
   var c = CLA[U.classeReg];
-  var lez = D.registro.filter(function (l) { return l.classe === c.id; }).sort(perDataOra);
-  h += '<h2>Registro: ' + esc(c.nome) + '</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Ore</th>' + COL_REG.map(function (k) { return '<th>' + k[1] + '</th>'; }).join('') + '<th>Assenti</th></tr></thead><tbody>' +
+  // Il filtro per date: vale per le lezioni elencate e per le presenze.
+  var fd = U.regDal || '', fa = U.regAl || '', nelPeriodo = function (g) { return (!fd || g >= fd) && (!fa || g <= fa); };
+  var lez = D.registro.filter(function (l) { return l.classe === c.id && nelPeriodo(l.data); }).sort(perDataOra);
+  var evCl = D.eventi.filter(function (e) { return classiEv(e).indexOf(c.id) >= 0 && nelPeriodo(e.dal); });
+  lez = lez.concat(evCl.map(function (e) { return {evento: e, data: e.dal, ora_inizio: orarioDi(e.ora)[0] || e.ora}; })).sort(perDataOra);
+  var lun = lunedi(D.oggi);
+  h += '<div class="barra no-stampa"><span class="tenue">Periodo:</span> dal <input type="date" id="rdal" value="' + esc(fd) + '"> al <input type="date" id="ral" value="' + esc(fa) + '">' +
+    '<button class="b piccolo" data-per="sett">Questa settimana</button><button class="b piccolo" data-per="prec">Settimana scorsa</button><button class="b piccolo" data-per="mese">Questo mese</button><button class="b piccolo" data-per="">Tutto</button></div>';
+  h += '<h2>Registro: ' + esc(c.nome) + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Ore</th>' + COL_REG.map(function (k) { return '<th>' + k[1] + '</th>'; }).join('') + '<th>Assenti</th></tr></thead><tbody>' +
     (lez.map(function (l) {
+      if (l.evento) return '<tr class="cl" data-evreg="' + esc(l.evento.id) + '"><td>' + ggA(l.data) + '</td><td colspan="11"><span class="tag ev">' + esc(l.evento.nome) + '</span> ' + esc(l.evento.ora || 'orario da decidere') + (l.evento.luogo ? ' · ' + esc(l.evento.luogo) : '') + (l.evento.responsabile ? ' · ' + esc(l.evento.responsabile) : '') + '</td></tr>';
       var ass = String(l.assenti || '').split(/\s*,\s*/).filter(String).map(function (i) { return ISC[i] ? ISC[i].nome : i; }).join(', ');
       return '<tr class="cl" data-lez="' + esc(l.id) + '"><td>' + ggA(l.data) + '<div class="tenue piccolo">' + esc([l.orario, l.aula].filter(String).join(' · ')) + '</div>' + ((l.stato || 'fatta') !== 'fatta' ? statoLez(l.stato) : '') + '</td><td>' + esc(l.ore) + '</td>' +
         COL_REG.map(function (k) { return '<td style="white-space:pre-wrap">' + esc(l[k[0]]) + '</td>'; }).join('') + '<td>' + esc(ass) + '</td></tr>';
     }).join('') || '<tr><td colspan="12" class="vuoto-msg">Nessuna lezione. Premi “Nuova lezione”.</td></tr>') + '</tbody></table></div>';
   var ass = assDiClasse(c.id).filter(function (a) { return ISC[a.iscrizione]; });
-  if (ass.length) h += '<h3>Presenze</h3><div class="scroll"><table><thead><tr><th>Studente</th><th>In classe</th><th>Ore frequentate</th><th>Lezioni</th></tr></thead><tbody>' + ass.map(function (a) {
-    var f = frequenza(a.iscrizione), v = ISC[a.iscrizione];
-    return '<tr><td>' + linkStud(v) + '</td><td>' + gg(a.dal) + ' – ' + gg(a.al) + '</td><td>' + f.ore + ' su ' + f.previste + (f.previste ? ' (' + Math.round(100 * f.ore / f.previste) + '%)' : '') + '</td><td>' + f.lezioni + '</td></tr>';
+  ass = ass.filter(function (a) { return (!fd || a.al >= fd) && (!fa || a.dal <= fa); });
+  if (ass.length) h += '<h3>Presenze' + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h3><div class="scroll"><table><thead><tr><th>Studente</th><th>In classe</th><th>Ore frequentate</th><th>Lezioni</th><th>Assenze</th></tr></thead><tbody>' + ass.map(function (a) {
+    var f = frequenza(a.iscrizione, fd, fa, c.id), v = ISC[a.iscrizione];
+    return '<tr><td>' + linkStud(v) + '</td><td>' + gg(a.dal) + ' – ' + gg(a.al) + '</td><td>' + f.ore + ' su ' + f.previste + (f.previste ? ' (' + Math.round(100 * f.ore / f.previste) + '%)' : '') + '</td><td>' + f.lezioni + '</td>' +
+      '<td>' + (f.assenze.length ? f.assenze.length + ' <span class="tenue piccolo">(' + f.assenze.map(function (g) { return gg(g); }).join(', ') + ')</span>' : '0') + '</td></tr>';
   }).join('') + '</tbody></table></div>';
+  else h += '<div class="vuoto-msg">Nessuno studente in classe nel periodo.</div>';
   return h;
 };
 DOPO.registro = function () {
   if ($('#rclasse')) $('#rclasse').onchange = function () { U.classeReg = this.value; disegna(); };
+  if ($('#rdal')) {
+    $('#rdal').onchange = function () { U.regDal = this.value; disegna(); };
+    $('#ral').onchange = function () { U.regAl = this.value; disegna(); };
+    $$('[data-per]').forEach(function (b) { b.onclick = function () {
+      var p = b.getAttribute('data-per'), lun = lunedi(D.oggi);
+      if (p === 'sett') { U.regDal = lun; U.regAl = piu(lun, 6); }
+      else if (p === 'prec') { U.regDal = piu(lun, -7); U.regAl = piu(lun, -1); }
+      else if (p === 'mese') { U.regDal = D.oggi.slice(0, 8) + '01'; U.regAl = piu(isoDa(new Date(Date.UTC(+D.oggi.slice(0, 4), +D.oggi.slice(5, 7), 1))), -1); }
+      else { U.regDal = ''; U.regAl = ''; }
+      disegna();
+    }; });
+  }
   $('#nuovalez').onclick = function () { if (U.classeReg) lezione(null, U.classeReg); };
   $$('[data-lez]').forEach(function (r) { r.onclick = function () { lezione(r.getAttribute('data-lez'), U.classeReg); }; });
+  $$('[data-evreg]').forEach(function (r) { r.onclick = function () { evento(r.getAttribute('data-evreg')); }; });
 };
 
 function lezioneDaId(id) { return D.registro.filter(function (x) { return x.id === id; })[0]; }
@@ -946,7 +980,46 @@ function chiusura(g) { return D.eventi.filter(function (e) { return e.tipo === '
 function eventiDel(g) { return D.eventi.filter(function (e) { return e.tipo !== 'chiusura' && e.dal <= g && e.al >= g; }); }
 function eventoId(id) { return D.eventi.filter(function (e) { return e.id === id; })[0]; }
 function iscrittiA(id) { return D.partecipanti.filter(function (p) { return p.evento === id; }).map(function (p) { return ISC[p.iscrizione]; }).filter(Boolean); }
-function presentiIl(g) { return D.iscrizioni.filter(function (v) { return attiva(v) && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= g && v.fine >= g; }); }
+/* Uno studente dei corsi di gruppo (non solo lezioni individuali o online): le attività sono comprese per lui. */
+function inGruppo(v) { return !v.formula && !/privat|individ|online/i.test((v.corso_nome || '') + ' ' + (v.tema || '')); }
+function presentiIl(g) { return D.iscrizioni.filter(function (v) { return attiva(v) && inGruppo(v) && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= g && v.fine >= g; }); }
+function perTutti(e) { return e.tipo !== 'chiusura' && e.per !== 'iscritti' && e.per !== 'classi'; }
+function classiEv(e) { return e.per === 'classi' ? String(e.classi || '').split(/\s*,\s*/).filter(String) : []; }
+/* Chi partecipa a un evento: tutti i gruppi, alcune classi (nelle loro ore), o gli iscritti. */
+function partecipantiDi(e) {
+  if (e.per === 'classi') {
+    var cl = classiEv(e);
+    return D.iscrizioni.filter(function (v) { return attiva(v) && assDi(v.id).some(function (a) { return cl.indexOf(a.classe) >= 0 && a.dal <= e.dal && a.al >= e.dal; }); });
+  }
+  return perTutti(e) ? presentiIl(e.dal) : iscrittiA(e.id);
+}
+function nomiClassi(e) { return classiEv(e).map(function (c) { return CLA[c] ? CLA[c].nome : c; }).join(', '); }
+function chiVa(e) {
+  if (e.per === 'classi') return nomiClassi(e) + ' (' + partecipantiDi(e).length + ')';
+  return perTutti(e) ? 'tutti (' + presentiIl(e.dal).length + ')' : iscrittiA(e.id).length + (e.posti ? '/' + e.posti : '') + ' iscritti';
+}
+function gruppiNellaSettimana(lun) { var dom = piu(lun, 6); return D.classi.filter(function (c) { return !privato(c) && c.inizio <= dom && c.fine >= lun; }); }
+/* Le attività settimanali (dal sito) e, per una settimana, quelle già programmate e le classi che non le hanno ancora. */
+function settimana(lun) {
+  var dom = piu(lun, 6), gruppi = gruppiNellaSettimana(lun);
+  return D.settimanali.map(function (a) {
+    var ev = D.eventi.filter(function (e) { return e.tipo === 'attivita' && e.nome === a.nome && e.dal >= lun && e.dal <= dom; });
+    var tutti = ev.some(perTutti);
+    var senza = tutti ? [] : gruppi.filter(function (c) { return !ev.some(function (e) { return classiEv(e).indexOf(c.id) >= 0; }); });
+    return {a: a, ev: ev, senza: senza, fatto: tutti || (ev.length > 0 && !senza.length) || (!gruppi.length && ev.length > 0)};
+  });
+}
+/* Il primo giorno utile della settimana (da oggi, lun–ven, scuola aperta) per programmare un'attività. */
+function giornoUtile(lun) {
+  for (var i = 0; i < 5; i++) { var g = piu(lun, i); if (g >= D.oggi && !chiusura(g)) return g; }
+  return lun < D.oggi ? D.oggi : lun;
+}
+/* Programma un'attività settimanale; con "classe" è dentro le lezioni di quella classe. */
+function programma(a, lun, classe) {
+  var c = classe ? CLA[classe] : null, g = giornoUtile(lun);
+  evento(null, 'attivita', {tipo: 'attivita', nome: a.nome, nome_en: a.nome_en, dal: g, al: g, ora: '', luogo: c ? (c.aula || '') : '', responsabile: c ? (c.insegnante || '') : '',
+    posti: '', note: '', per: c ? 'classi' : 'tutti', classi: c ? c.id : ''});
+}
 function tipoEv(t) { return {chiusura: '<span class="tag err">chiusura</span>', laboratorio: '<span class="tag ev">laboratorio</span>', attivita: '<span class="tag ev">attività</span>'}[t] || esc(t); }
 
 VISTE.attivita = function () {
@@ -955,16 +1028,25 @@ VISTE.attivita = function () {
     .sort(function (a, b) { return U.evPassati ? (a.dal > b.dal ? -1 : 1) : (a.dal < b.dal ? -1 : 1); });
   var h = '<div class="barra"><button class="b" id="evsito">Aggiorna dal sito</button><select id="evfiltro"><option value="">Prossimi 60 giorni</option><option value="tutti">Tutti i prossimi</option><option value="passati">Passati</option></select>' +
     '<span class="spazio"></span><button class="b" id="evchiusura">Nuova chiusura</button><button class="b p" id="evnuovo">Nuovo laboratorio o attività</button></div>' +
-    '<p class="tenue piccolo">Le chiusure e le date dei laboratori vengono dal sito (data/alia.json e data/laboratori.json): “Aggiorna dal sito” le legge. Orario, luogo e chi lo segue si scrivono qui, di volta in volta.</p>';
+    '<p class="tenue piccolo">Le chiusure, le date dei laboratori e le attività settimanali vengono dal sito: “Aggiorna dal sito” le legge. Giorno, orario, luogo e chi le segue si decidono qui, di volta in volta.</p>';
+  if (D.settimanali.length) h += '<div class="griglia">' + [0, 7].map(function (k) {
+    var lun = piu(lunedi(o), k);
+    return '<div class="card"><h3 style="margin-top:0">' + (k ? 'Settimana prossima' : 'Questa settimana') + ' <span class="tenue piccolo">' + gg(lun) + ' – ' + gg(piu(lun, 5)) + '</span></h3><ul class="lista">' +
+      settimana(lun).map(function (x, i) {
+        return '<li><b>' + esc(x.a.nome) + '</b><br>' + x.ev.map(function (e) { return '<button class="l" data-ev="' + esc(e.id) + '">' + (e.per === 'classi' ? esc(nomiClassi(e)) + ': ' : perTutti(e) ? 'tutti: ' : '') + giornoSett(e.dal) + ' ' + gg(e.dal) + (e.ora ? ', ' + esc(e.ora) : ', orario da decidere') + '</button>'; }).join('<br>') +
+          (x.senza.length ? (x.ev.length ? '<br>' : '') + x.senza.map(function (c) { return '<span class="tag att">' + esc(c.nome) + '</span> <button class="b piccolo" data-prog="' + i + '" data-lun="' + lun + '" data-cl="' + esc(c.id) + '">Programma</button>'; }).join(' ') : '') +
+          (!x.ev.length && !x.senza.length ? '<span class="tag att">da programmare</span> <button class="b piccolo" data-prog="' + i + '" data-lun="' + lun + '">Programma</button>' : '') + '</li>';
+      }).join('') + '</ul><p class="tenue piccolo">Ogni classe di gruppo ha le sue: “Programma” la mette dentro le lezioni di quella classe.</p></div>';
+  }).join('') + '</div>';
   var mese = '';
-  h += '<div class="scroll"><table><thead><tr><th>Giorno</th><th>Tipo</th><th>Nome</th><th>Orario</th><th>Luogo</th><th>Chi lo segue</th><th>Iscritti</th><th>In corso quel giorno</th></tr></thead><tbody>' +
+  h += '<div class="scroll"><table><thead><tr><th>Giorno</th><th>Tipo</th><th>Nome</th><th>Orario</th><th>Luogo</th><th>Chi lo segue</th><th>Chi va</th><th>Studenti di gruppo quel giorno</th></tr></thead><tbody>' +
     (l.map(function (e) {
       var m = e.dal.slice(0, 7), r = '';
       if (m !== mese) { mese = m; r += '<tr><td colspan="8" style="background:#fafbfc"><b>' + ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][+m.slice(5) - 1] + ' ' + m.slice(0, 4) + '</b></td></tr>'; }
       var ch = e.tipo === 'chiusura', isc = ch ? [] : iscrittiA(e.id);
       return r + '<tr class="cl" data-ev="' + esc(e.id) + '"><td>' + giornoSett(e.dal) + ' ' + gg(e.dal) + (e.al !== e.dal ? ' → ' + giornoSett(e.al) + ' ' + gg(e.al) : '') + '</td><td>' + tipoEv(e.tipo) + '</td><td>' + esc(e.nome) + '</td>' +
         '<td>' + (ch ? '' : e.ora ? esc(e.ora) : '<span class="tag att">da decidere</span>') + '</td><td>' + esc(e.luogo) + '</td><td>' + esc(e.responsabile) + '</td>' +
-        '<td>' + (ch ? '' : isc.length + (e.posti ? '/' + esc(e.posti) : '')) + '</td><td>' + (ch ? '' : presentiIl(e.dal).length) + '</td></tr>';
+        '<td>' + (ch ? '' : esc(chiVa(e))) + '</td><td>' + (ch ? '' : presentiIl(e.dal).length) + '</td></tr>';
     }).join('') || '<tr><td colspan="8" class="vuoto-msg">Niente. Premi “Aggiorna dal sito”.</td></tr>') + '</tbody></table></div>';
   return h;
 };
@@ -975,6 +1057,7 @@ DOPO.attivita = function () {
   $('#evnuovo').onclick = function () { evento(null, 'laboratorio'); };
   $('#evchiusura').onclick = function () { evento(null, 'chiusura'); };
   $$('[data-ev]').forEach(function (r) { r.onclick = function () { evento(r.getAttribute('data-ev')); }; });
+  $$('[data-prog]').forEach(function (b) { b.onclick = function () { programma(D.settimanali[+b.getAttribute('data-prog')], b.getAttribute('data-lun'), b.getAttribute('data-cl')); }; });
 };
 
 function evento(id, tipo, bozza) {
@@ -982,10 +1065,22 @@ function evento(id, tipo, bozza) {
   var ch = e.tipo === 'chiusura';
   var corpo = '<div class="campi">' + scelta('ev-tipo', 'Tipo', e.tipo, D.tipi_evento) + campo('ev-nome', 'Nome', e.nome) + campo('ev-nome_en', 'Nome in inglese', e.nome_en) +
     campo('ev-dal', ch ? 'Dal' : 'Giorno', e.dal, 'date') + campo('ev-al', ch ? 'Al' : 'Fino al (se dura più giorni)', e.al, 'date') +
-    (ch ? '' : campo('ev-ora', 'Orario (es. 15:00–17:00)', e.ora) + campo('ev-luogo', 'Luogo / ritrovo', e.luogo) + campo('ev-responsabile', 'Chi lo segue', e.responsabile) + campo('ev-posti', 'Posti (vuoto = senza limite)', e.posti, 'number', ' min="1"')) +
+    (ch ? '' : scelta('ev-per', 'Chi partecipa', ['iscritti', 'classi'].indexOf(e.per) >= 0 ? e.per : 'tutti', [['classi', 'Alcune classi, nelle loro ore di lezione'], ['tutti', 'Tutti gli studenti dei corsi di gruppo'], ['iscritti', 'Solo chi si iscrive']]) +
+      '<div class="largo" id="ev-classi-box"' + (e.per === 'classi' ? '' : ' style="display:none"') + '><div class="tenue piccolo">Classi</div><div class="checks" id="ev-classi">' +
+      D.classi.filter(function (c) { return !privato(c) && c.inizio <= (e.al || e.dal) && c.fine >= e.dal; }).map(function (c) {
+        return '<label><input type="checkbox" value="' + esc(c.id) + '"' + (classiEv(e).indexOf(c.id) >= 0 ? ' checked' : '') + '> ' + esc(c.nome) + (c.orario ? ' <span class="tenue piccolo">' + esc(c.orario) + '</span>' : '') + '</label>';
+      }).join('') + '</div></div>' +
+      campo('ev-ora', 'Orario (es. 15:00–17:00)', e.ora) + campo('ev-luogo', 'Luogo / ritrovo', e.luogo) + campo('ev-responsabile', 'Chi lo segue', e.responsabile) + campo('ev-posti', 'Posti (vuoto = senza limite)', e.posti, 'number', ' min="1"')) +
     campo('ev-note', 'Note', e.note, 'textarea') + '</div>' +
     (e.origine === 'sito' ? '<p class="tenue piccolo">Questa data viene dal sito. Se la cambi o la elimini qui, “Aggiorna dal sito” la rimette: cambiala nel sito.</p>' : '');
-  if (id && !ch) {
+  if (id && !ch && e.per !== 'iscritti') {
+    var tutti = partecipantiDi(e);
+    corpo += '<h3>Partecipano (' + tutti.length + ')</h3><p class="tenue piccolo">' + (e.per === 'classi' ? 'Gli studenti di ' + esc(nomiClassi(e)) + ' quel giorno, durante le lezioni.' : 'Tutti gli studenti dei corsi di gruppo in corso quel giorno.') + '</p>' +
+      (tutti.length ? '<div class="piccolo">' + tutti.map(function (v) { return linkStud(v); }).join(', ') + '</div>' : '<div class="vuoto-msg">Nessuno studente di gruppo in corso quel giorno.</div>') +
+      '<h3>Email a tutti</h3><div class="campi"><input type="hidden" id="ev-chi" value="presenti">' + campo('ev-oggetto', 'Oggetto', e.nome + ' – ' + giornoSett(e.dal) + ' ' + gg(e.dal)) +
+      campo('ev-testo', 'Testo ({{nome}} = nome dello studente)', 'Ciao {{nome}},\n\n' + e.nome + ': ' + giornoSett(e.dal) + ' ' + ggA(e.dal) + (e.ora ? ', ' + e.ora : '') + (e.luogo ? ', ' + e.luogo : '') + '.\n\nA presto,\nAccademia Lingua Italiana Assisi', 'textarea') +
+      '</div><div class="barra" style="margin-top:8px"><button class="b" id="ev-email">Manda l’email a ' + tutti.length + ' studenti</button></div>';
+  } else if (id && !ch) {
     var pres = presentiIl(e.dal), isc = iscrittiA(id).map(function (v) { return v.id; });
     iscrittiA(id).forEach(function (v) { if (pres.indexOf(v) < 0) pres.push(v); });
     corpo += '<h3>Iscritti (' + isc.length + (e.posti ? ' su ' + esc(e.posti) : '') + ')</h3>' + (pres.length ? '<div class="checks" id="ev-isc">' + pres.map(function (v) {
@@ -997,10 +1092,12 @@ function evento(id, tipo, bozza) {
       '</div><div class="barra" style="margin-top:8px"><button class="b" id="ev-email">Manda l’email</button></div>';
   }
   var d = dialogo(id ? esc(e.nome) : (ch ? 'Nuova chiusura' : 'Nuovo laboratorio o attività'), corpo, (id ? '<button class="b r" id="ev-elimina">Elimina</button>' : '') + '<button class="b p" id="ev-salva">Salva</button>');
-  $('#ev-tipo', d).onchange = function () { var x = raccogli(); delete x.id; evento(id, x.tipo, Object.assign({}, e, x)); };
+  if ($('#ev-per', d)) $('#ev-per', d).onchange = function () { $('#ev-classi-box', d).style.display = this.value === 'classi' ? '' : 'none'; };
+  $('#ev-tipo', d).onchange = function () { var x = raccogli(); delete x.id; x.classi = x.classi.join(', '); evento(id, x.tipo, Object.assign({}, e, x)); };
   function raccogli() {
     var x = {id: id || ''};
-    ['tipo', 'nome', 'nome_en', 'dal', 'al', 'ora', 'luogo', 'responsabile', 'posti', 'note'].forEach(function (k) { var i = $('#ev-' + k, d); x[k] = i ? i.value.trim() : ''; });
+    ['tipo', 'nome', 'nome_en', 'dal', 'al', 'per', 'ora', 'luogo', 'responsabile', 'posti', 'note'].forEach(function (k) { var i = $('#ev-' + k, d); x[k] = i ? i.value.trim() : ''; });
+    x.classi = $$('#ev-classi input:checked', d).map(function (i) { return i.value; });
     return x;
   }
   $('#ev-salva', d).onclick = function () {
@@ -1013,6 +1110,8 @@ function evento(id, tipo, bozza) {
   };
   if ($('#ev-email', d)) $('#ev-email', d).onclick = function () {
     var chi = $('#ev-chi', d).value;
+    if (chi === 'presenti' && !confirm(e.per === 'classi' ? 'Mandare l’email agli studenti di ' + nomiClassi(e) + '?' : 'Mandare l’email a tutti gli studenti dei corsi di gruppo in corso quel giorno?')) return;
+    if (chi === 'presenti') { chiama('emailEvento', id, chi, $('#ev-oggetto', d).value.trim(), $('#ev-testo', d).value).then(function (r) { avviso('Email mandate: ' + r.inviate); }); return; }
     if (!confirm(chi === 'iscritti' ? 'Mandare l’email agli iscritti?' : 'Mandare l’email a tutti gli studenti in corso quel giorno?')) return;
     chiama('emailEvento', id, chi, $('#ev-oggetto', d).value.trim(), $('#ev-testo', d).value).then(function (r) { avviso('Email mandate: ' + r.inviate); });
   };

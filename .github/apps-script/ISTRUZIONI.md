@@ -207,19 +207,29 @@ I prezzi degli alloggi restano nel totale dell'iscrizione e nelle fatture: il ge
 calcola a parte.
 
 ## Chiusure, laboratori e attività
-Le date di chiusura e le date dei laboratori sono già nel sito: `data/alia.json` (`chiusure`) e
-`data/laboratori.json`. Il gestionale le legge da lì, così non si scrivono due volte.
+Sono le attività comprese in tutti i corsi di gruppo (pagina "Attività, facilities e laboratori"):
+la lezione itinerante settimanale, la lezione di pronuncia settimanale, il laboratorio. Le date di
+chiusura, le date dei laboratori e i nomi delle attività settimanali sono già nel sito:
+`data/alia.json` (`chiusure`), `data/laboratori.json`, `data/configuratore.json`
+(`attivita_settimanali`). Il gestionale le legge da lì, così non si scrivono due volte.
 1. **Attività → Aggiorna dal sito**. Da rifare dopo ogni modifica di quei file nel sito.
    Orario, luogo, chi lo segue, posti e note scritti nel gestionale restano. Una data tolta dal sito
    sparisce anche qui, se nessuno è iscritto.
-2. Orario e luogo si decidono di volta in volta: apri il laboratorio e scrivili (es. "15:00–17:00").
-   Finché manca, compare "orario da decidere" (anche nel riepilogo della mattina per lo staff).
-3. Le altre attività (lezione fuori dalla classe, cena, gita…) e le chiusure in più:
-   **Nuovo laboratorio o attività** o **Nuova chiusura**. Restano solo nel gestionale.
-4. **Iscritti**: spunta gli studenti (sono proposti quelli in corso quel giorno). Se ci sono i posti,
-   il gestionale non ne fa iscrivere di più.
-5. **Email**: agli iscritti o a tutti gli studenti in corso quel giorno, per esempio quando avete
-   deciso l'orario.
+2. **Attività settimanali** (lezione fuori dalla classe, pronuncia): ogni classe di gruppo ne ha una
+   per tipo ogni settimana, dentro le sue ore di lezione. In **Attività**, "Questa settimana" e
+   "Settimana prossima" mostrano le classi che non l'hanno ancora: **Programma** → scegli giorno e
+   orario (es. "10:50–12:30"). Più classi insieme: spuntale tutte nella stessa attività. Le
+   attività di una classe compaiono nel suo **Registro**, quel giorno. In **Oggi** e nel riepilogo
+   della mattina c'è cosa manca da programmare.
+3. **Laboratori**: sono per tutti gli studenti dei corsi di gruppo in corso quel giorno. Orario e
+   luogo si decidono di volta in volta: apri il laboratorio e scrivili (es. "15:00–17:00"). Finché
+   manca, compare "orario da decidere".
+4. Altre attività (cena, gita…) e chiusure in più: **Nuovo laboratorio o attività** o **Nuova
+   chiusura**. "Chi partecipa": alcune classi, tutti gli studenti dei corsi di gruppo, o solo chi si
+   iscrive (con i posti, se servono).
+5. **Email**: ai partecipanti (le classi scelte, tutti, o gli iscritti), per esempio quando avete
+   deciso l'orario. Gli studenti solo di lezioni individuali o online non sono "tutti": per loro
+   usate "Solo chi si iscrive".
 
 Nei giorni di chiusura:
 - il calendario non mostra le classi di gruppo e segna "Chiuso";
@@ -236,7 +246,9 @@ Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizz
   dalla classe stessa, dalla scheda dello studente, o dalla riga "Senza classe" del planning.
   Uno studente può cambiare classe: togli e metti, con le date.
 - **Registro**: ogni insegnante apre **Registro**, sceglie la classe, **Nuova lezione**, segna
-  le attività e gli assenti. Le ore si sommano da sole.
+  le attività e gli assenti. Le ore si sommano da sole. **Periodo** (dal… al…, o "Questa
+  settimana", "Settimana scorsa", "Questo mese") filtra lezioni e presenze: ore, lezioni e giorni
+  di assenza di ogni studente in quelle date.
 - **Pagamenti**: **Aggiorna da Fatture in Cloud** (lo fa anche da solo ogni mattina se i
   promemoria sono accesi).
 - **Fine corso**: **Diplomi e attestati**.

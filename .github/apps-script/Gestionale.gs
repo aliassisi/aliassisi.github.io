@@ -45,7 +45,8 @@ var SCHEMI = {
 };
 /* Chiusure della scuola, laboratori e attività. L'orario si decide di volta in volta (testo libero). */
 SCHEMI.Eventi = [['id', 'ID'], ['tipo', 'Tipo'], ['nome', 'Nome'], ['nome_en', 'Nome (inglese)'], ['dal', 'Dal'], ['al', 'Al'],
-  ['ora', 'Orario'], ['luogo', 'Luogo'], ['responsabile', 'Chi lo segue'], ['posti', 'Posti'], ['note', 'Note'], ['origine', 'Origine']];
+  ['ora', 'Orario'], ['luogo', 'Luogo'], ['responsabile', 'Chi lo segue'], ['posti', 'Posti'], ['note', 'Note'], ['origine', 'Origine'],
+  ['per', 'Per chi'], ['classi', 'Classi']];
 SCHEMI.Partecipanti = [['evento', 'Evento'], ['iscrizione', 'N. iscrizione']];
 var TIPI_EVENTO = [['chiusura', 'Chiusura'], ['laboratorio', 'Laboratorio'], ['attivita', 'Attività']];
 var TIPI_ALLOGGIO = [['singola', 'Camera singola'], ['singola_bagno', 'Camera singola con bagno'], ['doppia', 'Camera doppia'],
@@ -212,7 +213,7 @@ function carica() {
     promemoria: leggi('Promemoria').slice(-300),
     documenti: leggi('Documenti'),
     alloggi: leggi('Alloggi'), soggiorni: leggi('Soggiorni'), tipi_alloggio: TIPI_ALLOGGIO,
-    eventi: leggi('Eventi'), partecipanti: leggi('Partecipanti'), tipi_evento: TIPI_EVENTO,
+    eventi: leggi('Eventi'), partecipanti: leggi('Partecipanti'), tipi_evento: TIPI_EVENTO, settimanali: settimanali(),
     impostazioni: imp,
     fic_token: !!p.getProperty('fic_token'),
     invii_attivi: ['ogniGiorno', 'ogniOra'].every(function (h) { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === h; }); }),
@@ -772,6 +773,16 @@ function mandaAlloggio(iscrizione) {
 
 /* ---------- CHIUSURE, LABORATORI E ATTIVITÀ ---------- */
 
+/* Le attività di ogni settimana, comprese nei corsi di gruppo (dal sito: data/configuratore.json). */
+function settimanali() {
+  try { return JSON.parse(props().getProperty('attivita_settimanali') || '[]'); } catch (e) { return []; }
+}
+
+/* Uno studente dei corsi di gruppo (non solo lezioni individuali o online). */
+function inGruppo(v) {
+  return !v.formula && !/privat|individ|online/i.test(String(v.corso_nome) + ' ' + String(v.tema));
+}
+
 function chiave(e) { return e.tipo + '|' + normale(e.nome) + '|' + e.dal; }
 
 /* Legge dal sito le chiusure (data/alia.json) e le date dei laboratori (data/laboratori.json).
@@ -790,8 +801,11 @@ function importaDalSito() {
     sito.push({tipo: 'chiusura', nome: c.it || 'Chiusura', nome_en: c.en || '', dal: c.dal, al: c.al || c.dal});
   });
   (leggiJson('laboratori.json').laboratori || []).forEach(function (l) {
-    (l.date || []).forEach(function (g) { sito.push({tipo: 'laboratorio', nome: l.nome_it, nome_en: l.nome_en || '', dal: g, al: g}); });
+    (l.date || []).forEach(function (g) { sito.push({tipo: 'laboratorio', nome: l.nome_it, nome_en: l.nome_en || '', dal: g, al: g, per: 'tutti'}); });
   });
+  var sett = (leggiJson('configuratore.json').attivita_settimanali || []).map(function (a) { return {nome: String(a.it || ''), nome_en: String(a.en || '')}; })
+    .filter(function (a) { return a.nome; });
+  props().setProperty('attivita_settimanali', JSON.stringify(sett));
   sito = sito.filter(function (e) { return /^\d{4}-\d{2}-\d{2}$/.test(e.dal) && /^\d{4}-\d{2}-\d{2}$/.test(e.al); });
   return conBlocco(function () {
     var ora = leggi('Eventi'), part = leggi('Partecipanti'), per = {}, nuove = 0, tolte = 0;
@@ -821,8 +835,12 @@ function salvaEvento(e) {
   var posti = e.posti === '' || e.posti === undefined ? '' : Number(e.posti);
   if (posti !== '' && !(posti >= 1)) throw new Error('Posti non validi');
   var o = {tipo: e.tipo, nome: testo(e.nome, 300), nome_en: testo(e.nome_en, 300), dal: e.dal, al: al, ora: testo(e.ora, 200),
-    luogo: testo(e.luogo, 300), responsabile: testo(e.responsabile, 200), posti: posti, note: testo(e.note, 3000)};
+    luogo: testo(e.luogo, 300), responsabile: testo(e.responsabile, 200), posti: posti, note: testo(e.note, 3000),
+    per: e.tipo === 'chiusura' ? '' : (['iscritti', 'classi'].indexOf(e.per) >= 0 ? e.per : 'tutti'),
+    classi: e.per === 'classi' ? (e.classi || []).join(', ') : ''};
+  if (o.per === 'classi' && !o.classi) throw new Error('Scegli almeno una classe');
   return conBlocco(function () {
+    if (o.classi) o.classi.split(', ').forEach(function (c) { if (!trova('Classi', 'id', c)) throw new Error('Classe non trovata: ' + c); });
     if (e.id) {
       var r = trova('Eventi', 'id', e.id);
       if (!r) throw new Error('Evento non trovato');
@@ -873,8 +891,13 @@ function emailEvento(evento, chi, oggetto, corpo) {
   if (chi === 'iscritti') {
     var ids = leggi('Partecipanti').filter(function (p) { return p.evento === evento; }).map(function (p) { return p.iscrizione; });
     isc.forEach(function (v) { if (ids.indexOf(v.id) >= 0 && v.email) dest[String(v.email).toLowerCase()] = v; });
+  } else if (e.per === 'classi') {
+    var cl = String(e.classi).split(/\s*,\s*/), ass = leggi('Assegnazioni');
+    isc.forEach(function (v) {
+      if (v.email && v.stato !== 'Annullata' && ass.some(function (a) { return a.iscrizione === v.id && cl.indexOf(a.classe) >= 0 && a.dal <= e.dal && a.al >= e.dal; })) dest[String(v.email).toLowerCase()] = v;
+    });
   } else {
-    isc.forEach(function (v) { if (v.email && v.stato !== 'Annullata' && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= e.dal && v.fine >= e.dal) dest[String(v.email).toLowerCase()] = v; });
+    isc.forEach(function (v) { if (v.email && inGruppo(v) && v.stato !== 'Annullata' && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= e.dal && v.fine >= e.dal) dest[String(v.email).toLowerCase()] = v; });
   }
   var n = 0;
   Object.keys(dest).forEach(function (m) {
@@ -1263,8 +1286,18 @@ function riepilogoStaff() {
   if (arrivi.length) r.push('Arrivi nei prossimi 7 giorni:', arrivi.map(nome).join('\n'), '');
   if (partenze.length) r.push('Finiscono nei prossimi 7 giorni (diplomi e attestati):', partenze.map(nome).join('\n'), '');
   if (nuove.length) r.push('Iscrizioni ancora "Nuova": ' + nuove.length, '');
-  var ev = leggi('Eventi').filter(function (e) { return e.tipo !== 'chiusura' && e.dal >= oggi && e.dal <= fra7; });
+  var ev = leggi('Eventi').filter(function (e) { return e.tipo !== 'chiusura' && e.dal >= oggi && e.dal <= fra7; }).sort(function (a, b) { return a.dal < b.dal ? -1 : 1; });
   if (ev.length) r.push('Laboratori e attività della settimana:', ev.map(function (e) { return '- ' + dataTesto(giorno(e.dal)) + ': ' + e.nome + (e.ora ? ', ' + e.ora : ' (orario da decidere)'); }).join('\n'), '');
+  var lun = piuGiorni(oggi, -((giorno(oggi).getDay() + 6) % 7)), dom = piuGiorni(lun, 6), tutti = leggi('Eventi');
+  var gruppi = leggi('Classi').filter(function (c) { return c.tipo !== 'privato' && c.inizio <= dom && c.fine >= lun; });
+  var manca = [];
+  settimanali().forEach(function (a) {
+    var ev = tutti.filter(function (e) { return e.tipo === 'attivita' && e.nome === a.nome && e.dal >= lun && e.dal <= dom; });
+    if (ev.some(function (e) { return e.per !== 'classi' && e.per !== 'iscritti'; })) return;
+    var senza = gruppi.filter(function (c) { return !ev.some(function (e) { return String(e.classi).split(/\s*,\s*/).indexOf(c.id) >= 0; }); });
+    if (senza.length) manca.push(a.nome + ' (' + senza.map(function (c) { return c.nome; }).join(', ') + ')');
+  });
+  if (manca.length) r.push('Da programmare questa settimana: ' + manca.join('; '), '');
   var ch = leggi('Eventi').filter(function (e) { return e.tipo === 'chiusura' && e.dal >= oggi && e.dal <= fra7; });
   if (ch.length) r.push('Chiusure: ' + ch.map(function (e) { return e.nome + ' (' + dataTesto(giorno(e.dal)) + (e.al !== e.dal ? ' – ' + dataTesto(giorno(e.al)) : '') + ')'; }).join(', '), '');
   if (scadute.length) r.push('Fatture o proforma scadute e non pagate: ' + scadute.length + ' (' + euro(scadute.reduce(function (s, f) { return s + Number(f.da_pagare); }, 0)) + ')', '');
