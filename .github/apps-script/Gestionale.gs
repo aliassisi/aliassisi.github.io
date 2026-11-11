@@ -88,13 +88,26 @@ function autorizzato() {
   return u;
 }
 
-/* Chiamata da doGet in Codice.gs: la pagina solo allo staff, agli altri niente. */
+/* Chiamata da doGet in Codice.gs: la pagina allo staff; agli altri una pagina che dice perché non entrano
+   (il sito non usa doGet: manda le iscrizioni con doPost). */
 function paginaGestionale() {
   var u = utente();
-  if (!u || staff().indexOf(u) < 0) return null;
-  return HtmlService.createHtmlOutputFromFile('Pagina')
-    .setTitle('Gestionale ALIA')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  if (u && staff().indexOf(u) >= 0) {
+    return HtmlService.createHtmlOutputFromFile('Pagina')
+      .setTitle('Gestionale ALIA')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
+  var t = u
+    ? '<p>Sei entrato come <b>' + u.replace(/[<>&"]/g, '') + '</b>, che non è nella lista dello staff.</p>' +
+      '<p>Entra con un account dello staff (per esempio info@aliassisi.it), oppure chiedi di essere aggiunto: ' +
+      'Impostazioni → “Email dello staff”.</p>'
+    : '<p>Google non dice al gestionale chi sei.</p><p>Di solito il motivo è il deployment. In Apps Script: ' +
+      '<b>Esegui il deployment → Gestisci deployment</b> → matita → <b>Chi può accedere: Chiunque all’interno di aliassisi.it</b>, ' +
+      '<b>Esegui come: Me</b> → Versione: Nuova versione → Esegui il deployment. Poi apri l’URL che compare lì ' +
+      '(contiene <code>/a/macros/aliassisi.it/</code>).</p><p>Se nel browser sono aperti più account Google, usa una finestra ' +
+      'privata con il solo account aliassisi.it.</p>';
+  return HtmlService.createHtmlOutput('<div style="font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px">' +
+    '<h1 style="font-size:22px">Gestionale ALIA</h1>' + t + '</div>').setTitle('Gestionale ALIA');
 }
 
 /* ---------- SCHEDE ---------- */
