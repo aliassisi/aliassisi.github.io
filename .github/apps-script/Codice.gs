@@ -151,14 +151,23 @@ function scriviRiga(id, x, link) {
   DATE.forEach(function (k) { v[k] = data(v[k]); });
   var foglio = SpreadsheetApp.getActive().getSheetByName('Iscrizioni');
   var r = foglio.getLastRow() + 1;
-  var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato'));
-  // Apps Script scrive le formule in inglese, con la virgola, in qualunque lingua sia il foglio.
-  // Pagato: la somma dei pagamenti di questa iscrizione nel foglio "Pagamenti".
-  v.pagato = '=SUMIF(Pagamenti!A:A,' + A + r + ',Pagamenti!C:C)';
-  // Da pagare: prezzo confermato (o, se manca, il totale stimato) meno il pagato.
-  v.residuo = '=IF(' + P + r + '="",' + T + r + ',' + P + r + ')-' + G + r;
   var riga = COLONNE.map(function (c) { var k = c[0]; return (v[k] === undefined || v[k] === null) ? '' : v[k]; });
   foglio.getRange(r, 1, 1, riga.length).setValues([riga]);
+  formulePagamenti(foglio, r, r);
+}
+
+/* Pagato e Da pagare delle righe da r1 a r2. setFormulas legge sempre le formule in inglese, con la
+   virgola, anche in un foglio in italiano (setValues no: lì una formula può diventare un errore). */
+function formulePagamenti(foglio, r1, r2) {
+  riservato();
+  if (r2 < r1) return;
+  var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato'));
+  var f = [];
+  for (var r = r1; r <= r2; r++) {
+    f.push(['=SUMIF(Pagamenti!A:A,' + A + r + ',Pagamenti!C:C)',            // Pagato: i pagamenti di questa iscrizione
+            '=IF(' + P + r + '="",' + T + r + ',' + P + r + ')-' + G + r]);  // Da pagare: prezzo confermato (o stimato) meno pagato
+  }
+  foglio.getRange(r1, colonna('pagato'), f.length, 2).setFormulas(f);
 }
 
 /* ---------- EMAIL ---------- */
@@ -279,6 +288,8 @@ function configura() {
     doc.saveAndClose();
     p.setProperty('modello_diploma', doc.getId());
   }
+  // Rifà Pagato e Da pagare di tutte le iscrizioni (se prima erano finite in errore, ora si correggono).
+  formulePagamenti(isc, 2, isc.getLastRow());
   configuraGestionale();
   SpreadsheetApp.getUi().alert('Foglio pronto. Le cartelle "ALIA – Passaporti (privata)", "ALIA – Diplomi" e i modelli del diploma e dell’attestato sono nel tuo Drive.');
 }

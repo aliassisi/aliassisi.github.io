@@ -370,7 +370,15 @@ function apriStudente(id) {
   var f = frequenza(id), ass = assDi(id);
   var fatt = D.fatture.filter(function (x) { return x.iscrizione === id; });
   var docs = D.documenti.filter(function (x) { return x.iscrizione === id; });
-  var classiPossibili = D.classi.filter(function (c) { return sovrap(c.inizio, c.fine, v.inizio || D.oggi, v.fine || '9999'); });
+  // Tutte le classi in corso e future (e quelle che coincidono con lo studente); prima quelle che coincidono.
+  var coincide = function (c) { return sovrap(c.inizio, c.fine, v.inizio || D.oggi, v.fine || '9999'); };
+  var classiPossibili = D.classi.filter(function (c) { return !privato(c) && (coincide(c) || c.fine >= D.oggi); })
+    .sort(function (a, b) { return coincide(b) - coincide(a) || (a.inizio < b.inizio ? -1 : 1); });
+  var dateIn = function (c) {   // le date proposte: quelle in comune tra studente e classe, se no quelle della classe
+    if (!c) return [v.inizio || '', v.fine || ''];
+    if (!coincide(c) || !v.inizio || !v.fine) return [c.inizio, c.fine];
+    return [v.inizio > c.inizio ? v.inizio : c.inizio, v.fine < c.fine ? v.fine : c.fine];
+  };
   var corpo =
     '<div class="campi">' +
     scelta('s-stato', 'Stato', v.stato, D.stati) +
@@ -390,8 +398,10 @@ function apriStudente(id) {
     '<h3>Classi</h3>' + (ass.length ? '<ul class="lista">' + ass.map(function (a) {
       return '<li>' + (CLA[a.classe] ? '<button class="l" data-classe="' + esc(a.classe) + '">' + esc(CLA[a.classe].nome) + '</button>' : esc(a.classe)) + ' <span class="tenue">' + gg(a.dal) + ' – ' + gg(a.al) + '</span> <button class="b r piccolo" data-togli="' + esc(a.classe) + '">Togli</button></li>';
     }).join('') + '</ul>' : '<div class="vuoto-msg">Nessuna classe.</div>') +
-    (classiPossibili.length ? '<div class="barra"><select id="s-classe">' + classiPossibili.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.nome) + ' (' + gg(c.inizio) + '–' + gg(c.fine) + ')</option>'; }).join('') + '</select>' +
-      '<input type="date" id="s-dal" value="' + esc(v.inizio) + '"><input type="date" id="s-al" value="' + esc(v.fine) + '"><button class="b" id="s-assegna">Metti in classe</button></div>' : '<div class="tenue piccolo">Nessuna classe nel periodo dello studente: creala in Classi.</div>') +
+    (classiPossibili.length ? '<div class="barra"><select id="s-classe">' + classiPossibili.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.nome) + ' (' + gg(c.inizio) + '–' + gg(c.fine) + ')' + (coincide(c) ? '' : ' – date diverse') + '</option>'; }).join('') + '</select>' +
+      'dal <input type="date" id="s-dal" value="' + esc(dateIn(classiPossibili[0])[0]) + '"> al <input type="date" id="s-al" value="' + esc(dateIn(classiPossibili[0])[1]) + '"><button class="b" id="s-assegna">Metti in classe</button></div>' +
+      (!v.inizio || !v.fine ? '<div class="tenue piccolo">Lo studente non ha le date del corso: scrivile sopra (Inizio, Fine) e salva.</div>' : '')
+      : '<div class="tenue piccolo">Non ci sono classi in corso o future: creala in Classi.</div>') +
     '<div class="piccolo">Frequenza dal registro: <b>' + f.ore + ' ore</b> su ' + f.previste + ' (' + f.lezioni + ' lezioni)</div>' +
     (vuoleAlloggio(v) || soggiorniDi(id).length ? '<h3>Alloggio</h3><div class="piccolo">' + (v.alloggio ? 'Ha chiesto: <b>' + esc(v.alloggio) + '</b>' + (v.settimane_alloggio ? ', ' + esc(v.settimane_alloggio) + ' settimane' : '') : '') + '</div>' +
       (soggiorniDi(id).length ? '<ul class="lista">' + soggiorniDi(id).map(function (x) { var a = alloggioId(x.alloggio); return '<li>' + esc(a ? a.nome : x.alloggio) + ' <span class="tenue">' + gg(x.arrivo) + ' → ' + gg(x.partenza) + '</span>' + (x.note ? ' <span class="tenue piccolo">' + esc(x.note) + '</span>' : '') + ' <button class="b piccolo" data-modsog="' + esc(x.id) + '">Modifica</button> <button class="b piccolo r" data-togsog="' + esc(x.id) + '">Togli</button></li>'; }).join('') + '</ul>' : '<div class="vuoto-msg">Non ancora assegnato.</div>') +
@@ -414,6 +424,9 @@ function apriStudente(id) {
     });
     if (!Object.keys(c).length) { avviso('Niente da salvare'); return; }
     chiama('salvaIscrizione', id, c).then(function () { avviso('Salvato'); disegna(); apriStudente(id); });
+  };
+  if ($('#s-classe', d)) $('#s-classe', d).onchange = function () {
+    var dt = dateIn(CLA[this.value]); $('#s-dal', d).value = dt[0]; $('#s-al', d).value = dt[1];
   };
   if ($('#s-assegna', d)) $('#s-assegna', d).onclick = function () {
     chiama('assegna', id, $('#s-classe', d).value, $('#s-dal', d).value, $('#s-al', d).value).then(function () { avviso('Fatto'); disegna(); apriStudente(id); });
@@ -588,9 +601,15 @@ function apriClasse(id) {
   var cand = D.iscrizioni.filter(function (v) { return attiva(v) && !dentro[v.id] && sovrap(v.inizio, v.fine, c.inizio, c.fine); })
     .sort(function (a, b) { return (b.livello === c.livello) - (a.livello === c.livello) || (a.cognome < b.cognome ? -1 : 1); });
   var lez = D.registro.filter(function (l) { return l.classe === id; });
-  var aggiungi = (cand.length ? '<div class="checks">' + cand.map(function (v) {
-      return '<label><input type="checkbox" value="' + esc(v.id) + '"> ' + esc(nome(v)) + ' <span class="tenue piccolo">' + esc(v.livello || '?') + ' · ' + gg(v.inizio) + '–' + gg(v.fine) + (assDi(v.id).length ? ' · già in un’altra classe' : '') + '</span></label>';
-    }).join('') + '</div><div class="barra" style="margin-top:8px"><button class="b p" id="k-aggiungi">Aggiungi i selezionati</button></div>' : '<div class="vuoto-msg">Nessun altro studente nel periodo.</div>');
+  // Gli altri studenti (date diverse o senza date, non conclusi): si possono aggiungere lo stesso.
+  var altri = D.iscrizioni.filter(function (v) { return attiva(v) && !dentro[v.id] && cand.indexOf(v) < 0 && (!v.fine || v.fine >= D.oggi); })
+    .sort(function (a, b) { return a.cognome < b.cognome ? -1 : 1; });
+  var casella = function (v) {
+    return '<label><input type="checkbox" value="' + esc(v.id) + '"> ' + esc(nome(v)) + ' <span class="tenue piccolo">' + esc(v.livello || '?') + ' · ' + (v.inizio ? gg(v.inizio) + '–' + gg(v.fine) : 'senza date') + (assDi(v.id).length ? ' · già in un’altra classe' : '') + '</span></label>';
+  };
+  var aggiungi = (cand.length ? '<div class="checks">' + cand.map(casella).join('') + '</div>' : '<div class="vuoto-msg">Nessun altro studente nel periodo della classe.</div>') +
+    (altri.length ? '<details style="margin-top:8px"><summary>Altri studenti (date diverse o senza date): ' + altri.length + '</summary><div class="checks" style="margin-top:6px">' + altri.map(casella).join('') + '</div></details>' : '') +
+    (cand.length || altri.length ? '<div class="barra" style="margin-top:8px"><button class="b p" id="k-aggiungi">Aggiungi i selezionati</button></div>' : '');
   var corpo = '<div class="piccolo">' + (privato(c) ? '<span class="tag ok">individuale</span> ' : '') +
     (online(c) ? (c.link ? '<span class="tag">online</span> <a href="' + esc(c.link) + '" target="_blank" rel="noopener">link Zoom</a> · ' : '<span class="tag err">online: manca il link Zoom (Modifica)</span> ') : '') + esc([c.aula, c.livello, c.insegnante, gg(c.inizio) + ' – ' + gg(c.fine)].concat(privato(c) ? [] : [c.orario, lez.length + ' lezioni nel registro']).filter(Boolean).join(' · ')) + (c.note ? '<br>' + esc(c.note) : '') + '</div>' +
     '<h3>Studenti (' + ass.length + ')</h3>' + (ass.length ? '<table><thead><tr><th>Studente</th><th>In classe</th><th>Livello</th><th>Ore</th><th></th></tr></thead><tbody>' + ass.map(function (a) {
@@ -609,7 +628,11 @@ function apriClasse(id) {
     var ids = $$('.checks input:checked', d).filter(function (i) { return !i.classList.contains('p-g'); }).map(function (i) { return i.value; });
     if (!ids.length) return;
     var p = Promise.resolve();
-    ids.forEach(function (sid) { var v = ISC[sid]; p = p.then(function () { return chiama('assegna', sid, id, v.inizio > c.inizio ? v.inizio : c.inizio, v.fine < c.fine ? v.fine : c.fine); }); });
+    ids.forEach(function (sid) {
+      var v = ISC[sid], insieme = v.inizio && v.fine && sovrap(v.inizio, v.fine, c.inizio, c.fine);
+      var dal = insieme && v.inizio > c.inizio ? v.inizio : c.inizio, al = insieme && v.fine < c.fine ? v.fine : c.fine;
+      p = p.then(function () { return chiama('assegna', sid, id, dal, al); });
+    });
     p.then(function () { avviso('Aggiunti ' + ids.length + ' studenti'); disegna(); apriClasse(id); });
   };
   $('#k-email', d).onclick = function () {
