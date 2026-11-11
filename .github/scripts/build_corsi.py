@@ -244,7 +244,20 @@ def contenuto(modello, ali, c, oggi, lingua):
         "iscrizione": esc(iscrizione(c["id"])),
         "altri_corsi": altri_corsi(ali, c["pagine"], lingua),
     }
-    return re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello)
+    return nome_esteso_una_volta(re.sub(r"\{\{(\w+)\}\}", lambda m: valori[m.group(1)], modello))
+
+
+CERTIT_ESTESO = "Cert.it (Università degli Studi Roma Tre)"
+
+
+def nome_esteso_una_volta(html):
+    """Cert.it gets the university's name only at its first mention on the page.
+    The template and the course texts both may carry it: keep the first one."""
+    primo = html.find(CERTIT_ESTESO)
+    if primo < 0:
+        return html
+    fine = primo + len(CERTIT_ESTESO)
+    return html[:fine] + html[fine:].replace(CERTIT_ESTESO, "Cert.it")
 
 
 def altri_corsi(ali, pagine, lingua):
