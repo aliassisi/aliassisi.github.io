@@ -15,13 +15,15 @@ Il **gestionale** è una pagina per lo staff, sopra lo stesso foglio:
   aula; segna in rosso stesso insegnante o stessa aula alla stessa ora;
 - **Registro**: le lezioni di ogni classe (le stesse colonne del vecchio registro) e le assenze;
   da qui si calcolano le ore per l'attestato;
+- **Alloggi**: camere e appartamenti, chi sta dove notte per notte, chi ha chiesto un alloggio e
+  non l'ha ancora, arrivi e partenze;
 - **Pagamenti**: fatture e proforma lette da Fatture in Cloud, abbinate agli studenti, promemoria;
 - **Diplomi e attestati**: un PDF con una pagina per studente, da un vostro modello;
 - **Email**: promemoria di pagamento, auguri di compleanno, email prima dell'arrivo, riepilogo
   della mattina per lo staff.
 
 I dati restano nel foglio Google (schede Iscrizioni, Pagamenti, Classi, Assegnazioni, Registro,
-Fatture, Promemoria, Documenti). Non costa niente.
+Fatture, Promemoria, Documenti, Alloggi, Soggiorni). Non costa niente.
 
 Si fa con l'account **info@aliassisi.it**.
 
@@ -182,6 +184,26 @@ scrivete voi.
 Il riepilogo del corso mostra lezioni acquistate, previste, fatte e quante ne restano da pianificare.
 Le ore dell'attestato contano solo le lezioni fatte.
 
+## Alloggi
+1. In **Alloggi → Nuovo alloggio** inserite ogni camera o appartamento: nome (es. "Via San
+   Francesco 3 – camera 1"), tipo (singola, singola con bagno, doppia, doppia con bagno,
+   appartamento indipendente), posti letto, indirizzo, contatto del proprietario (lo vede solo lo
+   staff) e le **istruzioni per lo studente** (chiavi, wifi, come arrivare).
+2. Chi ha chiesto un alloggio nel modulo del sito compare in **Da sistemare** (e in **Oggi**), con
+   le date proposte: dal giorno prima del corso, per le settimane chieste. Il gestionale propone già
+   il primo alloggio libero del tipo chiesto: **Assegna**. Per date diverse, apri lo studente →
+   **Assegna un alloggio**.
+3. La **partenza** è il giorno in cui lo studente lascia la camera: quella notte la camera è libera
+   per chi arriva.
+4. Se un alloggio è pieno anche una sola notte, il gestionale lo dice e chiede se prenotare lo
+   stesso. Nella tabella le notti con troppe persone sono rosse.
+5. **Manda i dettagli dell'alloggio** (dalla scheda dello studente): indirizzo, date e istruzioni.
+   Anche l'email prima dell'arrivo li contiene, con `{{alloggio}}` nel testo.
+6. Un alloggio che non usate più: mettetelo **non attivo** (le prenotazioni passate restano).
+
+I prezzi degli alloggi restano nel totale dell'iscrizione e nelle fatture: il gestionale non li
+calcola a parte.
+
 ## Come si lavora ogni giorno
 - **Nuova iscrizione dal sito**: arriva un'email a info@ e la vedi in **Oggi** e in **Studenti**
   con lo stato "Nuova". Aprila, controlla, cambia lo stato in "Confermata".
@@ -199,8 +221,9 @@ Le ore dell'attestato contano solo le lezioni fatte.
 ## Dopo un aggiornamento dello script
 Le schede Classi e Registro hanno colonne nuove (Tipo, Modalità, Link online; Ora inizio, Ora fine,
 Aula, Stato, Link online, Recupero della lezione).
-Il gestionale scrive da solo le intestazioni che mancano la prima volta che si apre. Le lezioni già
-scritte valgono come "fatte".
+Ci sono anche due schede nuove, Alloggi e Soggiorni. Il gestionale crea le schede e scrive le
+intestazioni che mancano la prima volta che si apre. Le lezioni già scritte valgono come "fatte".
+Il testo dell'email prima dell'arrivo, se l'avete già cambiato, non ha `{{alloggio}}`: aggiungetelo voi.
 
 ## Se cambi lo script
 Dopo una modifica: incolla i file, salva, poi **Gestisci deployment** e fai una **Nuova versione**

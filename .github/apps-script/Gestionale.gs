@@ -35,9 +35,17 @@ var SCHEMI = {
   Promemoria: [['data', 'Inviato il'], ['tipo', 'Tipo'], ['chiave', 'Riferimento'], ['iscrizione', 'N. iscrizione'],
     ['email', 'Email'], ['esito', 'Esito']],
   Documenti: [['data', 'Creato il'], ['tipo', 'Tipo'], ['numero', 'Numero'], ['iscrizione', 'N. iscrizione'],
-    ['studente', 'Studente'], ['link', 'PDF']]
+    ['studente', 'Studente'], ['link', 'PDF']],
+  /* Gli alloggi: una riga per camera (o appartamento), con i posti letto. */
+  Alloggi: [['id', 'ID'], ['nome', 'Nome'], ['tipo', 'Tipo'], ['posti', 'Posti letto'], ['indirizzo', 'Indirizzo'],
+    ['contatto', 'Proprietario / contatto'], ['istruzioni', 'Istruzioni per lo studente'], ['note', 'Note dello staff'], ['attivo', 'Attivo']],
+  /* Chi sta dove: arrivo e partenza (il giorno in cui lascia la camera). */
+  Soggiorni: [['id', 'ID'], ['iscrizione', 'N. iscrizione'], ['alloggio', 'Alloggio'], ['arrivo', 'Arrivo'], ['partenza', 'Partenza'],
+    ['note', 'Note'], ['modificato', 'Modificato']]
 };
-var CHIAVI_DATA = ['inizio', 'fine', 'dal', 'al', 'data', 'scadenza', 'nascita', 'scadenza_passaporto', 'ricevuta', 'modificato', 'aggiornata'];
+var TIPI_ALLOGGIO = [['singola', 'Camera singola'], ['singola_bagno', 'Camera singola con bagno'], ['doppia', 'Camera doppia'],
+  ['doppia_bagno', 'Camera doppia con bagno'], ['indipendente', 'Appartamento indipendente']];
+var CHIAVI_DATA = ['inizio', 'fine', 'dal', 'al', 'data', 'arrivo', 'partenza', 'scadenza', 'nascita', 'scadenza_passaporto', 'ricevuta', 'modificato', 'aggiornata'];
 
 /* Le impostazioni che la pagina può leggere e cambiare (il token di Fatture in Cloud si scrive ma non si rilegge). */
 var IMPOSTAZIONI = {
@@ -49,8 +57,8 @@ var IMPOSTAZIONI = {
   testo_compleanno_it: 'Ciao {{nome}},\n\ntanti auguri di buon compleanno da tutti noi dell’Accademia!\n\nA presto,\nAccademia Lingua Italiana Assisi',
   testo_compleanno_en: 'Dear {{nome}},\n\nhappy birthday from all of us at the Accademia!\n\nBest wishes,\nAccademia Lingua Italiana Assisi',
   benvenuto: 'no', benvenuto_giorni: '7',
-  testo_benvenuto_it: 'Ciao {{nome}},\n\nil tuo corso comincia il {{inizio}}. Ti aspettiamo il primo giorno alle 8:45 in via Giotto 1, Assisi.\n\nA presto,\nAccademia Lingua Italiana Assisi',
-  testo_benvenuto_en: 'Dear {{nome}},\n\nyour course starts on {{inizio}}. We expect you on the first day at 8:45 in via Giotto 1, Assisi.\n\nBest wishes,\nAccademia Lingua Italiana Assisi',
+  testo_benvenuto_it: 'Ciao {{nome}},\n\nil tuo corso comincia il {{inizio}}. Ti aspettiamo il primo giorno alle 8:45 in via Giotto 1, Assisi.\n\n{{alloggio}}\n\nA presto,\nAccademia Lingua Italiana Assisi',
+  testo_benvenuto_en: 'Dear {{nome}},\n\nyour course starts on {{inizio}}. We expect you on the first day at 8:45 in via Giotto 1, Assisi.\n\n{{alloggio}}\n\nBest wishes,\nAccademia Lingua Italiana Assisi',
   riepilogo: 'si', url_gestionale: '',
   link_online: 'no', link_ore: '24',
   testo_link_it: 'Ciao {{nome}},\n\nla tua lezione online è {{quando}} (ora italiana).\n\nEntra da qui: {{link}}\n\nA presto,\nAccademia Lingua Italiana Assisi',
@@ -174,9 +182,11 @@ function impostazioni() {
 
 /* Le colonne aggiunte dopo l'installazione: scrive le intestazioni che mancano. */
 function intestazioni() {
-  ['Classi', 'Registro'].forEach(function (nome) {
-    var s = SpreadsheetApp.getActive().getSheetByName(nome), cols = SCHEMI[nome];
-    if (!s || s.getRange(1, cols.length).getValue() === cols[cols.length - 1][1]) return;
+  var ss = SpreadsheetApp.getActive();
+  Object.keys(SCHEMI).forEach(function (nome) {
+    var s = ss.getSheetByName(nome), cols = SCHEMI[nome];
+    if (!s) { s = ss.insertSheet(nome); s.setFrozenRows(1); }
+    if (s.getRange(1, cols.length).getValue() === cols[cols.length - 1][1]) return;
     s.getRange(1, 1, 1, cols.length).setValues([cols.map(function (c) { return c[1]; })])
       .setFontWeight('bold').setBackground('#3d5570').setFontColor('#ffffff');
   });
@@ -196,6 +206,7 @@ function carica() {
     fatture: leggi('Fatture'),
     promemoria: leggi('Promemoria').slice(-300),
     documenti: leggi('Documenti'),
+    alloggi: leggi('Alloggi'), soggiorni: leggi('Soggiorni'), tipi_alloggio: TIPI_ALLOGGIO,
     impostazioni: imp,
     fic_token: !!p.getProperty('fic_token'),
     invii_attivi: ['ogniGiorno', 'ogniOra'].every(function (h) { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === h; }); }),
@@ -643,6 +654,110 @@ function frequenza(id, ass, reg) {
   return {ore: ore, lezioni: lezioni, ore_previste: totOre};
 }
 
+/* ---------- ALLOGGI ---------- */
+
+function salvaAlloggio(a) {
+  autorizzato();
+  if (!a.nome) throw new Error('Manca il nome dell’alloggio');
+  var posti = Number(a.posti);
+  if (!(posti >= 1 && posti <= 10)) throw new Error('Posti letto: da 1 a 10');
+  if (!TIPI_ALLOGGIO.some(function (t) { return t[0] === a.tipo; })) throw new Error('Tipo di alloggio sconosciuto');
+  var o = {nome: testo(a.nome, 200), tipo: a.tipo, posti: posti, indirizzo: testo(a.indirizzo, 500), contatto: testo(a.contatto, 500),
+    istruzioni: testo(a.istruzioni, 3000), note: testo(a.note, 3000), attivo: a.attivo === 'no' ? 'no' : 'si'};
+  return conBlocco(function () {
+    if (a.id) {
+      var r = trova('Alloggi', 'id', a.id);
+      if (!r) throw new Error('Alloggio non trovato');
+      aggiorna('Alloggi', r._r, o);
+    } else {
+      o.id = nuovoNumero('alloggi', 'AL');
+      aggiungi('Alloggi', o);
+    }
+    return carica();
+  });
+}
+
+function eliminaAlloggio(id) {
+  autorizzato();
+  return conBlocco(function () {
+    if (leggi('Soggiorni').some(function (x) { return x.alloggio === id; })) throw new Error('L’alloggio ha delle prenotazioni: mettilo “non attivo” invece di eliminarlo.');
+    var r = trova('Alloggi', 'id', id);
+    if (r) scheda('Alloggi').deleteRow(r._r);
+    return carica();
+  });
+}
+
+/* Le notti in cui un alloggio ha più persone dei posti letto, contando anche "nuovo". */
+function troppePersone(alloggio, arrivo, partenza, soggiorni, escludi) {
+  var n = Number(alloggio.posti) || 1, pieni = [];
+  for (var g = arrivo; g < partenza; g = piuGiorni(g, 1)) {
+    var dentro = soggiorni.filter(function (x) { return x.alloggio === alloggio.id && x.id !== escludi && x.arrivo <= g && x.partenza > g; }).length;
+    if (dentro + 1 > n) pieni.push(g);
+  }
+  return pieni;
+}
+
+/* Mette uno studente in un alloggio. Se l'alloggio è pieno in qualche notte si ferma, a meno di "forza". */
+function prenotaAlloggio(x, forza) {
+  autorizzato();
+  if (!x.arrivo || !x.partenza || x.partenza <= x.arrivo) throw new Error('La partenza deve venire dopo l’arrivo');
+  if (giorniTra(x.arrivo, x.partenza) > 370) throw new Error('Al massimo un anno');
+  return conBlocco(function () {
+    if (!trova('Iscrizioni', 'id', x.iscrizione)) throw new Error('Iscrizione non trovata');
+    var a = trova('Alloggi', 'id', x.alloggio);
+    if (!a) throw new Error('Alloggio non trovato');
+    var sog = leggi('Soggiorni'), pieni = troppePersone(a, x.arrivo, x.partenza, sog, x.id);
+    if (pieni.length && !forza) throw new Error('PIENO: ' + a.nome + ' è già pieno ' + (pieni.length === 1 ? 'la notte del ' : 'per ' + pieni.length + ' notti, dal ') + dataTesto(giorno(pieni[0])) + '.');
+    var o = {iscrizione: x.iscrizione, alloggio: x.alloggio, arrivo: x.arrivo, partenza: x.partenza, note: testo(x.note, 2000), modificato: new Date()};
+    if (x.id) {
+      var r = sog.filter(function (y) { return y.id === x.id; })[0];
+      if (!r) throw new Error('Prenotazione non trovata');
+      aggiorna('Soggiorni', r._r, o);
+    } else {
+      o.id = nuovoNumero('soggiorni', 'S');
+      aggiungi('Soggiorni', o);
+    }
+    return carica();
+  });
+}
+
+function togliSoggiorno(id) {
+  autorizzato();
+  return conBlocco(function () {
+    var r = trova('Soggiorni', 'id', id);
+    if (r) scheda('Soggiorni').deleteRow(r._r);
+    return carica();
+  });
+}
+
+/* Indirizzo e date dell'alloggio di uno studente, per le email ("" se non ne ha). */
+function testoAlloggio(iscrizione, en) {
+  var alloggi = {}; leggi('Alloggi').forEach(function (a) { alloggi[a.id] = a; });
+  return leggi('Soggiorni').filter(function (x) { return x.iscrizione === iscrizione && alloggi[x.alloggio]; })
+    .sort(function (a, b) { return a.arrivo < b.arrivo ? -1 : 1; }).map(function (x) {
+      var a = alloggi[x.alloggio];
+      return (en ? 'Accommodation: ' : 'Alloggio: ') + [a.nome, a.indirizzo].filter(String).join(', ') +
+        (en ? ', from ' + x.arrivo + ' to ' + x.partenza : ', dal ' + dataTesto(giorno(x.arrivo)) + ' al ' + dataTesto(giorno(x.partenza))) +
+        (a.istruzioni ? '\n' + a.istruzioni : '');
+    }).join('\n\n');
+}
+
+/* L'email allo studente con l'alloggio: indirizzo, date, istruzioni. */
+function mandaAlloggio(iscrizione) {
+  autorizzato();
+  var v = trova('Iscrizioni', 'id', iscrizione);
+  if (!v || !v.email) throw new Error('Manca l’email dello studente');
+  var en = v.lingua === 'en', t = testoAlloggio(v.id, en);
+  if (!t) throw new Error('Lo studente non ha ancora un alloggio');
+  var corpo = (en ? ['Dear ' + v.nome + ',', '', 'here are the details of your accommodation in Assisi:', '']
+    : ['Ciao ' + v.nome + ',', '', 'ecco i dettagli del tuo alloggio ad Assisi:', '']).concat([t, '',
+    en ? 'If you arrive late or your plans change, please let us know.' : 'Se arrivi tardi o cambi programma, scrivici.',
+    '', en ? 'Best wishes,' : 'A presto,', NOME_SCUOLA, EMAIL_STAFF]).join('\n');
+  MailApp.sendEmail({to: v.email, replyTo: EMAIL_STAFF, name: NOME_SCUOLA, subject: en ? 'Your accommodation in Assisi' : 'Il tuo alloggio ad Assisi', body: corpo});
+  registra('alloggio', 'alloggio:' + v.id + ':' + oggiIso(), v.id, v.email, 'inviato');
+  return carica();
+}
+
 /* ---------- DIPLOMI E ATTESTATI ---------- */
 
 function idDaLink(s) {
@@ -996,7 +1111,8 @@ function benvenuti(modo) {
     if (giaInviato(prom, chiave)) return;
     var en = v.lingua === 'en';
     var corpo = riempi(en ? imp.testo_benvenuto_en : imp.testo_benvenuto_it,
-      {nome: v.nome, cognome: v.cognome, corso: v.corso_nome, inizio: en ? v.inizio : dataTesto(giorno(v.inizio)), fine: en ? v.fine : (v.fine ? dataTesto(giorno(v.fine)) : '')});
+      {nome: v.nome, cognome: v.cognome, corso: v.corso_nome, inizio: en ? v.inizio : dataTesto(giorno(v.inizio)), fine: en ? v.fine : (v.fine ? dataTesto(giorno(v.fine)) : ''),
+       alloggio: testoAlloggio(v.id, en)});
     try { invia(modo, v.email, en ? 'See you soon in Assisi!' : 'Ci vediamo presto ad Assisi!', corpo); registra('benvenuto', chiave, v.id, v.email, modo === 'prova' ? 'prova' : 'inviato'); }
     catch (err) { registra('benvenuto', chiave, v.id, v.email, 'errore'); }
   });
@@ -1096,7 +1212,7 @@ function configuraGestionale() {
       .setFontWeight('bold').setBackground('#3d5570').setFontColor('#ffffff');
     s.setFrozenRows(1);
     SCHEMI[nome].forEach(function (c, j) {
-      if (['inizio', 'fine', 'dal', 'al', 'data', 'scadenza'].indexOf(c[0]) >= 0) s.getRange(2, j + 1, s.getMaxRows() - 1, 1).setNumberFormat('dd/mm/yyyy');
+      if (['inizio', 'fine', 'dal', 'al', 'data', 'scadenza', 'arrivo', 'partenza'].indexOf(c[0]) >= 0) s.getRange(2, j + 1, s.getMaxRows() - 1, 1).setNumberFormat('dd/mm/yyyy');
       if (['importo', 'da_pagare'].indexOf(c[0]) >= 0) s.getRange(2, j + 1, s.getMaxRows() - 1, 1).setNumberFormat('#,##0.00 €');
     });
   });

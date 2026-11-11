@@ -51,6 +51,7 @@ tr.cl:hover td{background:var(--blu-f)}
 .blocco.conf{border-left-color:var(--err);box-shadow:0 0 0 1px var(--err) inset}
 .cal{table-layout:fixed;min-width:840px}.cal th,.cal td{border-right:1px solid var(--linea)}.cal td{height:120px}
 .blocco .tag{white-space:normal;margin-top:2px}
+.occ{table-layout:fixed;min-width:980px}.occ th,.occ td{padding:3px 2px;text-align:center;border-right:1px solid var(--linea);font-size:11px}.occ th:first-child,.occ td:first-child{width:190px;text-align:left;padding:5px 8px;font-size:13px}.occ th.dom{color:var(--err)}.occ td.parz{background:#cfe9d8;cursor:pointer}.occ td.pieno{background:#7cc196;cursor:pointer}.occ td.troppi{background:#e8857f;cursor:pointer}.occ td span{display:block;white-space:nowrap;overflow:visible;font-size:11px;text-align:left;position:relative;z-index:1}.occ td.oggi{box-shadow:inset 0 0 0 2px var(--ardesia)}
 .cal th.oggi{color:var(--ardesia);background:var(--blu-f)}
 details summary{cursor:pointer}
 .campi{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 14px}
@@ -93,7 +94,7 @@ var D = null;                 // i dati dal foglio (carica() in Gestionale.gs)
 var U = {scheda: 'oggi', cerca: '', stato: 'attivi', periodo: 'tutti', settimana: null, classeReg: '', docClasse: '', docDal: '', docAl: '', fattureTutte: false};
 try { var salvata = localStorage.getItem('alia-scheda'); if (salvata) U.scheda = salvata; } catch (e) {}
 
-var SCHEDE = [['oggi', 'Oggi'], ['studenti', 'Studenti'], ['classi', 'Classi'], ['calendario', 'Calendario'], ['registro', 'Registro'],
+var SCHEDE = [['oggi', 'Oggi'], ['studenti', 'Studenti'], ['classi', 'Classi'], ['calendario', 'Calendario'], ['registro', 'Registro'], ['alloggi', 'Alloggi'],
   ['pagamenti', 'Pagamenti'], ['documenti', 'Diplomi e attestati'], ['email', 'Email'], ['impostazioni', 'Impostazioni']];
 var MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 
@@ -213,6 +214,8 @@ VISTE.oggi = function () {
   var md = [], i; for (i = 0; i < 7; i++) md.push(piu(lun, i).slice(5));
   var compl = att.filter(function (v) { return v.nascita && md.indexOf(v.nascita.slice(5)) >= 0 && sovrap(v.inizio, v.fine, lun, dom); });
   var indOggi = impegni(o).filter(function (x) { return x.lez && x.stato !== 'annullata'; });
+  var sistemare = daSistemare();
+  var arriviAll = D.soggiorni.filter(function (x) { return x.arrivo >= o && x.arrivo <= piu(o, 7); }).sort(function (a, b) { return a.arrivo < b.arrivo ? -1 : 1; });
   var recuperi = daRecuperare(D.registro.filter(function (l) { return privato(CLA[l.classe]); }));
   var daPian = att.filter(function (v) { return individuale(v) && v.fine >= o && !lezioniDi(v.id).some(function (l) { return privato(CLA[l.classe]); }); });
   function scheda(titolo, n, righe, vuoto) {
@@ -228,6 +231,8 @@ VISTE.oggi = function () {
     scheda('Iscrizioni nuove da confermare', nuove.length, nuove.map(function (v) { return riga(v, v.corso_nome + ' · ' + gg(v.inizio)); }), 'Nessuna.') +
     scheda('Pagamenti scaduti', scad.length, scad.map(function (f) { var v = ISC[f.iscrizione]; return '<li>' + (v ? linkStud(v) : esc(f.cliente)) + ' <span class="tenue piccolo">' + esc(f.numero) + ' · ' + euro(f.da_pagare) + ' · ' + gg(f.scadenza) + '</span></li>'; }), D.fic_token ? 'Nessuno.' : 'Collega Fatture in Cloud in Impostazioni.') +
     scheda('Lezioni individuali oggi', indOggi.length, indOggi.map(function (x) { return '<li><button class="l" data-classe="' + esc(x.classe.id) + '">' + esc(x.titolo) + '</button> <span class="tenue piccolo">' + esc([x.inizio && x.inizio + '–' + x.fine, x.aula, x.ins].filter(Boolean).join(' · ')) + '</span></li>'; }), 'Nessuna.') +
+    scheda('Alloggi da sistemare', sistemare.length, sistemare.map(function (v) { return riga(v, v.alloggio + ' · dal ' + gg(dateAlloggio(v).arrivo)); }), 'Nessuno.') +
+    scheda('Arrivi in alloggio entro 7 giorni', arriviAll.length, arriviAll.map(function (x) { var v = ISC[x.iscrizione], a = alloggioId(x.alloggio); return v ? riga(v, giornoSett(x.arrivo) + ' ' + gg(x.arrivo) + ' · ' + (a ? a.nome : '')) : ''; }), 'Nessuno.') +
     scheda('Lezioni annullate da recuperare', recuperi.length, recuperi.map(function (l) { return '<li><button class="l" data-classe="' + esc(l.classe) + '">' + esc(CLA[l.classe].nome) + '</button> <span class="tenue piccolo">annullata ' + giornoSett(l.data) + ' ' + gg(l.data) + '</span></li>'; }), 'Nessuna.') +
     scheda('Corsi individuali da pianificare', daPian.length, daPian.map(function (v) { return riga(v, (v.formula || v.corso_nome) + ' · ' + gg(v.inizio) + (v.lezioni_totali ? ' · ' + v.lezioni_totali + ' lezioni' : '')); }), 'Nessuno.') +
     scheda('Compleanni questa settimana', compl.length, compl.map(function (v) { return riga(v, gg(v.nascita)); }), 'Nessuno.') +
@@ -311,6 +316,9 @@ function apriStudente(id) {
     (classiPossibili.length ? '<div class="barra"><select id="s-classe">' + classiPossibili.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.nome) + ' (' + gg(c.inizio) + '–' + gg(c.fine) + ')</option>'; }).join('') + '</select>' +
       '<input type="date" id="s-dal" value="' + esc(v.inizio) + '"><input type="date" id="s-al" value="' + esc(v.fine) + '"><button class="b" id="s-assegna">Metti in classe</button></div>' : '<div class="tenue piccolo">Nessuna classe nel periodo dello studente: creala in Classi.</div>') +
     '<div class="piccolo">Frequenza dal registro: <b>' + f.ore + ' ore</b> su ' + f.previste + ' (' + f.lezioni + ' lezioni)</div>' +
+    (vuoleAlloggio(v) || soggiorniDi(id).length ? '<h3>Alloggio</h3><div class="piccolo">' + (v.alloggio ? 'Ha chiesto: <b>' + esc(v.alloggio) + '</b>' + (v.settimane_alloggio ? ', ' + esc(v.settimane_alloggio) + ' settimane' : '') : '') + '</div>' +
+      (soggiorniDi(id).length ? '<ul class="lista">' + soggiorniDi(id).map(function (x) { var a = alloggioId(x.alloggio); return '<li>' + esc(a ? a.nome : x.alloggio) + ' <span class="tenue">' + gg(x.arrivo) + ' → ' + gg(x.partenza) + '</span>' + (x.note ? ' <span class="tenue piccolo">' + esc(x.note) + '</span>' : '') + ' <button class="b piccolo" data-modsog="' + esc(x.id) + '">Modifica</button> <button class="b piccolo r" data-togsog="' + esc(x.id) + '">Togli</button></li>'; }).join('') + '</ul>' : '<div class="vuoto-msg">Non ancora assegnato.</div>') +
+      '<div class="barra"><button class="b" id="s-alloggio">Assegna un alloggio</button>' + (soggiorniDi(id).length ? '<button class="b" id="s-mandaall">Manda i dettagli dell’alloggio</button>' : '') + '</div>' : '') +
     '<h3>Fatture e proforma</h3>' + (fatt.length ? '<ul class="lista">' + fatt.map(function (x) {
       return '<li>' + esc(x.tipo) + ' ' + esc(x.numero) + ' del ' + gg(x.data) + ' · ' + euro(x.importo) + (x.da_pagare > 0 ? ' · <span class="tag ' + (x.scadenza < D.oggi ? 'err' : 'att') + '">da pagare ' + euro(x.da_pagare) + ' entro ' + gg(x.scadenza) + '</span>' : ' · <span class="tag ok">pagata</span>') + '</li>';
     }).join('') + '</ul>' : '<div class="vuoto-msg">Nessuna fattura abbinata.</div>') +
@@ -335,6 +343,13 @@ function apriStudente(id) {
     if (!confirm('Togliere ' + nome(v) + ' da questa classe?')) return;
     chiama('togliAssegnazione', id, b.getAttribute('data-togli')).then(function () { disegna(); apriStudente(id); });
   }; });
+  if ($('#s-alloggio', d)) $('#s-alloggio', d).onclick = function () { prenotaDialogo(id); };
+  if ($('#s-mandaall', d)) $('#s-mandaall', d).onclick = function () {
+    if (!confirm('Mandare a ' + v.email + ' indirizzo, date e istruzioni dell’alloggio?')) return;
+    chiama('mandaAlloggio', id).then(function () { avviso('Dettagli dell’alloggio mandati'); });
+  };
+  $$('[data-modsog]', d).forEach(function (b) { b.onclick = function () { prenotaDialogo(id, b.getAttribute('data-modsog')); }; });
+  $$('[data-togsog]', d).forEach(function (b) { b.onclick = function () { if (confirm('Togliere questo alloggio?')) chiama('togliSoggiorno', b.getAttribute('data-togsog')).then(function () { disegna(); apriStudente(id); }); }; });
   if ($('#s-priv', d)) $('#s-priv', d).onclick = function () { creaPrivato(id); };
   if ($('#s-cal', d)) $('#s-cal', d).onclick = function () {
     if (!confirm('Mandare a ' + v.email + ' l’elenco delle prossime lezioni?')) return;
@@ -350,13 +365,14 @@ function nuovaIscrizione() {
     campo('n-corso_nome', 'Corso') + campo('n-inizio', 'Inizio', '', 'date') + campo('n-fine', 'Fine', '', 'date') +
     campo('n-settimane', 'Settimane', '', 'number') + campo('n-lezioni_totali', 'Lezioni totali', '', 'number') + campo('n-totale', 'Prezzo (€)', '', 'number') +
     campo('n-livello', 'Livello', '', 'text', ' list="livelli"') + campo('n-nascita', 'Data di nascita', '', 'date') + campo('n-nazionalita', 'Cittadinanza') +
+    scelta('n-alloggio', 'Alloggio', '', [['', 'Nessuno']].concat(D.tipi_alloggio.map(function (t) { return [t[1], t[1]]; }))) + campo('n-settimane_alloggio', 'Settimane di alloggio', '', 'number') +
     scelta('n-lingua', 'Lingua delle email', 'it', [['it', 'Italiano'], ['en', 'Inglese']]) + scelta('n-stato', 'Stato', 'Confermata', D.stati) +
     campo('n-note', 'Note', '', 'textarea') + '</div>';
   var d = dialogo('Nuova iscrizione', corpo, '<button class="b p" id="n-salva">Salva</button>');
   $('#n-salva', d).onclick = function () {
     var x = {};
-    ['nome', 'cognome', 'email', 'telefono', 'corso_nome', 'inizio', 'fine', 'settimane', 'lezioni_totali', 'totale', 'livello', 'nascita', 'nazionalita', 'lingua', 'stato', 'note'].forEach(function (k) { x[k] = $('#n-' + k, d).value.trim(); });
-    ['settimane', 'lezioni_totali', 'totale'].forEach(function (k) { x[k] = x[k] === '' ? '' : Number(x[k]); });
+    ['nome', 'cognome', 'email', 'telefono', 'corso_nome', 'inizio', 'fine', 'settimane', 'lezioni_totali', 'totale', 'livello', 'nascita', 'nazionalita', 'lingua', 'stato', 'note', 'alloggio', 'settimane_alloggio'].forEach(function (k) { x[k] = $('#n-' + k, d).value.trim(); });
+    ['settimane', 'lezioni_totali', 'totale', 'settimane_alloggio'].forEach(function (k) { x[k] = x[k] === '' ? '' : Number(x[k]); });
     chiama('nuovaIscrizione', x).then(function () { d.close(); avviso('Iscrizione aggiunta'); disegna(); });
   };
 }
@@ -760,6 +776,150 @@ function lezione(id, classeId, dopo) {
   if (id) $('#l-elimina', d).onclick = function () { if (confirm('Eliminare questa lezione?')) chiama('eliminaLezione', id).then(function () { d.close(); disegna(); if (dopo) dopo(); }); };
 }
 
+/* ---------- ALLOGGI ---------- */
+function alloggioId(id) { return D.alloggi.filter(function (a) { return a.id === id; })[0]; }
+function nomeTipo(t) { var x = D.tipi_alloggio.filter(function (y) { return y[0] === t; })[0]; return x ? x[1] : t; }
+/* Il tipo chiesto nel modulo del sito (in italiano o in inglese). */
+function tipoRichiesto(v) {
+  var t = String(v.alloggio || '');
+  if (/indipendente|one-bedroom|flat$/i.test(t) && !/condiviso|shared/i.test(t)) return 'indipendente';
+  if (/doppia|double/i.test(t)) return /bagno|bathroom/i.test(t) ? 'doppia_bagno' : 'doppia';
+  if (/singola|single/i.test(t)) return /bagno|bathroom/i.test(t) ? 'singola_bagno' : 'singola';
+  return '';
+}
+function vuoleAlloggio(v) { return !!v.alloggio && !/^(nessun|no accommodation)/i.test(v.alloggio); }
+function soggiorniDi(id) { return D.soggiorni.filter(function (x) { return x.iscrizione === id; }).sort(function (a, b) { return a.arrivo < b.arrivo ? -1 : 1; }); }
+function dentro(alloggio, notte, escludi) { return D.soggiorni.filter(function (x) { return x.alloggio === alloggio && x.id !== escludi && x.arrivo <= notte && x.partenza > notte; }); }
+/* Le notti piene (posti già tutti presi) tra arrivo e partenza. */
+function nottiPiene(a, arrivo, partenza, escludi) {
+  var r = [], g;
+  for (g = arrivo; g < partenza; g = piu(g, 1)) if (dentro(a.id, g, escludi).length + 1 > (Number(a.posti) || 1)) r.push(g);
+  return r;
+}
+/* Le date proposte: dal giorno prima del corso, per le settimane di alloggio chieste. */
+function dateAlloggio(v) {
+  var arrivo = v.inizio ? piu(v.inizio, -1) : D.oggi;
+  var sett = Number(v.settimane_alloggio) || Number(v.settimane) || (v.fine ? Math.ceil((dataDa(v.fine) - dataDa(v.inizio) + 86400000) / 604800000) : 1);
+  return {arrivo: arrivo, partenza: piu(arrivo, 7 * sett)};
+}
+function daSistemare() {
+  return D.iscrizioni.filter(function (v) { return attiva(v) && vuoleAlloggio(v) && (v.fine || v.inizio || '') >= D.oggi && !soggiorniDi(v.id).length; })
+    .sort(function (a, b) { return a.inizio < b.inizio ? -1 : 1; });
+}
+
+VISTE.alloggi = function () {
+  var inizio = U.allSett || piu(lunedi(D.oggi), -1), giorni = [], i;
+  for (i = 0; i < 28; i++) giorni.push(piu(inizio, i));
+  var attivi = D.alloggi.filter(function (a) { return a.attivo !== 'no'; });
+  var h = '<div class="barra"><button class="b" id="aprec">‹ 2 settimane</button><button class="b" id="aoggi">Oggi</button><button class="b" id="asucc">2 settimane ›</button>' +
+    '<span class="spazio"></span><button class="b p" id="anuovo">Nuovo alloggio</button></div>';
+  var ds = daSistemare();
+  if (ds.length) h += '<div class="card"><h3 style="margin-top:0">Da sistemare (' + ds.length + ')</h3><div class="scroll"><table><thead><tr><th>Studente</th><th>Ha chiesto</th><th>Date proposte</th><th>Alloggio</th><th></th></tr></thead><tbody>' +
+    ds.map(function (v) {
+      var dt = dateAlloggio(v), tipo = tipoRichiesto(v);
+      var primo = attivi.filter(function (a) { return a.tipo === tipo && !nottiPiene(a, dt.arrivo, dt.partenza).length; })[0];
+      var opz = attivi.slice().sort(function (a, b) { return (b.tipo === tipo) - (a.tipo === tipo); }).map(function (a) {
+        var pieno = nottiPiene(a, dt.arrivo, dt.partenza).length;
+        return '<option value="' + esc(a.id) + '"' + (primo && primo.id === a.id ? ' selected' : '') + '>' + (pieno ? '✕ ' : '✓ ') + esc(a.nome) + ' · ' + esc(nomeTipo(a.tipo)) + (pieno ? ' (pieno)' : '') + '</option>';
+      });
+      return '<tr><td>' + linkStud(v) + '<div class="tenue piccolo">' + gg(v.inizio) + ' – ' + gg(v.fine) + '</div></td><td>' + esc(v.alloggio) + (v.settimane_alloggio ? '<div class="tenue piccolo">' + esc(v.settimane_alloggio) + ' settimane</div>' : '') + '</td>' +
+        '<td>' + gg(dt.arrivo) + ' → ' + gg(dt.partenza) + '<div class="tenue piccolo">' + Math.round((dataDa(dt.partenza) - dataDa(dt.arrivo)) / 86400000) + ' notti</div></td>' +
+        '<td><select data-sist="' + esc(v.id) + '"><option value="">—</option>' + opz.join('') + '</select></td>' +
+        '<td><button class="b piccolo" data-sistema="' + esc(v.id) + '">Assegna</button></td></tr>';
+    }).join('') + '</tbody></table></div><p class="tenue piccolo">✓ libero per tutte le notti · ✕ pieno almeno una notte. Prima gli alloggi del tipo chiesto.</p></div>';
+  h += '<div class="scroll"><table class="occ"><thead><tr><th>Alloggio</th>' + giorni.map(function (g) {
+    var d = dataDa(g).getUTCDay();
+    return '<th class="' + (g === D.oggi ? 'oggi ' : '') + (d === 0 ? 'dom' : '') + '" title="' + ggA(g) + '">' + ['D', 'L', 'M', 'M', 'G', 'V', 'S'][d] + '<br>' + (+g.slice(8)) + '</th>';
+  }).join('') + '</tr></thead><tbody>' + (attivi.map(function (a) {
+    return '<tr><td><button class="l" data-alloggio="' + esc(a.id) + '">' + esc(a.nome) + '</button><div class="tenue piccolo">' + esc(nomeTipo(a.tipo)) + ' · ' + esc(a.posti) + ' posti</div></td>' + giorni.map(function (g) {
+      var p = dentro(a.id, g), n = Number(a.posti) || 1;
+      var cls = !p.length ? '' : p.length > n ? 'troppi' : p.length === n ? 'pieno' : 'parz';
+      var nomi = p.map(function (x) { var v = ISC[x.iscrizione]; return v ? nome(v) : x.iscrizione; });
+      var arrivi = p.filter(function (x) { return x.arrivo === g; });
+      return '<td class="' + cls + (g === D.oggi ? ' oggi' : '') + '"' + (p.length ? ' title="' + esc(nomi.join(', ')) + '" data-occ="' + esc(p[0].iscrizione) + '"' : '') + '>' +
+        (arrivi.length ? '<span>' + esc(arrivi.map(function (x) { var v = ISC[x.iscrizione]; return v ? v.cognome : ''; }).join(', ')) + '</span>' : '') + '</td>';
+    }).join('') + '</tr>';
+  }).join('') || '<tr><td colspan="29" class="vuoto-msg">Nessun alloggio. Premi “Nuovo alloggio”.</td></tr>') + '</tbody></table></div>' +
+  '<p class="tenue piccolo">Ogni casella è una notte. Verde chiaro: posti liberi; verde: pieno; rosso: più persone dei posti. Il nome è nella notte di arrivo; passa sopra per vedere chi c’è.</p>';
+  var o = D.oggi, f7 = piu(o, 7);
+  var arr = D.soggiorni.filter(function (x) { return x.arrivo >= o && x.arrivo <= f7; }).sort(function (a, b) { return a.arrivo < b.arrivo ? -1 : 1; });
+  var par = D.soggiorni.filter(function (x) { return x.partenza >= o && x.partenza <= f7; }).sort(function (a, b) { return a.partenza < b.partenza ? -1 : 1; });
+  var riga = function (x, data) { var v = ISC[x.iscrizione], a = alloggioId(x.alloggio); return '<li>' + (v ? linkStud(v) : esc(x.iscrizione)) + ' <span class="tenue piccolo">' + giornoSett(data) + ' ' + gg(data) + ' · ' + esc(a ? a.nome : x.alloggio) + '</span></li>'; };
+  h += '<div class="griglia" style="margin-top:14px"><div class="card"><div class="tenue">Arrivi nei prossimi 7 giorni</div>' + (arr.length ? '<ul class="lista">' + arr.map(function (x) { return riga(x, x.arrivo); }).join('') + '</ul>' : '<div class="tenue piccolo">Nessuno.</div>') + '</div>' +
+    '<div class="card"><div class="tenue">Partenze nei prossimi 7 giorni</div>' + (par.length ? '<ul class="lista">' + par.map(function (x) { return riga(x, x.partenza); }).join('') + '</ul>' : '<div class="tenue piccolo">Nessuno.</div>') + '</div></div>';
+  var non = D.alloggi.filter(function (a) { return a.attivo === 'no'; });
+  if (non.length) h += '<h3>Non attivi</h3><ul class="lista">' + non.map(function (a) { return '<li><button class="l" data-alloggio="' + esc(a.id) + '">' + esc(a.nome) + '</button></li>'; }).join('') + '</ul>';
+  return h;
+};
+DOPO.alloggi = function () {
+  var inizio = U.allSett || piu(lunedi(D.oggi), -1);
+  $('#aprec').onclick = function () { U.allSett = piu(inizio, -14); disegna(); };
+  $('#asucc').onclick = function () { U.allSett = piu(inizio, 14); disegna(); };
+  $('#aoggi').onclick = function () { U.allSett = null; disegna(); };
+  $('#anuovo').onclick = function () { modificaAlloggio(null); };
+  $$('[data-alloggio]').forEach(function (b) { b.onclick = function () { modificaAlloggio(b.getAttribute('data-alloggio')); }; });
+  $$('[data-occ]').forEach(function (c) { c.onclick = function () { apriStudente(c.getAttribute('data-occ')); }; });
+  $$('[data-sistema]').forEach(function (b) { b.onclick = function () {
+    var id = b.getAttribute('data-sistema'), sel = $('[data-sist="' + id + '"]'), v = ISC[id], dt = dateAlloggio(v);
+    if (!sel.value) { prenotaDialogo(id); return; }
+    salvaPrenotazione({iscrizione: id, alloggio: sel.value, arrivo: dt.arrivo, partenza: dt.partenza, note: ''});
+  }; });
+};
+
+/* Salva una prenotazione; se l'alloggio è pieno chiede se prenotare lo stesso. */
+function salvaPrenotazione(x, dopo) {
+  var vai = function (forza) {
+    return chiama('prenotaAlloggio', x, forza).then(function () { avviso('Alloggio assegnato'); disegna(); if (dopo) dopo(); })
+      .catch(function (e) {
+        var m = String(e && e.message || e);
+        if (!forza && m.indexOf('PIENO') === 0 && confirm(m.slice(7) + '\n\nPrenotare lo stesso?')) return vai(true);
+      });
+  };
+  return vai(false);
+}
+
+function prenotaDialogo(idStud, idSog) {
+  var v = ISC[idStud], x = idSog ? D.soggiorni.filter(function (y) { return y.id === idSog; })[0] : null;
+  var dt = x ? {arrivo: x.arrivo, partenza: x.partenza} : dateAlloggio(v), tipo = tipoRichiesto(v);
+  var corpo = '<p class="piccolo">' + esc(nome(v)) + ' · corso ' + gg(v.inizio) + ' – ' + gg(v.fine) + (v.alloggio ? ' · ha chiesto: <b>' + esc(v.alloggio) + '</b>' + (v.settimane_alloggio ? ', ' + esc(v.settimane_alloggio) + ' settimane' : '') : '') + '</p>' +
+    '<div class="campi">' + campo('p-arrivo', 'Arrivo', dt.arrivo, 'date') + campo('p-partenza', 'Partenza (lascia la camera)', dt.partenza, 'date') +
+    '<label>Alloggio<select id="p-alloggio"></select></label>' + campo('p-note', 'Note', x ? x.note : '', 'textarea') + '</div>';
+  var d = dialogo(x ? 'Modifica l’alloggio' : 'Assegna un alloggio', corpo, '<button class="b p" id="p-salva">Salva</button>');
+  function opzioni() {
+    var a1 = $('#p-arrivo', d).value, a2 = $('#p-partenza', d).value, scelto = $('#p-alloggio', d).value || (x ? x.alloggio : '');
+    $('#p-alloggio', d).innerHTML = D.alloggi.filter(function (a) { return a.attivo !== 'no' || (x && a.id === x.alloggio); })
+      .sort(function (a, b) { return (b.tipo === tipo) - (a.tipo === tipo); }).map(function (a) {
+        var pieno = a1 && a2 && a2 > a1 ? nottiPiene(a, a1, a2, x ? x.id : '').length : 0;
+        return '<option value="' + esc(a.id) + '"' + (a.id === scelto ? ' selected' : '') + '>' + (pieno ? '✕ ' : '✓ ') + esc(a.nome) + ' · ' + esc(nomeTipo(a.tipo)) + (pieno ? ' (pieno ' + pieno + ' notti)' : '') + '</option>';
+      }).join('');
+  }
+  opzioni();
+  $('#p-arrivo', d).onchange = opzioni; $('#p-partenza', d).onchange = opzioni;
+  $('#p-salva', d).onclick = function () {
+    salvaPrenotazione({id: x ? x.id : '', iscrizione: idStud, alloggio: $('#p-alloggio', d).value, arrivo: $('#p-arrivo', d).value, partenza: $('#p-partenza', d).value, note: $('#p-note', d).value},
+      function () { apriStudente(idStud); });
+  };
+}
+
+function modificaAlloggio(id) {
+  var a = id ? alloggioId(id) : {nome: '', tipo: 'singola', posti: 1, indirizzo: '', contatto: '', istruzioni: '', note: '', attivo: 'si'};
+  var futuri = id ? D.soggiorni.filter(function (x) { return x.alloggio === id && x.partenza >= D.oggi; }).sort(function (p, q) { return p.arrivo < q.arrivo ? -1 : 1; }) : [];
+  var corpo = '<div class="campi">' + campo('al-nome', 'Nome (es. Via San Francesco 3 – camera 1)', a.nome) +
+    scelta('al-tipo', 'Tipo', a.tipo, D.tipi_alloggio) + campo('al-posti', 'Posti letto', a.posti, 'number', ' min="1" max="10"') +
+    scelta('al-attivo', 'Attivo', a.attivo || 'si', [['si', 'Sì'], ['no', 'No (non si propone più)']]) +
+    campo('al-indirizzo', 'Indirizzo', a.indirizzo) + campo('al-contatto', 'Proprietario / contatto (solo per lo staff)', a.contatto) +
+    campo('al-istruzioni', 'Istruzioni per lo studente (chiavi, wifi, come arrivare): vanno nell’email', a.istruzioni, 'textarea') +
+    campo('al-note', 'Note dello staff', a.note, 'textarea') + '</div>' +
+    (id ? '<h3>Prenotazioni in corso e future</h3>' + (futuri.length ? '<ul class="lista">' + futuri.map(function (x) { var v = ISC[x.iscrizione]; return '<li>' + (v ? linkStud(v) : esc(x.iscrizione)) + ' <span class="tenue piccolo">' + gg(x.arrivo) + ' → ' + gg(x.partenza) + '</span></li>'; }).join('') + '</ul>' : '<div class="vuoto-msg">Nessuna.</div>') : '');
+  var d = dialogo(id ? esc(a.nome) : 'Nuovo alloggio', corpo, (id ? '<button class="b r" id="al-elimina">Elimina</button>' : '') + '<button class="b p" id="al-salva">Salva</button>');
+  $('#al-salva', d).onclick = function () {
+    var o = {id: id || ''};
+    ['nome', 'tipo', 'posti', 'attivo', 'indirizzo', 'contatto', 'istruzioni', 'note'].forEach(function (k) { o[k] = $('#al-' + k, d).value.trim(); });
+    chiama('salvaAlloggio', o).then(function () { d.close(); avviso('Alloggio salvato'); disegna(); });
+  };
+  if (id) $('#al-elimina', d).onclick = function () { if (confirm('Eliminare “' + a.nome + '”?')) chiama('eliminaAlloggio', id).then(function () { d.close(); disegna(); }); };
+}
+
 /* ---------- PAGAMENTI ---------- */
 VISTE.pagamenti = function () {
   if (!D.fic_token) return '<div class="card"><h2>Fatture in Cloud non è collegato</h2><p>Incolla il token in <button class="l" data-s="impostazioni">Impostazioni</button>. Come ottenerlo: ISTRUZIONI.md, punto 7.</p></div>';
@@ -850,7 +1010,7 @@ VISTE.email = function () {
     campo('e-testo_compleanno_it', 'Testo in italiano ({{nome}})', i.testo_compleanno_it, 'textarea') + campo('e-testo_compleanno_en', 'Testo in inglese', i.testo_compleanno_en, 'textarea') + '</div></div>' +
     '<div class="card"><h3 style="margin-top:0">Email prima dell’arrivo</h3><div class="campi">' + scelta('e-benvenuto', 'Stato', i.benvenuto, MODI) +
     campo('e-benvenuto_giorni', 'Giorni prima dell’inizio', i.benvenuto_giorni, 'number') +
-    campo('e-testo_benvenuto_it', 'Testo in italiano ({{nome}} {{inizio}} {{fine}} {{corso}})', i.testo_benvenuto_it, 'textarea') + campo('e-testo_benvenuto_en', 'Testo in inglese', i.testo_benvenuto_en, 'textarea') + '</div>' +
+    campo('e-testo_benvenuto_it', 'Testo in italiano ({{nome}} {{inizio}} {{fine}} {{corso}} {{alloggio}})', i.testo_benvenuto_it, 'textarea') + campo('e-testo_benvenuto_en', 'Testo in inglese', i.testo_benvenuto_en, 'textarea') + '</div>' +
     '<p class="tenue piccolo">Solo per iscrizioni Confermate o Pagate. Controlla l’indirizzo e l’orario nel testo.</p></div>' +
     '<div class="card"><h3 style="margin-top:0">Link delle lezioni online</h3><div class="campi">' + scelta('e-link_online', 'Stato', i.link_online, MODI) +
     campo('e-link_ore', 'Quante ore prima della lezione', i.link_ore, 'number', ' min="1" max="72"') +
