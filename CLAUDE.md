@@ -9,6 +9,8 @@ root. English pages are under `en/`. There is no backend.
 - Files: `assets/plugins`, `assets/themes`, `assets/uploads`, `assets/core`
   (they were `wp-content/*` and `wp-includes`).
 - `pagefind/`: search index. Deploy rebuilds it. Do not edit it.
+- Deploy and preview add `?v=<hash>` to links to `assets/alia/*.css|js`
+  (`version_assets.py`), so phones fetch a changed file at once. Do not add it by hand.
 - `.github/scripts/`: the build and check scripts (`build_*.py`, `legal_pages.py`, `faq_jsonld.py`, `check_links.py`, `runtime_check.py`).
 
 ## How changes ship
