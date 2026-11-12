@@ -118,8 +118,11 @@ function nome(v) { return v.nome + ' ' + v.cognome; }
 function attiva(v) { return v.stato !== 'Annullata'; }
 
 function avviso(t, err) {
-  var a = $('#avviso'); a.textContent = t; a.className = err ? 'err' : ''; a.style.display = 'block';
-  clearTimeout(avviso.t); avviso.t = setTimeout(function () { a.style.display = 'none'; }, err ? 8000 : 3500);
+  var a = $('#avviso'), d = $('#dlg');
+  // Una finestra aperta sta sopra a tutto: il messaggio va dentro la finestra, se no non si vede.
+  (d.open ? d : document.body).appendChild(a);
+  a.textContent = t; a.className = err ? 'err' : ''; a.style.display = 'block';
+  clearTimeout(avviso.t); avviso.t = setTimeout(function () { a.style.display = 'none'; }, err ? 10000 : 3500);
 }
 /* Chiama una funzione di Gestionale.gs; quasi tutte rispondono con i dati aggiornati. */
 function chiama(fn) {
@@ -346,9 +349,11 @@ DOPO.studenti = function () {
   $('#nuova').onclick = nuovaIscrizione;
 };
 
+document.getElementById('dlg').addEventListener('close', function () { var a = $('#avviso'); if (a.parentNode === this) document.body.appendChild(a); });
 function dialogo(titolo, corpo, azioni) {
-  var d = $('#dlg');
-  d.innerHTML = '<div class="dtesta"><h2>' + titolo + '</h2>' + (azioni || '') + '<button class="b" id="chiudi">Chiudi</button></div><div class="dcorpo">' + corpo + '</div>';
+  var d = $('#dlg'), a = $('#avviso');
+  if (a && a.parentNode === d) document.body.appendChild(a);  // il messaggio non va cancellato con la finestra
+  d.innerHTML ='<div class="dtesta"><h2>' + titolo + '</h2>' + (azioni || '') + '<button class="b" id="chiudi">Chiudi</button></div><div class="dcorpo">' + corpo + '</div>';
   $('#chiudi').onclick = function () { d.close(); };
   if (!d.open) d.showModal();
   return d;
