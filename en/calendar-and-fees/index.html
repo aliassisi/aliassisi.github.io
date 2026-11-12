@@ -731,8 +731,11 @@ padding-right: 30px;
   .ali-nav a { display: inline-block; padding: 6px 14px; border: 1px solid #2D4058; border-radius: 999px; color: #2D4058; text-decoration: none; font-size: 0.9em; line-height: 1.4; white-space: nowrap; }
   .ali-nav a:hover, .ali-nav a:focus { background: #2D4058; color: #fff; }
   .ali-ancora, #dw-wrap { scroll-margin-top: 120px; }
-  details.ali-chiusure summary { cursor: pointer; color: #2D4058; text-decoration: underline; list-style: revert; margin-bottom: 8px; }
-  details.ali-chiusure[open] summary { margin-bottom: 12px; }
+  details.ali-chiusure > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font: 30px/45px "Cormorant Garamond", serif; letter-spacing: .2px; color: #3D5570; border-bottom: 1px solid #3D5570; padding-bottom: 6px; margin-bottom: 8px; }
+  details.ali-chiusure > summary::-webkit-details-marker { display: none; }
+  details.ali-chiusure > summary::after { content: "+"; font: 300 1.8rem/1 "Cormorant Garamond", serif; }
+  details.ali-chiusure[open] > summary::after { content: "–"; }
+  details.ali-chiusure[open] > summary { margin-bottom: 16px; }
 </style>
 <nav class="ali-nav" aria-label="Go to">
   <a href="#corsi-gruppo">Group courses</a>
@@ -895,26 +898,9 @@ padding-right: 30px;
 		</div>
 						</div>
 				</div>
-				<div class="elementor-element elementor-element-024e9db elementor-align-start elementor-icon-list--layout-traditional elementor-list-item-link-full_width elementor-widget elementor-widget-icon-list" data-id="024e9db" data-element_type="widget" data-e-type="widget" data-widget_type="icon-list.default">
-				<div class="elementor-widget-container">
-							<ul class="elementor-icon-list-items">
-							<li class="elementor-icon-list-item">
-										<span class="elementor-icon-list-text">Closing Dates</span>
-									</li>
-						</ul>
-						</div>
-				</div>
-				<div class="elementor-element elementor-element-4b69986 elementor-widget-divider--view-line elementor-widget elementor-widget-divider" data-id="4b69986" data-element_type="widget" data-e-type="widget" data-widget_type="divider.default">
-				<div class="elementor-widget-container">
-							<div class="elementor-divider">
-			<span class="elementor-divider-separator">
-						</span>
-		</div>
-						</div>
-				</div>
 				<div class="elementor-element elementor-element-e84b234 elementor-widget elementor-widget-text-editor" data-id="e84b234" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<details class="ali-chiusure"><summary>Show closing dates</summary><p><strong>2026</strong> <br />from October 28th to November 1st – December 8th, Immaculate conception –  Christmas Holidays: from December 16th to January 19th 2025.<br /><strong>2027</strong><br />from January 1st to 9th, Christmas Holidays – from March 26th to April 2nd,  Easter Holidays – June 2nd, Republic Day – December 8th, Immaculate conception –   from December 20th to 31th, Christmas Holidays.<strong><br /></strong></p></details>								</div>
+									<details class="ali-chiusure"><summary>Closing Dates</summary><!-- chiusure:start --><p><b>2026</b><br />8 December, Immaculate Conception / 21–31 December, Christmas Holidays<br /><b>2027</b><br />1–9 January, Christmas Holidays / 26 March – 2 April, Easter Holidays / 2 June, Republic Day / 4 October, Feast of St. Francis / 8 December, Immaculate Conception / 20–31 December, Christmas Holidays</p><!-- chiusure:end --></details>								</div>
 				</div>
 					</div>
 		</div>
