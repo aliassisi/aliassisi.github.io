@@ -156,18 +156,31 @@ function scriviRiga(id, x, link) {
   formulePagamenti(foglio, r, r);
 }
 
-/* Pagato e Da pagare delle righe da r1 a r2. setFormulas legge sempre le formule in inglese, con la
-   virgola, anche in un foglio in italiano (setValues no: lì una formula può diventare un errore). */
+/* Pagato e Da pagare delle righe da r1 a r2.
+   In un foglio in italiano una formula con le virgole può dare "Errore di analisi della formula":
+   si scrive con le virgole, si controlla, e se Google dà errore si riscrive con il punto e virgola. */
 function formulePagamenti(foglio, r1, r2) {
   riservato();
   if (r2 < r1) return;
   var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato'));
-  var f = [];
-  for (var r = r1; r <= r2; r++) {
-    f.push(['=SUMIF(Pagamenti!A:A,' + A + r + ',Pagamenti!C:C)',            // Pagato: i pagamenti di questa iscrizione
-            '=IF(' + P + r + '="",' + T + r + ',' + P + r + ')-' + G + r]);  // Da pagare: prezzo confermato (o stimato) meno pagato
+  var formule = function (sep) {
+    var f = [];
+    for (var r = r1; r <= r2; r++) {
+      f.push(['=SUMIF(Pagamenti!A:A' + sep + A + r + sep + 'Pagamenti!C:C)',              // Pagato: i pagamenti di questa iscrizione
+              '=IF(' + P + r + '=""' + sep + T + r + sep + P + r + ')-' + G + r]);        // Da pagare: prezzo confermato (o stimato) meno pagato
+    }
+    return f;
+  };
+  var celle = foglio.getRange(r1, colonna('pagato'), r2 - r1 + 1, 2);
+  var sep = props().getProperty('separatore_formule') || ',';
+  celle.setFormulas(formule(sep));
+  SpreadsheetApp.flush();
+  if (/^#(ERROR|NAME|N\/A)/.test(String(celle.getCell(1, 1).getDisplayValue()))) {
+    sep = sep === ',' ? ';' : ',';
+    celle.setFormulas(formule(sep));
+    SpreadsheetApp.flush();
+    if (!/^#/.test(String(celle.getCell(1, 1).getDisplayValue()))) props().setProperty('separatore_formule', sep);
   }
-  foglio.getRange(r1, colonna('pagato'), f.length, 2).setFormulas(f);
 }
 
 /* ---------- EMAIL ---------- */
