@@ -125,13 +125,21 @@ function avviso(t, err) {
   clearTimeout(avviso.t); avviso.t = setTimeout(function () { a.style.display = 'none'; }, err ? 10000 : 3500);
 }
 /* Chiama una funzione di Gestionale.gs; quasi tutte rispondono con i dati aggiornati. */
+var IN_CORSO = 0;   // richieste che stanno salvando: intanto i pulsanti non rispondono (niente doppi salvataggi)
+document.addEventListener('click', function (e) {
+  if (!IN_CORSO) return;
+  var b = e.target.closest('button, .b');
+  if (b && b.id !== 'chiudi') { e.preventDefault(); e.stopPropagation(); avviso('Sto salvando, un momento…'); }
+}, true);
 function chiama(fn) {
-  var args = Array.prototype.slice.call(arguments, 1);
+  var args = Array.prototype.slice.call(arguments, 1), scrive = fn !== 'carica';
   $('#attesa').style.display = 'block';
+  if (scrive) { IN_CORSO++; document.body.style.cursor = 'progress'; }
+  var fine = function () { if (scrive) { IN_CORSO = Math.max(0, IN_CORSO - 1); if (!IN_CORSO) document.body.style.cursor = ''; } };
   return new Promise(function (ok, ko) {
-    google.script.run.withSuccessHandler(function (d) { $('#attesa').style.display = 'none'; if (d && d.iscrizioni) { D = d; indici(); } ok(d); })
+    google.script.run.withSuccessHandler(function (d) { $('#attesa').style.display = 'none'; fine(); if (d && d.iscrizioni) { D = d; indici(); } ok(d); })
       .withFailureHandler(function (e) {
-        $('#attesa').style.display = 'none';
+        $('#attesa').style.display = 'none'; fine();
         var m = String(e && e.message || e);
         if (/ACCESSO/.test(m)) { accesso(); ko(e); return; }
         avviso(m, true); ko(e);
@@ -561,6 +569,8 @@ function modificaClasse(id, tipo) {
   $('#c-salva', d).onclick = function () {
     var o = {id: id || ''};
     ['nome', 'tipo', 'modalita', 'link', 'aula', 'livello', 'insegnante', 'inizio', 'fine', 'orario', 'note'].forEach(function (k) { o[k] = $('#c-' + k, d).value.trim(); });
+    var uguale = D.classi.filter(function (x) { return x.id !== id && String(x.nome).trim().toLowerCase() === o.nome.toLowerCase() && x.inizio === o.inizio && x.fine === o.fine; })[0];
+    if (uguale && !confirm('C’è già una classe “' + uguale.nome + '” con le stesse date. Crearne un’altra?')) return;
     chiama('salvaClasse', o).then(function () { avviso('Classe salvata'); disegna(); if (id) apriClasse(id); else d.close(); });
   };
   if (id) $('#c-elimina', d).onclick = function () {
