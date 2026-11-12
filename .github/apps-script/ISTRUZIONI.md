@@ -252,7 +252,9 @@ Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizz
   con lo stato "Nuova". Aprila, controlla, cambia lo stato in "Confermata".
 - **Classe**: in **Classi** crea la classe (aula, livello, insegnante, date). Mettici gli studenti
   dalla classe stessa, dalla scheda dello studente, o dalla riga "Senza classe" del planning.
-  Uno studente può cambiare classe: togli e metti, con le date.
+  Uno studente può cambiare classe: nel planning **trascina il suo nome** su un'altra classe della stessa
+  settimana (o su "Senza classe"). Lo sposta da quella settimana in poi (se è la settimana in corso, da
+  oggi): prima resta nella classe di prima, con il suo registro.
 - **Registro**: ogni insegnante apre **Registro**, sceglie la classe, **Nuova lezione**, segna
   le attività e gli assenti. Le ore si sommano da sole. **Periodo** (dal… al…, o "Questa
   settimana", "Settimana scorsa", "Questo mese") filtra lezioni e presenze: ore, lezioni e giorni

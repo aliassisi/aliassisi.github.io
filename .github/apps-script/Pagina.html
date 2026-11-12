@@ -45,6 +45,10 @@ tr.cl:hover td{background:var(--blu-f)}
 .blocco{display:block;width:100%;text-align:left;border:0;border-left:4px solid var(--ardesia);background:var(--blu-f);border-radius:4px;padding:4px 6px;margin-bottom:4px;font:inherit;font-size:12px;cursor:pointer}
 .blocco b{display:block;font-size:13px}
 .blocco.vuoto{border-left-color:var(--att);background:var(--att-f)}
+.nomi{display:block;margin-top:3px}
+.chip{display:inline-block;background:#fff;border:1px solid var(--linea);border-radius:10px;padding:0 7px;margin:2px 3px 0 0;font-size:11px;line-height:18px;cursor:grab;white-space:nowrap}
+.chip:hover{border-color:var(--ardesia)}.chip.preso{opacity:.4}
+.blocco.sopra{outline:2px dashed var(--ardesia);outline-offset:1px;background:#dfe8f2}
 .blocco.priv{border-left-color:var(--ok);background:var(--ok-f)}
 .blocco.prev{border-style:dashed;border-width:1px 1px 1px 4px;border-color:var(--ok)}
 .blocco.annul{opacity:.5;text-decoration:line-through}
@@ -495,10 +499,15 @@ VISTE.classi = function () {
       var ch = D.eventi.filter(function (e) { return e.tipo === 'chiusura' && e.dal <= piu(s, 5) && e.al >= s; });
       return '<th>' + gg(s) + ' – ' + gg(piu(s, 4)) + '<div class="tenue">' + n + ' studenti</div>' + ch.map(function (e) { return '<div class="chiuso">' + esc(e.nome) + (e.dal === e.al ? ' ' + gg(e.dal) : '') + '</div>'; }).join('') + '</th>';
     }).join('') + '</tr></thead><tbody>';
+  // Un nome che si può trascinare in un'altra classe della stessa settimana (o in "Senza classe").
+  var etichetta = function (v, da, s) {
+    return '<span class="chip" draggable="true" data-stud="' + esc(v.id) + '" data-da="' + esc(da) + '" data-sett="' + s + '" title="' + esc(nome(v) + (v.livello ? ' · ' + v.livello : '') + ' · ' + gg(v.inizio) + '–' + gg(v.fine)) + '">' + esc(v.nome + ' ' + String(v.cognome || '').charAt(0) + '.') + '</span>';
+  };
   var blocco = function (c, s, fine, extra) {
     var st = assDiClasse(c.id).filter(function (a) { return sovrap(a.dal, a.al, s, fine) && ISC[a.iscrizione] && attiva(ISC[a.iscrizione]); });
-    return '<button class="blocco' + (privato(c) ? ' priv' : '') + '" data-classe="' + esc(c.id) + '"><b>' + esc(c.nome) + '</b>' + (c.livello ? esc(c.livello) + ' · ' : '') +
-      (extra !== undefined ? extra : st.length + ' stud.') + (c.insegnante ? ' · ' + esc(c.insegnante) : '') + '</button>';
+    return '<div class="blocco' + (privato(c) ? ' priv' : ' bersaglio') + '" role="button" tabindex="0" data-classe="' + esc(c.id) + '" data-sett="' + s + '"><b>' + esc(c.nome) + '</b>' +
+      esc([c.livello, extra, c.insegnante].filter(Boolean).join(' · ')) +
+      (st.length ? '<span class="nomi">' + st.map(function (a) { return etichetta(ISC[a.iscrizione], c.id, s); }).join('') + '</span>' : (extra === undefined ? '<span class="nomi tenue">nessuno</span>' : '')) + '</div>';
   };
   aule().concat(['']).forEach(function (aula) {
     h += '<tr><td>' + (aula ? esc(aula) : '<span class="tenue">Senza aula</span>') + '</td>';
@@ -517,12 +526,16 @@ VISTE.classi = function () {
   }).join('') + '</tr>';
   h += '<tr><td><span class="tenue">Senza classe</span></td>' + sett.map(function (s) {
     var fine = piu(s, 6), l = att.filter(function (v) { return sovrap(v.inizio, v.fine, s, fine) && !inClasseNelPeriodo(v.id, s, fine); });
-    return '<td>' + (l.length ? '<button class="blocco vuoto" data-senza="' + s + '"><b>' + l.length + ' studenti</b>' + esc(l.slice(0, 3).map(nome).join(', ')) + (l.length > 3 ? '…' : '') + '</button>' : '') + '</td>';
-  }).join('') + '</tr></tbody></table></div>';
+    return '<td><div class="blocco vuoto bersaglio" data-senza="' + s + '" data-sett="' + s + '"><b>' + (l.length ? l.length + ' studenti' : 'Nessuno') + '</b>' +
+      (l.length ? '<span class="nomi">' + l.map(function (v) { return etichetta(v, '', s); }).join('') + '</span><button class="l piccolo" data-senza="' + s + '">assegna…</button>' : '') + '</div></td>';
+  }).join('') + '</tr></tbody></table></div><p class="tenue piccolo">Trascina un nome su un’altra classe della stessa settimana per spostarlo da quella settimana in poi; su “Senza classe” per toglierlo. Clic sul nome: la scheda dello studente.</p>';
   var prossime = D.classi.filter(function (c) { return c.fine >= D.oggi; }).sort(function (a, b) { return a.inizio < b.inizio ? -1 : 1; });
   var finite = D.classi.filter(function (c) { return c.fine < D.oggi; }).sort(function (a, b) { return a.fine > b.fine ? -1 : 1; }).slice(0, 20);
   var tab = function (l) { return '<div class="scroll"><table><thead><tr><th>Classe</th><th>Tipo</th><th>Aula</th><th>Livello</th><th>Insegnante</th><th>Periodo</th><th>Studenti</th></tr></thead><tbody>' +
-    (l.map(function (c) { return '<tr class="cl" data-classe="' + esc(c.id) + '"><td>' + esc(c.nome) + '</td><td>' + (privato(c) ? '<span class="tag ok">individuale</span>' : 'gruppo') + '</td><td>' + esc(c.aula) + '</td><td>' + esc(c.livello) + '</td><td>' + esc(c.insegnante) + '</td><td>' + gg(c.inizio) + ' – ' + gg(c.fine) + '</td><td>' + assDiClasse(c.id).length + '</td></tr>'; }).join('') || '<tr><td colspan="7" class="vuoto-msg">Nessuna.</td></tr>') + '</tbody></table></div>'; };
+    (l.map(function (c) { return '<tr class="cl" data-classe="' + esc(c.id) + '"><td>' + esc(c.nome) + '</td><td>' + (privato(c) ? '<span class="tag ok">individuale</span>' : 'gruppo') + '</td><td>' + esc(c.aula) + '</td><td>' + esc(c.livello) + '</td><td>' + esc(c.insegnante) + '</td><td>' + gg(c.inizio) + ' – ' + gg(c.fine) + '</td><td>' + (function () {
+      var v = assDiClasse(c.id).map(function (a) { return ISC[a.iscrizione]; }).filter(function (x) { return x && attiva(x); });
+      return v.length ? esc(v.map(nome).join(', ')) : '<span class="tenue">nessuno</span>';
+    })() + '</td></tr>'; }).join('') || '<tr><td colspan="7" class="vuoto-msg">Nessuna.</td></tr>') + '</tbody></table></div>'; };
   return h + '<h3>Classi in corso e future</h3>' + tab(prossime) + '<h3>Classi finite</h3>' + tab(finite);
 };
 DOPO.classi = function () {
@@ -531,8 +544,40 @@ DOPO.classi = function () {
   $('#succ').onclick = function () { U.settimana = piu(inizio, 28); disegna(); };
   $('#oggi').onclick = function () { U.settimana = null; disegna(); };
   $('#nuovaclasse').onclick = function () { modificaClasse(null); };
-  $$('[data-senza]').forEach(function (b) { b.onclick = function () { senzaClasse(b.getAttribute('data-senza')); }; });
+  $$('button[data-senza]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); senzaClasse(b.getAttribute('data-senza')); }; });
+  // Trascina e lascia: un nome da una classe (o da "Senza classe") a un'altra classe della stessa settimana.
+  var preso = null;
+  $$('.chip[draggable]').forEach(function (ch) {
+    ch.addEventListener('dragstart', function (e) {
+      preso = {sid: ch.getAttribute('data-stud'), da: ch.getAttribute('data-da'), sett: ch.getAttribute('data-sett')};
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', preso.sid); } catch (x) {}
+      ch.classList.add('preso');
+    });
+    ch.addEventListener('dragend', function () { ch.classList.remove('preso'); $$('.sopra').forEach(function (b) { b.classList.remove('sopra'); }); });
+  });
+  $$('.bersaglio').forEach(function (b) {
+    var verso = function () { return b.getAttribute('data-classe') || ''; };
+    var valido = function () { return preso && b.getAttribute('data-sett') === preso.sett && verso() !== preso.da; };
+    b.addEventListener('dragover', function (e) { if (valido()) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; b.classList.add('sopra'); } });
+    b.addEventListener('dragleave', function () { b.classList.remove('sopra'); });
+    b.addEventListener('drop', function (e) {
+      e.preventDefault(); b.classList.remove('sopra');
+      if (!valido()) return;
+      var p = preso; preso = null;
+      sposta(p.sid, p.da, verso(), p.sett);
+    });
+  });
 };
+
+/* Sposta uno studente dalla classe "da" alla classe "a" (una delle due può mancare) a partire dalla settimana "sett".
+   Se è la settimana in corso, da oggi: i giorni già passati restano nella classe di prima (registro e presenze). */
+function sposta(sid, da, a, sett) {
+  var v = ISC[sid], dal = sett < D.oggi && piu(sett, 6) >= D.oggi ? D.oggi : sett;
+  var testo = nome(v) + (da && a ? ': da ' + CLA[da].nome + ' a ' + CLA[a].nome : a ? ' in ' + CLA[a].nome : ' fuori da ' + CLA[da].nome) + ', dal ' + giornoSett(dal) + ' ' + gg(dal) + '?';
+  if (!confirm(testo)) return;
+  chiama('spostaStudente', sid, da, a, dal).then(function () { avviso('Fatto: ' + nome(v)); disegna(); });
+}
 
 function senzaClasse(s) {
   var fine = piu(s, 6);

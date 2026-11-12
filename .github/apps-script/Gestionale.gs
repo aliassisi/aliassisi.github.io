@@ -95,7 +95,7 @@ function daTrigger(e) {
   return !!(e && e.triggerUid && ScriptApp.getProjectTriggers().some(function (t) { return t.getUniqueId() === String(e.triggerUid); }));
 }
 var GIORNI_SESSIONE = 30;
-var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaClasse', 'eliminaClasse', 'assegna', 'togliAssegnazione',
+var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaClasse', 'eliminaClasse', 'assegna', 'togliAssegnazione', 'spostaStudente',
   'salvaLezione', 'eliminaLezione', 'creaPrivato', 'pianificaLezioni', 'mandaCalendario', 'mandaLink', 'annullaLezione', 'recuperaLezione',
   'creaDocumenti', 'sincronizzaFIC', 'abbinaFattura', 'mandaPromemoria', 'attivaInvii', 'emailClasse', 'salvaImpostazioni',
   'salvaAlloggio', 'eliminaAlloggio', 'prenotaAlloggio', 'togliSoggiorno', 'mandaAlloggio',
@@ -406,6 +406,38 @@ function assegna(iscrizione, classe, dal, al) {
     var esiste = leggi('Assegnazioni').filter(function (a) { return a.iscrizione === iscrizione && a.classe === classe; })[0];
     if (esiste) aggiorna('Assegnazioni', esiste._r, {dal: dal, al: al});
     else aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: classe, dal: dal, al: al});
+    return carica();
+  });
+}
+
+/* Sposta uno studente dalla classe "da" alla classe "a" a partire dal giorno "dal" (trascina e lascia nel planning).
+   "da" vuoto: era senza classe; "a" vuoto: resta senza classe. Prima di "dal" resta dov'era (registro e presenze). */
+function spostaStudente(iscrizione, da, a, dal) {
+  autorizzato();
+  if (!dal || !/^\d{4}-\d{2}-\d{2}$/.test(dal)) throw new Error('Data non valida');
+  if (!da && !a) throw new Error('Niente da spostare');
+  return conBlocco(function () {
+    var v = trova('Iscrizioni', 'id', iscrizione);
+    if (!v) throw new Error('Iscrizione non trovata');
+    var ass = leggi('Assegnazioni');
+    if (a) {
+      var c = trova('Classi', 'id', a);
+      if (!c) throw new Error('Classe non trovata');
+      var inizio = [dal, v.inizio || dal, c.inizio].sort().pop(), fine = [v.fine || c.fine, c.fine].sort()[0];
+      if (fine < inizio) throw new Error('Dal ' + dataTesto(giorno(dal)) + ' lo studente non è più in corso o la classe è finita.');
+    }
+    if (da) {
+      var vecchia = ass.filter(function (x) { return x.iscrizione === iscrizione && x.classe === da && x.al >= dal; })[0];
+      if (vecchia) {
+        if (vecchia.dal >= dal) scheda('Assegnazioni').deleteRow(vecchia._r);
+        else aggiorna('Assegnazioni', vecchia._r, {al: piuGiorni(dal, -1)});
+      }
+    }
+    if (a) {
+      var gia = leggi('Assegnazioni').filter(function (x) { return x.iscrizione === iscrizione && x.classe === a; })[0];
+      if (gia) aggiorna('Assegnazioni', gia._r, {dal: gia.dal < inizio ? gia.dal : inizio, al: gia.al > fine ? gia.al : fine});
+      else aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: a, dal: inizio, al: fine});
+    }
     return carica();
   });
 }
