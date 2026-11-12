@@ -31,6 +31,9 @@ jobs:
       - name: Add search engine tags, sitemap.xml and robots.txt
         run: python3 -I .github/scripts/build_seo.py _site
 
+      - name: Add content versions to CSS and JS links
+        run: python3 -I .github/scripts/version_assets.py _site
+
       - name: Rebuild the search index
         run: npx --yes pagefind@1.5.2 --site _site
 
