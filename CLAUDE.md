@@ -37,6 +37,9 @@ and run the build script.
   top section (title over the background video) stay as they are; only the line
   under the title comes from the course's `"hero"`. Do not replace that section.
   Run `python3 -I .github/scripts/build_corsi.py .` after editing.
+- Closing dates (`"chiusure"`) also fill the Calendar and Fees pages (IT and EN),
+  between `<!-- chiusure:start -->` and `<!-- chiusure:end -->`. Past ones drop out
+  only when `build_corsi.py` runs, not on their own.
 - Optional blocks: `"libro"` (a course book section) and `"temi"` (a list of themes,
   each with its own enrolment link if it has `"voce_modulo"`).
 - "Altri corsi" (three boxes at the end of each course page) comes from

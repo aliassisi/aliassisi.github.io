@@ -24,6 +24,9 @@ The enrolment buttons open the configurator with the course already chosen
 The page head gets a link to assets/alia/alia-course.css
 (source: .github/templates/alia-course.css).
 
+The closing dates on calendar-and-fees and en/calendar-and-fees come from
+"chiusure" as well, between <!-- chiusure:start --> and <!-- chiusure:end -->.
+
 Start dates before today are left out, and so are closures that have ended.
 --oggi sets "today", for tests.
 
@@ -51,6 +54,9 @@ INIZIO, FINE = "<!-- ali-course -->", "<!-- /ali-course -->"
 # From a course page (product/x or en/product/x) to the configurator of its language.
 CONFIGURATORE = "../../configuratore/index.html"
 SLOT_MATTINA = 4
+# The Calendar and Fees pages get their closing dates from "chiusure" too.
+CALENDARIO = {"it": "calendar-and-fees", "en": "en/calendar-and-fees"}
+CHIUSURE_INIZIO, CHIUSURE_FINE = "<!-- chiusure:start -->", "<!-- chiusure:end -->"
 
 LINGUE = {
     "it": {
@@ -208,6 +214,23 @@ def chiusure(lista, oggi, lingua):
         righe.append(f"            <dt>{anno}</dt>")
         righe.append(f"            <dd>{'<br>'.join(voci)}</dd>")
     return "\n".join(righe)
+
+
+def chiusure_calendario(s, lista, oggi, lingua, p):
+    """Replace the closing dates on a Calendar and Fees page (between the
+    chiusure markers) with the closures in lista that have not ended."""
+    L = LINGUE[lingua]
+    anni = {}
+    for c in lista:
+        a, b = data(c["dal"]), data(c["al"])
+        if b >= oggi:
+            anni.setdefault(a.year, []).append(f"{periodo(a, b, L)}, {esc(c[lingua])}")
+    testo = "<br />".join(f"<b>{anno}</b><br />{' / '.join(voci)}" for anno, voci in anni.items())
+    blocco = f"{CHIUSURE_INIZIO}<p>{testo}</p>{CHIUSURE_FINE}"
+    if CHIUSURE_INIZIO not in s:
+        sys.exit(f"{p}: no {CHIUSURE_INIZIO} marker found.")
+    return re.sub(re.escape(CHIUSURE_INIZIO) + r".*?" + re.escape(CHIUSURE_FINE),
+                  lambda m: blocco, s, count=1, flags=re.S)
 
 
 def contenuto(modello, ali, c, oggi, lingua):
@@ -416,6 +439,14 @@ def main():
                 with open(dest, "w", encoding="utf-8", newline="\n") as f:
                     f.write(in_wordpress(s, blocco, href, p, corso["hero"]))
                 print(f"wrote {p}/index.html ({lingua})")
+
+    for lingua, p in CALENDARIO.items():
+        dest = os.path.join(args.site, p, "index.html")
+        with open(dest, encoding="utf-8") as f:
+            s = f.read()
+        with open(dest, "w", encoding="utf-8", newline="\n") as f:
+            f.write(chiusure_calendario(s, ali["chiusure"], args.oggi, lingua, p))
+        print(f"wrote {p}/index.html (closing dates, {lingua})")
 
 
 if __name__ == "__main__":
