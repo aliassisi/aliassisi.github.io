@@ -39,7 +39,7 @@ and run the build script.
   Run `python3 -I .github/scripts/build_corsi.py .` after editing.
 - Closing dates (`"chiusure"`) also fill the Calendar and Fees pages (IT and EN),
   between `<!-- chiusure:start -->` and `<!-- chiusure:end -->`. Past ones drop out
-  only when `build_corsi.py` runs, not on their own.
+  when `build_corsi.py` runs. Deploy runs it every night, so they go by the next morning.
 - Optional blocks: `"libro"` (a course book section) and `"temi"` (a list of themes,
   each with its own enrolment link if it has `"voce_modulo"`).
 - "Altri corsi" (three boxes at the end of each course page) comes from

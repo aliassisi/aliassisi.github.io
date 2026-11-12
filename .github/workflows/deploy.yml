@@ -1,11 +1,15 @@
 name: Deploy production
 
 # Publishes main to the gh-pages branch. GitHub Pages serves that branch.
+# Runs on each push to main and every night at 02:30 UTC.
 # PR previews live in gh-pages/pr-preview/ and are kept by clean-exclude.
 
 on:
   push:
     branches: [main]
+  # Every night, so start dates and closing dates that have passed drop out.
+  schedule:
+    - cron: "30 2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -27,6 +31,9 @@ jobs:
         run: |
           mkdir _site
           rsync -a --exclude '.git' --exclude '.github' --exclude '.claude' --exclude 'CLAUDE.md' --exclude '_site' ./ _site/
+
+      - name: Drop past start dates and closing dates
+        run: python3 -I .github/scripts/build_corsi.py _site
 
       - name: Add search engine tags, sitemap.xml and robots.txt
         run: python3 -I .github/scripts/build_seo.py _site
