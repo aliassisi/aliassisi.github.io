@@ -92,15 +92,38 @@ non entra più, anche se era collegato. (La lista si può scrivere anche in Apps
 progetto → Proprietà script → `staff`.)
 
 ## 7. Collega Fatture in Cloud
-Serve un token di Fatture in Cloud che può solo leggere.
-1. In Fatture in Cloud apri l'area sviluppatori e crea un'app privata (serve il suo Client ID).
+Serve un token di Fatture in Cloud.
+1. In Fatture in Cloud, sezione **Sviluppatore**: crea un'applicazione. Nella sua pagina c'è il
+   **Client ID**.
 2. **Impostazioni → Applicazioni collegate** (https://secure.fattureincloud.it/settings-apps) →
    **Collega una nuova applicazione** → incolla il Client ID → scegli l'azienda.
-3. Permessi: **solo lettura** per Fatture, Proforma e Clienti.
+3. Permessi:
+   - **Proforma: lettura e scrittura** (il gestionale crea le proforma);
+   - **Clienti: lettura e scrittura** (crea il cliente se non c'è);
+   - **Fatture: lettura** (pagamenti e promemoria);
+   - **Impostazioni: lettura** (le aliquote IVA).
 4. Copia il token. Nel gestionale: **Impostazioni → Fatture in Cloud**, incollalo e salva.
 5. In **Pagamenti** premi **Aggiorna da Fatture in Cloud**.
 
+I permessi si cambiano anche dopo: **Applicazioni collegate → Gestisci** accanto all'app →
+**Modifica** nei permessi. Il token resta lo stesso.
+
 Questi passaggi in Fatture in Cloud vengono dalla loro documentazione: non li abbiamo provati.
+La documentazione non dice dove si crea l'applicazione: se non trovate "Sviluppatore", chiedete
+all'assistenza di Fatture in Cloud un "token manuale" per la vostra azienda.
+
+**La proforma dal gestionale.** Nella scheda dello studente: **Crea e invia la proforma…**
+- Le righe vengono dal preventivo del modulo del sito (corso, extra), **senza l'alloggio**, che
+  lo studente paga al proprietario. Per le iscrizioni vecchie o fatte a mano c'è una riga con il
+  corso e il prezzo. Si possono cambiare, togliere, aggiungere.
+- IVA per riga: proposta "Esente art. 10"; il menu mostra le aliquote del vostro Fatture in Cloud.
+- Rata unica; la scadenza proposta è tra 15 giorni e si cambia (anche dopo l'inizio del corso).
+- Il cliente si crea in Fatture in Cloud con i dati di fatturazione dell'iscrizione (studente o
+  ente), o si usa quello che ha già la stessa email.
+- "Mandala subito" usa l'email di Fatture in Cloud, con il PDF, nella lingua dello studente.
+- La proforma compare subito in **Pagamenti**, abbinata, e i promemoria la seguono.
+- Quando lo studente paga: in Fatture in Cloud **trasformate la proforma in fattura** e segnate il
+  pagamento. Con "Aggiorna da Fatture in Cloud" il pagamento arriva nel gestionale.
 
 Come funziona:
 - legge fatture e proforma degli ultimi 400 giorni;

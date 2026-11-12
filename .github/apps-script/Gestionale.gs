@@ -99,7 +99,7 @@ var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaCla
   'salvaLezione', 'eliminaLezione', 'creaPrivato', 'pianificaLezioni', 'mandaCalendario', 'mandaLink', 'annullaLezione', 'recuperaLezione',
   'creaDocumenti', 'sincronizzaFIC', 'abbinaFattura', 'mandaPromemoria', 'attivaInvii', 'emailClasse', 'salvaImpostazioni',
   'salvaAlloggio', 'eliminaAlloggio', 'prenotaAlloggio', 'togliSoggiorno', 'mandaAlloggio',
-  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento'];
+  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento', 'datiProforma', 'creaProforma'];
 
 function utente() {
   if (UTENTE) return UTENTE;
@@ -294,8 +294,8 @@ function impostazioni() {
 function intestazioni() {
   riservato();
   var ss = SpreadsheetApp.getActive();
-  Object.keys(SCHEMI).forEach(function (nome) {
-    var s = ss.getSheetByName(nome), cols = SCHEMI[nome];
+  Object.keys(SCHEMI).concat(['Iscrizioni']).forEach(function (nome) {
+    var s = ss.getSheetByName(nome), cols = schema(nome);
     if (!s) { s = ss.insertSheet(nome); s.setFrozenRows(1); }
     if (s.getRange(1, cols.length).getValue() === cols[cols.length - 1][1]) return;
     s.getRange(1, 1, 1, cols.length).setValues([cols.map(function (c) { return c[1]; })])
@@ -1180,16 +1180,18 @@ function creaDaRiga(tipo) {
 
 /* ---------- FATTURE IN CLOUD ---------- */
 
-function fic(percorso) {
+function fic(percorso, metodo, dati) {
   riservato();
   var token = props().getProperty('fic_token');
   if (!token) throw new Error('Manca il token di Fatture in Cloud: impostalo in Impostazioni.');
   for (var tentativo = 0; tentativo < 3; tentativo++) {
-    var r = UrlFetchApp.fetch(FIC_API + percorso, {
-      headers: {Authorization: 'Bearer ' + token, Accept: 'application/json'}, muteHttpExceptions: true
-    });
+    var o = {headers: {Authorization: 'Bearer ' + token, Accept: 'application/json'}, muteHttpExceptions: true};
+    if (metodo) { o.method = metodo; o.contentType = 'application/json'; o.payload = JSON.stringify(dati || {}); }
+    var r = UrlFetchApp.fetch(FIC_API + percorso, o);
     var c = r.getResponseCode();
-    if (c === 200) return JSON.parse(r.getContentText());
+    if (c === 200 || c === 201) { var t = r.getContentText(); return t ? JSON.parse(t) : {}; }
+    if (c === 401) throw new Error('Fatture in Cloud: il token non è valido o è stato revocato.');
+    if (c === 403 && /permission|scope|NO PERMISSION/i.test(r.getContentText())) throw new Error('Fatture in Cloud: il token non ha i permessi per questa operazione (vedi ISTRUZIONI.md, punto 7).');
     if (c === 429) { Utilities.sleep(5000 * (tentativo + 1)); continue; }
     throw new Error('Fatture in Cloud ha risposto ' + c + ': ' + r.getContentText().slice(0, 300));
   }
@@ -1281,6 +1283,122 @@ function aggiornaFIC() {
       return SCHEMI.Fatture.map(function (c) { return valoreCella(c[0], o[c[0]]); });
     }));
   });
+}
+
+/* ---------- PROFORMA IN FATTURE IN CLOUD ---------- */
+/* Il gestionale crea il cliente e la proforma in Fatture in Cloud e la manda con la loro email.
+   La fattura vera si fa poi in Fatture in Cloud ("trasforma in fattura"). L'alloggio non c'è: lo paga
+   lo studente al proprietario. Permessi del token: Proforma e Clienti in scrittura, Impostazioni in lettura. */
+
+/* Le aliquote IVA dell'azienda, per il menu di ogni riga. */
+function aliquoteFic() {
+  var l = (fic('/c/' + aziendaFic() + '/info/vat_types').data || []).filter(function (v) { return !v.is_disabled; });
+  return l.map(function (v) { return {id: v.id, valore: Number(v.value) || 0, nome: (v.value || 0) + '% ' + (v.description || '')}; });
+}
+
+/* La scadenza proposta: tra 15 giorni. È solo una proposta: nella finestra si cambia (anche dopo l'inizio del corso). */
+function scadenzaProforma(v) {
+  return piuGiorni(oggiIso(), 15);
+}
+
+/* Le righe proposte: le voci del preventivo senza l'alloggio, o una riga sola con il corso. */
+function righeProforma(v) {
+  var voci = [];
+  try { voci = JSON.parse(v.voci || '[]'); } catch (e) {}
+  var alloggio = normale(v.alloggio);
+  var r = voci.filter(function (x) {
+    return Array.isArray(x) && x[2] !== null && x[2] !== '' && !isNaN(x[2]) && !(alloggio && normale(x[0]) === alloggio);
+  }).map(function (x) { return {nome: String(x[0]), descrizione: String(x[1] || ''), prezzo: Number(x[2])}; });
+  if (!r.length) r = [{nome: v.corso_nome + (v.tema ? ' – ' + v.tema : ''), descrizione: [v.settimane ? v.settimane + ' settimane' : '', v.lezioni_totali ? v.lezioni_totali + ' lezioni' : ''].filter(String).join(', '),
+    prezzo: Number(v.prezzo) || Number(v.totale) || 0}];
+  return r;
+}
+
+/* Quello che serve alla finestra "Proforma" della scheda dello studente. */
+function datiProforma(iscrizione) {
+  autorizzato();
+  var v = trova('Iscrizioni', 'id', iscrizione);
+  if (!v) throw new Error('Iscrizione non trovata');
+  var iva = aliquoteFic();
+  var art10 = iva.filter(function (x) { return /art\.?\s*10/i.test(x.nome); })[0] || iva.filter(function (x) { return x.valore === 0; })[0] || iva[0];
+  return {
+    righe: righeProforma(v), iva: iva, iva_predefinita: art10 ? art10.id : '',
+    scadenza: scadenzaProforma(v), email: v.f_email || v.email, gia: v.proforma || '',
+    cliente: v.f_intestatario === 'Ente' ? v.f_ente : v.nome + ' ' + v.cognome,
+    indirizzo: [v.f_indirizzo, v.f_cap, v.f_citta, v.f_paese].filter(String).join(', '),
+    codici: [v.f_cf ? 'CF ' + v.f_cf : '', v.f_piva ? 'P. IVA ' + v.f_piva : '', v.f_sdi ? 'SDI/PEC ' + v.f_sdi : ''].filter(String).join(' · ')
+  };
+}
+
+/* Il cliente in Fatture in Cloud: se c'è già (stessa email), quello; se no lo crea con i dati della fattura. */
+function clienteFic(azienda, v) {
+  var email = String(v.f_email || v.email || '').toLowerCase();
+  if (email) {
+    try {
+      var trovati = fic('/c/' + azienda + '/entities/clients?per_page=5&q=' + encodeURIComponent("email = '" + email.replace(/'/g, '') + "'")).data || [];
+      if (trovati.length) return trovati[0];
+    } catch (e) { console.warn('Ricerca cliente non riuscita', e); }
+  }
+  var ente = v.f_intestatario === 'Ente';
+  var sdi = String(v.f_sdi || '').trim();
+  var c = {
+    type: ente ? 'company' : 'person',
+    name: ente ? String(v.f_ente || '') : v.nome + ' ' + v.cognome,
+    first_name: ente ? '' : v.nome, last_name: ente ? '' : v.cognome,
+    tax_code: String(ente ? (v.f_piva || '') : (v.f_cf || '')), vat_number: ente ? String(v.f_piva || '') : '',
+    address_street: String(v.f_indirizzo || ''), address_postal_code: String(v.f_cap || ''), address_city: String(v.f_citta || ''),
+    country: String(v.f_paese || ''), email: email,
+    certified_email: sdi.indexOf('@') > 0 ? sdi : '', ei_code: /^[A-Z0-9]{6,7}$/i.test(sdi) ? sdi.toUpperCase() : ''
+  };
+  return fic('/c/' + azienda + '/entities/clients', 'post', {data: c}).data;
+}
+
+/* Crea la proforma (rata unica) e, se "invia", la manda allo studente con l'email di Fatture in Cloud. */
+function creaProforma(iscrizione, righe, scadenza, invia, email) {
+  autorizzato();
+  if (!righe || !righe.length) throw new Error('Nessuna riga');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(scadenza || '')) throw new Error('Scadenza non valida');
+  var v = trova('Iscrizioni', 'id', iscrizione);
+  if (!v) throw new Error('Iscrizione non trovata');
+  var r = righe.map(function (x) {
+    var p = Math.round(Number(x.prezzo) * 100) / 100;
+    if (!x.nome || !(p > 0)) throw new Error('Ogni riga deve avere nome e prezzo');
+    if (x.iva === '' || x.iva === null || x.iva === undefined || isNaN(Number(x.iva))) throw new Error('Scegli l’IVA di ogni riga');  // l'id 0 è valido
+    return {name: String(x.nome).slice(0, 200), description: String(x.descrizione || '').slice(0, 500), qty: 1, gross_price: p, vat: {id: Number(x.iva)}};
+  });
+  var totale = Math.round(r.reduce(function (s, x) { return s + x.gross_price; }, 0) * 100) / 100;
+  var azienda = aziendaFic(), cliente = clienteFic(azienda, v), en = v.lingua === 'en';
+  var doc = fic('/c/' + azienda + '/issued_documents', 'post', {
+    data: {
+      type: 'proforma', entity: {id: cliente.id, name: cliente.name}, date: oggiIso(),
+      language: en ? {code: 'en', name: 'English'} : {code: 'it', name: 'Italiano'},
+      use_gross_prices: true, visible_subject: (en ? 'Enrolment ' : 'Iscrizione ') + v.id + ' – ' + v.nome + ' ' + v.cognome,
+      items_list: r, payments_list: [{amount: totale, due_date: scadenza, status: 'not_paid'}]
+    },
+    options: {fix_payments: true}
+  }).data;
+  var numero = String(doc.number || '') + (doc.numeration || ''), inviata = false;
+  if (invia) {
+    var a = String(email || v.f_email || v.email || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a)) throw new Error('Proforma ' + numero + ' creata, ma l’email non è valida: mandala da Fatture in Cloud.');
+    var e = fic('/c/' + azienda + '/issued_documents/' + doc.id + '/email').data || {};
+    fic('/c/' + azienda + '/issued_documents/' + doc.id + '/email', 'post', {data: {
+      sender_id: e.default_sender_email ? e.default_sender_email.id : undefined,
+      sender_email: e.default_sender_email ? undefined : EMAIL_STAFF,
+      recipient_email: a, subject: e.subject || ((en ? 'Proforma invoice ' : 'Proforma ') + numero), body: e.body || '',
+      include: {document: true, delivery_note: false, attachment: false, accompanying_invoice: false}, attach_pdf: true, send_copy: false
+    }});
+    inviata = true;
+  }
+  conBlocco(function () {
+    aggiorna('Iscrizioni', v._r, {proforma: numero + ' del ' + dataTesto(giorno(oggiIso())) + (inviata ? ', inviata' : '')});
+    // La scheda Fatture la mostra subito, già abbinata a questa iscrizione.
+    aggiungi('Fatture', {fic_id: String(doc.id), tipo: 'proforma', numero: numero, data: oggiIso(), cliente: testo(cliente.name, 300),
+      email: testo(cliente.email || '', 300), importo: totale, da_pagare: totale, scadenza: scadenza, iscrizione: v.id, abbinata: 'manuale', aggiornata: new Date()});
+  });
+  var d = carica();
+  d.proforma = {numero: numero, totale: totale, inviata: inviata};
+  return d;
 }
 
 /* I pagamenti già scritti (la scheda Pagamenti è di Codice.gs e non ha chiavi). */

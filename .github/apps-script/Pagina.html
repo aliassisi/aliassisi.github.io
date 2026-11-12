@@ -428,6 +428,8 @@ function apriStudente(id) {
     '<h3>Fatture e proforma</h3>' + (fatt.length ? '<ul class="lista">' + fatt.map(function (x) {
       return '<li>' + esc(x.tipo) + ' ' + esc(x.numero) + ' del ' + gg(x.data) + ' · ' + euro(x.importo) + (x.da_pagare > 0 ? ' · <span class="tag ' + (x.scadenza < D.oggi ? 'err' : 'att') + '">da pagare ' + euro(x.da_pagare) + ' entro ' + gg(x.scadenza) + '</span>' : ' · <span class="tag ok">pagata</span>') + '</li>';
     }).join('') + '</ul>' : '<div class="vuoto-msg">Nessuna fattura abbinata.</div>') +
+    (v.proforma ? '<div class="piccolo">Proforma dal gestionale: ' + esc(v.proforma) + '</div>' : '') +
+    (D.fic_token ? '<div class="barra"><button class="b" id="s-proforma">' + (v.proforma ? 'Nuova proforma…' : 'Crea e invia la proforma…') + '</button></div>' : '') +
     '<h3>Documenti</h3>' + (docs.length ? '<ul class="lista">' + docs.map(function (x) { return '<li>' + esc(x.tipo) + ' ' + esc(x.numero) + ' · ' + esc(x.data) + ' · <a href="' + esc(x.link) + '" target="_blank" rel="noopener">PDF</a></li>'; }).join('') + '</ul>' : '') +
     (individuale(v) || ass.some(function (a) { return privato(CLA[a.classe]); }) ? '<h3>Lezioni individuali</h3><div class="barra">' +
       (ass.some(function (a) { return privato(CLA[a.classe]); }) ? '<span class="piccolo">' + (function () { var n = contaLez(lezioniDi(id).filter(function (l) { return privato(CLA[l.classe]); })); return 'previste ' + n.prevista + ' · fatte ' + n.fatta + (v.lezioni_totali ? ' · acquistate ' + esc(v.lezioni_totali) : ''); })() + '</span>' +
@@ -464,8 +466,47 @@ function apriStudente(id) {
     if (!confirm('Mandare a ' + v.email + ' l’elenco delle prossime lezioni?')) return;
     chiama('mandaCalendario', id).then(function () { avviso('Calendario mandato'); });
   };
+  if ($('#s-proforma', d)) $('#s-proforma', d).onclick = function () { finestraProforma(id); };
   $('#s-dip', d).onclick = function () { creaDoc('diploma', [id]).then(function () { apriStudente(id); }); };
   $('#s-att', d).onclick = function () { creaDoc('attestato', [id]).then(function () { apriStudente(id); }); };
+}
+
+/* La proforma in Fatture in Cloud: righe (senza alloggio), IVA per riga, scadenza della rata unica, email. */
+function finestraProforma(id) {
+  var v = ISC[id];
+  chiama('datiProforma', id).then(function (p) {
+    var righe = p.righe.map(function (r) { r.iva = p.iva_predefinita; return r; });
+    var opzIva = function (sel) { return p.iva.map(function (x) { return '<option value="' + esc(x.id) + '"' + (String(x.id) === String(sel) ? ' selected' : '') + '>' + esc(x.nome) + '</option>'; }).join(''); };
+    function disegnaRighe() {
+      $('#pf-righe', d).innerHTML = righe.map(function (r, i) {
+        return '<tr><td><input data-pf="nome" data-i="' + i + '" value="' + esc(r.nome) + '" style="width:100%"></td><td><input data-pf="descrizione" data-i="' + i + '" value="' + esc(r.descrizione) + '" style="width:100%"></td>' +
+          '<td><input data-pf="prezzo" data-i="' + i + '" type="number" step="0.01" min="0" value="' + esc(r.prezzo) + '" style="width:100px"></td>' +
+          '<td><select data-pf="iva" data-i="' + i + '" style="max-width:220px">' + opzIva(r.iva) + '</select></td><td><button class="b r piccolo" data-via="' + i + '">Togli</button></td></tr>';
+      }).join('');
+      $('#pf-totale', d).textContent = euro(righe.reduce(function (s, r) { return s + (Number(r.prezzo) || 0); }, 0));
+      $$('[data-pf]', d).forEach(function (el) { el.oninput = el.onchange = function () { var r = righe[+el.getAttribute('data-i')], k = el.getAttribute('data-pf'); r[k] = el.value; if (k === 'prezzo') $('#pf-totale', d).textContent = euro(righe.reduce(function (s, x) { return s + (Number(x.prezzo) || 0); }, 0)); }; });
+      $$('[data-via]', d).forEach(function (b) { b.onclick = function () { righe.splice(+b.getAttribute('data-via'), 1); disegnaRighe(); }; });
+    }
+    var corpo = (p.gia ? '<p class="tag att">Questo studente ha già una proforma: ' + esc(p.gia) + '.</p>' : '') +
+      '<div class="piccolo"><b>' + esc(p.cliente) + '</b>' + (p.indirizzo ? ' · ' + esc(p.indirizzo) : '') + (p.codici ? '<br>' + esc(p.codici) : '') +
+      '<br><span class="tenue">Il cliente si crea in Fatture in Cloud con questi dati (o si usa quello con la stessa email). L’alloggio non è nella proforma: si paga al proprietario.</span></div>' +
+      '<div class="scroll" style="margin-top:10px"><table><thead><tr><th>Voce</th><th>Dettaglio</th><th>Prezzo (€)</th><th>IVA</th><th></th></tr></thead><tbody id="pf-righe"></tbody></table></div>' +
+      '<div class="barra" style="margin-top:6px"><button class="b piccolo" id="pf-aggiungi">Aggiungi una riga</button><span class="spazio"></span><b>Totale <span id="pf-totale"></span></b></div>' +
+      (v.prezzo && Number(v.prezzo) !== Number(v.totale) ? '<p class="tenue piccolo">Prezzo confermato nella scheda: ' + euro(v.prezzo) + '. Controlla che le righe tornino.</p>' : '') +
+      '<div class="campi">' + campo('pf-scadenza', 'Scadenza (rata unica, si può cambiare)', p.scadenza, 'date') + campo('pf-email', 'Email a cui mandarla', p.email, 'email') + '</div>' +
+      '<label class="checks" style="margin:10px 0"><input type="checkbox" id="pf-invia" checked> Mandala subito allo studente (email di Fatture in Cloud, con il PDF)</label>';
+    var d = dialogo('Proforma · ' + esc(nome(v)), corpo, '<button class="b p" id="pf-crea">Crea in Fatture in Cloud</button>');
+    disegnaRighe();
+    $('#pf-aggiungi', d).onclick = function () { righe.push({nome: '', descrizione: '', prezzo: '', iva: p.iva_predefinita}); disegnaRighe(); };
+    $('#pf-crea', d).onclick = function () {
+      var tot = righe.reduce(function (s, r) { return s + (Number(r.prezzo) || 0); }, 0), invia = $('#pf-invia', d).checked;
+      if (!confirm('Creare la proforma di ' + euro(tot) + ' in Fatture in Cloud' + (invia ? ' e mandarla a ' + $('#pf-email', d).value : '') + '?')) return;
+      chiama('creaProforma', id, righe, $('#pf-scadenza', d).value, invia, $('#pf-email', d).value.trim()).then(function (r) {
+        avviso('Proforma ' + r.proforma.numero + ' creata' + (r.proforma.inviata ? ' e inviata' : ''));
+        disegna(); apriStudente(id);
+      });
+    };
+  });
 }
 
 function nuovaIscrizione() {

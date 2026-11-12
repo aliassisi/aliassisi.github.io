@@ -39,7 +39,9 @@ var COLONNE = [
   ['f_citta', 'Città'], ['f_paese', 'Paese'], ['f_cf', 'Codice fiscale'], ['f_piva', 'P. IVA / CF ente'],
   ['f_sdi', 'SDI / PEC'], ['f_email', 'Email fattura'],
   ['note', 'Note dello studente'], ['lingua', 'Lingua'],
-  ['livello_finale', 'Livello raggiunto'], ['diploma', 'Diploma'], ['note_staff', 'Note dello staff']
+  ['livello_finale', 'Livello raggiunto'], ['diploma', 'Diploma'], ['note_staff', 'Note dello staff'],
+  // Aggiunte dopo: le voci del preventivo (dal modulo del sito, in JSON) e la proforma fatta dal gestionale.
+  ['voci', 'Voci del preventivo'], ['proforma', 'Proforma']
 ];
 var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto'];
 
@@ -144,7 +146,8 @@ function scriviRiga(id, x, link) {
     f_intestatario: f.intestatario === 'ente' ? 'Ente' : 'Studente', f_ente: f.ente,
     f_indirizzo: f.indirizzo, f_cap: f.cap, f_citta: f.citta, f_paese: f.paese,
     f_cf: f.codice_fiscale, f_piva: f.piva, f_sdi: f.sdi, f_email: f.email,
-    note: x.note, lingua: x.lingua
+    note: x.note, lingua: x.lingua,
+    voci: Array.isArray(x.voci) ? JSON.stringify(x.voci.slice(0, 30)).slice(0, 3000) : ''
   };
   // Un testo che comincia con = + - @ diventerebbe una formula: testo() (Gestionale.gs) lo scrive come testo.
   Object.keys(v).forEach(function (k) { if (typeof v[k] === 'string') v[k] = testo(v[k], 3000); });
