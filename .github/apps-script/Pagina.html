@@ -284,7 +284,8 @@ var VISTE = {}, DOPO = {};
 VISTE.oggi = function () {
   var o = D.oggi, lun = lunedi(o), dom = piu(lun, 6), att = D.iscrizioni.filter(attiva);
   var inCorso = att.filter(function (v) { return v.inizio <= o && v.fine >= o; });
-  var arrivi = att.filter(function (v) { return v.inizio > o && v.inizio <= piu(o, 14); }).sort(function (a, b) { return a.inizio < b.inizio ? -1 : 1; });
+  var arrivoDi = function (v) { return v.arrivo || v.inizio; };
+  var arrivi = att.filter(function (v) { return arrivoDi(v) > o && arrivoDi(v) <= piu(o, 14); }).sort(function (a, b) { return arrivoDi(a) < arrivoDi(b) ? -1 : 1; });
   var fine = att.filter(function (v) { return v.fine >= o && v.fine <= piu(o, 7); }).sort(function (a, b) { return a.fine < b.fine ? -1 : 1; });
   var nuove = D.iscrizioni.filter(function (v) { return v.stato === 'Nuova'; });
   var senza = att.filter(function (v) { return sovrap(v.inizio, v.fine, lun, dom) && !inClasseNelPeriodo(v.id, lun, dom); });
@@ -316,7 +317,7 @@ VISTE.oggi = function () {
     scheda('Laboratori e attività entro 7 giorni', evSett.length, evSett.map(evRiga), 'Nessuno.') +
     (chiusure.length ? scheda('Chiusure nei prossimi 30 giorni', chiusure.length, chiusure.map(function (e) { return '<li>' + esc(e.nome) + ' <span class="tenue piccolo">' + gg(e.dal) + (e.al !== e.dal ? ' – ' + gg(e.al) : '') + '</span></li>'; }), '') : '') +
     scheda('In corso oggi', inCorso.length, inCorso.map(function (v) { return riga(v, v.corso_nome + ' · fino al ' + gg(v.fine)); }), 'Nessuno studente in corso.') +
-    scheda('Arrivano nei prossimi 14 giorni', arrivi.length, arrivi.map(function (v) { return riga(v, gg(v.inizio) + ' · ' + v.corso_nome + (v.livello ? ' · ' + v.livello : '')); }), 'Nessun arrivo.') +
+    scheda('Arrivano nei prossimi 14 giorni', arrivi.length, arrivi.map(function (v) { return riga(v, gg(arrivoDi(v)) + (v.arrivo && v.arrivo !== v.inizio ? ' (corso dal ' + gg(v.inizio) + ')' : '') + ' · ' + v.corso_nome + (v.livello ? ' · ' + v.livello : '')); }), 'Nessun arrivo.') +
     scheda('Senza classe questa settimana', senza.length, senza.map(function (v) { return riga(v, gg(v.inizio) + '–' + gg(v.fine) + (v.livello ? ' · ' + v.livello : '')); }), 'Tutti hanno una classe.') +
     scheda('Finiscono entro 7 giorni (diplomi e attestati)', fine.length, fine.map(function (v) { return riga(v, gg(v.fine) + (v.livello_finale ? ' · ' + v.livello_finale : ' · livello da scrivere')); }), 'Nessuno.') +
     scheda('Iscrizioni nuove da confermare', nuove.length, nuove.map(function (v) { return riga(v, v.corso_nome + ' · ' + gg(v.inizio)); }), 'Nessuna.') +
@@ -382,6 +383,11 @@ function scelta(id, etichetta, valore, opzioni) {
   }).join('') + '</select></label>';
 }
 
+/* I campi della scheda dello studente che si salvano (gli stessi di CAMPI_STAFF in Gestionale.gs). */
+var CAMPI_SCHEDA = ['stato', 'inizio', 'fine', 'arrivo', 'partenza', 'livello', 'livello_finale', 'prezzo', 'sconto', 'note_staff',
+  'corso_nome', 'tema', 'formula', 'settimane', 'lezioni_totali', 'extra', 'alloggio', 'settimane_alloggio',
+  'nome', 'cognome', 'email', 'telefono', 'nascita', 'luogo_nascita', 'nazionalita', 'lingua', 'visto', 'passaporto', 'scadenza_passaporto', 'pagamento',
+  'f_intestatario', 'f_ente', 'f_indirizzo', 'f_cap', 'f_citta', 'f_paese', 'f_cf', 'f_piva', 'f_sdi', 'f_email'];
 function apriStudente(id) {
   var v = ISC[id]; if (!v) return;
   var f = frequenza(id), ass = assDi(id);
@@ -396,22 +402,38 @@ function apriStudente(id) {
     if (!coincide(c) || !v.inizio || !v.fine) return [c.inizio, c.fine];
     return [v.inizio > c.inizio ? v.inizio : c.inizio, v.fine < c.fine ? v.fine : c.fine];
   };
+  var prezzoFinale = (Number(v.prezzo) || Number(v.totale) || 0) - (Number(v.sconto) || 0);
+  var tipiAll = [['', 'Nessuno']].concat(D.tipi_alloggio.map(function (t) { return [t[1], t[1]]; }));
+  if (v.alloggio && !tipiAll.some(function (t) { return t[0] === v.alloggio; })) tipiAll.push([v.alloggio, v.alloggio]);
   var corpo =
     '<div class="campi">' +
     scelta('s-stato', 'Stato', v.stato, D.stati) +
-    campo('s-inizio', 'Inizio', v.inizio, 'date') + campo('s-fine', 'Fine', v.fine, 'date') +
+    campo('s-inizio', 'Inizio del corso', v.inizio, 'date') + campo('s-fine', 'Fine del corso', v.fine, 'date') +
+    campo('s-arrivo', 'Arrivo ad Assisi (se diverso)', v.arrivo, 'date') + campo('s-partenza', 'Partenza (se diversa)', v.partenza, 'date') +
     campo('s-livello', 'Livello iniziale', v.livello, 'text', ' list="livelli"') +
     campo('s-livello_finale', 'Livello raggiunto', v.livello_finale, 'text', ' list="livelli"') +
-    campo('s-prezzo', 'Prezzo confermato (€)', v.prezzo, 'number', ' step="0.01" placeholder="' + esc(v.totale) + '"') +
-    campo('s-email', 'Email', v.email, 'email') + campo('s-telefono', 'Telefono', v.telefono) +
+    campo('s-prezzo', 'Prezzo confermato (€)', v.prezzo, 'number', ' step="0.01" min="0" placeholder="' + esc(v.totale) + '"') +
+    campo('s-sconto', 'Sconto (€)', v.sconto, 'number', ' step="0.01" min="0"') +
     campo('s-note_staff', 'Note dello staff', v.note_staff, 'textarea') +
-    '</div><div class="barra" style="margin-top:10px"><span class="spazio"></span><button class="b p" id="s-salva">Salva</button></div>' +
-    '<h3>Corso</h3><div class="piccolo">' + esc(v.corso_nome) + (v.tema ? ' · ' + esc(v.tema) : '') + (v.formula ? ' · ' + esc(v.formula) : '') +
-    ' · ' + esc(v.settimane) + ' settimane · ' + esc(v.lezioni_totali) + ' lezioni' + (v.alloggio ? ' · Alloggio: ' + esc(v.alloggio) : '') + (v.extra ? ' · Extra: ' + esc(v.extra) : '') +
-    '<br>Totale stimato ' + euro(v.totale) + ' · Pagato ' + euro(v.pagato || 0) + ' · <b>Da pagare ' + euro(v.residuo) + '</b>' +
-    '<br>Nato/a ' + ggA(v.nascita) + (v.luogo_nascita ? ' a ' + esc(v.luogo_nascita) : '') + ' · ' + esc(v.nazionalita) + (v.visto ? ' · Visto: ' + esc(v.visto) : '') +
+    '</div>' +
+    '<div class="piccolo" style="margin-top:8px">Totale stimato dal sito ' + euro(v.totale) + (v.prezzo !== '' && v.prezzo !== undefined ? ' · confermato ' + euro(v.prezzo) : '') +
+    (Number(v.sconto) ? ' · sconto ' + euro(v.sconto) : '') + ' · <b>prezzo finale ' + euro(prezzoFinale) + '</b> · Pagato ' + euro(Number(v.pagato) || 0) + ' · <b>Da pagare ' + euro(v.residuo) + '</b>' +
     (v.file_passaporto ? ' · <a href="' + esc(v.file_passaporto) + '" target="_blank" rel="noopener">Passaporto</a>' : '') +
     (v.note ? '<br>Note dello studente: ' + esc(v.note) : '') + '</div>' +
+    '<details style="margin-top:10px"><summary><b>Tutti i dati</b> <span class="tenue piccolo">corso, persona, fattura</span></summary>' +
+    '<h3>Corso</h3><div class="campi">' + campo('s-corso_nome', 'Corso', v.corso_nome) + campo('s-tema', 'Tema', v.tema) + campo('s-formula', 'Formula (lezioni individuali)', v.formula) +
+    campo('s-settimane', 'Settimane', v.settimane, 'number', ' min="0"') + campo('s-lezioni_totali', 'Lezioni totali', v.lezioni_totali, 'number', ' min="0"') +
+    campo('s-extra', 'Extra', v.extra) + scelta('s-alloggio', 'Alloggio chiesto', v.alloggio || '', tipiAll) + campo('s-settimane_alloggio', 'Settimane di alloggio', v.settimane_alloggio, 'number', ' min="0"') + '</div>' +
+    '<h3>Persona</h3><div class="campi">' + campo('s-nome', 'Nome', v.nome) + campo('s-cognome', 'Cognome', v.cognome) + campo('s-email', 'Email', v.email, 'email') + campo('s-telefono', 'Telefono', v.telefono) +
+    campo('s-nascita', 'Data di nascita', v.nascita, 'date') + campo('s-luogo_nascita', 'Luogo di nascita', v.luogo_nascita) + campo('s-nazionalita', 'Cittadinanza', v.nazionalita) +
+    scelta('s-lingua', 'Lingua delle email', v.lingua === 'en' ? 'en' : 'it', [['it', 'Italiano'], ['en', 'Inglese']]) +
+    campo('s-visto', 'Visto', v.visto) + campo('s-passaporto', 'N. passaporto', v.passaporto) + campo('s-scadenza_passaporto', 'Scadenza passaporto', v.scadenza_passaporto, 'date') +
+    campo('s-pagamento', 'Pagamento preferito', v.pagamento) + '</div>' +
+    '<h3>Fattura</h3><div class="campi">' + scelta('s-f_intestatario', 'Fattura a', v.f_intestatario === 'Ente' ? 'Ente' : 'Studente', [['Studente', 'Studente'], ['Ente', 'Ente o agenzia']]) +
+    campo('s-f_ente', 'Ente', v.f_ente) + campo('s-f_indirizzo', 'Indirizzo', v.f_indirizzo) + campo('s-f_cap', 'CAP', v.f_cap) + campo('s-f_citta', 'Città', v.f_citta) + campo('s-f_paese', 'Paese', v.f_paese) +
+    campo('s-f_cf', 'Codice fiscale', v.f_cf) + campo('s-f_piva', 'P. IVA / CF ente', v.f_piva) + campo('s-f_sdi', 'SDI / PEC', v.f_sdi) + campo('s-f_email', 'Email per la fattura', v.f_email, 'email') + '</div>' +
+    '</details>' +
+    '<div class="barra" style="margin-top:10px"><span class="spazio"></span><button class="b p" id="s-salva">Salva</button></div>' +
     '<h3>Classi</h3>' + (ass.length ? '<ul class="lista">' + ass.map(function (a) {
       return '<li>' + (CLA[a.classe] ? '<button class="l" data-classe="' + esc(a.classe) + '">' + esc(CLA[a.classe].nome) + '</button>' : esc(a.classe)) + ' <span class="tenue">' + gg(a.dal) + ' – ' + gg(a.al) + '</span> <button class="b r piccolo" data-togli="' + esc(a.classe) + '">Togli</button></li>';
     }).join('') + '</ul>' : '<div class="vuoto-msg">Nessuna classe.</div>') +
@@ -438,8 +460,12 @@ function apriStudente(id) {
   var d = dialogo(esc(nome(v)) + ' <span class="tenue piccolo">' + esc(v.id) + '</span>', corpo);
   $('#s-salva', d).onclick = function () {
     var c = {};
-    ['stato', 'inizio', 'fine', 'livello', 'livello_finale', 'prezzo', 'email', 'telefono', 'note_staff'].forEach(function (k) {
-      var nuovo = $('#s-' + k, d).value; if (String(nuovo) !== String(v[k] === undefined ? '' : v[k])) c[k] = nuovo;
+    CAMPI_SCHEDA.forEach(function (k) {
+      var el = $('#s-' + k, d); if (!el) return;
+      var nuovo = el.value.trim(), vecchio = v[k] === undefined || v[k] === null ? '' : String(v[k]);
+      if (k === 'lingua' && !v.lingua && nuovo === 'it') return;
+      if (k === 'f_intestatario' && !v.f_intestatario && nuovo === 'Studente') return;
+      if (nuovo !== vecchio) c[k] = nuovo;
     });
     if (!Object.keys(c).length) { avviso('Niente da salvare'); return; }
     chiama('salvaIscrizione', id, c).then(function () { avviso('Salvato'); disegna(); apriStudente(id); });
@@ -1037,7 +1063,9 @@ function nottiPiene(a, arrivo, partenza, escludi) {
 }
 /* Le date proposte: dal giorno prima del corso, per le settimane di alloggio chieste. */
 function dateAlloggio(v) {
-  var arrivo = v.inizio ? piu(v.inizio, -1) : D.oggi;
+  // Se lo staff ha scritto arrivo e partenza (per esempio un arrivo anticipato), valgono quelle.
+  var arrivo = v.arrivo || (v.inizio ? piu(v.inizio, -1) : D.oggi);
+  if (v.partenza && v.partenza > arrivo) return {arrivo: arrivo, partenza: v.partenza};
   var sett = Number(v.settimane_alloggio) || Number(v.settimane) || (v.fine ? Math.ceil((dataDa(v.fine) - dataDa(v.inizio) + 86400000) / 604800000) : 1);
   return {arrivo: arrivo, partenza: piu(arrivo, 7 * sett)};
 }

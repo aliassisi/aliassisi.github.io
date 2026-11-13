@@ -329,7 +329,14 @@ function carica() {
 
 /* ---------- ISCRIZIONI ---------- */
 
-var CAMPI_STAFF = ['stato', 'prezzo', 'livello_finale', 'note_staff', 'inizio', 'fine', 'livello', 'telefono', 'email', 'settimane', 'lezioni_totali'];
+/* I campi dell'iscrizione che lo staff può cambiare dalla scheda (quasi tutti: non il numero, la data di
+   ricezione, il totale stimato del sito, le formule dei pagamenti, il file del passaporto). */
+var CAMPI_STAFF = ['stato', 'prezzo', 'sconto', 'livello_finale', 'note_staff', 'inizio', 'fine', 'arrivo', 'partenza', 'livello',
+  'telefono', 'email', 'settimane', 'lezioni_totali', 'nome', 'cognome', 'corso_nome', 'tema', 'formula', 'alloggio', 'settimane_alloggio',
+  'extra', 'nascita', 'nazionalita', 'luogo_nascita', 'lingua', 'visto', 'passaporto', 'scadenza_passaporto', 'pagamento',
+  'f_intestatario', 'f_ente', 'f_indirizzo', 'f_cap', 'f_citta', 'f_paese', 'f_cf', 'f_piva', 'f_sdi', 'f_email'];
+var CAMPI_NUMERO = ['prezzo', 'sconto', 'settimane', 'lezioni_totali', 'settimane_alloggio'];
+var CAMPI_GIORNO = ['inizio', 'fine', 'arrivo', 'partenza', 'nascita', 'scadenza_passaporto'];
 
 function salvaIscrizione(id, campi) {
   autorizzato();
@@ -339,9 +346,22 @@ function salvaIscrizione(id, campi) {
     var o = {};
     Object.keys(campi || {}).forEach(function (k) {
       if (CAMPI_STAFF.indexOf(k) < 0) throw new Error('Campo non modificabile: ' + k);
-      if (k === 'stato' && STATI.indexOf(campi[k]) < 0) throw new Error('Stato non valido');
-      o[k] = k === 'prezzo' && campi[k] !== '' ? Number(campi[k]) : testo(campi[k], 3000);
+      var x = campi[k] === null || campi[k] === undefined ? '' : campi[k];
+      if (k === 'stato' && STATI.indexOf(x) < 0) throw new Error('Stato non valido');
+      if (k === 'lingua' && ['it', 'en'].indexOf(x) < 0) throw new Error('Lingua non valida');
+      if (k === 'f_intestatario' && ['Studente', 'Ente'].indexOf(x) < 0) throw new Error('Intestatario non valido');
+      if ((k === 'nome' || k === 'cognome') && !String(x).trim()) throw new Error('Nome e cognome non possono essere vuoti');
+      if (k === 'email' && x && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x)) throw new Error('Email non valida');
+      if (CAMPI_GIORNO.indexOf(k) >= 0 && x && !/^\d{4}-\d{2}-\d{2}$/.test(x)) throw new Error('Data non valida: ' + k);
+      if (CAMPI_NUMERO.indexOf(k) >= 0) {
+        if (x !== '' && (isNaN(Number(x)) || Number(x) < 0)) throw new Error('Numero non valido: ' + k);
+        o[k] = x === '' ? '' : Number(x);
+      } else o[k] = testo(String(x).trim(), 3000);
     });
+    var dopo = Object.assign({}, r, o);
+    if (dopo.inizio && dopo.fine && dopo.fine < dopo.inizio) throw new Error('La fine del corso viene prima dell’inizio');
+    if (dopo.arrivo && dopo.partenza && dopo.partenza < dopo.arrivo) throw new Error('La partenza viene prima dell’arrivo');
+    if (o.sconto && Number(o.sconto) > (Number(dopo.prezzo) || Number(dopo.totale) || 0)) throw new Error('Lo sconto è più del prezzo');
     aggiorna('Iscrizioni', r._r, o);
     return carica();
   });
@@ -1311,6 +1331,12 @@ function righeProforma(v) {
   }).map(function (x) { return {nome: String(x[0]), descrizione: String(x[1] || ''), prezzo: Number(x[2])}; });
   if (!r.length) r = [{nome: v.corso_nome + (v.tema ? ' – ' + v.tema : ''), descrizione: [v.settimane ? v.settimane + ' settimane' : '', v.lezioni_totali ? v.lezioni_totali + ' lezioni' : ''].filter(String).join(', '),
     prezzo: Number(v.prezzo) || Number(v.totale) || 0}];
+  // Lo sconto deciso dallo staff: si toglie dalla prima riga (il corso) e si scrive nel dettaglio.
+  var sconto = Number(v.sconto) || 0;
+  if (sconto > 0 && r[0].prezzo > sconto) {
+    r[0].prezzo = Math.round((r[0].prezzo - sconto) * 100) / 100;
+    r[0].descrizione = [r[0].descrizione, (v.lingua === 'en' ? 'discount ' : 'sconto ') + sconto.toFixed(2).replace('.', ',') + ' €'].filter(String).join(' · ');
+  }
   return r;
 }
 
@@ -1537,7 +1563,7 @@ function benvenuti(modo) {
 function riepilogoStaff() {
   var oggi = oggiIso(), fra7 = piuGiorni(oggi, 7), isc = leggi('Iscrizioni'), r = [];
   var attivi = isc.filter(function (v) { return v.stato !== 'Annullata'; });
-  var arrivi = attivi.filter(function (v) { return v.inizio >= oggi && v.inizio <= fra7; });
+  var arrivi = attivi.filter(function (v) { var a = v.arrivo || v.inizio; return a >= oggi && a <= fra7; });
   var partenze = attivi.filter(function (v) { return v.fine >= oggi && v.fine <= fra7; });
   var nuove = isc.filter(function (v) { return v.stato === 'Nuova'; });
   var auguri = attivi.filter(function (v) { return inCorso(v, oggi) && v.nascita && v.nascita.slice(5) === oggi.slice(5); });

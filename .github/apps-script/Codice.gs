@@ -41,9 +41,11 @@ var COLONNE = [
   ['note', 'Note dello studente'], ['lingua', 'Lingua'],
   ['livello_finale', 'Livello raggiunto'], ['diploma', 'Diploma'], ['note_staff', 'Note dello staff'],
   // Aggiunte dopo: le voci del preventivo (dal modulo del sito, in JSON) e la proforma fatta dal gestionale.
-  ['voci', 'Voci del preventivo'], ['proforma', 'Proforma']
+  ['voci', 'Voci del preventivo'], ['proforma', 'Proforma'],
+  // Lo sconto deciso dallo staff, e arrivo/partenza quando sono diversi dalle date del corso.
+  ['sconto', 'Sconto (€)'], ['arrivo', 'Arrivo ad Assisi'], ['partenza', 'Partenza da Assisi']
 ];
-var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto'];
+var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto', 'arrivo', 'partenza'];
 
 function colonna(chiave) {
   for (var i = 0; i < COLONNE.length; i++) if (COLONNE[i][0] === chiave) return i + 1;
@@ -165,12 +167,12 @@ function scriviRiga(id, x, link) {
 function formulePagamenti(foglio, r1, r2) {
   riservato();
   if (r2 < r1) return;
-  var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato'));
+  var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato')), S = lettera(colonna('sconto'));
   var formule = function (sep) {
     var f = [];
     for (var r = r1; r <= r2; r++) {
       f.push(['=SUMIF(Pagamenti!A:A' + sep + A + r + sep + 'Pagamenti!C:C)',              // Pagato: i pagamenti di questa iscrizione
-              '=IF(' + P + r + '=""' + sep + T + r + sep + P + r + ')-' + G + r]);        // Da pagare: prezzo confermato (o stimato) meno pagato
+              '=IF(' + P + r + '=""' + sep + T + r + sep + P + r + ')-N(' + S + r + ')-' + G + r]);  // Da pagare: prezzo (confermato o stimato) meno sconto meno pagato
     }
     return f;
   };
@@ -277,7 +279,7 @@ function configura() {
   var righe = isc.getMaxRows() - 1;
   isc.getRange(2, colonna('stato'), righe, 1).setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(STATI, true).build());
-  ['totale', 'prezzo', 'pagato', 'residuo'].forEach(function (k) {
+  ['totale', 'prezzo', 'pagato', 'residuo', 'sconto'].forEach(function (k) {
     isc.getRange(2, colonna(k), righe, 1).setNumberFormat('#,##0.00 €');
   });
   DATE.forEach(function (k) { isc.getRange(2, colonna(k), righe, 1).setNumberFormat('dd/mm/yyyy'); });

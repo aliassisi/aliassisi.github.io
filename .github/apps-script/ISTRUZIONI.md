@@ -273,6 +273,16 @@ Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizz
 ## Come si lavora ogni giorno
 - **Nuova iscrizione dal sito**: arriva un'email a info@ e la vedi in **Oggi** e in **Studenti**
   con lo stato "Nuova". Aprila, controlla, cambia lo stato in "Confermata".
+- **Scheda dello studente**: in alto i dati di tutti i giorni (stato, date del corso, arrivo e
+  partenza se diversi, livelli, prezzo confermato, **sconto**, note); in **Tutti i dati** il resto
+  (corso, persona, passaporto, dati della fattura). Si cambia tutto e si salva con **Salva**.
+  Non si cambiano il numero, la data di arrivo dell'iscrizione e il totale stimato dal sito.
+  - **Sconto (€)**: si toglie dal prezzo (confermato o, se manca, stimato). "Da pagare" lo conta
+    e nella proforma il prezzo del corso è già scontato.
+  - **Arrivo / Partenza**: per un arrivo anticipato o una partenza diversa dal corso. L'alloggio
+    proposto e "Arrivano nei prossimi giorni" usano queste date.
+  - Dopo questo aggiornamento lanciate **ALIA → Prepara il foglio** una volta: aggiunge le colonne
+    nuove e rifà le formule di "Da pagare" con lo sconto.
 - **Classe**: in **Classi** crea la classe (aula, livello, insegnante, date). Mettici gli studenti
   dalla classe stessa, dalla scheda dello studente, o dalla riga "Senza classe" del planning.
   Uno studente può cambiare classe: nel planning **trascina il suo nome** su un'altra classe della stessa
