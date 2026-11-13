@@ -3,7 +3,8 @@
  * Riceve le iscrizioni dal configuratore del sito, le scrive nel foglio
  * "Iscrizioni", salva il passaporto in una cartella Drive privata e manda
  * due email: la conferma allo studente e l'avviso allo staff.
- * Dal menu "ALIA" del foglio si creano i diplomi in PDF.
+ * Dal menu "ALIA" del foglio si creano diplomi e attestati in PDF.
+ * Il gestionale (la pagina per lo staff) è in Gestionale.gs e Pagina.html.
  *
  * Source: .github/apps-script/Codice.gs nel repository del sito.
  * Come installarlo: .github/apps-script/ISTRUZIONI.md.
@@ -38,9 +39,13 @@ var COLONNE = [
   ['f_citta', 'Città'], ['f_paese', 'Paese'], ['f_cf', 'Codice fiscale'], ['f_piva', 'P. IVA / CF ente'],
   ['f_sdi', 'SDI / PEC'], ['f_email', 'Email fattura'],
   ['note', 'Note dello studente'], ['lingua', 'Lingua'],
-  ['livello_finale', 'Livello raggiunto'], ['diploma', 'Diploma'], ['note_staff', 'Note dello staff']
+  ['livello_finale', 'Livello raggiunto'], ['diploma', 'Diploma'], ['note_staff', 'Note dello staff'],
+  // Aggiunte dopo: le voci del preventivo (dal modulo del sito, in JSON) e la proforma fatta dal gestionale.
+  ['voci', 'Voci del preventivo'], ['proforma', 'Proforma'],
+  // Lo sconto deciso dallo staff, e arrivo/partenza quando sono diversi dalle date del corso.
+  ['sconto', 'Sconto (€)'], ['arrivo', 'Arrivo ad Assisi'], ['partenza', 'Partenza da Assisi']
 ];
-var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto'];
+var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto', 'arrivo', 'partenza'];
 
 function colonna(chiave) {
   for (var i = 0; i < COLONNE.length; i++) if (COLONNE[i][0] === chiave) return i + 1;
@@ -55,6 +60,7 @@ function euro(n) { return (n === null || n === undefined || n === '') ? '' : Num
 /* ---------- RICEZIONE ---------- */
 
 function doPost(e) {
+  FIDATO = true;  // il sito manda le iscrizioni: è la sua porta, aperta a tutti
   try {
     var x = JSON.parse(e.postData.contents);
     // Il campo "sito" è invisibile alle persone: se è pieno, l'ha compilato un programma.
@@ -75,11 +81,14 @@ function doPost(e) {
   } catch (err) {
     console.error(err);
     return risposta({ok: false, errore: String(err && err.message || err)});
+  } finally {
+    FIDATO = false;
   }
 }
 
 function doGet() {
-  return risposta({ok: true, servizio: 'Iscrizioni ALIA'});
+  // Chi è dello staff vede il gestionale; gli altri solo questa risposta.
+  return paginaGestionale() || risposta({ok: true, servizio: 'Iscrizioni ALIA'});
 }
 
 function risposta(o) {
@@ -103,6 +112,7 @@ function controlla(x) {
 }
 
 function nuovoNumero(nome, prefisso) {
+  riservato();
   var anno = new Date().getFullYear(), chiave = 'contatore_' + nome + '_' + anno;
   var n = +(props().getProperty(chiave) || 0) + 1;
   props().setProperty(chiave, String(n));
@@ -110,6 +120,7 @@ function nuovoNumero(nome, prefisso) {
 }
 
 function salvaPassaporto(id, x) {
+  riservato();
   var f = x.file_passaporto, est = TIPI_FILE[f.tipo];
   if (!est) throw new Error('Il passaporto deve essere PDF, JPG o PNG');
   var byte = Utilities.base64Decode(f.dati);
@@ -120,6 +131,7 @@ function salvaPassaporto(id, x) {
 }
 
 function scriviRiga(id, x, link) {
+  riservato();
   var f = x.fattura || {};
   var v = {
     id: id, ricevuta: new Date(), stato: STATI[0],
@@ -136,19 +148,44 @@ function scriviRiga(id, x, link) {
     f_intestatario: f.intestatario === 'ente' ? 'Ente' : 'Studente', f_ente: f.ente,
     f_indirizzo: f.indirizzo, f_cap: f.cap, f_citta: f.citta, f_paese: f.paese,
     f_cf: f.codice_fiscale, f_piva: f.piva, f_sdi: f.sdi, f_email: f.email,
-    note: x.note, lingua: x.lingua
+    note: x.note, lingua: x.lingua,
+    voci: Array.isArray(x.voci) ? JSON.stringify(x.voci.slice(0, 30)).slice(0, 3000) : ''
   };
+  // Un testo che comincia con = + - @ diventerebbe una formula: testo() (Gestionale.gs) lo scrive come testo.
+  Object.keys(v).forEach(function (k) { if (typeof v[k] === 'string') v[k] = testo(v[k], 3000); });
   DATE.forEach(function (k) { v[k] = data(v[k]); });
   var foglio = SpreadsheetApp.getActive().getSheetByName('Iscrizioni');
   var r = foglio.getLastRow() + 1;
-  var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato'));
-  // Apps Script scrive le formule in inglese, con la virgola, in qualunque lingua sia il foglio.
-  // Pagato: la somma dei pagamenti di questa iscrizione nel foglio "Pagamenti".
-  v.pagato = '=SUMIF(Pagamenti!A:A,' + A + r + ',Pagamenti!C:C)';
-  // Da pagare: prezzo confermato (o, se manca, il totale stimato) meno il pagato.
-  v.residuo = '=IF(' + P + r + '="",' + T + r + ',' + P + r + ')-' + G + r;
   var riga = COLONNE.map(function (c) { var k = c[0]; return (v[k] === undefined || v[k] === null) ? '' : v[k]; });
   foglio.getRange(r, 1, 1, riga.length).setValues([riga]);
+  formulePagamenti(foglio, r, r);
+}
+
+/* Pagato e Da pagare delle righe da r1 a r2.
+   In un foglio in italiano una formula con le virgole può dare "Errore di analisi della formula":
+   si scrive con le virgole, si controlla, e se Google dà errore si riscrive con il punto e virgola. */
+function formulePagamenti(foglio, r1, r2) {
+  riservato();
+  if (r2 < r1) return;
+  var A = lettera(colonna('id')), P = lettera(colonna('prezzo')), T = lettera(colonna('totale')), G = lettera(colonna('pagato')), S = lettera(colonna('sconto'));
+  var formule = function (sep) {
+    var f = [];
+    for (var r = r1; r <= r2; r++) {
+      f.push(['=SUMIF(Pagamenti!A:A' + sep + A + r + sep + 'Pagamenti!C:C)',              // Pagato: i pagamenti di questa iscrizione
+              '=IF(' + P + r + '=""' + sep + T + r + sep + P + r + ')-N(' + S + r + ')-' + G + r]);  // Da pagare: prezzo (confermato o stimato) meno sconto meno pagato
+    }
+    return f;
+  };
+  var celle = foglio.getRange(r1, colonna('pagato'), r2 - r1 + 1, 2);
+  var sep = props().getProperty('separatore_formule') || ',';
+  celle.setFormulas(formule(sep));
+  SpreadsheetApp.flush();
+  if (/^#(ERROR|NAME|N\/A)/.test(String(celle.getCell(1, 1).getDisplayValue()))) {
+    sep = sep === ',' ? ';' : ',';
+    celle.setFormulas(formule(sep));
+    SpreadsheetApp.flush();
+    if (!/^#/.test(String(celle.getCell(1, 1).getDisplayValue()))) props().setProperty('separatore_formule', sep);
+  }
 }
 
 /* ---------- EMAIL ---------- */
@@ -165,6 +202,7 @@ function righeRiepilogo(x, en) {
 }
 
 function mandaEmail(id, x, link) {
+  riservato();
   var en = x.lingua === 'en';
   try {
     var allo = en
@@ -207,37 +245,21 @@ function mandaEmail(id, x, link) {
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('ALIA')
+    .addItem('Apri il gestionale', 'apriGestionale')
     .addItem('Crea il diploma della riga selezionata', 'creaDiploma')
+    .addItem('Crea l’attestato della riga selezionata', 'creaAttestato')
     .addSeparator()
     .addItem('Prepara il foglio (solo la prima volta)', 'configura')
     .addToUi();
 }
 
-function creaDiploma() {
-  var ui = SpreadsheetApp.getUi(), foglio = SpreadsheetApp.getActiveSheet();
-  if (foglio.getName() !== 'Iscrizioni') { ui.alert('Apri il foglio "Iscrizioni" e seleziona la riga dello studente.'); return; }
-  var r = foglio.getActiveRange().getRow();
-  if (r < 2) { ui.alert('Seleziona la riga dello studente.'); return; }
-  var valori = foglio.getRange(r, 1, 1, COLONNE.length).getValues()[0], v = {};
-  COLONNE.forEach(function (c, i) { v[c[0]] = valori[i]; });
-  if (!v.livello_finale) { ui.alert('Scrivi prima il livello raggiunto nella colonna "Livello raggiunto".'); return; }
-  var p = props(), numero = nuovoNumero('diplomi', 'D');
-  var cartella = DriveApp.getFolderById(p.getProperty('cartella_diplomi'));
-  var copia = DriveApp.getFileById(p.getProperty('modello_diploma')).makeCopy('Diploma ' + v.id, cartella);
-  var doc = DocumentApp.openById(copia.getId()), corpo = doc.getBody();
-  var sost = {
-    nome: v.nome + ' ' + v.cognome, corso: v.corso_nome + (v.tema ? ' – ' + v.tema : ''),
-    dal: v.inizio instanceof Date ? dataTesto(v.inizio) : String(v.inizio || ''),
-    al: v.fine instanceof Date ? dataTesto(v.fine) : String(v.fine || ''),
-    lezioni: String(v.lezioni_totali || ''), livello: String(v.livello_finale),
-    numero: numero, data: dataTesto(new Date())
-  };
-  Object.keys(sost).forEach(function (k) { corpo.replaceText('\\{\\{' + k + '\\}\\}', sost[k]); });
-  doc.saveAndClose();
-  var pdf = cartella.createFile(copia.getAs('application/pdf')).setName('Diploma ' + v.id + ' ' + v.cognome + ' ' + v.nome + '.pdf');
-  copia.setTrashed(true);
-  foglio.getRange(r, colonna('diploma')).setValue(pdf.getUrl());
-  ui.alert('Diploma ' + numero + ' creato. Il link è nella colonna "Diploma".');
+function apriGestionale() {
+  daMenu();
+  var url = props().getProperty('url_gestionale');
+  var ui = SpreadsheetApp.getUi();
+  if (!url) { ui.alert('Il link del gestionale non è ancora impostato (ISTRUZIONI.md, punto 5).'); return; }
+  ui.showModelessDialog(HtmlService.createHtmlOutput('<p style="font-family:sans-serif"><a href="' +
+    url.replace(/[<>"&]/g, '') + '" target="_blank">Apri il gestionale</a></p>').setWidth(260).setHeight(80), 'Gestionale ALIA');
 }
 
 /* ---------- PRIMA CONFIGURAZIONE ---------- */
@@ -245,6 +267,7 @@ function creaDiploma() {
 /* Crea i fogli, le cartelle private su Drive e il modello del diploma.
    Si può rilanciare: non rifà quello che esiste già. */
 function configura() {
+  daMenu();
   var ss = SpreadsheetApp.getActive(), p = props();
   ss.setSpreadsheetTimeZone('Europe/Rome');
 
@@ -256,7 +279,7 @@ function configura() {
   var righe = isc.getMaxRows() - 1;
   isc.getRange(2, colonna('stato'), righe, 1).setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(STATI, true).build());
-  ['totale', 'prezzo', 'pagato', 'residuo'].forEach(function (k) {
+  ['totale', 'prezzo', 'pagato', 'residuo', 'sconto'].forEach(function (k) {
     isc.getRange(2, colonna(k), righe, 1).setNumberFormat('#,##0.00 €');
   });
   DATE.forEach(function (k) { isc.getRange(2, colonna(k), righe, 1).setNumberFormat('dd/mm/yyyy'); });
@@ -283,5 +306,8 @@ function configura() {
     doc.saveAndClose();
     p.setProperty('modello_diploma', doc.getId());
   }
-  SpreadsheetApp.getUi().alert('Foglio pronto. Le cartelle "ALIA – Passaporti (privata)", "ALIA – Diplomi" e il documento "ALIA – Modello del diploma" sono nel tuo Drive.');
+  // Rifà Pagato e Da pagare di tutte le iscrizioni (se prima erano finite in errore, ora si correggono).
+  formulePagamenti(isc, 2, isc.getLastRow());
+  configuraGestionale();
+  SpreadsheetApp.getUi().alert('Foglio pronto. Le cartelle "ALIA – Passaporti (privata)", "ALIA – Diplomi" e i modelli del diploma e dell’attestato sono nel tuo Drive.');
 }
