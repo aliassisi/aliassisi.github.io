@@ -11,8 +11,10 @@ Il **gestionale** è una pagina per lo staff, sopra lo stesso foglio:
   si possono aggiungere iscrizioni arrivate per email o da agenzie;
 - **Classi**: il planning per aula e per settimana (5 aule), chi è senza classe, l'email a una classe;
   i corsi individuali (privati, duo, online) hanno il loro calendario di lezioni;
-- **Calendario**: la settimana giorno per giorno, classi e lezioni individuali, per insegnante o per
-  aula; segna in rosso stesso insegnante o stessa aula alla stessa ora; mostra chiusure e laboratori;
+- **Calendario**: la vista **Giorno** (una colonna per aula, con gli studenti di ogni classe o lezione
+  e le loro **note per le lezioni**, che si scrivono da lì con ✎) e la vista **Settimana**; per
+  insegnante o per aula; segna in rosso stesso insegnante o stessa aula alla stessa ora; mostra
+  chiusure e laboratori;
 - **Attività**: chiusure della scuola, laboratori e attività, con orario e luogo decisi di volta in
   volta, iscritti ed email ai partecipanti;
 - **Registro**: le lezioni di ogni classe (le stesse colonne del vecchio registro) e le assenze;
@@ -304,6 +306,13 @@ Aula, Stato, Link online, Recupero della lezione).
 Ci sono anche schede nuove: Alloggi, Soggiorni, Eventi, Partecipanti. Il gestionale crea le schede e scrive le
 intestazioni che mancano la prima volta che si apre. Le lezioni già scritte valgono come "fatte".
 Il testo dell'email prima dell'arrivo, se l'avete già cambiato, non ha `{{alloggio}}`: aggiungetelo voi.
+
+## Dove prendere i file
+I file sono in questo repository, cartella `.github/apps-script/`. La versione da usare è quella del
+ramo `main` (dopo che la PR è stata unita):
+- https://raw.githubusercontent.com/aliassisi/aliassisi.github.io/main/.github/apps-script/Codice.gs
+- https://raw.githubusercontent.com/aliassisi/aliassisi.github.io/main/.github/apps-script/Gestionale.gs
+- https://raw.githubusercontent.com/aliassisi/aliassisi.github.io/main/.github/apps-script/Pagina.html
 
 ## Se cambi lo script
 Dopo una modifica: incolla i file, salva, poi **Gestisci deployment** e fai una **Nuova versione**

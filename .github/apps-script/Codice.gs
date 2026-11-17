@@ -43,7 +43,9 @@ var COLONNE = [
   // Aggiunte dopo: le voci del preventivo (dal modulo del sito, in JSON) e la proforma fatta dal gestionale.
   ['voci', 'Voci del preventivo'], ['proforma', 'Proforma'],
   // Lo sconto deciso dallo staff, e arrivo/partenza quando sono diversi dalle date del corso.
-  ['sconto', 'Sconto (€)'], ['arrivo', 'Arrivo ad Assisi'], ['partenza', 'Partenza da Assisi']
+  ['sconto', 'Sconto (€)'], ['arrivo', 'Arrivo ad Assisi'], ['partenza', 'Partenza da Assisi'],
+  // Per gli insegnanti: cosa ripetere, ripassare, a cosa fare attenzione (si scrive anche dal calendario).
+  ['note_lezioni', 'Note per le lezioni']
 ];
 var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto', 'arrivo', 'partenza'];
 
