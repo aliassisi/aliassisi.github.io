@@ -331,7 +331,7 @@ function carica() {
 
 /* I campi dell'iscrizione che lo staff può cambiare dalla scheda (quasi tutti: non il numero, la data di
    ricezione, il totale stimato del sito, le formule dei pagamenti, il file del passaporto). */
-var CAMPI_STAFF = ['stato', 'prezzo', 'sconto', 'livello_finale', 'note_staff', 'inizio', 'fine', 'arrivo', 'partenza', 'livello',
+var CAMPI_STAFF = ['stato', 'prezzo', 'sconto', 'livello_finale', 'note_staff', 'note_lezioni', 'inizio', 'fine', 'arrivo', 'partenza', 'livello',
   'telefono', 'email', 'settimane', 'lezioni_totali', 'nome', 'cognome', 'corso_nome', 'tema', 'formula', 'alloggio', 'settimane_alloggio',
   'extra', 'nascita', 'nazionalita', 'luogo_nascita', 'lingua', 'visto', 'passaporto', 'scadenza_passaporto', 'pagamento',
   'f_intestatario', 'f_ente', 'f_indirizzo', 'f_cap', 'f_citta', 'f_paese', 'f_cf', 'f_piva', 'f_sdi', 'f_email'];

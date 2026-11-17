@@ -55,6 +55,11 @@ tr.cl:hover td{background:var(--blu-f)}
 .blocco.conf{border-left-color:var(--err);box-shadow:0 0 0 1px var(--err) inset}
 .cal{table-layout:fixed;min-width:840px}.cal th,.cal td{border-right:1px solid var(--linea)}.cal td{height:120px}
 .blocco .tag{white-space:normal;margin-top:2px}
+.cal.giorno{table-layout:auto;min-width:0}.cal.giorno td{min-width:230px;height:auto}.cal.giorno td.libera,.cal.giorno th.libera{min-width:70px;width:70px}.cal.giorno .blocco{cursor:pointer}
+.blocco .studenti{margin-top:5px;border-top:1px solid rgba(0,0,0,.08);padding-top:3px;cursor:default}
+.stud{padding:3px 0;font-size:12.5px}.stud .nota-mod{text-decoration:none;opacity:.7}.stud .nota-mod:hover{opacity:1}
+.nota{font-size:11.5px;color:#6b4a00;background:var(--att-f);border-radius:4px;padding:2px 6px;margin-top:2px;white-space:pre-wrap}
+.tasti{display:inline-flex;gap:4px}
 .occ{table-layout:fixed;min-width:980px}.occ th,.occ td{padding:3px 2px;text-align:center;border-right:1px solid var(--linea);font-size:11px}.occ th:first-child,.occ td:first-child{width:190px;text-align:left;padding:5px 8px;font-size:13px}.occ th.dom{color:var(--err)}.occ td.parz{background:#cfe9d8;cursor:pointer}.occ td.pieno{background:#7cc196;cursor:pointer}.occ td.troppi{background:#e8857f;cursor:pointer}.occ td span{display:block;white-space:nowrap;overflow:visible;font-size:11px;text-align:left;position:relative;z-index:1}.occ td.oggi{box-shadow:inset 0 0 0 2px var(--ardesia)}
 .tag.ev{background:#efe7f7;color:#5b3a86}.blocco.ev{border-left-color:#7c5aa6;background:#f3edf9}.chiuso{background:var(--err-f);color:var(--err);border-radius:4px;padding:3px 6px;font-size:12px;margin-bottom:4px}
 .cal th.oggi{color:var(--ardesia);background:var(--blu-f)}
@@ -384,7 +389,7 @@ function scelta(id, etichetta, valore, opzioni) {
 }
 
 /* I campi della scheda dello studente che si salvano (gli stessi di CAMPI_STAFF in Gestionale.gs). */
-var CAMPI_SCHEDA = ['stato', 'inizio', 'fine', 'arrivo', 'partenza', 'livello', 'livello_finale', 'prezzo', 'sconto', 'note_staff',
+var CAMPI_SCHEDA = ['stato', 'inizio', 'fine', 'arrivo', 'partenza', 'livello', 'livello_finale', 'prezzo', 'sconto', 'note_staff', 'note_lezioni',
   'corso_nome', 'tema', 'formula', 'settimane', 'lezioni_totali', 'extra', 'alloggio', 'settimane_alloggio',
   'nome', 'cognome', 'email', 'telefono', 'nascita', 'luogo_nascita', 'nazionalita', 'lingua', 'visto', 'passaporto', 'scadenza_passaporto', 'pagamento',
   'f_intestatario', 'f_ente', 'f_indirizzo', 'f_cap', 'f_citta', 'f_paese', 'f_cf', 'f_piva', 'f_sdi', 'f_email'];
@@ -415,6 +420,7 @@ function apriStudente(id) {
     campo('s-prezzo', 'Prezzo confermato (€)', v.prezzo, 'number', ' step="0.01" min="0" placeholder="' + esc(v.totale) + '"') +
     campo('s-sconto', 'Sconto (€)', v.sconto, 'number', ' step="0.01" min="0"') +
     campo('s-note_staff', 'Note dello staff', v.note_staff, 'textarea') +
+    campo('s-note_lezioni', 'Note per le lezioni (cosa ripetere, ripassare…; si vedono nel calendario)', v.note_lezioni, 'textarea') +
     '</div>' +
     '<div class="piccolo" style="margin-top:8px">Totale stimato dal sito ' + euro(v.totale) + (v.prezzo !== '' && v.prezzo !== undefined ? ' · confermato ' + euro(v.prezzo) : '') +
     (Number(v.sconto) ? ' · sconto ' + euro(v.sconto) : '') + ' · <b>prezzo finale ' + euro(prezzoFinale) + '</b> · Pagato ' + euro(Number(v.pagato) || 0) + ' · <b>Da pagare ' + euro(v.residuo) + '</b>' +
@@ -820,7 +826,9 @@ function impegni(g) {
   });
   eventiDel(g).forEach(function (e) {
     var o = orarioDi(e.ora);
-    r.push({id: 'e:' + e.id, evento: e, classe: {id: ''}, titolo: e.nome, inizio: o[0], fine: o[1], ora: e.ora, aula: e.luogo, ins: e.responsabile, stato: ''});
+    var cl = classiEv(e).map(function (c) { return CLA[c]; }).filter(Boolean);
+    // Un'attività dentro le lezioni di una classe, senza luogo scritto, sta nell'aula della classe.
+    r.push({id: 'e:' + e.id, evento: e, classe: {id: ''}, titolo: e.nome, inizio: o[0], fine: o[1], ora: e.ora, aula: e.luogo || (cl[0] ? (online(cl[0]) ? 'online' : cl[0].aula) : ''), ins: e.responsabile || (cl[0] ? cl[0].insegnante : ''), stato: ''});
   });
   return r.sort(function (a, b) { return (a.inizio || '99') < (b.inizio || '99') ? -1 : 1; });
 }
@@ -841,24 +849,71 @@ function conflitti() {
   });
   return out;
 }
-VISTE.calendario = function () {
-  var lun = U.calSett || lunedi(D.oggi), conf = conflitti(), f = U.calFiltro || '';
+try { U.calVista = localStorage.getItem('alia-calvista') || 'giorno'; } catch (e) { U.calVista = 'giorno'; }
+/* Il filtro del calendario (insegnante, aula, solo individuali, solo online). */
+function filtroCal(x) {
+  var f = U.calFiltro || '';
+  if (f === 'priv') return !!x.lez;
+  if (f.indexOf('ins:') === 0) return x.ins === f.slice(4);
+  if (f.indexOf('aula:') === 0) return x.aula === f.slice(5);
+  return true;
+}
+function barraCal(titolo, perGiorno) {
   var insegnanti = {};
   D.classi.forEach(function (c) { if (c.insegnante) insegnanti[c.insegnante] = 1; });
   D.registro.forEach(function (l) { if (l.insegnante && privato(CLA[l.classe])) insegnanti[l.insegnante] = 1; });
-  var h = '<div class="barra"><button class="b" id="cprec">‹</button><button class="b" id="coggi">Questa settimana</button><button class="b" id="csucc">›</button>' +
-    '<b>' + gg(lun) + ' – ' + gg(piu(lun, 5)) + '</b><select id="cfiltro"><option value="">Tutti</option>' +
+  return '<div class="barra"><button class="b" id="cprec">‹</button><button class="b" id="coggi">' + (perGiorno ? 'Oggi' : 'Questa settimana') + '</button><button class="b" id="csucc">›</button>' +
+    (perGiorno ? '<input type="date" id="cgiorno" value="' + esc(U.calGiorno || D.oggi) + '">' : '') + '<b>' + titolo + '</b>' +
+    '<select id="cfiltro"><option value="">Tutti</option>' +
     Object.keys(insegnanti).sort().map(function (n) { return '<option value="ins:' + esc(n) + '">Insegnante: ' + esc(n) + '</option>'; }).join('') +
     aule().map(function (a) { return '<option value="aula:' + esc(a) + '">' + esc(a) + '</option>'; }).join('') +
-    '<option value="priv">Solo corsi individuali</option><option value="aula:online">Solo online</option></select><span class="spazio"></span><button class="b" onclick="window.print()">Stampa</button></div>' +
+    '<option value="priv">Solo corsi individuali</option><option value="aula:online">Solo online</option></select><span class="spazio"></span>' +
+    '<span class="tasti"><button class="b' + (perGiorno ? ' p' : '') + '" data-vista="giorno">Giorno</button><button class="b' + (perGiorno ? '' : ' p') + '" data-vista="settimana">Settimana</button></span>' +
+    '<button class="b" onclick="window.print()">Stampa</button></div>';
+}
+/* Gli studenti di un impegno quel giorno (classe o lezione individuale), con le loro note per le lezioni. */
+function studentiImpegno(x, g) {
+  if (x.evento || !x.classe || !x.classe.id) return [];
+  return assDiClasse(x.classe.id).filter(function (a) { return a.dal <= g && a.al >= g && ISC[a.iscrizione] && attiva(ISC[a.iscrizione]); }).map(function (a) { return ISC[a.iscrizione]; })
+    .sort(function (a, b) { return a.cognome < b.cognome ? -1 : 1; });
+}
+function rigaStudente(v) {
+  var n = String(v.note_lezioni || '');
+  return '<div class="stud"><button class="l" data-stud="' + esc(v.id) + '">' + esc(nome(v)) + '</button>' + (v.livello ? ' <span class="tenue piccolo">' + esc(v.livello) + '</span>' : '') +
+    ' <button class="l nota-mod" data-nota="' + esc(v.id) + '" title="Scrivi una nota">✎</button>' +
+    (n ? '<div class="nota" title="' + esc(n) + '">' + esc(n.length > 160 ? n.slice(0, 160) + '…' : n) + '</div>' : '') + '</div>';
+}
+/* La vista di un giorno: una colonna per aula (più online e gli altri luoghi), con gli studenti e le loro note. */
+function calGiorno() {
+  var g = U.calGiorno || D.oggi, conf = conflitti(), chiuso = chiusura(g);
+  var e = impegni(g).filter(filtroCal);
+  var colonne = aule().slice();
+  e.forEach(function (x) { var a = x.aula || ''; if (colonne.indexOf(a) < 0) colonne.push(a); });
+  var h = barraCal(['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'][dataDa(g).getUTCDay()] + ' ' + gg(g) + ' ' + g.slice(0, 4) + (g === D.oggi ? ' (oggi)' : ''), true) +
+    (chiuso ? '<div class="chiuso" style="font-size:14px;padding:8px 12px;margin-bottom:10px">Scuola chiusa: ' + esc(chiuso.nome) + '</div>' : '');
+  var libera = function (a) { return !e.some(function (x) { return (x.aula || '') === a; }); };
+  h += '<div class="scroll"><table class="cal giorno"><thead><tr>' + colonne.map(function (a) { return '<th' + (libera(a) ? ' class="libera"' : '') + '>' + esc(a || 'Senza aula') + '</th>'; }).join('') + '</tr></thead><tbody><tr>' +
+    colonne.map(function (a) {
+      var qui = e.filter(function (x) { return (x.aula || '') === a; });
+      return '<td' + (qui.length ? '' : ' class="libera"') + '>' + (qui.map(function (x) {
+        if (x.evento) return '<div class="blocco ev" role="button" tabindex="0" data-evcal="' + esc(x.evento.id) + '"><b>' + esc(x.ora || 'orario da decidere') + '</b>' + esc(x.titolo) + '<br>' + esc([x.ins, chiVa(x.evento)].filter(String).join(' · ')) + '</div>';
+        var st = studentiImpegno(x, g);
+        return '<div class="blocco' + (x.lez ? ' priv' : '') + (x.stato === 'prevista' ? ' prev' : '') + (x.stato === 'annullata' ? ' annul' : '') + (conf[x.id] ? ' conf' : '') + '" role="button" tabindex="0" ' +
+          (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + ' · ' + esc(x.classe.nome || x.titolo) + '</b>' +
+          esc([x.ins, x.lez && x.stato !== 'fatta' ? x.stato : ''].filter(String).join(' · ')) +
+          (conf[x.id] ? '<br><span class="tag err">' + esc(conf[x.id]) + '</span>' : '') +
+          (st.length ? '<div class="studenti">' + st.map(rigaStudente).join('') + '</div>' : '<div class="tenue piccolo">nessuno studente</div>') + '</div>';
+      }).join('') || '<span class="tenue piccolo">libera</span>') + '</td>';
+    }).join('') + '</tr></tbody></table></div><p class="tenue piccolo">Clic sul nome: la scheda dello studente. ✎: la nota per le lezioni (cosa ripetere, ripassare…), la vedono tutti gli insegnanti. Clic sul riquadro: la classe o la lezione.</p>';
+  return h;
+}
+VISTE.calendario = function () { return U.calVista === 'settimana' ? calSettimana() : calGiorno(); };
+function calSettimana() {
+  var lun = U.calSett || lunedi(D.oggi), conf = conflitti();
+  var h = barraCal(gg(lun) + ' – ' + gg(piu(lun, 5)), false) +
     '<div class="scroll"><table class="cal"><thead><tr>' + [0, 1, 2, 3, 4, 5].map(function (i) { var g = piu(lun, i); return '<th' + (g === D.oggi ? ' class="oggi"' : '') + '>' + ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][i] + ' ' + gg(g) + '</th>'; }).join('') + '</tr></thead><tbody><tr>';
   [0, 1, 2, 3, 4, 5].forEach(function (i) {
-    var e = impegni(piu(lun, i)).filter(function (x) {
-      if (f === 'priv') return !!x.lez;
-      if (f.indexOf('ins:') === 0) return x.ins === f.slice(4);
-      if (f.indexOf('aula:') === 0) return x.aula === f.slice(5);
-      return true;
-    });
+    var e = impegni(piu(lun, i)).filter(filtroCal);
     var chiuso = chiusura(piu(lun, i));
     h += '<td>' + (chiuso ? '<div class="chiuso">Chiuso: ' + esc(chiuso.nome) + '</div>' : '') + (e.map(function (x) {
       if (x.evento) return '<button class="blocco ev" data-evcal="' + esc(x.evento.id) + '"><b>' + esc(x.ora || 'orario da decidere') + '</b>' + esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) +
@@ -870,17 +925,38 @@ VISTE.calendario = function () {
     }).join('') || (chiuso ? '' : '<span class="tenue piccolo">—</span>')) + '</td>';
   });
   return h + '</tr></tbody></table></div><p class="tenue piccolo">Blu: classi di gruppo (lun–ven, con l’orario della classe). Verde: lezioni individuali; tratteggiate se previste. Viola: laboratori e attività. Rosso: stesso insegnante o stessa aula alla stessa ora.</p>';
-};
+}
 DOPO.calendario = function () {
-  var lun = U.calSett || lunedi(D.oggi);
+  var giorno = U.calVista !== 'settimana', lun = U.calSett || lunedi(D.oggi), g = U.calGiorno || D.oggi;
   $('#cfiltro').value = U.calFiltro || '';
   $('#cfiltro').onchange = function () { U.calFiltro = this.value; disegna(); };
-  $('#cprec').onclick = function () { U.calSett = piu(lun, -7); disegna(); };
-  $('#csucc').onclick = function () { U.calSett = piu(lun, 7); disegna(); };
-  $('#coggi').onclick = function () { U.calSett = null; disegna(); };
+  $('#cprec').onclick = function () { if (giorno) U.calGiorno = piu(g, dataDa(g).getUTCDay() === 1 ? -2 : -1); else U.calSett = piu(lun, -7); disegna(); };
+  $('#csucc').onclick = function () { if (giorno) U.calGiorno = piu(g, dataDa(g).getUTCDay() === 6 ? 2 : 1); else U.calSett = piu(lun, 7); disegna(); };
+  $('#coggi').onclick = function () { U.calGiorno = null; U.calSett = null; disegna(); };
+  if ($('#cgiorno')) $('#cgiorno').onchange = function () { if (this.value) { U.calGiorno = this.value; disegna(); } };
+  $$('[data-vista]').forEach(function (b) { b.onclick = function () {
+    U.calVista = b.getAttribute('data-vista');
+    if (U.calVista === 'settimana') U.calSett = lunedi(g); else if (U.calSett) U.calGiorno = U.calSett <= D.oggi && piu(U.calSett, 6) >= D.oggi ? null : U.calSett;
+    try { localStorage.setItem('alia-calvista', U.calVista); } catch (e) {}
+    disegna();
+  }; });
   $$('[data-evcal]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evcal')); }; });
   $$('[data-lezcal]').forEach(function (b) { b.onclick = function () { var l = lezioneDaId(b.getAttribute('data-lezcal')); lezione(l.id, l.classe); }; });
+  $$('[data-nota]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); scriviNota(b.getAttribute('data-nota')); }; });
+  // Nella vista del giorno un clic sul nome apre lo studente, non la classe.
+  $$('.cal.giorno [data-stud]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); apriStudente(b.getAttribute('data-stud')); }; });
 };
+
+/* La nota per le lezioni di uno studente, scritta dal calendario. */
+function scriviNota(id) {
+  var v = ISC[id];
+  var d = dialogo('Note per le lezioni · ' + esc(nome(v)), '<p class="tenue piccolo">Cosa ripetere, ripassare, a cosa fare attenzione. La vedono tutti gli insegnanti, nel calendario e nella scheda dello studente.</p>' +
+    '<textarea id="nota-testo" style="min-height:160px">' + esc(v.note_lezioni) + '</textarea>', '<button class="b p" id="nota-salva">Salva</button>');
+  $('#nota-testo', d).focus();
+  $('#nota-salva', d).onclick = function () {
+    chiama('salvaIscrizione', id, {note_lezioni: $('#nota-testo', d).value}).then(function () { d.close(); avviso('Nota salvata'); disegna(); });
+  };
+}
 
 /* ---------- REGISTRO ---------- */
 var COL_REG = [['volume', 'Volume/Capitolo'], ['novita', 'Novità'], ['ascolto', 'Attività ascolto'], ['lettura', 'Attività lettura'], ['scritta', 'Attività prod. scritta'], ['orale', 'Attività prod. orale'], ['ripetuto', 'Ripetuto'], ['da_ripetere', 'Da ripetere'], ['note', 'Note']];
