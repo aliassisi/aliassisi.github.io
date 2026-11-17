@@ -11,6 +11,8 @@ Il **gestionale** è una pagina per lo staff, sopra lo stesso foglio:
   si possono aggiungere iscrizioni arrivate per email o da agenzie;
 - **Classi**: il planning per aula e per settimana (5 aule), chi è senza classe, l'email a una classe;
   i corsi individuali (privati, duo, online) hanno il loro calendario di lezioni;
+  le date di una settimana aprono quella settimana nel **Calendario**; nella finestra di una classe,
+  **Calendario** apre la sua settimana; nel Calendario, **Classi** torna al planning di quella settimana;
 - **Calendario**: la vista **Giorno** (una colonna per aula, con gli studenti di ogni classe o lezione
   e le loro **note per le lezioni**, che si scrivono da lì con ✎) e la vista **Settimana**; per
   insegnante o per aula; segna in rosso stesso insegnante o stessa aula alla stessa ora; mostra

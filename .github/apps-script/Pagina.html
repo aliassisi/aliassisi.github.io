@@ -273,6 +273,10 @@ function disegna() {
   $('#main').innerHTML = f();
   if (DOPO[U.scheda]) DOPO[U.scheda]();
 }
+/* Da una scheda all'altra: la settimana che comincia il lunedì `lun` nel Calendario o nel planning delle Classi. */
+function vaiScheda(s) { U.scheda = s; try { localStorage.setItem('alia-scheda', s); } catch (x) {} disegna(); window.scrollTo(0, 0); }
+function vaiCalendario(lun) { U.calVista = 'settimana'; U.calSett = lun; U.calFiltro = ''; vaiScheda('calendario'); }
+function vaiClassi(lun) { U.settimana = lun; vaiScheda('classi'); }
 document.addEventListener('click', function (e) {
   var b = e.target.closest('[data-s]');
   if (b) { U.scheda = b.getAttribute('data-s'); try { localStorage.setItem('alia-scheda', U.scheda); } catch (x) {} disegna(); return; }
@@ -570,7 +574,7 @@ VISTE.classi = function () {
     '<div class="scroll"><table class="planning"><thead><tr><th>Aula</th>' + sett.map(function (s) {
       var n = att.filter(function (v) { return sovrap(v.inizio, v.fine, s, piu(s, 6)); }).length;
       var ch = D.eventi.filter(function (e) { return e.tipo === 'chiusura' && e.dal <= piu(s, 5) && e.al >= s; });
-      return '<th>' + gg(s) + ' – ' + gg(piu(s, 4)) + '<div class="tenue">' + n + ' studenti</div>' + ch.map(function (e) { return '<div class="chiuso">' + esc(e.nome) + (e.dal === e.al ? ' ' + gg(e.dal) : '') + '</div>'; }).join('') + '</th>';
+      return '<th><button class="l" data-calsett="' + s + '" title="Apri questa settimana nel Calendario">' + gg(s) + ' – ' + gg(piu(s, 4)) + '</button><div class="tenue">' + n + ' studenti</div>' + ch.map(function (e) { return '<div class="chiuso">' + esc(e.nome) + (e.dal === e.al ? ' ' + gg(e.dal) : '') + '</div>'; }).join('') + '</th>';
     }).join('') + '</tr></thead><tbody>';
   // Un nome che si può trascinare in un'altra classe della stessa settimana (o in "Senza classe").
   var etichetta = function (v, da, s) {
@@ -601,7 +605,7 @@ VISTE.classi = function () {
     var fine = piu(s, 6), l = att.filter(function (v) { return sovrap(v.inizio, v.fine, s, fine) && !inClasseNelPeriodo(v.id, s, fine); });
     return '<td><div class="blocco vuoto bersaglio" data-senza="' + s + '" data-sett="' + s + '"><b>' + (l.length ? l.length + ' studenti' : 'Nessuno') + '</b>' +
       (l.length ? '<span class="nomi">' + l.map(function (v) { return etichetta(v, '', s); }).join('') + '</span><button class="l piccolo" data-senza="' + s + '">assegna…</button>' : '') + '</div></td>';
-  }).join('') + '</tr></tbody></table></div><p class="tenue piccolo">Trascina un nome su un’altra classe della stessa settimana per spostarlo da quella settimana in poi; su “Senza classe” per toglierlo. Clic sul nome: la scheda dello studente.</p>';
+  }).join('') + '</tr></tbody></table></div><p class="tenue piccolo">Trascina un nome su un’altra classe della stessa settimana per spostarlo da quella settimana in poi; su “Senza classe” per toglierlo. Clic sul nome: la scheda dello studente. Clic sulle date di una settimana: quella settimana nel Calendario.</p>';
   var prossime = D.classi.filter(function (c) { return c.fine >= D.oggi; }).sort(function (a, b) { return a.inizio < b.inizio ? -1 : 1; });
   var finite = D.classi.filter(function (c) { return c.fine < D.oggi; }).sort(function (a, b) { return a.fine > b.fine ? -1 : 1; }).slice(0, 20);
   var tab = function (l) { return '<div class="scroll"><table><thead><tr><th>Classe</th><th>Tipo</th><th>Aula</th><th>Livello</th><th>Insegnante</th><th>Periodo</th><th>Studenti</th></tr></thead><tbody>' +
@@ -617,6 +621,7 @@ DOPO.classi = function () {
   $('#succ').onclick = function () { U.settimana = piu(inizio, 28); disegna(); };
   $('#oggi').onclick = function () { U.settimana = null; disegna(); };
   $('#nuovaclasse').onclick = function () { modificaClasse(null); };
+  $$('[data-calsett]').forEach(function (b) { b.onclick = function () { vaiCalendario(b.getAttribute('data-calsett')); }; });
   $$('button[data-senza]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); senzaClasse(b.getAttribute('data-senza')); }; });
   // Trascina e lascia: un nome da una classe (o da "Senza classe") a un'altra classe della stessa settimana.
   var preso = null;
@@ -753,9 +758,11 @@ function apriClasse(id) {
       : '<h3>Aggiungi studenti presenti nel periodo</h3>' + aggiungi) +
     '<h3>Email a tutta la classe</h3><div class="campi">' + campo('k-oggetto', 'Oggetto', '') + campo('k-testo', 'Testo ({{nome}} = nome dello studente)', 'Ciao {{nome}},\n\n', 'textarea') + '</div>' +
     '<div class="barra" style="margin-top:8px"><button class="b" id="k-email">Manda a ' + ass.filter(function (a) { return a.al >= D.oggi; }).length + ' studenti</button></div>';
-  var d = dialogo(esc(c.nome), corpo, '<button class="b" id="k-reg">Registro</button><button class="b" id="k-mod">Modifica</button>');
+  var d = dialogo(esc(c.nome), corpo, '<button class="b" id="k-cal">Calendario</button><button class="b" id="k-reg">Registro</button><button class="b" id="k-mod">Modifica</button>');
   $('#k-mod', d).onclick = function () { modificaClasse(id); };
   $('#k-reg', d).onclick = function () { d.close(); U.classeReg = id; U.scheda = 'registro'; disegna(); };
+  // La settimana di oggi se la classe è in corso, altrimenti la sua prima o ultima settimana.
+  $('#k-cal', d).onclick = function () { d.close(); vaiCalendario(lunedi(D.oggi < c.inizio ? c.inizio : D.oggi > c.fine ? c.fine : D.oggi)); };
   $$('[data-togli]', d).forEach(function (b) { b.onclick = function () { chiama('togliAssegnazione', b.getAttribute('data-togli'), id).then(function () { disegna(); apriClasse(id); }); }; });
   if ($('#k-aggiungi', d)) $('#k-aggiungi', d).onclick = function () {
     var ids = $$('.checks input:checked', d).filter(function (i) { return !i.classList.contains('p-g'); }).map(function (i) { return i.value; });
@@ -869,7 +876,7 @@ function barraCal(titolo, perGiorno) {
     aule().map(function (a) { return '<option value="aula:' + esc(a) + '">' + esc(a) + '</option>'; }).join('') +
     '<option value="priv">Solo corsi individuali</option><option value="aula:online">Solo online</option></select><span class="spazio"></span>' +
     '<span class="tasti"><button class="b' + (perGiorno ? ' p' : '') + '" data-vista="giorno">Giorno</button><button class="b' + (perGiorno ? '' : ' p') + '" data-vista="settimana">Settimana</button></span>' +
-    '<button class="b" onclick="window.print()">Stampa</button></div>';
+    '<button class="b" id="cclassi" title="Le classi di questa settimana">Classi</button><button class="b" onclick="window.print()">Stampa</button></div>';
 }
 /* Gli studenti di un impegno quel giorno (classe o lezione individuale), con le loro note per le lezioni. */
 function studentiImpegno(x, g) {
@@ -933,6 +940,7 @@ DOPO.calendario = function () {
   $('#cprec').onclick = function () { if (giorno) U.calGiorno = piu(g, dataDa(g).getUTCDay() === 1 ? -2 : -1); else U.calSett = piu(lun, -7); disegna(); };
   $('#csucc').onclick = function () { if (giorno) U.calGiorno = piu(g, dataDa(g).getUTCDay() === 6 ? 2 : 1); else U.calSett = piu(lun, 7); disegna(); };
   $('#coggi').onclick = function () { U.calGiorno = null; U.calSett = null; disegna(); };
+  $('#cclassi').onclick = function () { vaiClassi(giorno ? lunedi(g) : lun); };
   if ($('#cgiorno')) $('#cgiorno').onchange = function () { if (this.value) { U.calGiorno = this.value; disegna(); } };
   $$('[data-vista]').forEach(function (b) { b.onclick = function () {
     U.calVista = b.getAttribute('data-vista');
