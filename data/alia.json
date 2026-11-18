@@ -27,20 +27,23 @@
     "standard": [
       {"from": 1, "to": 1, "ppw": 390},
       {"from": 2, "to": 2, "ppw": 360},
-      {"from": 3, "to": 7, "ppw": 320},
-      {"from": 8, "to": 48, "ppw": 300}
+      {"from": 3, "to": 7, "ppw": 330},
+      {"from": 8, "to": 11, "ppw": 300},
+      {"from": 12, "to": 48, "ppw": 280}
     ],
     "intensivo": [
       {"from": 1, "to": 1, "ppw": 550},
       {"from": 2, "to": 2, "ppw": 520},
-      {"from": 3, "to": 7, "ppw": 480},
-      {"from": 8, "to": 48, "ppw": 460}
+      {"from": 3, "to": 7, "ppw": 490},
+      {"from": 8, "to": 11, "ppw": 460},
+      {"from": 12, "to": 48, "ppw": 440}
     ],
     "super_intensivo": [
       {"from": 1, "to": 1, "ppw": 710},
       {"from": 2, "to": 2, "ppw": 680},
-      {"from": 3, "to": 7, "ppw": 640},
-      {"from": 8, "to": 48, "ppw": 620}
+      {"from": 3, "to": 7, "ppw": 650},
+      {"from": 8, "to": 11, "ppw": 620},
+      {"from": 12, "to": 48, "ppw": 600}
     ]
   },
   "corsi": [
