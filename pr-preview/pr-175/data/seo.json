@@ -1,0 +1,160 @@
+{
+  "_nota": "Titoli e descrizioni per i motori di ricerca. Li applica .github/scripts/build_seo.py al momento del deploy (non cambia i file del repo). 'title' sostituisce il <title> della pagina; 'description' diventa la meta description (circa 150 caratteri). Le pagine corso senza voce qui usano il 'hero' di data/alia.json. 'noindex': pagine da non far comparire su Google. 'canonical': pagine doppie e la pagina che le sostituisce.",
+  "sito": "https://aliassisi.it",
+  "nome": "Accademia Lingua Italiana Assisi",
+  "immagine": "assets/uploads/2026/03/Assisi-panorama.png",
+  "noindex": [
+    "search/",
+    "en/search/",
+    "en/shop/"
+  ],
+  "canonical": {
+    "product/corso-di-inglese-standard/": "product/standard/",
+    "school-activity/": "en/school-activity/",
+    "testimonials/": "en/testimonials/"
+  },
+  "pagine": {
+    "": {
+      "title": "Corsi di italiano ad Assisi dal 1993 – Accademia Lingua Italiana Assisi",
+      "description": "Scuola di lingua italiana per stranieri ad Assisi, dal 1993. Corsi di gruppo, intensivi, privati e online, classi piccole, esami CILS. Aperta tutto l’anno."
+    },
+    "en/home/": {
+      "title": "Italian language school in Assisi since 1993 – Accademia Lingua Italiana Assisi",
+      "description": "Learn Italian in Assisi, Italy, at a language school open all year since 1993. Group, intensive, private and online courses, small classes, CILS exams."
+    },
+    "location/": {
+      "title": "La scuola – Accademia Lingua Italiana Assisi",
+      "description": "L’Accademia Lingua Italiana Assisi: dal 1993 scuola di italiano per stranieri, riconosciuta dal MIUR e accreditata dalla Regione Umbria. La sede, i docenti, la storia."
+    },
+    "en/accademia/": {
+      "title": "About the school – Accademia Lingua Italiana Assisi",
+      "description": "Accademia Lingua Italiana Assisi: an Italian school for foreigners since 1993, recognised by the Italian Ministry of Education. Our building, teachers and story."
+    },
+    "method/": {
+      "title": "Il metodo – Accademia Lingua Italiana Assisi",
+      "description": "Il metodo dell’Accademia: approccio comunicativo-situazionale, lessico per frequenza, pronuncia, grammatiche contrastive. I libri nati nelle nostre aule, pubblicati da Hoepli."
+    },
+    "en/method/": {
+      "title": "Our method – Accademia Lingua Italiana Assisi",
+      "description": "How we teach Italian: a communicative, situational approach, vocabulary by frequency, pronunciation and contrastive grammars. Our books, published by Hoepli."
+    },
+    "calendar-and-fees/": {
+      "title": "Calendario e costi dei corsi di italiano – Accademia Lingua Italiana Assisi",
+      "description": "Date di inizio e prezzi dei corsi di italiano ad Assisi: standard, intensivi, super intensivi, preparazione agli esami, corsi privati e online."
+    },
+    "en/calendar-and-fees/": {
+      "title": "Italian course dates and fees – Accademia Lingua Italiana Assisi",
+      "description": "Start dates and prices of our Italian courses in Assisi: standard, intensive, super intensive, exam preparation, private and online courses."
+    },
+    "accommodation/": {
+      "title": "Alloggio ad Assisi per studenti – Accademia Lingua Italiana Assisi",
+      "description": "Alloggio durante il corso di italiano ad Assisi: appartamenti indipendenti e camere singole o doppie in appartamento, nel centro della città. Prezzi per 2 e 4 settimane."
+    },
+    "en/accommodation/": {
+      "title": "Student accommodation in Assisi – Accademia Lingua Italiana Assisi",
+      "description": "Accommodation during your Italian course in Assisi: independent flats and single or double rooms in shared apartments, in the town centre. Prices for 2 and 4 weeks."
+    },
+    "attivita-facilities-e-laboratori/": {
+      "description": "Laboratori, attività ed escursioni compresi nei corsi di italiano ad Assisi: arte, artigianato, cucina e tradizioni italiane, vissuti in italiano."
+    },
+    "en/school-activity/": {
+      "description": "Workshops, activities and excursions included in our Italian courses in Assisi: Italian art, crafts, cooking and customs, experienced in Italian."
+    },
+    "esami-di-certificazione-crediti-livelli/": {
+      "title": "Esami CILS e certificazioni di italiano – Accademia Lingua Italiana Assisi",
+      "description": "L’Accademia è sede d’esame CILS e Cert.it (Università degli Studi Roma Tre) ad Assisi. Livelli da A1 a C2 e crediti universitari CFU/ECTS."
+    },
+    "en/certifications-exams-credits-levels/": {
+      "title": "CILS exams and Italian certificates – Accademia Lingua Italiana Assisi",
+      "description": "The Accademia in Assisi is a CILS and Cert.it (Università degli Studi Roma Tre) exam centre. Levels A1 to C2 and university credits (ECTS)."
+    },
+    "frequently-asked-questions/": {
+      "description": "Domande frequenti sui corsi di italiano ad Assisi: livelli, orari, iscrizione, pagamento, alloggio, visto e certificati."
+    },
+    "en/faq/": {
+      "description": "Frequently asked questions about our Italian courses in Assisi: levels, timetable, enrolment, payment, accommodation, visa and certificates."
+    },
+    "how-to-apply/": {
+      "description": "Come iscriversi a un corso di italiano all’Accademia Lingua Italiana Assisi in quattro passi: scegli il corso, compila il modulo, ricevi la conferma, arriva ad Assisi."
+    },
+    "en/how-to-apply/": {
+      "description": "How to enrol in an Italian course at Accademia Lingua Italiana Assisi in four steps: choose the course, fill in the form, get the confirmation, arrive in Assisi."
+    },
+    "visa-information/": {
+      "description": "Visto di studio per un corso di italiano in Italia: chi ne ha bisogno, tipo C o D, documenti richiesti dalle ambasciate e permesso di soggiorno."
+    },
+    "en/visa-information/": {
+      "description": "Student visa for an Italian course in Italy: who needs one, type C or D, documents embassies ask for and the residence permit."
+    },
+    "guestbook/": {
+      "title": "Opinioni degli studenti – Accademia Lingua Italiana Assisi",
+      "description": "Le opinioni degli studenti che hanno studiato italiano all’Accademia Lingua Italiana Assisi, da ogni parte del mondo."
+    },
+    "en/testimonials/": {
+      "title": "Student reviews – Accademia Lingua Italiana Assisi",
+      "description": "What our students say about learning Italian at Accademia Lingua Italiana Assisi, from all over the world."
+    },
+    "configuratore/": {
+      "title": "Configura il tuo corso di italiano – Accademia Lingua Italiana Assisi",
+      "description": "Scegli corso, settimane e alloggio e vedi subito il prezzo del tuo corso di italiano ad Assisi."
+    },
+    "en/configuratore/": {
+      "title": "Build your Italian course – Accademia Lingua Italiana Assisi",
+      "description": "Choose course, weeks and accommodation and see the price of your Italian course in Assisi straight away."
+    },
+    "product/programs/": {
+      "title": "Programmi di lingua e cultura italiana – Accademia Lingua Italiana Assisi",
+      "description": "Corsi di italiano ad Assisi uniti a cultura, cucina, eventi e relax: programmi per una vacanza studio in Umbria."
+    },
+    "en/product/programs/": {
+      "title": "Italian language and culture programs – Accademia Lingua Italiana Assisi",
+      "description": "Italian courses in Assisi combined with culture, cooking, events and relaxation: study holiday programs in Umbria."
+    },
+    "product-category/intensivi/": {
+      "title": "Corsi intensivi di italiano ad Assisi – Accademia Lingua Italiana Assisi",
+      "description": "Corsi intensivi e super intensivi di italiano ad Assisi: lezioni di gruppo al mattino e lezioni individuali al pomeriggio."
+    },
+    "en/product-category/intensive-en/": {
+      "title": "Intensive Italian courses in Assisi – Accademia Lingua Italiana Assisi",
+      "description": "Intensive and super intensive Italian courses in Assisi: small-group lessons in the morning and one-to-one lessons in the afternoon."
+    },
+    "product/standard/": {
+      "title": "Corso standard di italiano ad Assisi – Accademia Lingua Italiana Assisi"
+    },
+    "en/product/standard-italian-course/": {
+      "title": "Standard Italian course in Assisi – Accademia Lingua Italiana Assisi"
+    },
+    "product/intensive-italian/": {
+      "title": "Corso intensivo di italiano ad Assisi – Accademia Lingua Italiana Assisi"
+    },
+    "en/product/intensive-italian/": {
+      "title": "Intensive Italian course in Assisi – Accademia Lingua Italiana Assisi"
+    },
+    "product/super-intensive-italian/": {
+      "title": "Corso super intensivo di italiano ad Assisi – Accademia Lingua Italiana Assisi"
+    },
+    "en/product/super-intensive-italian/": {
+      "title": "Super intensive Italian course in Assisi – Accademia Lingua Italiana Assisi"
+    },
+    "product/private/": {
+      "title": "Lezioni private di italiano ad Assisi – Accademia Lingua Italiana Assisi",
+      "description": "Corsi privati di italiano ad Assisi: lezioni individuali o in piccolo gruppo, nei giorni e negli orari che preferisci. Italiano generale, esami CILS, percorsi tematici."
+    },
+    "en/product/private/": {
+      "title": "Private Italian lessons in Assisi – Accademia Lingua Italiana Assisi",
+      "description": "Private Italian courses in Assisi: one-to-one or small-group lessons, on the days and at the times you prefer. General Italian, CILS exams, thematic courses."
+    },
+    "product/online-italian/": {
+      "title": "Corsi di italiano online – Accademia Lingua Italiana Assisi",
+      "description": "Lezioni di italiano online su Zoom con i docenti dell’Accademia Lingua Italiana Assisi, nei giorni e negli orari che preferisci. Tutti i livelli, preparazione CILS."
+    },
+    "en/product/online-italian/": {
+      "title": "Online Italian lessons – Accademia Lingua Italiana Assisi",
+      "description": "Online Italian lessons on Zoom with the teachers of Accademia Lingua Italiana Assisi, on the days and at the times you prefer. All levels, CILS preparation."
+    },
+    "en/universities/": {
+      "title": "Programs for universities in Assisi – January Term and Summer – ALI Assisi",
+      "description": "Four-week Italian programs for university groups in Assisi, in January or summer: small classes, housing, activities, weekends in Florence and Rome, credits."
+    }
+  }
+}
