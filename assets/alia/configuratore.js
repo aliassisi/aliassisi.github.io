@@ -336,7 +336,7 @@ function renderTariffe(){
   c.tariffe.forEach(function(t){
     var cur=S.settimane>=t.from&&S.settimane<=t.to,top=t.to>=48;
     var dur=t.from===t.to?settimane(t.from):(top?t.from+'+ '+T.settimane:t.from+'–'+t.to+' '+T.settimane);
-    righe+='<tr'+(cur?' class="current-tier"':'')+'><td>'+dur+'</td><td>'+eur(t.ppw)+'</td><td>'+eur(t.ppw*t.from)+(t.from===t.to?'':' – '+eur(t.ppw*(top?t.from:t.to))+(top?'+':''))+'</td></tr>';
+    righe+='<tr'+(cur?' class="current-tier"':'')+'><td>'+dur+'</td><td>'+eur(t.ppw)+'</td><td>'+eur(t.ppw*t.from)+(t.from===t.to?'':(top?'+':' – '+eur(t.ppw*t.to)))+'</td></tr>';
   });
   $('price-table').innerHTML='<table><thead><tr><th>'+T.col_durata+'</th><th>'+T.col_tariffa+'</th><th>'+T.col_totale+'</th></tr></thead><tbody>'+righe+'</tbody></table>';
   $('price-table').className='price-table'+(tabellaAperta?' open':'');
