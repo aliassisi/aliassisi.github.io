@@ -4,6 +4,7 @@
     <loc>https://aliassisi.it/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://aliassisi.it/en/home/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://aliassisi.it/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://aliassisi.it/ja/"/>
   </url>
   <url>
     <loc>https://aliassisi.it/accommodation/</loc>
@@ -57,6 +58,7 @@
     <loc>https://aliassisi.it/en/home/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://aliassisi.it/en/home/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://aliassisi.it/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://aliassisi.it/ja/"/>
   </url>
   <url>
     <loc>https://aliassisi.it/en/how-to-apply/</loc>
@@ -224,6 +226,9 @@
   </url>
   <url>
     <loc>https://aliassisi.it/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aliassisi.it/en/home/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://aliassisi.it/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://aliassisi.it/ja/"/>
   </url>
   <url>
     <loc>https://aliassisi.it/location/</loc>
