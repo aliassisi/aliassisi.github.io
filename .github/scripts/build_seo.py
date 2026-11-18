@@ -12,7 +12,8 @@ of <head>:
 - canonical: the page's own URL on the site in data/seo.json ("sito"), or the
   page named in "canonical" for duplicate pages;
 - hreflang links to the Italian and English versions, taken from the language
-  switcher, when the two pages point at each other;
+  switcher, when the two pages point at each other; a page in another language
+  (ja/) is added to the group of the Italian page its switcher points at;
 - meta description: from data/seo.json, else the course "hero" in
   data/alia.json, else the one already on the page;
 - Open Graph and Twitter tags (title, description, url, image);
@@ -42,7 +43,7 @@ DUPLICATE = seo["canonical"]
 PAGES = seo["pagine"]
 HOMES = {"": "it", "en/home/": "en"}
 SKIP_TOP = ("assets/", "pagefind/", "pr-preview/", "data/", ".github/", ".claude/", ".git/")
-LOCALE = {"it": "it_IT", "en": "en_GB"}
+LOCALE = {"it": "it_IT", "en": "en_GB", "ja": "ja_JP"}
 
 BLOCK = re.compile(r"\s*<!-- seo:start -->.*?<!-- seo:end -->", re.S)
 OLD_TAGS = re.compile(
@@ -124,6 +125,17 @@ for path, page in pages.items():
         and other not in NOINDEX | set(DUPLICATE)
     ):
         alternates[path] = {page["lang"]: path, pages[other]["lang"]: other}
+
+# A page in another language (ja/) joins the group of the Italian page its
+# language switcher points at: all pages of the group then list all languages.
+for path, page in pages.items():
+    if page["lang"] in ("it", "en") or path in NOINDEX | set(DUPLICATE):
+        continue
+    it = other_version(path, page)
+    if it in alternates:
+        group = dict(alternates[it], **{page["lang"]: path})
+        for member in group.values():
+            alternates[member] = group
 
 school = {
     "@context": "https://schema.org",
