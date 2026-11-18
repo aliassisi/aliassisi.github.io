@@ -78,9 +78,10 @@ def build(text, page_dir, menus):
         close = text.rindex("</ul>", m.end(), end)
         body = text[m.end():close]
         langs = LANG_ITEM.findall(body)
-        if len(langs) != 2:
+        # Two items (IT, EN); the Japanese page ja/ has a third one and uses the English menu.
+        if len(langs) not in (2, 3):
             raise SystemExit("%s: menu %s has %d language items" % (page_dir, m.group(0), len(langs)))
-        lang = "en" if "lang-item-en current-lang" in body else "it"
+        lang = "en" if ("lang-item-en current-lang" in body or "lang-item-ja current-lang" in body) else "it"
         arrow = ARROW.search(body)
         if not arrow:
             raise SystemExit("%s: menu %s has no sub-arrow" % (page_dir, m.group(0)))
