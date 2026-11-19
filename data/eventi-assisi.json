@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-11-06",
+  "aggiornato": "2026-11-19",
   "eventi": [
     {
       "inizio": "2026-04-24",
@@ -15,13 +15,13 @@
       "nota_en": "Exhibition"
     },
     {
-      "inizio": "2026-04-26",
+      "inizio": "2026-12-06",
       "fine": "2026-12-06",
-      "ora": "",
+      "ora": "09:45",
       "titolo": "Su e giù per Assisi – Natale",
-      "luogo": "Bosco di San Francesco (FAI), Assisi",
-      "descrizione_it": "Visita guidata speciale del FAI tra il Bosco e la città.",
-      "descrizione_en": "Special FAI guided tour between the Wood and the town.",
+      "luogo": "Piazza San Rufino, Assisi",
+      "descrizione_it": "Itinerario guidato del FAI: Assisi addobbata per Natale, poi giù fino al Bosco di San Francesco. Alla fine degustazione dell’olio nuovo e dei prodotti FAI. Prenotazione obbligatoria (minimo 20 persone). Biglietti: iscritti FAI 8 €, intero 15 €, studenti 12 €, 6–17 anni 8 €, 0–5 anni gratis.",
+      "descrizione_en": "FAI guided walk: Assisi dressed for Christmas, then down to the Wood of Saint Francis. Tasting of the new olive oil and FAI products at the end. Booking required (at least 20 people). Tickets: FAI members €8, full €15, students €12, ages 6–17 €8, under 6 free.",
       "link": "https://fondoambiente.it/luoghi/bosco-di-san-francesco/eventi",
       "immagine": "https://fai-platform.imgix.net/media/eventi/bosco-di-san-francesco-natura-e-figura_226962.jpg?w=800&h=600&fit=crop"
     },
@@ -159,11 +159,11 @@
     {
       "inizio": "2026-11-22",
       "fine": "2026-11-29",
-      "ora": "",
+      "ora": "11:30",
       "titolo": "Passeggiata fra gli ulivi",
-      "luogo": "Bosco di San Francesco (FAI), Assisi",
-      "descrizione_it": "Visita guidata speciale tra gli ulivi del Bosco.",
-      "descrizione_en": "Special guided walk among the Wood's olive trees.",
+      "luogo": "Complesso benedettino di Santa Croce, Bosco di San Francesco (FAI), Assisi",
+      "descrizione_it": "Visita guidata tra gli oltre 1.000 ulivi del Bosco, lungo la valle del Tescio, fino al “Terzo Paradiso” di Pistoletto. Alla fine degustazione dell’olio del Bosco. Domenica 22 e 29 novembre. Prenotazione obbligatoria (minimo 15 persone). Biglietti: iscritti FAI 6 €, intero 12 €, studenti 10 €, 6–17 anni 9 €, 0–5 anni gratis.",
+      "descrizione_en": "Guided walk among the Wood’s 1,000+ olive trees, along the Tescio valley, to Pistoletto’s “Third Paradise”. Tasting of the Wood’s olive oil at the end. Sundays 22 and 29 November. Booking required (at least 15 people). Tickets: FAI members €6, full €12, students €10, ages 6–17 €9, under 6 free.",
       "link": "https://fondoambiente.it/luoghi/bosco-di-san-francesco/eventi",
       "immagine": "https://fai-platform.imgix.net/media/eventi/bosco-di-san-francesco-una-passeggiata-fra-gli-ulivi-patrimonio-dell-umbria_234875.jpg?w=800&h=600&fit=crop"
     },
@@ -696,6 +696,38 @@
       "descrizione_en": "The medieval liturgical manuscripts of the early collection. With Filippo Sedda and Peter Hrdy.",
       "link": "",
       "immagine": ""
+    },
+    {
+      "inizio": "2026-11-21",
+      "fine": "2026-11-21",
+      "ora": "11:00",
+      "titolo": "Parco Ranghiasci restaurato: inaugurazione",
+      "luogo": "Parco Ranghiasci, Gubbio",
+      "descrizione_it": "Il Comune di Gubbio inaugura il restauro del parco storico, sostenuto dal FAI con “I Luoghi del Cuore”. Per la Festa dell’Albero si pianta il primo dei nuovi ippocastani, con una dimostrazione dei vivaisti.",
+      "descrizione_en": "Gubbio opens its restored historic park, supported by FAI through “I Luoghi del Cuore”. For Tree Day the first of the new horse chestnuts is planted, with a demonstration by the nursery.",
+      "link": "https://fondoambiente.it/eventi"
+    },
+    {
+      "inizio": "2026-11-22",
+      "fine": "2026-11-22",
+      "ora": "21:30",
+      "titolo": "Il canto della foresta",
+      "luogo": "Cinema Méliès, Via della Viola 1, Perugia",
+      "descrizione_it": "Il FAI Giovani di Perugia proietta il documentario di Vincent Munier sulle foreste dei Vosgi: tre generazioni, cervi, linci e il gallo cedrone. Prima del film un breve dibattito. Biglietto ridotto per gli iscritti FAI. Info: perugia@faigiovani.fondoambiente.it",
+      "descrizione_en": "FAI Giovani Perugia screens Vincent Munier’s documentary on the Vosges forests: three generations, deer, lynx and the capercaillie. A short talk before the film. Reduced ticket for FAI members. Info: perugia@faigiovani.fondoambiente.it",
+      "link": "https://fondoambiente.it/eventi",
+      "nota_it": "Cinema",
+      "nota_en": "Cinema"
+    },
+    {
+      "inizio": "2026-11-29",
+      "fine": "2026-11-29",
+      "ora": "",
+      "titolo": "L’Archivio storico della Libreria Paci",
+      "luogo": "Libreria Paci, Città di Castello",
+      "descrizione_it": "Il FAI di Città di Castello apre l’archivio delle case editrici “Paci La Tifernate” e “Il Solco”: un secolo di editoria e tipografia, dal 1926 alle collane antifasciste del dopoguerra. Prenotazione su faiprenotazioni.fondoambiente.it. Contributo libero da 3 € (iscritti FAI) o 5 €.",
+      "descrizione_en": "FAI Città di Castello opens the archive of the publishers “Paci La Tifernate” and “Il Solco”: a century of publishing and printing, from 1926 to the anti-fascist series after the war. Booking at faiprenotazioni.fondoambiente.it. Suggested donation from €3 (FAI members) or €5.",
+      "link": "https://fondoambiente.it/eventi"
     }
   ]
 }
