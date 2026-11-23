@@ -21,16 +21,20 @@
   "pulsante": {"it": "Scopri", "en": "View more"},
   "prossimo_inizio": {
     "it": {
-      "titolo": "Prossimo inizio",
+      "titolo": "Prossimo inizio per principianti",
       "poi": "Poi",
-      "altre_date": "Per altre date o per corsi privati <a href=\"https://wa.me/393515537976\">scrivici</a>.",
+      "non_principianti": "Non principianti",
+      "ogni_lunedi": "Ogni lunedì.",
+      "altre_date": "Per altre date o per corsi privati o online <a href=\"https://wa.me/393515537976\">scrivici</a>.",
       "pulsante": "Calendario e costi",
       "url": "calendar-and-fees/index.html"
     },
     "en": {
-      "titolo": "Next start",
+      "titolo": "Next start for beginners",
       "poi": "Then",
-      "altre_date": "For other dates or private courses, <a href=\"https://wa.me/393515537976\">write to us</a>.",
+      "non_principianti": "Non-beginners",
+      "ogni_lunedi": "Any Monday.",
+      "altre_date": "For other dates or private or online courses, <a href=\"https://wa.me/393515537976\">write to us</a>.",
       "pulsante": "Calendar and fees",
       "url": "../calendar-and-fees/index.html"
     }

@@ -16,7 +16,7 @@ var T=IT?{
   gruppo_ind:'{g} lezioni in piccolo gruppo al mattino + {i} lezioni individuali',tema:'Tema',formula:'Formula',
   n_lezioni:'Numero di lezioni',lezione:'lezione',lezioni:'lezioni',a_lezione:'a lezione',da:'da',
   a_studente:'{p} a studente',prezzo_gruppo:'Il prezzo è per tutto il gruppo.',
-  inizio:'Data di inizio',inizio_prev:'Prossimi inizi',scegli:'— Scegli —',altra_data:'Un altro lunedì…',
+  inizio:'Data di inizio',inizio_prev:'Date d’inizio per principianti',non_principianti:'I non principianti possono iniziare ogni lunedì.',scegli:'— Scegli —',altra_data:'Un altro lunedì…',
   lunedi:'Lunedì di inizio',solo_lunedi:'Scegli un lunedì: i corsi iniziano il lunedì.',
   data_pref:'Data di inizio preferita',
   orari:'Gli orari delle lezioni si concordano dopo la conferma dell’iscrizione.',
@@ -82,7 +82,7 @@ var T=IT?{
   gruppo_ind:'{g} small-group lessons in the morning + {i} individual lessons',tema:'Theme',formula:'Format',
   n_lezioni:'Number of lessons',lezione:'lesson',lezioni:'lessons',a_lezione:'per lesson',da:'from',
   a_studente:'{p} per student',prezzo_gruppo:'The price is for the whole group.',
-  inizio:'Start date',inizio_prev:'Next start dates',scegli:'— Select —',altra_data:'Another Monday…',
+  inizio:'Start date',inizio_prev:'Start dates for beginners',non_principianti:'Non-beginners can start any Monday.',scegli:'— Select —',altra_data:'Another Monday…',
   lunedi:'Start Monday',solo_lunedi:'Please select a Monday: courses start on Monday.',
   data_pref:'Preferred start date',
   orari:'We agree the lesson times after confirming your enrolment.',
@@ -212,6 +212,7 @@ wrap.innerHTML=
       '<div class="date-field"><label for="cfg-startsel">'+T.inizio_prev+'</label><select id="cfg-startsel"><option value="">'+T.scegli+'</option>'+opzioniDate+'<option value="altra">'+T.altra_data+'</option></select></div>'+
       '<div class="date-field" id="cfg-cf" style="display:none"><label for="cfg-cd">'+T.lunedi+'</label><input type="date" id="cfg-cd" min="'+iso(OGGI)+'"></div>'+
     '</div>'+
+    '<p id="cfg-data-nota" class="accom-note">'+T.non_principianti+'</p>'+
     '<div class="date-row" id="cfg-data-lez"><div class="date-field"><label for="cfg-dpref">'+T.data_pref+'</label><input type="date" id="cfg-dpref"></div></div>'+
     '<p id="cfg-data-pac" class="cfg-fixed"></p>'+
     '<div id="cfg-range" class="tier-hint"></div>')+
@@ -562,7 +563,7 @@ function aggiorna(){
     var dp=$('cfg-dpref'),min=c.dal&&fromIso(c.dal)>OGGI?c.dal:iso(OGGI);
     dp.min=min;if(c.al)dp.max=c.al;else dp.removeAttribute('max');
   }
-  mostra('cfg-data-sett',sett);mostra('cfg-data-lez',lez);mostra('cfg-data-pac',pac);
+  mostra('cfg-data-sett',sett);mostra('cfg-data-nota',sett);mostra('cfg-data-lez',lez);mostra('cfg-data-pac',pac);
   $('cfg-data-pac').textContent=pac?fmt(T.dal_al,{a:giorno(fromIso(c.dal)),b:giorno(fromIso(c.al))}):'';
   if(lez)$('cfg-range').textContent='';
   mostra('s-durata',sett);
