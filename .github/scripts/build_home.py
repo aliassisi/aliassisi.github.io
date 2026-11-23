@@ -157,7 +157,7 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     riga = lambda testo, cl="": f'<span class="ali-ni-r{cl}">{testo}</span>'
     righe = (riga(span("poi", poi))
              + riga(lab + " " + q, " ali-ni-blocco")
-             + riga(t["altre_date"], " ali-ni-small"))
+             + riga(t["altre_date"], " ali-ni-small ali-ni-blocco"))
     # desktop bar: the next dates go under the date; then a "non-beginners"
     # block and an "other dates" block, each with its own column line
     barra = (f'<span class="ali-ni-np">{lab}{q}</span>'
@@ -216,6 +216,10 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            # mobile card: a line, then "NON PRINCIPIANTI" in the same type as the card title
            # and "Ogni lunedì" in the same type as the date
            ".elementor-element-bad613d .ali-ni-blocco{border-top:1px solid #f0eae5;margin:22px -10px 0!important;padding:20px 10px 0}"
+           # the lines reach the card edges like the other two, so the wrapper must not clip them
+           ".elementor-element-bad613d .elementor-testimonial-wrapper{overflow:visible}"
+           # "other dates" is for everyone, so it gets its own block
+           ".elementor-element-bad613d .ali-ni-small.ali-ni-blocco{margin-top:20px!important;padding-top:18px}"
            ".elementor-element-bad613d .ali-ni-lab{display:block;margin:0;font-family:'Cormorant Garamond',serif;"
            "font-size:20px;font-weight:400;line-height:32px;letter-spacing:4.5px;color:#f0eae5}"
            ".elementor-element-bad613d .ali-ni-q{display:block;margin:6px 0 4px;font-family:'Cormorant Garamond',serif;"
