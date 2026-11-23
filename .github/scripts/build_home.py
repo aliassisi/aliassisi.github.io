@@ -150,19 +150,23 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     primo, dopo = prossime[0], prossime[1:3]
     poi = f'{t["poi"]} {elenco(dopo, lang)}.' if dopo else ""
     span = lambda ruolo, testo: f'<span data-ali-ni="{ruolo}">{testo}</span>'
+    # three lines: the next dates for beginners, "NON-BEGINNERS any Monday"
+    # (label in the same yellow capitals as "Next start"), other dates
+    riga = lambda testo, cl="": f'<span class="ali-ni-r{cl}">{testo}</span>'
+    righe = (riga(span("poi", poi))
+             + riga(f'<span class="ali-ni-lab">{html.escape(t["non_principianti"])}</span> <span class="ali-ni-q">{html.escape(t["ogni_lunedi"])}</span>')
+             + riga(t["altre_date"], " ali-ni-small"))
 
     # mobile card
     pagina = sostituisci_widget(pagina, "7d1ae85", html.escape(t["titolo"].upper()))
     pagina = sostituisci_widget(pagina, "d5f16a7", span("lungo", lungo(primo, lang)))
-    pagina = testimonial(pagina, "bad613d",
-                         span("poi", poi) + "<br>" + t["altre_date"])
+    pagina = testimonial(pagina, "bad613d", righe)
     pagina = pulsante(pagina, "0bcf9eb", t["pulsante"], t["url"])
     # desktop bar
     pagina = sostituisci_widget(pagina, "b259213",
                                 '<span style="font-size:.58em">' + html.escape(t["titolo"].upper()) + "</span>")
     pagina = sostituisci_widget(pagina, "38f8ffd", span("breve", primo.strftime("%d.%m.%Y")))
-    pagina = sostituisci_widget(pagina, "139c2fa",
-                                span("poi", poi) + " " + t["altre_date"])
+    pagina = sostituisci_widget(pagina, "139c2fa", righe)
     pagina = pulsante(pagina, "d4e7e8d", t["pulsante"], t["url"])
 
     # runtime update: the date list and the month names go with the page
@@ -183,6 +187,21 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{white-space:normal;max-width:11em;line-height:1.1}"
            ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:30px!important}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:24px!important}"
+           # the three lines of the sentence; "Non principianti" looks like the "Prossimo inizio" label
+           ".ali-ni-r{display:block}.ali-ni-r+.ali-ni-r{margin-top:6px}"
+           ".ali-ni-lab{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:21px;letter-spacing:.22em;"
+           "text-transform:uppercase;color:#fec15f;margin-right:.35em}"
+           ".ali-ni-lab,.ali-ni-q{display:inline-block;white-space:nowrap}"
+           ".ali-ni-small{font-size:.8em;opacity:.85}"
+           # mobile card: the label on its own line
+           ".elementor-element-bad613d .ali-ni-lab{display:block;margin:0 0 2px;font-size:17px}"
+           # narrow desktops (the bar is hidden below 1025px): less padding, smaller type
+           "@media(max-width:1365px){"
+           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:16px 20px!important}"
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:240px}"
+           ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:24px!important}"
+           ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:20px!important}"
+           ".elementor-element-139c2fa .ali-ni-lab{font-size:17px}}"
            "</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
         + ",M=" + json.dumps(MESI[lang], ensure_ascii=False) + ",L=" + json.dumps(lang) \
