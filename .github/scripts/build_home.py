@@ -150,12 +150,18 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     primo, dopo = prossime[0], prossime[1:3]
     poi = f'{t["poi"]} {elenco(dopo, lang)}.' if dopo else ""
     span = lambda ruolo, testo: f'<span data-ali-ni="{ruolo}">{testo}</span>'
-    # three lines: the next dates for beginners, "NON-BEGINNERS any Monday"
-    # (label in the same yellow capitals as "Next start"), other dates
+    # "NON-BEGINNERS" in the same yellow capitals as "Next start", then "any Monday"
+    lab = f'<span class="ali-ni-lab">{html.escape(t["non_principianti"])}</span>'
+    q = f'<span class="ali-ni-q">{html.escape(t["ogni_lunedi"])}</span>'
+    # mobile card: three lines under the date
     riga = lambda testo, cl="": f'<span class="ali-ni-r{cl}">{testo}</span>'
     righe = (riga(span("poi", poi))
-             + riga(f'<span class="ali-ni-lab">{html.escape(t["non_principianti"])}</span> <span class="ali-ni-q">{html.escape(t["ogni_lunedi"])}</span>')
+             + riga(lab + " " + q)
              + riga(t["altre_date"], " ali-ni-small"))
+    # desktop bar: the next dates go under the date; then a "non-beginners"
+    # block and an "other dates" block, each with its own column line
+    barra = (f'<span class="ali-ni-np">{lab}{q}</span>'
+             f'<span class="ali-ni-altre">{t["altre_date"]}</span>')
 
     # mobile card
     pagina = sostituisci_widget(pagina, "7d1ae85", html.escape(t["titolo"].upper()))
@@ -165,8 +171,9 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     # desktop bar
     pagina = sostituisci_widget(pagina, "b259213",
                                 '<span style="font-size:.58em">' + html.escape(t["titolo"].upper()) + "</span>")
-    pagina = sostituisci_widget(pagina, "38f8ffd", span("breve", primo.strftime("%d.%m.%Y")))
-    pagina = sostituisci_widget(pagina, "139c2fa", righe)
+    pagina = sostituisci_widget(pagina, "38f8ffd", span("breve", primo.strftime("%d.%m.%Y"))
+                                + f'<span class="ali-ni-poi">{span("poi", poi)}</span>')
+    pagina = sostituisci_widget(pagina, "139c2fa", barra)
     pagina = pulsante(pagina, "d4e7e8d", t["pulsante"], t["url"])
 
     # runtime update: the date list and the month names go with the page
@@ -187,21 +194,38 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{white-space:normal;max-width:11em;line-height:1.1}"
            ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:30px!important}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:24px!important}"
-           # the three lines of the sentence; "Non principianti" looks like the "Prossimo inizio" label
+           # "Non principianti" looks like the "Prossimo inizio" label
+           ".ali-ni-lab{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:21px;letter-spacing:.27em;"
+           "text-transform:uppercase;color:#fec15f;white-space:nowrap}"
+           # desktop: next dates under the date
+           ".elementor-element-38f8ffd{width:auto!important}"
+           ".elementor-element-38f8ffd .ali-ni-poi{display:block;margin-top:6px;font-size:17px;line-height:1.3;letter-spacing:.02em}"
+           # desktop: the text column holds two blocks, split by a line like the other columns
+           ".elementor-element-2c917f6 .elementor-element-15f1e8c>.elementor-widget-wrap{padding:0!important;align-items:stretch;align-content:stretch!important}"
+           ".elementor-element-139c2fa>.elementor-widget-container{padding:0!important}"
+           ".elementor-element-139c2fa,.elementor-element-139c2fa>.elementor-widget-container{width:100%;height:100%}"
+           ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{display:flex;height:100%;align-items:stretch}"
+           ".ali-ni-np,.ali-ni-altre{display:flex;flex-direction:column;justify-content:center;padding:20px clamp(18px,2.4vw,44px)}"
+           ".ali-ni-np{flex:none;align-items:center;gap:6px;border-right:1px solid #f0eae5}"
+           ".ali-ni-np .ali-ni-q{font-size:30px;font-weight:200;line-height:1.2}"
+           ".ali-ni-altre{display:block;align-self:center;flex:1 1 200px;min-width:200px;font-size:20px;line-height:1.4}"
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:270px}"
+           # mobile card: three lines, the label on its own line
            ".ali-ni-r{display:block}.ali-ni-r+.ali-ni-r{margin-top:6px}"
-           ".ali-ni-lab{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:21px;letter-spacing:.22em;"
-           "text-transform:uppercase;color:#fec15f;margin-right:.35em}"
-           ".ali-ni-lab,.ali-ni-q{display:inline-block;white-space:nowrap}"
            ".ali-ni-small{font-size:.8em;opacity:.85}"
-           # mobile card: the label on its own line
            ".elementor-element-bad613d .ali-ni-lab{display:block;margin:0 0 2px;font-size:17px}"
            # narrow desktops (the bar is hidden below 1025px): less padding, smaller type
            "@media(max-width:1365px){"
-           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:16px 20px!important}"
-           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:240px}"
-           ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:24px!important}"
-           ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:20px!important}"
-           ".elementor-element-139c2fa .ali-ni-lab{font-size:17px}}"
+           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap,.ali-ni-np,.ali-ni-altre{padding:16px 18px!important}"
+           ".elementor-element-2c917f6 .elementor-element-15f1e8c>.elementor-widget-wrap{padding:0!important}"
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:210px}"
+           ".elementor-element-2c917f6 .elementor-element-fa2ccb2>.elementor-widget-wrap{padding:16px 14px!important}"
+           ".elementor-element-38f8ffd .ali-ni-poi{white-space:normal;max-width:150px;margin-left:auto;margin-right:auto}"
+           ".elementor-element-139c2fa .ali-ni-lab{letter-spacing:.15em}"
+           ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title,.ali-ni-np .ali-ni-q{font-size:24px!important}"
+           ".elementor-element-38f8ffd .ali-ni-poi{font-size:15px}"
+           ".elementor-element-139c2fa .ali-ni-lab{font-size:17px}"
+           ".ali-ni-altre{font-size:16px;flex-basis:140px;min-width:140px}}"
            "</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
         + ",M=" + json.dumps(MESI[lang], ensure_ascii=False) + ",L=" + json.dumps(lang) \
