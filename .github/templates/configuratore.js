@@ -16,8 +16,8 @@ var T=IT?{
   gruppo_ind:'{g} lezioni in piccolo gruppo al mattino + {i} lezioni individuali',tema:'Tema',formula:'Formula',
   n_lezioni:'Numero di lezioni',lezione:'lezione',lezioni:'lezioni',a_lezione:'a lezione',da:'da',
   a_studente:'{p} a studente',prezzo_gruppo:'Il prezzo è per tutto il gruppo.',
-  inizio:'Data di inizio',inizio_prev:'Date d’inizio per principianti',non_principianti:'I non principianti possono iniziare ogni lunedì.',scegli:'— Scegli —',altra_data:'Un altro lunedì…',
-  lunedi:'Lunedì di inizio',solo_lunedi:'Scegli un lunedì: i corsi iniziano il lunedì.',
+  inizio:'Data di inizio',inizio_prev:'Date d’inizio per principianti',inizio_non:'Date d’inizio per non principianti',scegli:'— Scegli —',
+  non_principianti:'Chi ha già studiato italiano può iniziare ogni lunedì, tranne nei giorni di chiusura. Le lezioni vanno dal lunedì al venerdì.',
   data_pref:'Data di inizio preferita',
   orari:'Gli orari delle lezioni si concordano dopo la conferma dell’iscrizione.',
   disponibili_dal:'Lezioni dal {a} al {b}.',
@@ -82,8 +82,8 @@ var T=IT?{
   gruppo_ind:'{g} small-group lessons in the morning + {i} individual lessons',tema:'Theme',formula:'Format',
   n_lezioni:'Number of lessons',lezione:'lesson',lezioni:'lessons',a_lezione:'per lesson',da:'from',
   a_studente:'{p} per student',prezzo_gruppo:'The price is for the whole group.',
-  inizio:'Start date',inizio_prev:'Start dates for beginners',non_principianti:'Non-beginners can start any Monday.',scegli:'— Select —',altra_data:'Another Monday…',
-  lunedi:'Start Monday',solo_lunedi:'Please select a Monday: courses start on Monday.',
+  inizio:'Start date',inizio_prev:'Start dates for beginners',inizio_non:'Start dates for non-beginners',scegli:'— Select —',
+  non_principianti:'If you have studied Italian before, you can start any Monday the school is open. Lessons run Monday to Friday.',
   data_pref:'Preferred start date',
   orari:'We agree the lesson times after confirming your enrolment.',
   disponibili_dal:'Lessons from {a} to {b}.',
@@ -196,7 +196,17 @@ function inSede(c){return c.tipo!=='lezioni'||c.in_sede;}
 /* ---------- STRUTTURA ---------- */
 function sezione(id,label,dentro){return '<div class="cfg-section" id="'+id+'"><div class="cfg-section-label">'+label+'</div>'+dentro+'</div>';}
 function campo(id,label,input,fac){return '<div class="cfg-field" id="f-'+id+'"><label for="'+id+'">'+label+(fac?' <span class="cfg-opt">('+T.facoltativo+')</span>':'')+'</label>'+input+'</div>';}
-var opzioniDate=D.date_inizio.filter(function(d){return fromIso(d)>=OGGI;}).map(function(d){return '<option value="'+d+'">'+esc(giorno(fromIso(d)))+'</option>';}).join('');
+function opzioni(date){return date.map(function(d){return '<option value="'+d+'">'+esc(giorno(fromIso(d)))+'</option>';}).join('');}
+var opzioniDate=opzioni(D.date_inizio.filter(function(d){return fromIso(d)>=OGGI;}));
+/* Non principianti: ogni lunedì da oggi fino alla fine dei dati (ultima data d'inizio o ultima chiusura),
+   tranne i lunedì in cui la scuola è chiusa. */
+function chiuso(d){var s=iso(d);return D.chiusure.some(function(c){return s>=c.dal&&s<=c.al;});}
+var lunedi=(function(){
+  var fine=D.date_inizio.concat(D.chiusure.map(function(c){return c.al;})).sort().pop(),out=[];
+  var d=new Date(OGGI);d.setDate(d.getDate()+(8-d.getDay())%7);
+  for(;iso(d)<=fine;d.setDate(d.getDate()+7))if(!chiuso(d))out.push(iso(d));
+  return out;
+})();
 var wrap=$('cfg-wrap');
 wrap.innerHTML=
   '<h3>'+(DA_CORSO?T.titolo:T.titolo_info)+'</h3><p class="cfg-subtitle">'+(DA_CORSO?T.sottotitolo:T.sottotitolo_info)+'</p>'+
@@ -209,8 +219,8 @@ wrap.innerHTML=
   sezione('s-lezioni',T.n_lezioni,'<div class="week-row"><input id="cfg-nlez" type="range" min="1" max="60" step="1" value="10"><div class="week-display"><span id="cfg-nlez-num" class="week-num">10</span><span id="cfg-nlez-lbl" class="week-lbl"></span></div></div><div id="cfg-nlez-hint" class="tier-hint"></div>')+
   sezione('s-data',T.inizio,
     '<div class="date-row" id="cfg-data-sett">'+
-      '<div class="date-field"><label for="cfg-startsel">'+T.inizio_prev+'</label><select id="cfg-startsel"><option value="">'+T.scegli+'</option>'+opzioniDate+'<option value="altra">'+T.altra_data+'</option></select></div>'+
-      '<div class="date-field" id="cfg-cf" style="display:none"><label for="cfg-cd">'+T.lunedi+'</label><input type="date" id="cfg-cd" min="'+iso(OGGI)+'"></div>'+
+      '<div class="date-field"><label for="cfg-startsel">'+T.inizio_prev+'</label><select id="cfg-startsel"><option value="">'+T.scegli+'</option>'+opzioniDate+'</select></div>'+
+      '<div class="date-field"><label for="cfg-startnon">'+T.inizio_non+'</label><select id="cfg-startnon"><option value="">'+T.scegli+'</option>'+opzioni(lunedi)+'</select></div>'+
     '</div>'+
     '<p id="cfg-data-nota" class="accom-note">'+T.non_principianti+'</p>'+
     '<div class="date-row" id="cfg-data-lez"><div class="date-field"><label for="cfg-dpref">'+T.data_pref+'</label><input type="date" id="cfg-dpref"></div></div>'+
@@ -367,17 +377,17 @@ function renderFormule(){
 }
 
 /* ---------- DATE ---------- */
-function resetDate(){$('cfg-startsel').value='';$('cfg-cd').value='';$('cfg-cf').style.display='none';$('cfg-dpref').value='';}
-$('cfg-startsel').addEventListener('change',function(){
-  var v=this.value;$('cfg-cf').style.display=v==='altra'?'flex':'none';
-  S.inizio=v&&v!=='altra'?fromIso(v):null;if(v==='altra'&&$('cfg-cd').value)S.inizio=fromIso($('cfg-cd').value);
+function resetDate(){$('cfg-startsel').value='';$('cfg-startnon').value='';$('cfg-dpref').value='';}
+/* Due elenchi: date per principianti e lunedì per non principianti. Sceglierne uno svuota l'altro
+   e segna il livello nel modulo d'iscrizione. */
+function scegliInizio(sel,altro,principiante){
+  $(altro).value='';S.inizio=sel.value?fromIso(sel.value):null;
+  var liv=principiante?T.principiante:T.studiato;
+  if(sel.value)document.querySelectorAll('input[name="cfg-livello"]').forEach(function(r){r.checked=r.value===liv;});
   aggiorna();
-});
-$('cfg-cd').addEventListener('change',function(){
-  var v=this.value;S.inizio=null;
-  if(v){var d=fromIso(v);if(d.getDay()!==1){alert(T.solo_lunedi);this.value='';}else S.inizio=d;}
-  aggiorna();
-});
+}
+$('cfg-startsel').addEventListener('change',function(){scegliInizio(this,'cfg-startnon',true);});
+$('cfg-startnon').addEventListener('change',function(){scegliInizio(this,'cfg-startsel',false);});
 $('cfg-dpref').addEventListener('change',function(){S.inizio=this.value?fromIso(this.value):null;aggiorna();});
 
 /* Fine corso = venerdì dell'ultima settimana. Le chiusure non spostano la data. */
