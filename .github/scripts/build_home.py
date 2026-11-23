@@ -216,6 +216,10 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            # mobile card: a line, then "NON PRINCIPIANTI" in the same type as the card title
            # and "Ogni lunedì" in the same type as the date
            ".elementor-element-bad613d .ali-ni-blocco{border-top:1px solid #f0eae5;margin:22px -10px 0!important;padding:20px 10px 0}"
+           # the title and the date are one block (label + value, like "Non principianti" +
+           # "Ogni lunedì"): no line between them, lines only between blocks
+           ".elementor-element-d5f16a7>.elementor-widget-container{border-top:0!important;padding-top:0!important}"
+           ".elementor-element-7d1ae85{margin-bottom:6px!important}"
            # the lines reach the card edges like the other two, so the wrapper must not clip them
            ".elementor-element-bad613d .elementor-testimonial-wrapper{overflow:visible}"
            # "other dates" is for everyone, so it gets its own block
