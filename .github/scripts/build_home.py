@@ -179,6 +179,8 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            # the sentence on one line from 1400px up
            ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:20px clamp(18px,2.4vw,44px)!important}"
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{letter-spacing:.16em}"
+           # the label ("Prossimo inizio per principianti") may take two lines
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{white-space:normal;max-width:11em;line-height:1.1}"
            ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:30px!important}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:24px!important}"
            "@media(min-width:1400px){.elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{white-space:nowrap}}"
