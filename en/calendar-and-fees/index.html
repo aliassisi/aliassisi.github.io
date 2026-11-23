@@ -1007,15 +1007,16 @@ padding-right: 30px;
             <option value="2027-09-20">September 20th, 2027</option>
             <option value="2027-10-18">October 18th, 2027</option>
             <option value="2027-11-15">November 15th, 2027</option>
-            <option value="custom">Different date…</option>
           </select>
         </div>
-        <div class="dw-field" id="dw-cf" style="display:none">
-          <label>Custom Monday start</label>
-          <input type="date" id="dw-cd" onchange="onCD()">
+        <div class="dw-field">
+          <label>Start dates for non-beginners</label>
+          <select id="dw-startnon" onchange="onSN()">
+            <option value="">— Select —</option>
+          </select>
         </div>
       </div>
-      <p class="dw-sub" style="margin:8px 0 0">Non-beginners can start any Monday.</p>
+      <p class="dw-sub" style="margin:8px 0 0">If you have studied Italian before, you can start any Monday the school is open. Lessons run Monday to Friday.</p>
     </div>
 
     <div class="dw-sec">
@@ -1101,19 +1102,21 @@ function fmtD(d){
   var n=d.getDate(),s=n===1||n===21||n===31?'st':n===2||n===22?'nd':n===3||n===23?'rd':'th';
   return M[d.getMonth()]+' '+n+s+', '+d.getFullYear();
 }
+/* Weeks run Monday to Friday. A week with the school closed every day does not count:
+   the course carries on after the break. The end is the last lesson day of the last week. */
 function calcEnd(start,weeks){
-  var d=new Date(start),cmap={},wc=0;
-  while(wc<weeks){
+  var d=new Date(start),cmap={},wc=0,skipped=0,end=null;
+  while(wc<weeks&&skipped<60){
+    var last=null;
     for(var day=0;day<5;day++){
       var dd=new Date(d);dd.setDate(d.getDate()+day);
       var cl=isCl(dd);
-      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}
+      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}else last=dd;
     }
-    wc++;
+    if(last){end=last;wc++;}else skipped++;
     d.setDate(d.getDate()+7);
   }
-  var end=new Date(d);end.setDate(end.getDate()-3);
-  return{end:end,cmap:cmap};
+  return{end:end,cmap:cmap,skipped:skipped};
 }
 function getTiers(){return LS===18?TS:LS===22?TI:TSI;}
 function getCourse(){
@@ -1147,8 +1150,8 @@ window.onCalc=function(){
   var ck=Object.keys(res.cmap),cwrap=document.getElementById('dw-cw');
   if(ck.length){
     var h='<div class="dw-warn"><div class="dw-warn-t"><i class="ti ti-alert-triangle" style="font-size:13px"></i> School closure days within your stay</div><ul>';
-    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' day'+(res.cmap[k]>1?'s':'')+' (the course is not extended)</li>';});
-    cwrap.innerHTML=h+'</ul></div>';
+    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' day'+(res.cmap[k]>1?'s':'')+' without lessons</li>';});
+    cwrap.innerHTML=h+'</ul>'+(res.skipped?'<p style="font-size:12px;font-weight:600;color:#8a5a1e;margin:6px 0 0">Weeks when the school is closed do not count: your course carries on after the break.</p>':'')+'</div>';
   } else cwrap.innerHTML='';
 };
 window.selL=function(n){
@@ -1160,19 +1163,31 @@ window.selL=function(n){
 };
 window.onSS=function(){
   var v=document.getElementById('dw-startsel').value;
-  document.getElementById('dw-cf').style.display=v==='custom'?'flex':'none';
-  if(v&&v!=='custom'){var p=v.split('-');SD=new Date(+p[0],+p[1]-1,+p[2]);}
-  else if(v!=='custom')SD=null;
+  document.getElementById('dw-startnon').value='';
+  if(v){var p=v.split('-');SD=new Date(+p[0],+p[1]-1,+p[2]);}else SD=null;
   onCalc();
 };
-window.onCD=function(){
-  var v=document.getElementById('dw-cd').value;
-  if(v){
-    var p=v.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);
-    if(d.getDay()!==1){alert('Please select a Monday — courses start on Monday.');return;}
-    SD=d;onCalc();
-  }
+window.onSN=function(){
+  var v=document.getElementById('dw-startnon').value;
+  document.getElementById('dw-startsel').value='';
+  if(v){var p=v.split('-');SD=new Date(+p[0],+p[1]-1,+p[2]);}else SD=null;
+  onCalc();
 };
+/* Non-beginners: every Monday the school is open, from today to the end of the data. */
+(function(){
+  var sel=document.getElementById('dw-startnon'),d=new Date();d.setHours(0,0,0,0);
+  var last=new Date(d);
+  CL.forEach(function(c){var t=md(c.to[0],c.to[1],c.to[2]);if(t>last)last=t;});
+  [].forEach.call(document.getElementById('dw-startsel').options,function(o){
+    if(/^\d{4}-/.test(o.value)){var p=o.value.split('-'),t=new Date(+p[0],+p[1]-1,+p[2]);if(t>last)last=t;}
+  });
+  d.setDate(d.getDate()+(8-d.getDay())%7);
+  for(;d<=last;d.setDate(d.getDate()+7)){
+    if(isCl(d))continue;
+    var o=document.createElement('option'),m=d.getMonth()+1,g=d.getDate();
+    o.value=d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(g<10?'0':'')+g;o.textContent=fmtD(d);sel.appendChild(o);
+  }
+})();
 window.dwReq=function(){
   if(!SD||!LS)return;
   var w=Math.max(1,Math.min(48,parseInt(document.getElementById('dw-weeks').value)||1));
