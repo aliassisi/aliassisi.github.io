@@ -72,6 +72,7 @@
 .cfg-chip.dragging{opacity:.35;cursor:grabbing}
 .cfg-chip .chip-icon{font-size:16px;color:#999;flex-shrink:0}
 .cfg-chip .chip-name{flex:1;min-width:0;overflow-wrap:anywhere;color:#222;font-weight:500;font-size:14px}
+.cfg-chip .chip-nota{display:block;color:#666;font-weight:400;font-size:13px;line-height:1.35}
 .cfg-chip .chip-price{color:#888;font-size:13px;white-space:nowrap}
 .cfg-chip .chip-rm{font-size:14px;color:#aaa;cursor:pointer;padding:0 2px;flex-shrink:0}
 .cfg-chip .chip-rm:hover{color:#e05454}
