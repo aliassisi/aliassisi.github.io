@@ -175,15 +175,14 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            ".elementor-element-2c917f6 .elementor-element-15f1e8c{flex:1 1 auto;min-width:0}"
            ".elementor-element-2c917f6 .elementor-heading-title,.elementor-element-2c917f6 .elementor-button{white-space:nowrap}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{white-space:normal}"
-           # breathing room: same side padding in every column, smaller label and date,
-           # the sentence on one line from 1400px up
+           # breathing room: same side padding in every column, smaller label and date;
+           # the sentence wraps when it does not fit
            ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:20px clamp(18px,2.4vw,44px)!important}"
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{letter-spacing:.16em}"
            # the label ("Prossimo inizio per principianti") may take two lines
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{white-space:normal;max-width:11em;line-height:1.1}"
            ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:30px!important}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:24px!important}"
-           "@media(min-width:1400px){.elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{white-space:nowrap}}"
            "</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
         + ",M=" + json.dumps(MESI[lang], ensure_ascii=False) + ",L=" + json.dumps(lang) \
