@@ -502,7 +502,7 @@ function aggiungiExtra(id){if(S.extra.indexOf(id)<0)S.extra.push(id);aggiorna();
 function extra(id){return D.extra.filter(function(e){return e.id===id;})[0];}
 function chip(e,togli){
   var ch=document.createElement('div');ch.className='cfg-chip';
-  ch.innerHTML='<i class="ti '+e.icona+' chip-icon"></i><span class="chip-name">'+esc(e.nome)+'</span><span class="chip-price">'+eur(e.prezzo)+'</span>'+
+  ch.innerHTML='<i class="ti '+e.icona+' chip-icon"></i><span class="chip-name">'+esc(e.nome)+(e.nota?'<span class="chip-nota">'+esc(e.nota)+'</span>':'')+'</span><span class="chip-price">'+eur(e.prezzo)+'</span>'+
     (togli?'<button type="button" class="chip-rm" title="'+T.togli+'" aria-label="'+T.togli+'"><i class="ti ti-x"></i></button>':'');
   return ch;
 }
@@ -549,7 +549,7 @@ function voci(){
     var a=alloggio();
     if(a.id==='nessuno')v.push([T.nessun_alloggio,'',null]);
     else v.push([a.nome+(a.camere.length?' · '+camera().nome:''),settimane(w)+', '+T.stima,prezzoAlloggioScelto(w)]);
-    S.extra.forEach(function(id){var e=extra(id);v.push([e.nome,'',e.prezzo]);});
+    S.extra.forEach(function(id){var e=extra(id);v.push([e.nome,e.nota,e.prezzo]);});
   }
   return v;
 }
@@ -631,7 +631,7 @@ function iscrizione(){
     inizio:a?iso(a):null,fine:b?iso(b):null,
     alloggio:inSede(c)&&S.alloggio!=='nessuno'?alloggio().nome+(alloggio().camere.length?' · '+camera().nome:''):null,
     settimane_alloggio:inSede(c)&&S.alloggio!=='nessuno'?settAlloggio():null,
-    extra:S.extra.map(function(id){return extra(id).nome;}),
+    extra:S.extra.map(function(id){var e=extra(id);return e.nome+(e.nota?' ('+e.nota+')':'');}),
     voci:voci(),totale:totale(),
     nome:valore('cfg-nome'),cognome:valore('cfg-cognome'),email:valore('cfg-email'),
     telefono:valore('cfg-tel'),nascita:valore('cfg-nascita'),nazionalita:valore('cfg-naz'),
