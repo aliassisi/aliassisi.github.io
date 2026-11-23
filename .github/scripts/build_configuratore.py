@@ -104,7 +104,8 @@ def dati(ali, cfg, lingua):
             "id": a["id"], "icona": a["icona"], "prezzi": a.get("prezzi"), **a[lingua],
             "camere": [{"id": r["id"], "prezzi": r["prezzi"], **r[lingua]} for r in a.get("camere", [])],
         } for a in cfg["alloggi"]],
-        "extra": [{"id": e["id"], "icona": e["icona"], "prezzo": e["prezzo"], "nome": e[lingua]}
+        "extra": [{"id": e["id"], "icona": e["icona"], "prezzo": e["prezzo"], "nome": e[lingua],
+                   "nota": e.get("nota", {}).get(lingua, "")}
                   for e in cfg["extra"]],
         "attivita_settimanali": [testo(a, lingua) for a in cfg["attivita_settimanali"]],
         "attivita": [{"nome": a[lingua], "date": a["date"]} for a in cfg["attivita"]],
