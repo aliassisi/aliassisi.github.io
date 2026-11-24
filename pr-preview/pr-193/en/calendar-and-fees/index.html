@@ -1102,21 +1102,19 @@ function fmtD(d){
   var n=d.getDate(),s=n===1||n===21||n===31?'st':n===2||n===22?'nd':n===3||n===23?'rd':'th';
   return M[d.getMonth()]+' '+n+s+', '+d.getFullYear();
 }
-/* Weeks run Monday to Friday. A week with the school closed every day does not count:
-   the course carries on after the break. The end is the last lesson day of the last week. */
 function calcEnd(start,weeks){
-  var d=new Date(start),cmap={},wc=0,skipped=0,end=null;
-  while(wc<weeks&&skipped<60){
-    var last=null;
+  var d=new Date(start),cmap={},wc=0;
+  while(wc<weeks){
     for(var day=0;day<5;day++){
       var dd=new Date(d);dd.setDate(d.getDate()+day);
       var cl=isCl(dd);
-      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}else last=dd;
+      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}
     }
-    if(last){end=last;wc++;}else skipped++;
+    wc++;
     d.setDate(d.getDate()+7);
   }
-  return{end:end,cmap:cmap,skipped:skipped};
+  var end=new Date(d);end.setDate(end.getDate()-3);
+  return{end:end,cmap:cmap};
 }
 function getTiers(){return LS===18?TS:LS===22?TI:TSI;}
 function getCourse(){
@@ -1150,8 +1148,8 @@ window.onCalc=function(){
   var ck=Object.keys(res.cmap),cwrap=document.getElementById('dw-cw');
   if(ck.length){
     var h='<div class="dw-warn"><div class="dw-warn-t"><i class="ti ti-alert-triangle" style="font-size:13px"></i> School closure days within your stay</div><ul>';
-    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' day'+(res.cmap[k]>1?'s':'')+' without lessons</li>';});
-    cwrap.innerHTML=h+'</ul>'+(res.skipped?'<p style="font-size:12px;font-weight:600;color:#8a5a1e;margin:6px 0 0">Weeks when the school is closed do not count: your course carries on after the break.</p>':'')+'</div>';
+    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' day'+(res.cmap[k]>1?'s':'')+' (the course is not extended)</li>';});
+    cwrap.innerHTML=h+'</ul></div>';
   } else cwrap.innerHTML='';
 };
 window.selL=function(n){
