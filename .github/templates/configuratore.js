@@ -32,6 +32,7 @@ var T=IT?{
   extra:'Servizi extra: trascinali nella tua selezione (o toccali per aggiungerli)',
   disponibili:'Disponibili',scelti:'Scelti',trascina:'Trascina qui i servizi',togli:'Togli',
   chiusure:'Giorni di chiusura della scuola nel periodo',giorno_chiuso:'giorno senza lezioni',giorni_chiusi:'giorni senza lezioni',
+  sett_saltate:'Le settimane in cui la scuola è chiusa non contano: il corso riprende dopo la pausa.',
   incluse:'Incluso ogni settimana del corso',speciali:'Attività speciali durante il soggiorno',
   nessuna_attivita:'In queste date non ci sono attività speciali.',
   riepilogo:'Riepilogo dei costi',fine:'Fine',scegli_data:'Scegli una data di inizio',
@@ -98,6 +99,7 @@ var T=IT?{
   extra:'Extra services: drag them into your selection (or tap to add)',
   disponibili:'Available',scelti:'Selected',trascina:'Drag services here',togli:'Remove',
   chiusure:'School closure days in your stay',giorno_chiuso:'day without lessons',giorni_chiusi:'days without lessons',
+  sett_saltate:'Weeks when the school is closed do not count: your course carries on after the break.',
   incluse:'Included every week of your course',speciali:'Special activities during your stay',
   nessuna_attivita:'No special activities are scheduled in these dates.',
   riepilogo:'Cost summary',fine:'End',scegli_data:'Select a start date',
@@ -390,7 +392,9 @@ $('cfg-startsel').addEventListener('change',function(){scegliInizio(this,'cfg-st
 $('cfg-startnon').addEventListener('change',function(){scegliInizio(this,'cfg-startsel',false);});
 $('cfg-dpref').addEventListener('change',function(){S.inizio=this.value?fromIso(this.value):null;aggiorna();});
 
-/* Fine corso = venerdì dell'ultima settimana. Le chiusure non spostano la data (termini e condizioni). */
+/* Fine corso: si contano le settimane da lunedì a venerdì. Una settimana con la scuola chiusa
+   tutti i giorni non conta e il corso riprende dopo. La fine è l'ultimo giorno di lezione
+   dell'ultima settimana (di solito il venerdì). Le chiusure di qualche giorno non spostano la data. */
 function periodo(inizio,fine){
   var chiuse=[];
   D.chiusure.forEach(function(c){
@@ -408,7 +412,18 @@ function fineCorso(){
   var c=C();
   if(c.tipo==='pacchetto')return fromIso(c.al);
   if(c.tipo!=='settimane'||!S.inizio)return null;
-  var f=new Date(S.inizio);f.setDate(f.getDate()+(S.settimane-1)*7+4);return f;
+  return settimaneCorso(S.inizio,S.settimane).fine;
+}
+/* Conta n settimane con almeno un giorno di lezione dal lunedì "inizio". saltate = settimane chiuse in mezzo. */
+function settimaneCorso(inizio,n){
+  var lun=new Date(inizio),fine=null,saltate=0;
+  for(var k=0;n>0&&k<200;k++){
+    var ultimo=null;
+    for(var g=0;g<5;g++){var d=new Date(lun);d.setDate(d.getDate()+g);if(!chiuso(d))ultimo=d;}
+    if(ultimo){fine=ultimo;n--;}else saltate++;
+    lun.setDate(lun.getDate()+7);
+  }
+  return {fine:fine,saltate:saltate};
 }
 function inizio(){var c=C();return c.tipo==='pacchetto'?fromIso(c.dal):S.inizio;}
 function settAlloggio(){
@@ -426,7 +441,7 @@ function renderSoggiorno(){
   if(p.chiuse.length){
     h+='<div class="cfg-warn"><div class="cfg-warn-t"><i class="ti ti-alert-triangle" style="font-size:13px"></i> '+T.chiusure+'</div><ul>';
     p.chiuse.forEach(function(x){h+='<li>· '+esc(x.nome)+': '+esc(iso(x.dal)===iso(x.al)?breve(x.dal):breve(x.dal)+' – '+breve(x.al))+' ('+x.n+' '+(x.n===1?T.giorno_chiuso:T.giorni_chiusi)+')</li>';});
-    h+='</ul></div>';
+    h+='</ul>'+(settimaneCorso(a,S.settimane).saltate?'<p class="cfg-warn-p">'+T.sett_saltate+'</p>':'')+'</div>';
   }
   h+='<h4>'+T.incluse+'</h4><div class="cfg-weekly"><ul class="cfg-act-list">';
   D.attivita_settimanali.forEach(function(w){h+='<li>1 × '+esc(w)+'</li>';});
