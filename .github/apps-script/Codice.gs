@@ -45,7 +45,10 @@ var COLONNE = [
   // Lo sconto deciso dallo staff, e arrivo/partenza quando sono diversi dalle date del corso.
   ['sconto', 'Sconto (€)'], ['arrivo', 'Arrivo ad Assisi'], ['partenza', 'Partenza da Assisi'],
   // Per gli insegnanti: cosa ripetere, ripassare, a cosa fare attenzione (si scrive anche dal calendario).
-  ['note_lezioni', 'Note per le lezioni']
+  ['note_lezioni', 'Note per le lezioni'],
+  // Campi che il vecchio modulo chiedeva (li scrive lo staff) e da dove viene un'iscrizione importata.
+  ['allergie', 'Allergie'], ['difficolta', 'Difficoltà di apprendimento'], ['religioso', 'Religioso/a'], ['sesso', 'M/F (per l’alloggio)'],
+  ['disponibilita', 'Giorni e orari preferiti'], ['fuso', 'Fuso orario'], ['motivo_sconto', 'Motivo dello sconto'], ['importata', 'Importata da']
 ];
 var DATE = ['inizio', 'fine', 'nascita', 'scadenza_passaporto', 'arrivo', 'partenza'];
 
@@ -159,9 +162,15 @@ function scriviRiga(id, x, link) {
   var foglio = SpreadsheetApp.getActive().getSheetByName('Iscrizioni');
   var r = foglio.getLastRow() + 1;
   var riga = COLONNE.map(function (c) { var k = c[0]; return (v[k] === undefined || v[k] === null) ? '' : v[k]; });
+  colonneBastanti(foglio, riga.length);
+  righeBastanti(foglio, r);
   foglio.getRange(r, 1, 1, riga.length).setValues([riga]);
   formulePagamenti(foglio, r, r);
 }
+
+/* Un foglio nuovo ha 26 colonne e 1000 righe: se non bastano si aggiungono. */
+function colonneBastanti(s, n) { riservato(); if (s.getMaxColumns() < n) s.insertColumnsAfter(s.getMaxColumns(), n - s.getMaxColumns()); }
+function righeBastanti(s, n) { riservato(); if (s.getMaxRows() < n) s.insertRowsAfter(s.getMaxRows(), n - s.getMaxRows()); }
 
 /* Pagato e Da pagare delle righe da r1 a r2.
    In un foglio in italiano una formula con le virgole può dare "Errore di analisi della formula":
@@ -274,6 +283,7 @@ function configura() {
   ss.setSpreadsheetTimeZone('Europe/Rome');
 
   var isc = ss.getSheetByName('Iscrizioni') || ss.insertSheet('Iscrizioni', 0);
+  colonneBastanti(isc, COLONNE.length);
   isc.getRange(1, 1, 1, COLONNE.length).setValues([COLONNE.map(function (c) { return c[1]; })])
     .setFontWeight('bold').setBackground('#2b3a7a').setFontColor('#ffffff');
   isc.setFrozenRows(1);
