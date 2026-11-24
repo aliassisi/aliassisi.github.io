@@ -50,7 +50,8 @@ SCHEMI.Eventi = [['id', 'ID'], ['tipo', 'Tipo'], ['nome', 'Nome'], ['nome_en', '
 SCHEMI.Partecipanti = [['evento', 'Evento'], ['iscrizione', 'N. iscrizione']];
 var TIPI_EVENTO = [['chiusura', 'Chiusura'], ['laboratorio', 'Laboratorio'], ['attivita', 'Attività']];
 var TIPI_ALLOGGIO = [['singola', 'Camera singola'], ['singola_bagno', 'Camera singola con bagno'], ['doppia', 'Camera doppia'],
-  ['doppia_bagno', 'Camera doppia con bagno'], ['indipendente', 'Appartamento indipendente']];
+  ['doppia_bagno', 'Camera doppia con bagno'], ['indipendente', 'Appartamento indipendente'],
+  ['monastero', 'Monastero / casa religiosa'], ['hotel', 'Hotel / B&B'], ['altro', 'Altro']];
 var CHIAVI_DATA = ['inizio', 'fine', 'dal', 'al', 'data', 'arrivo', 'partenza', 'scadenza', 'nascita', 'scadenza_passaporto', 'ricevuta', 'modificato', 'aggiornata'];
 
 /* Le impostazioni che la pagina può leggere e cambiare (il token di Fatture in Cloud si scrive ma non si rilegge). */
@@ -99,7 +100,7 @@ var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaCla
   'salvaLezione', 'eliminaLezione', 'creaPrivato', 'pianificaLezioni', 'mandaCalendario', 'mandaLink', 'annullaLezione', 'recuperaLezione',
   'creaDocumenti', 'sincronizzaFIC', 'abbinaFattura', 'mandaPromemoria', 'attivaInvii', 'emailClasse', 'salvaImpostazioni',
   'salvaAlloggio', 'eliminaAlloggio', 'prenotaAlloggio', 'togliSoggiorno', 'mandaAlloggio',
-  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento', 'datiProforma', 'creaProforma'];
+  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento', 'datiProforma', 'creaProforma', 'anteprimaImport', 'importaVecchioFoglio'];
 
 function utente() {
   if (UTENTE) return UTENTE;
@@ -297,6 +298,7 @@ function intestazioni() {
   Object.keys(SCHEMI).concat(['Iscrizioni']).forEach(function (nome) {
     var s = ss.getSheetByName(nome), cols = schema(nome);
     if (!s) { s = ss.insertSheet(nome); s.setFrozenRows(1); }
+    colonneBastanti(s, cols.length);
     if (s.getRange(1, cols.length).getValue() === cols[cols.length - 1][1]) return;
     s.getRange(1, 1, 1, cols.length).setValues([cols.map(function (c) { return c[1]; })])
       .setFontWeight('bold').setBackground('#3d5570').setFontColor('#ffffff');
@@ -331,7 +333,8 @@ function carica() {
 
 /* I campi dell'iscrizione che lo staff può cambiare dalla scheda (quasi tutti: non il numero, la data di
    ricezione, il totale stimato del sito, le formule dei pagamenti, il file del passaporto). */
-var CAMPI_STAFF = ['stato', 'prezzo', 'sconto', 'livello_finale', 'note_staff', 'note_lezioni', 'inizio', 'fine', 'arrivo', 'partenza', 'livello',
+var CAMPI_STAFF = ['stato', 'prezzo', 'sconto', 'motivo_sconto', 'allergie', 'difficolta', 'religioso', 'sesso', 'disponibilita', 'fuso',
+  'livello_finale', 'note_staff', 'note_lezioni', 'inizio', 'fine', 'arrivo', 'partenza', 'livello',
   'telefono', 'email', 'settimane', 'lezioni_totali', 'nome', 'cognome', 'corso_nome', 'tema', 'formula', 'alloggio', 'settimane_alloggio',
   'extra', 'nascita', 'nazionalita', 'luogo_nascita', 'lingua', 'visto', 'passaporto', 'scadenza_passaporto', 'pagamento',
   'f_intestatario', 'f_ente', 'f_indirizzo', 'f_cap', 'f_citta', 'f_paese', 'f_cf', 'f_piva', 'f_sdi', 'f_email'];
@@ -350,6 +353,8 @@ function salvaIscrizione(id, campi) {
       if (k === 'stato' && STATI.indexOf(x) < 0) throw new Error('Stato non valido');
       if (k === 'lingua' && ['it', 'en'].indexOf(x) < 0) throw new Error('Lingua non valida');
       if (k === 'f_intestatario' && ['Studente', 'Ente'].indexOf(x) < 0) throw new Error('Intestatario non valido');
+      if (k === 'sesso' && ['', 'M', 'F'].indexOf(x) < 0) throw new Error('M/F non valido');
+      if (k === 'religioso' && ['', 'sì', 'no'].indexOf(x) < 0) throw new Error('Religioso/a: sì o no');
       if ((k === 'nome' || k === 'cognome') && !String(x).trim()) throw new Error('Nome e cognome non possono essere vuoti');
       if (k === 'email' && x && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x)) throw new Error('Email non valida');
       if (CAMPI_GIORNO.indexOf(k) >= 0 && x && !/^\d{4}-\d{2}-\d{2}$/.test(x)) throw new Error('Data non valida: ' + k);
@@ -939,7 +944,7 @@ function settimanali() {
 
 /* Uno studente dei corsi di gruppo (non solo lezioni individuali o online). */
 function inGruppo(v) {
-  return !v.formula && !/privat|individ|online/i.test(String(v.corso_nome) + ' ' + String(v.tema));
+  return !v.formula && !/privat|indiv|online|^\s*(duo|trio)\s*$/i.test((String(v.corso_nome || '') + ' ' + String(v.tema || '')).trim());
 }
 
 function chiave(e) { return e.tipo + '|' + normale(e.nome) + '|' + e.dal; }
@@ -1069,6 +1074,188 @@ function emailEvento(evento, chi, oggetto, corpo) {
   var d = carica();
   d.inviate = n;
   return d;
+}
+
+/* ---------- IMPORTA DAL VECCHIO FOGLIO ---------- */
+/* Porta nel gestionale gli studenti del foglio usato prima ("MODULO ALIASSISI_nuovo (Risposte)"):
+   - Presenze AAAA: chi è in corso o deve arrivare;
+   - Corsi terminati AAAA: chi ha finito (Conclusa).
+   Dalle risposte del vecchio modulo prende i recapiti e, solo per chi non ha ancora finito, allergie,
+   difficoltà e (se chiede un alloggio) M/F. Il vecchio foglio si legge soltanto: non si cambia niente.
+   Si può rilanciare: chi c'è già (stessa email, o stesso nome, e stesso inizio) non si ripete. */
+
+/* Una cella di data (o un testo gg/mm/aaaa, aaaa-mm-gg) come aaaa-mm-gg; "" se non si capisce. */
+function giornoDaCella(v) {
+  if (v instanceof Date) return isNaN(v) ? '' : Utilities.formatDate(v, fusoOrario(), 'yyyy-MM-dd');
+  var s = String(v || '').trim(), m;
+  if ((m = s.match(/^(\d{4})-(\d{2})-(\d{2})/))) return m[1] + '-' + m[2] + '-' + m[3];
+  if ((m = s.match(/^(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})$/)) && +m[2] <= 12 && +m[1] <= 31) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
+  return '';
+}
+function siNo(v) { return /^(s[iì]|yes|true|1(\.0)?)$/i.test(String(v === true ? 'si' : v || '').trim()); }
+function pulito(v) { return v === null || v === undefined ? '' : String(v).replace(/\s+/g, ' ').trim(); }
+/* "No", "nessuna", "n/a"… non sono un'informazione. */
+function senzaNulla(v) {
+  var s = pulito(v);
+  return /^(no|none|nessun[ao]?|n\/?a|nil|niente|nothing|nulla|nope|nein|non|not applicable|no,? (thank you|grazie)|[-\/.x0]+)[.!]*$/i.test(s) ? '' : s;
+}
+
+/* La posizione di ogni colonna che serve, dal testo dell'intestazione (la prima che corrisponde). */
+function colonneDa(testata, cerca) {
+  var o = {}, t = testata.map(function (x) { return pulito(x).toLowerCase(); });
+  Object.keys(cerca).forEach(function (k) {
+    o[k] = -1;
+    for (var i = 0; i < t.length; i++) if (t[i] && cerca[k].test(t[i])) { o[k] = i; break; }
+  });
+  return o;
+}
+
+var COL_PRESENZE = {nome: /^nome$/, cognome: /^cognome$/, email: /^email$/, nazionalita: /^nazionalit/, princ: /^princ/, religioso: /^religios/,
+  inizio: /^inizio$/, fine: /^fine$/, settimane: /^n°? ?sett/, documento: /^prev/, pagato: /^pagato$/, note: /^note$/, corso: /^corso 1$/};
+var COL_RISPOSTE = {quando: /^informazioni cronologiche/, email: /^indirizzo email/, nome: /^nome \/ name/, cognome: /^cognome \/ surname/,
+  indirizzo: /^indirizzo \/ address/, cap: /^cap \/ zip/, citta: /^città \/ city/, paese: /^nazione \/ country/, nascita: /^data di nascita/,
+  luogo: /^luogo di nascita \(città\)/, telefono: /^numero di telefono/, sesso: /^m ?\/ ?f$/, alloggio_si: /^vorrei prenotare una sistemazione/,
+  alloggio: /^vorrei prenotare \/ i would like to book$/, note: /^note \/ notes/, difficolta: /difficoltà di apprendimento/, allergie: /allergi/,
+  pagamento: /^preferisco pagare/, fattura: /^preferisco ricevere una fattura/, modo: /^sono interessato/, fuso: /ore di differenza/,
+  giorni: /giorni della settimana sei disponibile/, orario: /^che orario preferisci/, visto: /motivi di studio|study visa/, sconto: /^codice sconto/};
+
+/* Le risposte del vecchio modulo, per email. */
+function risposteVecchie(ss) {
+  var per = {};
+  ss.getSheets().forEach(function (f) {
+    var n = f.getLastRow(); if (n < 2) return;
+    var v = f.getRange(1, 1, n, f.getLastColumn()).getValues(), c = colonneDa(v[0], COL_RISPOSTE);
+    if (c.quando < 0 || c.email < 0) return;
+    v.slice(1).forEach(function (r) {
+      var email = normaleEmail(r[c.email]);
+      if (!email) return;
+      var o = {quando: giornoDaCella(r[c.quando])};
+      Object.keys(c).forEach(function (k) { if (k !== 'quando') o[k] = c[k] < 0 ? '' : r[c[k]]; });
+      (per[email] = per[email] || []).push(o);
+    });
+  });
+  return per;
+}
+
+/* La risposta giusta per un corso: l'ultima arrivata prima dell'inizio, se no l'ultima. */
+function rispostaPer(lista, inizio) {
+  if (!lista || !lista.length) return null;
+  var l = lista.slice().sort(function (a, b) { return a.quando < b.quando ? -1 : 1; });
+  var prima = inizio ? l.filter(function (x) { return x.quando && x.quando <= inizio; }) : [];
+  return prima.length ? prima[prima.length - 1] : l[l.length - 1];
+}
+
+function chiaveImport(email, nome, cognome, inizio) { return (normaleEmail(email) || normale(nome + ' ' + cognome)) + '|' + (inizio || ''); }
+
+/* Legge il vecchio foglio e prepara le iscrizioni da aggiungere, senza scrivere niente. */
+function leggiVecchioFoglio(link, conclusi) {
+  riservato();
+  var id = idDaLink(link);
+  if (!id) throw new Error('Incolla il link del vecchio foglio Google');
+  if (id === SpreadsheetApp.getActive().getId()) throw new Error('Questo è il foglio del gestionale: serve il link del foglio vecchio.');
+  var ss;
+  try { ss = SpreadsheetApp.openById(id); } catch (e) {
+    throw new Error('Non riesco ad aprire il foglio: dev’essere un Foglio Google (non un file Excel) condiviso con ' + EMAIL_STAFF + '.');
+  }
+  var gia = {}, oggi = oggiIso(), risposte = risposteVecchie(ss);
+  leggi('Iscrizioni').forEach(function (v) {
+    gia[chiaveImport(v.email, v.nome, v.cognome, v.inizio)] = true;
+    gia[chiaveImport('', v.nome, v.cognome, v.inizio)] = true;
+  });
+  var e = {nuovi: [], attivi: 0, conclusi: 0, gia: 0, controllare: [], schede: []};
+  // Prima le Presenze, poi i Corsi terminati: se uno è in tutti e due, vale la prima volta.
+  var fogli = ss.getSheets().filter(function (f) { return /^presenze\s+\d{4}$/i.test(f.getName().trim()); })
+    .concat(conclusi ? ss.getSheets().filter(function (f) { return /^corsi terminati\s+\d{4}$/i.test(f.getName().trim()); }) : []);
+  fogli.forEach(function (f) {
+    var n = f.getLastRow(); if (n < 2) return;
+    var v = f.getRange(1, 1, n, f.getLastColumn()).getValues(), c = colonneDa(v[0], COL_PRESENZE);
+    if (c.nome < 0 || c.cognome < 0 || c.inizio < 0) return;
+    var terminati = /^corsi terminati/i.test(f.getName().trim()), contati = 0;
+    v.slice(1).forEach(function (r, i) {
+      var val = function (k) { return c[k] < 0 ? '' : r[c[k]]; };
+      var nome = pulito(val('nome')), cognome = pulito(val('cognome'));
+      if (!nome && !cognome) return;
+      contati++;
+      var dove = f.getName() + ', riga ' + (i + 2);
+      var email = normaleEmail(val('email')), inizio = giornoDaCella(val('inizio')), fine = giornoDaCella(val('fine'));
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = '';
+      if (!nome || !cognome) { e.controllare.push(dove + ': manca nome o cognome, non si importa'); return; }
+      if (!inizio) { e.controllare.push(dove + ': data di inizio non leggibile, non si importa'); return; }
+      var k = chiaveImport(email, nome, cognome, inizio), k2 = chiaveImport('', nome, cognome, inizio);
+      if (gia[k] || gia[k2]) { e.gia++; return; }
+      gia[k] = gia[k2] = true;
+      if (!fine) e.controllare.push(dove + ': data di fine non leggibile, si importa senza fine');
+      if (fine && fine < inizio) { e.controllare.push(dove + ': la fine viene prima dell’inizio, si importa senza fine'); fine = ''; }
+      if (!email) e.controllare.push(dove + ': manca l’email');
+      var pagato = siNo(val('pagato')), finito = fine ? fine < oggi : terminati;
+      var ris = rispostaPer(risposte[email], inizio) || {};
+      var sett = parseInt(val('settimane'), 10);
+      var vuole = siNo(String(pulito(ris.alloggio_si)).split('/')[0]);
+      var doc = pulito(val('documento')).replace(/\.$/, '').toLowerCase();
+      var note = ['Dal vecchio foglio (' + f.getName() + ')', doc ? 'documento: ' + ({pro: 'proforma', fatt: 'fattura', prev: 'preventivo'}[doc] || doc) : '',
+        'pagato: ' + (pagato ? 'sì' : 'no'), pulito(val('note'))].filter(String).join(' · ');
+      var x = {
+        ricevuta: ris.quando || inizio, stato: finito ? 'Conclusa' : inizio <= oggi ? 'In corso' : pagato ? 'Pagata' : 'Confermata',
+        corso_nome: pulito(val('corso')) || 'Corso', settimane: sett > 0 && sett < 100 ? sett : '', inizio: inizio, fine: fine,
+        nome: nome, cognome: cognome, email: email, nazionalita: pulito(val('nazionalita')),
+        lingua: /ital/i.test(pulito(val('nazionalita'))) ? 'it' : 'en',
+        livello: siNo(val('princ')) ? 'Principiante' : /^no/i.test(pulito(val('princ'))) ? 'Non principiante' : '',
+        religioso: siNo(val('religioso')) ? 'sì' : /^(0(\.0)?|no)$/i.test(pulito(val('religioso'))) ? 'no' : '',
+        telefono: pulito(ris.telefono), nascita: giornoDaCella(ris.nascita), luogo_nascita: pulito(ris.luogo),
+        f_indirizzo: pulito(ris.indirizzo), f_cap: pulito(ris.cap).replace(/\.0$/, ''), f_citta: pulito(ris.citta), f_paese: pulito(ris.paese),
+        pagamento: pulito(ris.pagamento), note_staff: note, importata: f.getName()
+      };
+      if (!finito) {
+        // Dati delicati o utili solo adesso: per chi ha già finito non si portano.
+        x.allergie = senzaNulla(ris.allergie); x.difficolta = senzaNulla(ris.difficolta); x.note = senzaNulla(ris.note);
+        x.alloggio = vuole ? (pulito(ris.alloggio) || 'Da definire') : '';
+        x.sesso = vuole && /^[mf]$/i.test(pulito(ris.sesso)) ? pulito(ris.sesso).toUpperCase() : '';
+        x.fuso = pulito(ris.fuso); x.disponibilita = [pulito(ris.giorni), pulito(ris.orario)].filter(String).join(' · ');
+        x.motivo_sconto = senzaNulla(ris.sconto);
+      }
+      e.nuovi.push(x);
+      if (finito) e.conclusi++; else e.attivi++;
+    });
+    e.schede.push(f.getName() + ' (' + contati + ')');
+  });
+  if (!e.schede.length) throw new Error('In questo foglio non trovo le schede “Presenze AAAA”. È quello giusto?');
+  return e;
+}
+
+/* L'anteprima: quanti se ne aggiungono e cosa controllare. Non scrive niente. */
+function anteprimaImport(link, conclusi) {
+  autorizzato();
+  var e = leggiVecchioFoglio(link, conclusi);
+  return {attivi: e.attivi, conclusi: e.conclusi, gia: e.gia, schede: e.schede, controllare: e.controllare.slice(0, 60),
+    elenco: e.nuovi.slice(0, 400).map(function (x) { return {nome: x.nome + ' ' + x.cognome, corso: x.corso_nome, inizio: x.inizio, fine: x.fine, stato: x.stato}; })};
+}
+
+/* Aggiunge le iscrizioni. Non manda nessuna email. */
+function importaVecchioFoglio(link, conclusi) {
+  autorizzato();
+  return conBlocco(function () {
+    var e = leggiVecchioFoglio(link, conclusi);
+    if (e.nuovi.length) {
+      var foglio = scheda('Iscrizioni'), r1 = foglio.getLastRow() + 1;
+      // Un numero a parte (IMP-…), così quelli delle iscrizioni vere restano in fila.
+      var anno = new Date().getFullYear(), ch = 'contatore_importati_' + anno, n = +(props().getProperty(ch) || 0);
+      var righe = e.nuovi.map(function (x) {
+        n++;
+        x.id = 'IMP-' + anno + '-' + ('000' + n).slice(-4);
+        return COLONNE.map(function (c) {
+          var v = x[c[0]];
+          return typeof v === 'string' && CHIAVI_DATA.indexOf(c[0]) < 0 ? testo(v.slice(0, 3000), 3000) : valoreCella(c[0], v);
+        });
+      });
+      props().setProperty(ch, String(n));
+      righeBastanti(foglio, r1 + righe.length - 1);
+      foglio.getRange(r1, 1, righe.length, COLONNE.length).setValues(righe);
+      formulePagamenti(foglio, r1, r1 + righe.length - 1);
+    }
+    var d = carica();
+    d.importati = {attivi: e.attivi, conclusi: e.conclusi, gia: e.gia};
+    return d;
+  });
 }
 
 /* ---------- DIPLOMI E ATTESTATI ---------- */

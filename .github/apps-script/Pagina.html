@@ -224,7 +224,7 @@ function online(c) { return !!c && c.modalita === 'online'; }
 /* Il link di una lezione: il suo, o quello del corso se il corso è online. */
 function linkDi(l, c) { return l.link || (online(c) ? c.link : '') || ''; }
 /* Uno studente che ha bisogno di un calendario suo: lezioni individuali, per due, online. */
-function individuale(v) { return !!v.formula || /privat|individ|immersion|online/i.test((v.corso_nome || '') + ' ' + (v.tema || '')); }
+function individuale(v) { return !!v.formula || /privat|indiv|immersion|online|^\s*(duo|trio)\s*$/i.test(((v.corso_nome || '') + ' ' + (v.tema || '')).trim()); }
 function perDataOra(a, b) { var x = a.data + ' ' + (a.ora_inizio || a.orario || ''), y = b.data + ' ' + (b.ora_inizio || b.orario || ''); return x < y ? -1 : x > y ? 1 : 0; }
 function lezioniDi(id) {
   var r = [];
@@ -393,7 +393,8 @@ function scelta(id, etichetta, valore, opzioni) {
 }
 
 /* I campi della scheda dello studente che si salvano (gli stessi di CAMPI_STAFF in Gestionale.gs). */
-var CAMPI_SCHEDA = ['stato', 'inizio', 'fine', 'arrivo', 'partenza', 'livello', 'livello_finale', 'prezzo', 'sconto', 'note_staff', 'note_lezioni',
+var CAMPI_SCHEDA = ['stato', 'inizio', 'fine', 'arrivo', 'partenza', 'livello', 'livello_finale', 'prezzo', 'sconto', 'motivo_sconto', 'note_staff', 'note_lezioni',
+  'allergie', 'difficolta', 'religioso', 'sesso', 'disponibilita', 'fuso',
   'corso_nome', 'tema', 'formula', 'settimane', 'lezioni_totali', 'extra', 'alloggio', 'settimane_alloggio',
   'nome', 'cognome', 'email', 'telefono', 'nascita', 'luogo_nascita', 'nazionalita', 'lingua', 'visto', 'passaporto', 'scadenza_passaporto', 'pagamento',
   'f_intestatario', 'f_ente', 'f_indirizzo', 'f_cap', 'f_citta', 'f_paese', 'f_cf', 'f_piva', 'f_sdi', 'f_email'];
@@ -422,7 +423,7 @@ function apriStudente(id) {
     campo('s-livello', 'Livello iniziale', v.livello, 'text', ' list="livelli"') +
     campo('s-livello_finale', 'Livello raggiunto', v.livello_finale, 'text', ' list="livelli"') +
     campo('s-prezzo', 'Prezzo confermato (€)', v.prezzo, 'number', ' step="0.01" min="0" placeholder="' + esc(v.totale) + '"') +
-    campo('s-sconto', 'Sconto (€)', v.sconto, 'number', ' step="0.01" min="0"') +
+    campo('s-sconto', 'Sconto (€)', v.sconto, 'number', ' step="0.01" min="0"') + campo('s-motivo_sconto', 'Motivo dello sconto', v.motivo_sconto) +
     campo('s-note_staff', 'Note dello staff', v.note_staff, 'textarea') +
     campo('s-note_lezioni', 'Note per le lezioni (cosa ripetere, ripassare…; si vedono nel calendario)', v.note_lezioni, 'textarea') +
     '</div>' +
@@ -439,6 +440,11 @@ function apriStudente(id) {
     scelta('s-lingua', 'Lingua delle email', v.lingua === 'en' ? 'en' : 'it', [['it', 'Italiano'], ['en', 'Inglese']]) +
     campo('s-visto', 'Visto', v.visto) + campo('s-passaporto', 'N. passaporto', v.passaporto) + campo('s-scadenza_passaporto', 'Scadenza passaporto', v.scadenza_passaporto, 'date') +
     campo('s-pagamento', 'Pagamento preferito', v.pagamento) + '</div>' +
+    '<h3>Da sapere <span class="tenue piccolo">dati personali delicati: solo per lo staff</span></h3><div class="campi">' +
+    campo('s-allergie', 'Allergie', v.allergie) + campo('s-difficolta', 'Difficoltà di apprendimento', v.difficolta) +
+    scelta('s-religioso', 'Religioso/a', v.religioso || '', [['', '—'], ['sì', 'Sì'], ['no', 'No']]) +
+    (vuoleAlloggio(v) || soggiorniDi(id).length ? scelta('s-sesso', 'M/F (per l’alloggio)', v.sesso || '', [['', '—'], ['F', 'F'], ['M', 'M']]) : '') +
+    campo('s-disponibilita', 'Giorni e orari preferiti', v.disponibilita) + campo('s-fuso', 'Fuso orario / ore di differenza', v.fuso) + '</div>' +
     '<h3>Fattura</h3><div class="campi">' + scelta('s-f_intestatario', 'Fattura a', v.f_intestatario === 'Ente' ? 'Ente' : 'Studente', [['Studente', 'Studente'], ['Ente', 'Ente o agenzia']]) +
     campo('s-f_ente', 'Ente', v.f_ente) + campo('s-f_indirizzo', 'Indirizzo', v.f_indirizzo) + campo('s-f_cap', 'CAP', v.f_cap) + campo('s-f_citta', 'Città', v.f_citta) + campo('s-f_paese', 'Paese', v.f_paese) +
     campo('s-f_cf', 'Codice fiscale', v.f_cf) + campo('s-f_piva', 'P. IVA / CF ente', v.f_piva) + campo('s-f_sdi', 'SDI / PEC', v.f_sdi) + campo('s-f_email', 'Email per la fattura', v.f_email, 'email') + '</div>' +
@@ -1131,6 +1137,8 @@ function nomeTipo(t) { var x = D.tipi_alloggio.filter(function (y) { return y[0]
 /* Il tipo chiesto nel modulo del sito (in italiano o in inglese). */
 function tipoRichiesto(v) {
   var t = String(v.alloggio || '');
+  if (/monaster|monastic|convent|casa religiosa|casa papa|religious house/i.test(t)) return 'monastero';
+  if (/hotel|b ?& ?b|bed and breakfast/i.test(t)) return 'hotel';
   if (/indipendente|one-bedroom|flat$/i.test(t) && !/condiviso|shared/i.test(t)) return 'indipendente';
   if (/doppia|double/i.test(t)) return /bagno|bathroom/i.test(t) ? 'doppia_bagno' : 'doppia';
   if (/singola|single/i.test(t)) return /bagno|bathroom/i.test(t) ? 'singola_bagno' : 'singola';
@@ -1277,7 +1285,7 @@ function eventiDel(g) { return D.eventi.filter(function (e) { return e.tipo !== 
 function eventoId(id) { return D.eventi.filter(function (e) { return e.id === id; })[0]; }
 function iscrittiA(id) { return D.partecipanti.filter(function (p) { return p.evento === id; }).map(function (p) { return ISC[p.iscrizione]; }).filter(Boolean); }
 /* Uno studente dei corsi di gruppo (non solo lezioni individuali o online): le attività sono comprese per lui. */
-function inGruppo(v) { return !v.formula && !/privat|individ|online/i.test((v.corso_nome || '') + ' ' + (v.tema || '')); }
+function inGruppo(v) { return !v.formula && !/privat|indiv|online|^\s*(duo|trio)\s*$/i.test(((v.corso_nome || '') + ' ' + (v.tema || '')).trim()); }
 function presentiIl(g) { return D.iscrizioni.filter(function (v) { return attiva(v) && inGruppo(v) && v.stato !== 'Nuova' && v.inizio && v.fine && v.inizio <= g && v.fine >= g; }); }
 function perTutti(e) { return e.tipo !== 'chiusura' && e.per !== 'iscritti' && e.per !== 'classi'; }
 function classiEv(e) { return e.per === 'classi' ? String(e.classi || '').split(/\s*,\s*/).filter(String) : []; }
@@ -1536,7 +1544,11 @@ VISTE.impostazioni = function () {
     campo('i-modello_attestato', 'Link del modello dell’attestato', i.modello_attestato ? 'https://drive.google.com/open?id=' + i.modello_attestato : '') + '</div></div>' +
     '<div class="card"><h3 style="margin-top:0">Fatture in Cloud</h3><p class="tenue piccolo">' + (D.fic_token ? '<span class="tag ok">collegato</span> Azienda ' + esc(i.fic_azienda || '(si legge al primo aggiornamento)') + '. Per cambiarlo incolla un token nuovo.' : '<span class="tag att">non collegato</span> Come ottenere il token: ISTRUZIONI.md, punto 7.') + '</p><div class="campi">' +
     campo('i-fic_token', 'Token (non si rilegge dopo il salvataggio)', '', 'password', ' autocomplete="off"') + '</div></div>' +
-    '<div class="barra"><a class="b" style="text-decoration:none" href="' + esc(D.foglio) + '" target="_blank" rel="noopener">Apri il foglio Google</a><span class="spazio"></span><button class="b p" id="i-salva">Salva</button></div>';
+    '<div class="barra"><a class="b" style="text-decoration:none" href="' + esc(D.foglio) + '" target="_blank" rel="noopener">Apri il foglio Google</a><span class="spazio"></span><button class="b p" id="i-salva">Salva</button></div>' +
+    '<div class="card"><h3 style="margin-top:0">Importa dal vecchio foglio</h3><p class="tenue piccolo">Legge il foglio Google usato prima (schede “Presenze” e, se vuoi, “Corsi terminati”) senza cambiarlo. Il foglio dev’essere condiviso con info@aliassisi.it. Prima mostra un’anteprima; non manda email; si può rilanciare senza doppioni.</p>' +
+    '<div class="campi">' + campo('im-link', 'Link del vecchio foglio Google', '', 'url', ' placeholder="https://docs.google.com/spreadsheets/d/…"') + '</div>' +
+    '<label class="checks" style="margin:10px 0"><input type="checkbox" id="im-conclusi"> Anche chi ha già finito (“Corsi terminati”)</label>' +
+    '<div class="barra"><button class="b" id="im-vedi">Anteprima</button></div></div>';
 };
 DOPO.impostazioni = function () {
   $('#i-salva').onclick = function () {
@@ -1544,7 +1556,28 @@ DOPO.impostazioni = function () {
     ['staff', 'aule', 'url_gestionale', 'url_sito', 'modello_diploma', 'modello_attestato', 'fic_token'].forEach(function (k) { o[k] = $('#i-' + k).value.trim(); });
     chiama('salvaImpostazioni', o).then(function () { avviso('Impostazioni salvate'); disegna(); });
   };
+  $('#im-vedi').onclick = function () {
+    var link = $('#im-link').value.trim(), conclusi = $('#im-conclusi').checked;
+    if (!link) { avviso('Incolla il link del vecchio foglio', true); return; }
+    chiama('anteprimaImport', link, conclusi).then(function (a) { finestraImport(link, conclusi, a); });
+  };
 };
+
+/* L'anteprima dell'importazione: quanti, chi, cosa controllare; poi la conferma. */
+function finestraImport(link, conclusi, a) {
+  var tot = a.attivi + a.conclusi;
+  var corpo = '<p><b>' + tot + '</b> iscrizioni da aggiungere: <b>' + a.attivi + '</b> in corso o in arrivo' + (conclusi ? ', <b>' + a.conclusi + '</b> concluse' : (a.conclusi ? ' e <b>' + a.conclusi + '</b> già finite che erano ancora in “Presenze”' : '')) +
+    '. Già presenti o ripetute: ' + a.gia + '.</p><p class="tenue piccolo">Schede lette: ' + esc(a.schede.join(', ')) + '</p>' +
+    (a.controllare.length ? '<h3>Da controllare (' + a.controllare.length + ')</h3><ul class="lista piccolo">' + a.controllare.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+    (tot ? '<h3>Elenco</h3><div class="scroll" style="max-height:45vh;overflow:auto"><table><thead><tr><th>Studente</th><th>Corso</th><th>Periodo</th><th>Stato</th></tr></thead><tbody>' + a.elenco.map(function (x) {
+      return '<tr><td>' + esc(x.nome) + '</td><td>' + esc(x.corso) + '</td><td>' + ggA(x.inizio) + ' – ' + (x.fine ? ggA(x.fine) : '?') + '</td><td>' + statoTag(x.stato) + '</td></tr>';
+    }).join('') + '</tbody></table></div>' : '');
+  var d = dialogo('Importa dal vecchio foglio: anteprima', corpo, tot ? '<button class="b p" id="im-ok">Importa ' + tot + '</button>' : '');
+  if (tot) $('#im-ok', d).onclick = function () {
+    if (!confirm('Aggiungere ' + tot + ' iscrizioni al gestionale?')) return;
+    chiama('importaVecchioFoglio', link, conclusi).then(function (r) { d.close(); avviso('Importate ' + (r.importati.attivi + r.importati.conclusi) + ' iscrizioni'); disegna(); });
+  };
+}
 
 avvio();
 </script>

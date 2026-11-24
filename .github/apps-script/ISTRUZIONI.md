@@ -309,6 +309,28 @@ Ci sono anche schede nuove: Alloggi, Soggiorni, Eventi, Partecipanti. Il gestion
 intestazioni che mancano la prima volta che si apre. Le lezioni già scritte valgono come "fatte".
 Il testo dell'email prima dell'arrivo, se l'avete già cambiato, non ha `{{alloggio}}`: aggiungetelo voi.
 
+## Importare gli studenti dal vecchio foglio
+In **Impostazioni → Importa dal vecchio foglio** incollate il link del foglio usato prima
+("MODULO ALIASSISI_nuovo (Risposte)"). Dev'essere un Foglio Google condiviso con info@aliassisi.it.
+1. **Anteprima**: quante iscrizioni si aggiungono, l'elenco e le righe da controllare. Non scrive niente.
+2. **Importa**: aggiunge le schede **Presenze AAAA** (chi è in corso o deve arrivare) e, con la
+   spunta, **Corsi terminati AAAA** (Conclusa). I numeri sono `IMP-…`.
+- Il vecchio foglio non cambia e non parte nessuna email. Si può rilanciare: chi c'è già (stessa
+  email o stesso nome, e stesso inizio) non si ripete.
+- Dalle risposte del vecchio modulo si prendono i recapiti e la data di nascita. Allergie, difficoltà
+  di apprendimento e, se chiedono un alloggio, M/F si prendono solo per chi non ha ancora finito.
+- Il prezzo non c'è nelle Presenze: scrivetelo in "Prezzo confermato". "Pagato sì/no" e
+  proforma/fattura vanno nelle note dello staff.
+- La lingua delle email è italiano per chi ha cittadinanza italiana, inglese per gli altri.
+- Le risposte del vecchio modulo senza una riga in Presenze o Corsi terminati non si importano: una
+  risposta non vuol dire che la persona ha frequentato.
+- Se l'"email prima dell'arrivo" è attiva, parte anche per gli importati che stanno per arrivare.
+
+Campi nuovi nella scheda (**Tutti i dati → Da sapere**): allergie, difficoltà di apprendimento,
+religioso/a, M/F (solo se chiede un alloggio), giorni e orari preferiti, fuso orario; accanto allo
+sconto, il motivo. Allergie e difficoltà sono dati sulla salute: scrivetele solo se servono e citatele
+nell'informativa privacy.
+
 ## Dove prendere i file
 I file sono in questo repository, cartella `.github/apps-script/`. La versione da usare è quella del
 ramo `main` (dopo che la PR è stata unita):
