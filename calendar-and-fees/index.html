@@ -1087,19 +1087,21 @@ function ppw(tiers,w){for(var i=0;i<tiers.length;i++){if(w>=tiers[i].f&&w<=tiers
 function fmtD(d){
   return d.getDate()+' '+MESI[d.getMonth()]+' '+d.getFullYear();
 }
+/* Weeks run Monday to Friday. A week with the school closed every day does not count:
+   the course carries on after the break. The end is the last lesson day of the last week. */
 function calcEnd(start,weeks){
-  var d=new Date(start),cmap={},wc=0;
-  while(wc<weeks){
+  var d=new Date(start),cmap={},wc=0,skipped=0,end=null;
+  while(wc<weeks&&skipped<60){
+    var last=null;
     for(var day=0;day<5;day++){
       var dd=new Date(d);dd.setDate(d.getDate()+day);
       var cl=isCl(dd);
-      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}
+      if(cl){if(!cmap[cl])cmap[cl]=0;cmap[cl]++;}else last=dd;
     }
-    wc++;
+    if(last){end=last;wc++;}else skipped++;
     d.setDate(d.getDate()+7);
   }
-  var end=new Date(d);end.setDate(end.getDate()-3);
-  return{end:end,cmap:cmap};
+  return{end:end,cmap:cmap,skipped:skipped};
 }
 function getTiers(){return LS===18?TS:LS===22?TI:TSI;}
 function getCourse(){
@@ -1133,8 +1135,8 @@ window.onCalc=function(){
   var ck=Object.keys(res.cmap),cwrap=document.getElementById('dw-cw');
   if(ck.length){
     var h='<div class="dw-warn"><div class="dw-warn-t"><i class="ti ti-alert-triangle" style="font-size:13px"></i> Chiusure durante il tuo soggiorno</div><ul>';
-    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' giorn'+(res.cmap[k]===1?'o':'i')+' (il corso non viene prolungato)</li>';});
-    cwrap.innerHTML=h+'</ul></div>';
+    ck.forEach(function(k){h+='<li>· '+k+': '+res.cmap[k]+' giorn'+(res.cmap[k]===1?'o':'i')+' senza lezioni</li>';});
+    cwrap.innerHTML=h+'</ul>'+(res.skipped?'<p style="font-size:12px;font-weight:600;color:#8a5a1e;margin:6px 0 0">Le settimane in cui la scuola è chiusa non contano: il corso riprende dopo la pausa.</p>':'')+'</div>';
   } else cwrap.innerHTML='';
 };
 window.selL=function(n){
