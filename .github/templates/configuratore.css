@@ -22,7 +22,6 @@
 .cfg-warn-t{font-size:13px;font-weight:600;color:#c07030;margin-bottom:4px;display:flex;align-items:center;gap:5px}
 .cfg-warn ul{list-style:none;padding:0;margin:0}
 .cfg-warn li{font-size:13px;color:#885020;padding:2px 0}
-.cfg-warn-p{font-size:13px;font-weight:600;color:#885020;margin:6px 0 0}
 .cfg-stay h4{font-size:14px;font-weight:600;margin:20px 0 6px;color:#111}
 .cfg-act-list{list-style:none;padding:0;margin:0}
 .cfg-act-list li{display:flex;gap:16px;padding:8px 0;border-bottom:1px solid #e6e1dc;font-size:14px;color:#333}
