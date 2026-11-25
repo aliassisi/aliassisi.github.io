@@ -292,7 +292,7 @@ lezione nella settimana e gli studenti con la data di fine e il corso.
   ogni giorno. La classe scelta vale per quel giorno (⇄ per più giorni). Insegnante e aula di una classe di gruppo
   cambiano per tutta la classe in quelle ore; quelli di una lezione individuale solo per lo studente. **+ lezione**
   aggiunge una lezione con il suo insegnante (e crea il corso individuale, se manca).
-- **+** in una casella libera: scegli insegnante, aula, ore e **spunta gli studenti**. Il gruppo si riconosce da solo
+- **+** in una casella libera (o **Nuova lezione** in alto): scegli insegnante, aula, ore e **spunta gli studenti**. Il gruppo si riconosce da solo
   (se gli studenti sono quelli di un gruppo che c'è già) o nasce da solo, con un nome che puoi cambiare. Prima di
   salvare si vede chi entra, chi esce e chi lascia un altro gruppo. Con “+” anche: lezione individuale, altra lezione
   (un testo, per esempio un progetto), nota, insegnante che non può (un'ora o tutto il giorno).
@@ -338,6 +338,7 @@ il registro. Un cambio nel planning vale più del registro.
   colonne e non rinominare le schede.
 
 ## Dopo un aggiornamento dello script
+Accanto al titolo del gestionale c'è la versione. Se non cambia dopo l'aggiornamento, ricaricate con Ctrl + F5.
 Le lezioni già nel registro con le ore calcolate da inizio e fine passano da sole, una volta, a 1 ora per lezione.
 Le ore scritte a mano non cambiano. Gli attestati già creati restano com'erano.
 Per il planning: si crea da sola la scheda **Planning**. In **Impostazioni** scrivete gli insegnanti, controllate

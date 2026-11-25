@@ -9,6 +9,7 @@
 body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--testo);background:var(--fondo)}
 header{background:var(--ardesia);color:#fff;display:flex;align-items:center;gap:16px;padding:0 16px;position:sticky;top:0;z-index:5;flex-wrap:wrap}
 header h1{font-size:16px;margin:0;padding:12px 0;font-weight:600;white-space:nowrap}
+#versione{font-size:11px;font-weight:400;color:#c9d4e0;margin-left:4px}
 nav{display:flex;gap:2px;overflow-x:auto;flex:1}
 nav button{background:none;border:0;color:#dbe4ee;padding:14px 12px;font:inherit;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
 nav button.on{color:#fff;border-bottom-color:#fff;font-weight:600}
@@ -90,7 +91,7 @@ dialog::backdrop{background:rgba(20,30,45,.45)}
 .c-super{color:#b3261e;font-weight:600}.c-duo{color:#a15c00;font-weight:600}.c-int{color:#1f5f9c;font-weight:600}.c-std{color:var(--tenue)}
 .chip.k-super{border-color:#d98b85}.chip.k-duo{border-color:#e0b366}.chip.k-int{border-color:#8fb4d9}
 .pnota{background:#fff8c9;padding:5px 7px;white-space:pre-wrap}.passente,.pcella.no{background:var(--err-f)}.passente{color:var(--err);padding:5px 7px}
-.pcella{height:44px}.pcella.sopra{outline:2px dashed var(--ardesia);outline-offset:-2px}.paggiungi{border:0;background:none;color:transparent;font:inherit;width:100%;cursor:pointer;min-height:30px}.pcella:hover .paggiungi,.paggiungi:focus{color:var(--tenue)}
+.pcella{height:44px}.pcella.sopra{outline:2px dashed var(--ardesia);outline-offset:-2px}.paggiungi{border:1px dashed #d3dae2;border-radius:6px;background:none;color:#a9b4c0;font:inherit;width:100%;cursor:pointer;min-height:32px}.paggiungi:hover,.paggiungi:focus{color:var(--ardesia);border-color:var(--ardesia);background:var(--blu-f)}.pmod{font-size:11.5px;color:var(--ardesia)}
 .plan .ppausa td{background:#e6f3f4;padding:2px 6px}.plan .ppausa td.on{background:var(--err-f);color:var(--err);font-weight:600}.plan .psep td{background:#8b95a1;padding:0;height:5px}
 .oretab td,.oretab th{border-right:1px solid var(--linea)}
 @media print{.plan{min-width:0;font-size:10px}.pc{break-inside:avoid}}
@@ -101,7 +102,7 @@ dialog::backdrop{background:rgba(20,30,45,.45)}
 <body>
 <div id="attesa"></div>
 <header>
-  <h1>Gestionale ALIA</h1>
+  <h1>Gestionale ALIA <span id="versione" title="Se è diversa da quella attesa, ricarica con Ctrl + F5"></span></h1>
   <nav id="schede"></nav>
   <span class="chi"><span id="chi"></span> <button class="l" id="esci" style="color:#dbe4ee;display:none">Esci</button></span>
 </header>
@@ -111,6 +112,8 @@ dialog::backdrop{background:rgba(20,30,45,.45)}
 <datalist id="livelli"></datalist>
 
 <script>
+var VERSIONE = '25 nov · 16';   // cambia a ogni aggiornamento: si legge accanto al titolo
+$('#versione').textContent = VERSIONE;
 var D = null;                 // i dati dal foglio (carica() in Gestionale.gs)
 var U = {scheda: 'oggi', cerca: '', stato: 'attivi', periodo: 'tutti', settimana: null, classeReg: '', docClasse: '', docDal: '', docAl: '', fattureTutte: false};
 try { var salvata = localStorage.getItem('alia-scheda'); if (salvata) U.scheda = salvata; } catch (e) {}
@@ -480,7 +483,7 @@ function apriStudente(id) {
       'dal <input type="date" id="s-dal" value="' + esc(dateIn(classiPossibili[0])[0]) + '"> al <input type="date" id="s-al" value="' + esc(dateIn(classiPossibili[0])[1]) + '"><button class="b" id="s-assegna">Metti in classe</button></div>' +
       (!v.inizio || !v.fine ? '<div class="tenue piccolo">Lo studente non ha le date del corso: scrivile sopra (Inizio, Fine) e salva.</div>' : '')
       : '<div class="tenue piccolo">Non ci sono classi in corso o future: creala in Classi.</div>') +
-    '<h3>Giorno per giorno</h3><div id="s-giorni"></div>' +
+    '<h3 id="s-titgiorni" style="scroll-margin-top:70px">Giorno per giorno <span class="tenue piccolo">classe, insegnante e aula di ogni giorno</span></h3><div id="s-giorni"></div>' +
     '<div class="piccolo" style="margin-top:8px">Frequenza dal registro: <b>' + f.ore + ' ore</b> su ' + f.previste + '</div>' +
     (vuoleAlloggio(v) || soggiorniDi(id).length ? '<h3>Alloggio</h3><div class="piccolo">' + (v.alloggio ? 'Ha chiesto: <b>' + esc(v.alloggio) + '</b>' + (v.settimane_alloggio ? ', ' + esc(v.settimane_alloggio) + ' settimane' : '') : '') + '</div>' +
       (soggiorniDi(id).length ? '<ul class="lista">' + soggiorniDi(id).map(function (x) { var a = alloggioId(x.alloggio); return '<li>' + esc(a ? a.nome : x.alloggio) + ' <span class="tenue">' + gg(x.arrivo) + ' → ' + gg(x.partenza) + '</span>' + (x.note ? ' <span class="tenue piccolo">' + esc(x.note) + '</span>' : '') + ' <button class="b piccolo" data-modsog="' + esc(x.id) + '">Modifica</button> <button class="b piccolo r" data-togsog="' + esc(x.id) + '">Togli</button></li>'; }).join('') + '</ul>' : '<div class="vuoto-msg">Non ancora assegnato.</div>') +
@@ -497,7 +500,8 @@ function apriStudente(id) {
       (ass.some(function (a) { return privato(CLA[a.classe]); }) ? '<span class="piccolo">' + (function () { var n = contaLez(lezioniDi(id).filter(function (l) { return privato(CLA[l.classe]); })); return 'previste ' + n.prevista + ' · fatte ' + n.fatta + (v.lezioni_totali ? ' · acquistate ' + esc(v.lezioni_totali) : ''); })() + '</span>' +
         '<button class="b" id="s-cal">Manda il calendario</button>' : '<button class="b p" id="s-priv">Crea il corso individuale</button>') + '</div>' : '') +
     '<div class="barra"><button class="b" id="s-dip">Crea il diploma</button><button class="b" id="s-att">Crea l’attestato</button></div>';
-  var d = dialogo(esc(nome(v)) + ' <span class="tenue piccolo">' + esc(v.id) + '</span>', corpo);
+  var d = dialogo(esc(nome(v)) + ' <span class="tenue piccolo">' + esc(v.id) + '</span>', corpo, '<button class="b" id="s-vaigiorni">Giorno per giorno</button>');
+  $('#s-vaigiorni', d).onclick = function () { $('#s-titgiorni', d).scrollIntoView({block: 'start', behavior: 'smooth'}); };
   $('#s-salva', d).onclick = function () {
     var c = {};
     CAMPI_SCHEDA.forEach(function (k) {
@@ -1297,7 +1301,7 @@ function calPlanning() {
   var settOre = function (n) { var t = 0; for (var i = 0; i < 7; i++) t += lezioniIns(n, piu(lun, i)); return t; };
   var h = barraCal(nomeGiorno + ' ' + gg(g) + (g === D.oggi ? ' (oggi)' : ''), true) +
     '<div class="barra no-stampa"><span class="tasti">' + [0, 1, 2, 3, 4, 5].map(function (i) { var d = piu(lun, i); return '<button class="b' + (d === g ? ' p' : '') + '" data-vaig="' + d + '">' + ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][i] + ' ' + (+d.slice(8)) + '</button>'; }).join('') +
-    '</span><span class="spazio"></span><button class="b" id="pcopia">Copia la settimana…</button></div>' +
+    '</span><span class="spazio"></span><button class="b p" id="pnuova">+ Nuova lezione</button><button class="b" id="pcopia">Copia la settimana…</button></div>' +
     (chiuso ? '<div class="chiuso" style="font-size:14px;padding:8px 12px;margin-bottom:10px">Scuola chiusa: ' + esc(chiuso.nome) + '</div>' : '');
   if (!mostra.length) return h + '<div class="card">Scrivi gli insegnanti in <button class="l" data-s="impostazioni">Impostazioni</button>: qui c’è una colonna per ognuno.</div>';
   var sopra = {};   // l'ultima casella disegnata per insegnante, per "come sopra"
@@ -1313,7 +1317,7 @@ function calPlanning() {
       '<div class="paula" style="background:' + coloreAula(x.aula) + '">' + esc(x.aula || 'senza aula') + (x.conta || (x.lez && x.lez.stato === 'annullata') ? '' : ' <span class="piccolo">(non conta)</span>') + '</div><div class="pcorpo">' +
       (senzaOra ? '<b>' + esc(x.inizio ? x.inizio + '–' + x.fine : 'senza orario') + '</b> ' : '') +
       (stesso ? '<div class="tenue" style="text-align:center">come sopra' + (num ? ' (' + num + ')' : '') + '</div>'
-        : '<b>' + esc(x.classe.id ? x.classe.nome : x.testo) + '</b>' + (num ? ' <span class="tenue">(' + num + ')</span>' : '') + st.map(function (v) { return rigaPlan(v, true, x.classe.id); }).join('')) +
+        : '<b>' + esc(x.classe.id ? x.classe.nome : x.testo) + '</b>' + (num ? ' <span class="tenue">(' + num + ')</span>' : '') + st.map(function (v) { return rigaPlan(v, true, x.classe.id); }).join('') + (x.classe.id && !x.lez ? '<button class="l pmod no-stampa" data-studgr="' + esc(x.classe.id) + '">cambia studenti</button>' : '')) +
       (x.classe.id && x.testo ? '<div class="nota">' + esc(x.testo) + '</div>' : '') +
       (x.lez && x.lez.stato !== 'prevista' && x.lez.stato !== 'fatta' ? statoLez(x.lez.stato) : '') +
       att.map(function (e) { return '<span class="tag ev">' + esc(e.nome) + '</span>'; }).join('') + (err ? '<span class="tag err">' + esc(err) + '</span>' : '') + '</div></div>';
@@ -1617,6 +1621,8 @@ function copiaSettimana(lun) {
 function dopoPlan(g) {
   $$('[data-vaig]').forEach(function (b) { b.onclick = function () { U.calGiorno = b.getAttribute('data-vaig'); disegna(); }; });
   $('#pcopia').onclick = function () { copiaSettimana(lunedi(g)); };
+  $('#pnuova').onclick = function () { nuovaCasella('', g, 0); };
+  $$('[data-studgr]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); var c = b.getAttribute('data-studgr'); studentiGruppo(c, g, caselle(g).filter(function (y) { return y.classe.id === c && !y.lez; })); }; });
   $$('[data-oreins]').forEach(function (b) { b.onclick = function () { U.oreIns = b.getAttribute('data-oreins'); U.calSett = lunedi(g); U.calVista = 'ore'; disegna(); }; });
   $$('[data-pausa]').forEach(function (b) { b.onchange = function () {
     var n = b.getAttribute('data-pausa'), p = pausaDi(n, g);
@@ -1643,7 +1649,7 @@ function dopoPlan(g) {
   if ($('[data-senzaclasse]')) bersaglio($('[data-senzaclasse]'), '');
   $$('.plan [data-cas]').forEach(function (b) {
     var x = tutte[+b.getAttribute('data-cas')];
-    b.onclick = function (e) { if (e.target.closest('[data-stud],[data-nota],[data-muovi]')) return; e.stopPropagation(); finestraCasella(x, g); };
+    b.onclick = function (e) { if (e.target.closest('[data-stud],[data-nota],[data-muovi],[data-studgr]')) return; e.stopPropagation(); finestraCasella(x, g); };
     b.onkeydown = function (e) { if (e.key === 'Enter' && e.target === b) finestraCasella(x, g); };
     b.addEventListener('dragstart', function (e) { preso = x; e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', 'casella'); } catch (err) {} b.classList.add('preso'); });
     b.addEventListener('dragend', function () { preso = null; b.classList.remove('preso'); $$('.sopra').forEach(function (z) { z.classList.remove('sopra'); }); });
