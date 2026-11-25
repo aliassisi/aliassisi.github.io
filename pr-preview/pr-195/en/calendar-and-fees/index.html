@@ -891,11 +891,11 @@ padding-right: 30px;
 				</div>
 				<div class="elementor-element elementor-element-2fee9cf elementor-widget elementor-widget-text-editor" data-id="2fee9cf" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p><strong>Start dates for beginners</strong><br /><strong>2026</strong><br />November 2nd | November 30th<br /><strong>2027<br /></strong>(from February 1st to Dec. 17th)<br />February 1st | March 1st | April 5th | May 3rd | May 31st | June 28th | July 26th | August 23rd | September 20th | October 18th | November 15th</p><p>Non-beginners can start any Monday.</p>								</div>
+									<p><strong>Start dates for all levels</strong><br /><strong>2026</strong><br />November 2nd | November 30th<br /><strong>2027<br /></strong>(from February 1st to Dec. 17th)<br />February 1st | March 1st | April 5th | May 3rd | May 31st | June 28th | July 26th | August 23rd | September 20th | October 18th | November 15th</p>								</div>
 				</div>
 				<div class="elementor-element elementor-element-753fd00 elementor-widget elementor-widget-text-editor" data-id="753fd00" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p><span style="font-family: Montserrat, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: 0.2px;">Beginners who want to start on a Monday not listed on the calendar, please contact us. The placement test and interview will be online, prior to the start of the course</span></p>								</div>
+									<p><span style="font-family: Montserrat, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: 0.2px;">For other dates, <a href="https://wa.me/393515537976" target="_blank" rel="noopener">write to us</a>. The placement test and interview will be online, prior to the start of the course</span></p>								</div>
 				</div>
 					</div>
 		</div>
@@ -992,7 +992,7 @@ padding-right: 30px;
       <span class="dw-lbl">Start date</span>
       <div class="dw-row">
         <div class="dw-field">
-          <label>Start dates for beginners</label>
+          <label>Start dates for all levels</label>
           <select id="dw-startsel" onchange="onSS()">
             <option value="">— Select —</option>
             <option value="2026-11-30">November 30th, 2026</option>
@@ -1009,14 +1009,8 @@ padding-right: 30px;
             <option value="2027-11-15">November 15th, 2027</option>
           </select>
         </div>
-        <div class="dw-field">
-          <label>Start dates for non-beginners</label>
-          <select id="dw-startnon" onchange="onSN()">
-            <option value="">— Select —</option>
-          </select>
-        </div>
       </div>
-      <p class="dw-sub" style="margin:8px 0 0">If you have studied Italian before, you can start any Monday the school is open. Lessons run Monday to Friday.</p>
+      <p class="dw-sub" style="margin:8px 0 0">For other dates, <a href="https://wa.me/393515537976" target="_blank" rel="noopener">write to us</a>.</p>
     </div>
 
     <div class="dw-sec">
@@ -1163,31 +1157,9 @@ window.selL=function(n){
 };
 window.onSS=function(){
   var v=document.getElementById('dw-startsel').value;
-  document.getElementById('dw-startnon').value='';
   if(v){var p=v.split('-');SD=new Date(+p[0],+p[1]-1,+p[2]);}else SD=null;
   onCalc();
 };
-window.onSN=function(){
-  var v=document.getElementById('dw-startnon').value;
-  document.getElementById('dw-startsel').value='';
-  if(v){var p=v.split('-');SD=new Date(+p[0],+p[1]-1,+p[2]);}else SD=null;
-  onCalc();
-};
-/* Non-beginners: every Monday the school is open, from today to the end of the data. */
-(function(){
-  var sel=document.getElementById('dw-startnon'),d=new Date();d.setHours(0,0,0,0);
-  var last=new Date(d);
-  CL.forEach(function(c){var t=md(c.to[0],c.to[1],c.to[2]);if(t>last)last=t;});
-  [].forEach.call(document.getElementById('dw-startsel').options,function(o){
-    if(/^\d{4}-/.test(o.value)){var p=o.value.split('-'),t=new Date(+p[0],+p[1]-1,+p[2]);if(t>last)last=t;}
-  });
-  d.setDate(d.getDate()+(8-d.getDay())%7);
-  for(;d<=last;d.setDate(d.getDate()+7)){
-    if(isCl(d))continue;
-    var o=document.createElement('option'),m=d.getMonth()+1,g=d.getDate();
-    o.value=d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(g<10?'0':'')+g;o.textContent=fmtD(d);sel.appendChild(o);
-  }
-})();
 window.dwReq=function(){
   if(!SD||!LS)return;
   var w=Math.max(1,Math.min(48,parseInt(document.getElementById('dw-weeks').value)||1));
