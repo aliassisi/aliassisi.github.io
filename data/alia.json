@@ -13,6 +13,7 @@
     "2027-10-18",
     "2027-11-15"
   ],
+  "date_inizio_note": {"2027": {"en": "(from February 1st to Dec. 17th)"}},
   "chiusure": [
     {"dal": "2026-12-08", "al": "2026-12-08", "it": "Immacolata Concezione", "en": "Immaculate Conception"},
     {"dal": "2026-12-21", "al": "2026-12-31", "it": "vacanze di Natale", "en": "Christmas Holidays"},
