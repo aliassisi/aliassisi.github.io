@@ -1141,7 +1141,9 @@ function rigaPlan(v, note) {
 function calPlanning() {
   var g = U.calGiorno || D.oggi, chiuso = chiusura(g), ore = orari(), tutte = caselle(g), lun = lunedi(g);
   var ins = insegnanti(lun, piu(lun, 6));
-  if (tutte.some(function (x) { return !x.ins; })) ins.push('');
+  // Le ore di una classe senza insegnante e che non contano (una lezione in città) stanno nella colonna delle attività.
+  var inAtt = function (x) { return !x.ins && !x.conta && !!x.classe.id && !x.lez; };
+  if (tutte.some(function (x) { return !x.ins && !inAtt(x); })) ins.push('');
   var mostra = (U.calFiltro || '').indexOf('ins:') === 0 ? ins.filter(function (n) { return n === U.calFiltro.slice(4); }) : ins;
   var visibile = function (x) { return filtroCal({lez: x.lez, ins: x.ins, aula: /^online$/i.test(x.aula) ? 'online' : x.aula}); };
   var ev = eventiDel(g), nomeGiorno = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'][dataDa(g).getUTCDay()];
@@ -1188,9 +1190,9 @@ function calPlanning() {
       else if (vuoto > 0) h += '<tr class="ppausa"><td class="pora">PAUSA</td>' + mostra.map(function (n) { return '<td class="' + (n && pausaDi(n, g) ? 'on' : '') + '">' + (n ? '<label class="piccolo"><input type="checkbox" data-pausa="' + esc(n) + '"' + (pausaDi(n, g) ? ' checked' : '') + '> pausa</label>' : '') + '</td>'; }).join('') + '<td class="patt"></td></tr>';
     }
     h += '<tr><td class="pora">' + o.inizio + '<br>' + o.fine + '</td>' + mostra.map(function (n) {
-      var qui = tutte.filter(function (x) { return x.ins === n && x.inizio === o.inizio && visibile(x); });
+      var qui = tutte.filter(function (x) { return x.ins === n && x.inizio === o.inizio && visibile(x) && !inAtt(x); });
       return '<td class="pcella' + (assenteIl(n, g, o.inizio) ? ' no' : '') + '" data-ins="' + esc(n) + '" data-ora="' + o.n + '">' + qui.map(function (x) { return casella(x, i); }).join('') + (qui.length ? '' : '<button class="paggiungi no-stampa" title="Aggiungi">+</button>') + '</td>';
-    }).join('') + '<td class="patt">' + evDi(o, i).map(bloccoEv).join('') + '</td></tr>';
+    }).join('') + '<td class="patt">' + evDi(o, i).map(bloccoEv).join('') + tutte.filter(function (x) { return x.inizio === o.inizio && inAtt(x); }).map(function (x) { return casella(x, i); }).join('') + '</td></tr>';
   });
   var fuori = liberi.filter(function (x) { return testa.indexOf(x) < 0 && visibile(x); });
   if (fuori.length) h += '<tr><td class="pora tenue">altro orario</td>' + mostra.map(function (n) { return '<td>' + fuori.filter(function (x) { return x.ins === n; }).map(function (x) { return casella(x, -9, true); }).join('') + '</td>'; }).join('') + '<td class="patt"></td></tr>';
