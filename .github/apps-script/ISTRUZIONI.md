@@ -91,7 +91,8 @@ automatici e il menu ALIA del foglio (per chi apre il foglio).
 
 ## 6. Staff e aule
 In **Impostazioni**: le email dello staff, separate da virgola (per esempio
-`segreteria@aliassisi.it, laura.rossi@gmail.com`), e i nomi delle aule. Chi viene tolto dalla lista
+`segreteria@aliassisi.it, laura.rossi@gmail.com`), i nomi delle aule, gli **insegnanti**
+(nell'ordine delle colonne del planning) e le **ore delle lezioni**. Chi viene tolto dalla lista
 non entra più, anche se era collegato. (La lista si può scrivere anche in Apps Script, Impostazioni
 progetto → Proprietà script → `staff`.)
 
@@ -274,6 +275,27 @@ Nei giorni di chiusura:
 
 Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizzo del sito").
 
+## Planning degli insegnanti e ore
+In **Calendario → Planning**: una colonna per insegnante (più le attività), una riga per ogni lezione di
+50 minuti, la PAUSA, un giorno alla volta. Ogni casella ha l'aula (a colori), la classe, il numero della
+lezione nella settimana e gli studenti con la data di fine e il corso.
+- **Si riempie da solo**: le classi di gruppo seguono il loro orario, aula e insegnante (lun–ven); le lezioni
+  individuali e le attività arrivano dal Registro e da Attività.
+- **Clic su una casella**: cambia insegnante, aula, ora, o toglila per quel giorno. Da allora quel giorno
+  la classe segue il planning. **Torna all'orario della classe** annulla i cambi.
+- **Trascina** una casella su un altro insegnante o un'altra ora dello stesso giorno.
+- **+** in una casella libera: lezione di una classe (anche di sabato), lezione individuale, altra lezione
+  (un testo, per esempio un progetto), nota, insegnante che non può (un'ora o tutto il giorno).
+- **Copia la settimana**: porta i cambi da una settimana all'altra.
+- Rosso: stesso insegnante o stessa aula nello stesso momento, o un insegnante che non può.
+
+**Calendario → Ore insegnanti**: le lezioni di ogni insegnante, giorno per giorno, il totale della settimana e
+del mese, e il dettaglio di chi scegli. Si contano le caselle (classi, individuali, altre lezioni); non le
+attività, le lezioni annullate e quelle segnate "non conta". La PAUSA si segna ma non si conta.
+
+Se il registro di una classe ha un insegnante diverso e nessuno ha cambiato il planning di quel giorno, vale
+il registro. Un cambio nel planning vale più del registro.
+
 ## Come si lavora ogni giorno
 - **Nuova iscrizione dal sito**: arriva un'email a info@ e la vedi in **Oggi** e in **Studenti**
   con lo stato "Nuova". Aprila, controlla, cambia lo stato in "Confermata".
@@ -292,8 +314,9 @@ Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizz
   Uno studente può cambiare classe: nel planning **trascina il suo nome** su un'altra classe della stessa
   settimana (o su "Senza classe"). Lo sposta da quella settimana in poi (se è la settimana in corso, da
   oggi): prima resta nella classe di prima, con il suo registro.
-- **Registro**: ogni insegnante apre **Registro**, sceglie la classe, **Nuova lezione**, segna
-  le attività e gli assenti. Le ore si sommano da sole. **Periodo** (dal… al…, o "Questa
+- **Registro**: ogni insegnante apre **Registro**: ci sono le lezioni del giorno, di tutte le classi, e quelle
+  ancora da scrivere. **Scrivi** apre la lezione con ora, aula e insegnante del planning. O sceglie la classe
+  (in alto c'è **Da scrivere**: gli ultimi 14 giorni) e **Nuova lezione**. Segna le attività e gli assenti. Le ore si sommano da sole. **Periodo** (dal… al…, o "Questa
   settimana", "Settimana scorsa", "Questo mese") filtra lezioni e presenze: ore, lezioni e giorni
   di assenza di ogni studente in quelle date.
 - **Pagamenti**: **Aggiorna da Fatture in Cloud** (lo fa anche da solo ogni mattina se i
@@ -303,6 +326,8 @@ Il sito si legge da `https://aliassisi.it` (si cambia in Impostazioni, "Indirizz
   colonne e non rinominare le schede.
 
 ## Dopo un aggiornamento dello script
+Per il planning: si crea da sola la scheda **Planning**. In **Impostazioni** scrivete gli insegnanti, controllate
+le aule (se le avevate già salvate restano quelle di prima) e le ore delle lezioni.
 Le schede Classi e Registro hanno colonne nuove (Tipo, Modalità, Link online; Ora inizio, Ora fine,
 Aula, Stato, Link online, Recupero della lezione).
 Ci sono anche schede nuove: Alloggi, Soggiorni, Eventi, Partecipanti. Il gestionale crea le schede e scrive le
