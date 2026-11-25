@@ -444,40 +444,48 @@ function assegna(iscrizione, classe, dal, al) {
   return conBlocco(function () {
     if (!trova('Iscrizioni', 'id', iscrizione)) throw new Error('Iscrizione non trovata');
     if (!trova('Classi', 'id', classe)) throw new Error('Classe non trovata');
-    var esiste = leggi('Assegnazioni').filter(function (a) { return a.iscrizione === iscrizione && a.classe === classe; })[0];
-    if (esiste) aggiorna('Assegnazioni', esiste._r, {dal: dal, al: al});
-    else aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: classe, dal: dal, al: al});
+    var ci = leggi('Assegnazioni').filter(function (a) { return a.iscrizione === iscrizione && a.classe === classe; });
+    if (ci.length) {
+      aggiorna('Assegnazioni', ci[0]._r, {dal: dal, al: al});
+      ci.slice(1).reverse().forEach(function (a) { scheda('Assegnazioni').deleteRow(a._r); });   // i periodi divisi tornano uno
+    } else aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: classe, dal: dal, al: al});
     return carica();
   });
 }
 
-/* Sposta uno studente dalla classe "da" alla classe "a" a partire dal giorno "dal" (trascina e lascia nel planning).
-   "da" vuoto: era senza classe; "a" vuoto: resta senza classe. Prima di "dal" resta dov'era (registro e presenze). */
-function spostaStudente(iscrizione, da, a, dal) {
+/* Sposta uno studente dalla classe "da" alla classe "a" dal giorno "dal" al giorno "al" (senza "al": fino alla fine).
+   "da" vuoto: era senza classe; "a" vuoto: resta senza classe. Fuori da quei giorni resta dov'era: la sua riga in
+   Assegnazioni si divide in due periodi. I periodi che si toccano, nella stessa classe, tornano uno solo. */
+function spostaStudente(iscrizione, da, a, dal, al) {
   autorizzato();
-  if (!dal || !/^\d{4}-\d{2}-\d{2}$/.test(dal)) throw new Error('Data non valida');
+  [dal, al || dal].forEach(function (g) { if (!/^\d{4}-\d{2}-\d{2}$/.test(g || '')) throw new Error('Data non valida'); });
+  if (al && al < dal) throw new Error('La fine viene prima dell’inizio');
   if (!da && !a) throw new Error('Niente da spostare');
+  if (da === a) throw new Error('È già in questa classe');
   return conBlocco(function () {
-    var v = trova('Iscrizioni', 'id', iscrizione);
+    var v = trova('Iscrizioni', 'id', iscrizione), s = scheda('Assegnazioni');
     if (!v) throw new Error('Iscrizione non trovata');
-    var ass = leggi('Assegnazioni');
     if (a) {
       var c = trova('Classi', 'id', a);
       if (!c) throw new Error('Classe non trovata');
-      var inizio = [dal, v.inizio || dal, c.inizio].sort().pop(), fine = [v.fine || c.fine, c.fine].sort()[0];
+      var inizio = [dal, v.inizio || dal, c.inizio].sort().pop(), fine = [al || '9999-12-31', v.fine || c.fine, c.fine].sort()[0];
       if (fine < inizio) throw new Error('Dal ' + dataTesto(giorno(dal)) + ' lo studente non è più in corso o la classe è finita.');
     }
+    var mie = function (classe) { return leggi('Assegnazioni').filter(function (x) { return x.iscrizione === iscrizione && x.classe === classe; }); };
+    var togli = function (righe) { righe.slice().sort(function (x, y) { return y._r - x._r; }).forEach(function (x) { s.deleteRow(x._r); }); };
     if (da) {
-      var vecchia = ass.filter(function (x) { return x.iscrizione === iscrizione && x.classe === da && x.al >= dal; })[0];
-      if (vecchia) {
-        if (vecchia.dal >= dal) scheda('Assegnazioni').deleteRow(vecchia._r);
-        else aggiorna('Assegnazioni', vecchia._r, {al: piuGiorni(dal, -1)});
-      }
+      var toccate = mie(da).filter(function (x) { return x.al >= dal && (!al || x.dal <= al); });
+      togli(toccate);
+      toccate.forEach(function (x) {
+        if (x.dal < dal) aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: da, dal: x.dal, al: piuGiorni(dal, -1)});
+        if (al && x.al > al) aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: da, dal: piuGiorni(al, 1), al: x.al});
+      });
     }
     if (a) {
-      var gia = leggi('Assegnazioni').filter(function (x) { return x.iscrizione === iscrizione && x.classe === a; })[0];
-      if (gia) aggiorna('Assegnazioni', gia._r, {dal: gia.dal < inizio ? gia.dal : inizio, al: gia.al > fine ? gia.al : fine});
-      else aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: a, dal: inizio, al: fine});
+      var vicine = mie(a).filter(function (x) { return x.dal <= piuGiorni(fine, 1) && piuGiorni(x.al, 1) >= inizio; });
+      togli(vicine);
+      vicine.forEach(function (x) { if (x.dal < inizio) inizio = x.dal; if (x.al > fine) fine = x.al; });
+      aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: a, dal: inizio, al: fine});
     }
     return carica();
   });
