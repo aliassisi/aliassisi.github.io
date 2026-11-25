@@ -284,6 +284,13 @@ lezione nella settimana e gli studenti con la data di fine e il corso.
 - **Clic su una casella**: cambia insegnante, aula, ora, o toglila per quel giorno. Da allora quel giorno
   la classe segue il planning. **Torna all'orario della classe** annulla i cambi.
 - **Trascina** una casella su un altro insegnante o un'altra ora dello stesso giorno.
+- **Sposta uno studente**: trascina il suo nome su un'altra classe (o su **Senza classe**, sotto la griglia), o premi
+  **⇄** accanto al nome (anche nella vista Aule). Scegli: solo quel giorno, da lì in poi, fino a una data. Negli
+  altri giorni resta dov'era; registro e presenze di quei giorni seguono la classe nuova.
+- **Dalla scheda dello studente**, in **Giorno per giorno**: la sua settimana, con la classe e l'insegnante di ogni
+  giorno. La classe scelta vale per quel giorno (⇄ per più giorni). L'insegnante di una classe di gruppo cambia per
+  tutta la classe in quelle ore; quello di una lezione individuale solo per lo studente. **+ lezione**
+  aggiunge una lezione con il suo insegnante (e crea il corso individuale, se manca).
 - **+** in una casella libera: lezione di una classe (anche di sabato), lezione individuale, altra lezione
   (un testo, per esempio un progetto), nota, insegnante che non può (un'ora o tutto il giorno).
 - **Copia la settimana**: porta i cambi da una settimana all'altra.
