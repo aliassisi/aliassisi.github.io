@@ -1105,7 +1105,7 @@ function getCourse(){
   return'';
 }
 function tierLbl(tiers,w){
-  for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.f&&w<=t.t)return t.f===t.t?t.f+' settimana':t.t===48?'da '+t.f+' settimane in su':'da '+t.f+' a '+t.t+' settimane';}
+  for(var i=0;i<tiers.length;i++){var t=tiers[i];if(w>=t.f&&w<=t.t)return t.f===t.t?'per '+t.f+' settiman'+(t.f===1?'a':'e'):t.t===48?'da '+t.f+' settimane in su':'da '+t.f+' a '+t.t+' settimane';}
   return'';
 }
 window.onCalc=function(){
