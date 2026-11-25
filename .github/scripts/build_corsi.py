@@ -26,6 +26,9 @@ The page head gets a link to assets/alia/alia-course.css
 
 The closing dates on calendar-and-fees and en/calendar-and-fees come from
 "chiusure" as well, between <!-- chiusure:start --> and <!-- chiusure:end -->.
+Their start dates come from "date_inizio": the list (between <!-- date-inizio:start -->
+and <!-- date-inizio:end -->) and the menu of the calculator (date-calcolatore).
+"date_inizio_note" adds a line under a year in the list.
 
 Start dates before today are left out, and so are closures that have ended.
 --oggi sets "today", for tests.
@@ -233,6 +236,42 @@ def chiusure_calendario(s, lista, oggi, lingua, p):
                   lambda m: blocco, s, count=1, flags=re.S)
 
 
+def giorno_en(d):
+    g = d.day
+    suff = "th" if 11 <= g <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(g % 10, "th")
+    return f"{LINGUE['en']['mesi'][d.month - 1]} {g}{suff}"
+
+
+def tra_segni(s, nome, nuovo, p):
+    """Replace what is between <!-- nome:start --> and <!-- nome:end -->."""
+    a, b = f"<!-- {nome}:start -->", f"<!-- {nome}:end -->"
+    if s.count(a) != 1 or s.count(b) != 1:
+        sys.exit(f"{p}: no {a} marker found.")
+    return s[:s.index(a) + len(a)] + nuovo + s[s.index(b):]
+
+
+def date_calendario(s, date, note, oggi, lingua, p):
+    """Fill the start dates on a Calendar and Fees page, in the list and in the
+    menu of the calculator, with the dates that have not passed."""
+    L = LINGUE[lingua]
+    future = [d for d in date if d >= oggi]
+    anni = {}
+    for d in future:
+        anni.setdefault(d.year, []).append(giorno_en(d) if lingua == "en" else f"{d.day}.{d.month}")
+    righe = []
+    for anno, voci in anni.items():
+        nota = note.get(str(anno), {}).get(lingua)
+        righe += [f"<b>{anno}</b>"] + ([esc(nota)] if nota else []) + [" | ".join(voci)]
+    s = tra_segni(s, "date-inizio", "<br />".join(righe) or L["nessuna_data"], p)
+
+    def voce(d):
+        if lingua == "en":
+            return f"{giorno_en(d)}, {d.year}"
+        return f"{'1°' if d.day == 1 else d.day} {L['mesi'][d.month - 1]} {d.year}"
+    opzioni = "".join(f'\n            <option value="{d.isoformat()}">{voce(d)}</option>' for d in future)
+    return tra_segni(s, "date-calcolatore", opzioni + "\n          ", p)
+
+
 def contenuto(modello, ali, c, oggi, lingua):
     L = LINGUE[lingua]
     if sum(c["mattina"]) + sum(c["pomeriggio"]) != c["ore"]:
@@ -432,8 +471,10 @@ def main():
         with open(dest, encoding="utf-8") as f:
             s = f.read()
         with open(dest, "w", encoding="utf-8", newline="\n") as f:
-            f.write(chiusure_calendario(s, ali["chiusure"], args.oggi, lingua, p))
-        print(f"wrote {p}/index.html (closing dates, {lingua})")
+            s = chiusure_calendario(s, ali["chiusure"], args.oggi, lingua, p)
+            f.write(date_calendario(s, sorted(data(d) for d in ali["date_inizio"]),
+                                    ali.get("date_inizio_note", {}), args.oggi, lingua, p))
+        print(f"wrote {p}/index.html (start and closing dates, {lingua})")
 
 
 if __name__ == "__main__":

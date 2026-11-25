@@ -40,6 +40,10 @@ and run the build script.
 - Closing dates (`"chiusure"`) also fill the Calendar and Fees pages (IT and EN),
   between `<!-- chiusure:start -->` and `<!-- chiusure:end -->`. Past ones drop out
   when `build_corsi.py` runs. Deploy runs it every night, so they go by the next morning.
+- Start dates (`"date_inizio"`) also fill those pages: the list (`date-inizio` markers) and
+  the menu of the calculator (`date-calcolatore` markers). Past ones drop out the same way.
+  `"date_inizio_note"` adds a line under a year. The closures in the calculator
+  (`var CL`) are still written in the page.
 - Optional blocks: `"libro"` (a course book section) and `"temi"` (a list of themes,
   each with its own enrolment link if it has `"voce_modulo"`).
 - "Altri corsi" (three boxes at the end of each course page) comes from
