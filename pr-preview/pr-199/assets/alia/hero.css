@@ -1,0 +1,66 @@
+/* Shared by every page: the top section with the background video,
+   the yellow title (page or course title) and the white line under it.
+   Selected by structure, not by element id, so every page gets the same rule. */
+
+/* Title: 48px mobile, 60px tablet, 72px desktop.
+   Long joined words ("certificazione/Crediti/Livelli") break only when they do not fit. */
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:48px;font-weight:500;line-height:1.1;overflow-wrap:anywhere}
+
+/* Line under the title: 20px mobile, 23px tablet, 26px desktop; 14-16px below the title */
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor{padding-top:14px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor,
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p){font-size:20px;line-height:1.35;margin-top:0}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p):last-child{margin-bottom:0}
+
+/* A little more blue behind the text, so the yellow stays readable */
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) > .elementor-background-overlay{background-image:linear-gradient(82deg,#3D5570 0%,rgba(61,85,112,.75) 50%,rgba(61,85,112,.15) 100%)}
+
+@media(min-width:768px){
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:60px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor,
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p){font-size:23px}
+}
+@media(min-width:1025px){
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor{padding-top:16px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-widget.elementor-page-title .elementor-heading-title{font-size:72px}
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor,
+.elementor .elementor-section.elementor-top-section:has(> .elementor-background-video-container) .elementor-page-title + .elementor-widget-text-editor :is(h2,p){font-size:26px}
+}
+
+/* Header menu: the language flags are menu items. Never let them wrap to a second
+   line. When the row gets tight, the items get less padding and a smaller font.
+   The 16px step goes up to 1439px: Programmi and Vivere ad Assisi do not fit at
+   18px below that. */
+.elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal > ul.elementor-nav-menu{flex-wrap:nowrap}
+.elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-nav-menu > li{flex-shrink:0;white-space:nowrap}
+@media (min-width:1025px) and (max-width:1439px){
+  .elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-item{padding-left:8px !important;padding-right:8px !important;font-size:16px !important}
+}
+@media (min-width:1025px) and (max-width:1150px){
+  .elementor-location-header .elementor-nav-menu--main.elementor-nav-menu--layout-horizontal .elementor-item{padding-left:4px !important;padding-right:4px !important;font-size:14px !important}
+}
+@media (min-width:1025px) and (max-width:1200px){
+  .elementor-location-header .elementor-widget-nav-menu.elementor-nav-menu__align-justify{width:auto !important;max-width:none !important;flex:0 1 auto}
+}
+
+/* Search icon: its underline sat half a pixel lower than the menu underline, so it
+   rendered one pixel off. One more pixel of margin makes the two lines meet. */
+.elementor-location-header .elementor-widget-search-form > .elementor-widget-container{margin-bottom:31px !important}
+/* Scrolled (sticky) header: the menu moves up, so the search keeps the theme's 6px. */
+.elementor-location-header .elementor-sticky--effects .elementor-widget-search-form > .elementor-widget-container{margin-bottom:6px !important}
+
+/* Tablet header (768 to 1024): it was the desktop header with a small burger and the
+   search icon floating in the middle. Use the phone header up to 1024 instead. */
+@media (min-width:768px) and (max-width:1024px){
+  .elementor-location-header > .elementor-section.elementor-hidden-phone:not(.elementor-hidden-tablet):not(.elementor-hidden-desktop){display:none}
+  .elementor.elementor-location-header .elementor-section.elementor-hidden-desktop.elementor-hidden-tablet{display:block}
+  /* the burger goes to the right edge, as on the phone */
+  .elementor-location-header .elementor-section.elementor-hidden-desktop.elementor-hidden-tablet .elementor-column ~ .elementor-column{width:auto !important;flex:1 1 0}
+  .elementor-location-header .elementor-section.elementor-hidden-desktop.elementor-hidden-tablet .elementor-column ~ .elementor-column > .elementor-widget-wrap{padding-right:30px !important;justify-content:flex-end !important}
+}
+
+/* Menu: Configuratore is the last item of Corsi. It is a tool, not a course:
+   a thin line above it, the site blue, a bit bolder, and an arrow. */
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool{border-top:1px solid rgba(58,82,118,.3) !important}
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item{color:#3A5276 !important;font-weight:600 !important}
+.elementor-location-header .elementor-nav-menu li.ali-menu-tool > a.elementor-sub-item::after{content:"\00a0\2192";display:inline;position:static;opacity:1;background:none;width:auto;height:auto;transform:none}
