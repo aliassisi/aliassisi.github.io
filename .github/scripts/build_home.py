@@ -150,27 +150,24 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
     primo, dopo = prossime[0], prossime[1:3]
     poi = f'{t["poi"]} {elenco(dopo, lang)}.' if dopo else ""
     span = lambda ruolo, testo: f'<span data-ali-ni="{ruolo}">{testo}</span>'
-    # "NON-BEGINNERS" in the same yellow capitals as "Next start", then "any Monday"
-    lab = f'<span class="ali-ni-lab">{html.escape(t["non_principianti"])}</span>'
-    q = f'<span class="ali-ni-q">{html.escape(t["ogni_lunedi"])}</span>'
-    # mobile card: three lines under the date
+    # mobile card: two lines under the date
     riga = lambda testo, cl="": f'<span class="ali-ni-r{cl}">{testo}</span>'
     righe = (riga(span("poi", poi))
-             + riga(lab + " " + q, " ali-ni-blocco")
              + riga(t["altre_date"], " ali-ni-small ali-ni-blocco"))
-    # desktop bar: the next dates go under the date; then a "non-beginners"
-    # block and an "other dates" block, each with its own column line
-    barra = (f'<span class="ali-ni-np">{lab}{q}</span>'
-             f'<span class="ali-ni-altre">{t["altre_date"]}</span>')
+    # desktop bar: the next dates go under the date; then the "other dates" block
+    barra = f'<span class="ali-ni-altre">{t["altre_date"]}</span>'
 
+    # the second half of the title stays together on its line
+    titolo = (html.escape(t["titolo"].upper())
+              + f' <span style="display:inline-block">{html.escape(t["livelli"].upper())}</span>')
     # mobile card
-    pagina = sostituisci_widget(pagina, "7d1ae85", html.escape(t["titolo"].upper()))
+    pagina = sostituisci_widget(pagina, "7d1ae85", titolo)
     pagina = sostituisci_widget(pagina, "d5f16a7", span("lungo", lungo(primo, lang)))
     pagina = testimonial(pagina, "bad613d", righe)
     pagina = pulsante(pagina, "0bcf9eb", t["pulsante"], t["url"])
     # desktop bar
     pagina = sostituisci_widget(pagina, "b259213",
-                                '<span style="font-size:.58em">' + html.escape(t["titolo"].upper()) + "</span>")
+                                '<span style="font-size:.58em">' + titolo + "</span>")
     pagina = sostituisci_widget(pagina, "38f8ffd", span("breve", primo.strftime("%d.%m.%Y"))
                                 + f'<span class="ali-ni-poi">{span("poi", poi)}</span>')
     pagina = sostituisci_widget(pagina, "139c2fa", barra)
@@ -190,55 +187,44 @@ def prossimo_inizio(pagina, dati, date, oggi, lang):
            # the sentence wraps when it does not fit
            ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap{padding:20px clamp(18px,2.4vw,44px)!important}"
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{letter-spacing:.16em}"
-           # the label ("Prossimo inizio per principianti") may take two lines
+           # the label ("Prossimo inizio per tutti i livelli") may take two lines
            ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{white-space:normal;max-width:11em;line-height:1.1}"
            ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:30px!important}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{font-size:24px!important}"
-           # "Non principianti" looks like the "Prossimo inizio" label
-           ".ali-ni-lab{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:21px;letter-spacing:.27em;"
-           "text-transform:uppercase;color:#fec15f;white-space:nowrap}"
            # desktop: next dates under the date
            ".elementor-element-38f8ffd{width:auto!important}"
            ".elementor-element-38f8ffd .ali-ni-poi{display:block;margin-top:6px;font-size:17px;line-height:1.3;letter-spacing:.02em}"
-           # desktop: the text column holds two blocks, split by a line like the other columns
+           # desktop: the text column holds the "other dates" block
            ".elementor-element-2c917f6 .elementor-element-15f1e8c>.elementor-widget-wrap{padding:0!important;align-items:stretch;align-content:stretch!important}"
            ".elementor-element-139c2fa>.elementor-widget-container{padding:0!important}"
            ".elementor-element-139c2fa,.elementor-element-139c2fa>.elementor-widget-container{width:100%;height:100%}"
            ".elementor-element-2c917f6 .elementor-element-139c2fa .elementor-heading-title{display:flex;height:100%;align-items:stretch}"
-           ".ali-ni-np,.ali-ni-altre{display:flex;flex-direction:column;justify-content:center;padding:20px clamp(18px,2.4vw,44px)}"
-           ".ali-ni-np{flex:none;align-items:center;gap:6px;border-right:1px solid #f0eae5}"
-           ".ali-ni-np .ali-ni-q{font-size:30px;font-weight:200;line-height:1.2}"
+           ".ali-ni-altre{padding:20px clamp(18px,2.4vw,44px)}.ali-ni-altre a{white-space:nowrap}"
            ".ali-ni-altre{display:block;align-self:center;flex:1 1 200px;min-width:200px;font-size:20px;line-height:1.4}"
-           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:270px}"
-           # mobile card: three lines, the label on its own line
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:320px}"
+           # mobile card: the lines under the date
            ".ali-ni-r{display:block}.ali-ni-r+.ali-ni-r{margin-top:6px}"
            ".ali-ni-small{font-size:.8em;opacity:.85}"
-           # mobile card: a line, then "NON PRINCIPIANTI" in the same type as the card title
-           # and "Ogni lunedì" in the same type as the date
+           # mobile card: a line above the "other dates" block
            ".elementor-element-bad613d .ali-ni-blocco{border-top:1px solid #f0eae5;margin:22px -10px 0!important;padding:20px 10px 0}"
-           # the title and the date are one block (label + value, like "Non principianti" +
-           # "Ogni lunedì"): no line between them, lines only between blocks
+           # the title and the date are one block (label + value): no line between them, lines only between blocks
            ".elementor-element-d5f16a7>.elementor-widget-container{border-top:0!important;padding-top:0!important}"
            ".elementor-element-7d1ae85{margin-bottom:6px!important}"
+           # the side padding of the title left too little room for "per tutti i livelli"
+           ".elementor-element-7d1ae85>.elementor-widget-container{padding-left:0!important;padding-right:0!important}"
            # the lines reach the card edges like the other two, so the wrapper must not clip them
            ".elementor-element-bad613d .elementor-testimonial-wrapper{overflow:visible}"
            # "other dates" is for everyone, so it gets its own block
            ".elementor-element-bad613d .ali-ni-small.ali-ni-blocco{margin-top:20px!important;padding-top:18px}"
-           ".elementor-element-bad613d .ali-ni-lab{display:block;margin:0;font-family:'Cormorant Garamond',serif;"
-           "font-size:20px;font-weight:400;line-height:32px;letter-spacing:4.5px;color:#f0eae5}"
-           ".elementor-element-bad613d .ali-ni-q{display:block;margin:6px 0 4px;font-family:'Cormorant Garamond',serif;"
-           "font-size:29px;font-weight:100;line-height:1.2;letter-spacing:.2px;text-transform:uppercase;color:#fec15f}"
            # narrow desktops (the bar is hidden below 1025px): less padding, smaller type
            "@media(max-width:1365px){"
-           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap,.ali-ni-np,.ali-ni-altre{padding:16px 18px!important}"
+           ".elementor-element-2c917f6 .elementor-column>.elementor-widget-wrap,.ali-ni-altre{padding:16px 18px!important}"
            ".elementor-element-2c917f6 .elementor-element-15f1e8c>.elementor-widget-wrap{padding:0!important}"
-           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:210px}"
+           ".elementor-element-2c917f6 .elementor-element-b259213 .elementor-heading-title{max-width:320px}"
            ".elementor-element-2c917f6 .elementor-element-fa2ccb2>.elementor-widget-wrap{padding:16px 14px!important}"
            ".elementor-element-38f8ffd .ali-ni-poi{white-space:normal;max-width:150px;margin-left:auto;margin-right:auto}"
-           ".elementor-element-139c2fa .ali-ni-lab{letter-spacing:.15em}"
-           ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title,.ali-ni-np .ali-ni-q{font-size:24px!important}"
+           ".elementor-element-2c917f6 .elementor-element-38f8ffd .elementor-heading-title{font-size:24px!important}"
            ".elementor-element-38f8ffd .ali-ni-poi{font-size:15px}"
-           ".elementor-element-139c2fa .ali-ni-lab{font-size:17px}"
            ".ali-ni-altre{font-size:16px;flex-basis:140px;min-width:140px}}"
            "</style>\n")
     js = SCRIPT_START + "\n" + css + "<script>(function(){var D=" + json.dumps([d.isoformat() for d in date]) \
