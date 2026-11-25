@@ -245,6 +245,7 @@ function lezioniDi(id) {
 function contaLez(lez) {
   var n = {prevista: 0, fatta: 0, annullata: 0, persa: 0, ore_fatte: 0};
   lez.forEach(function (l) { var s = l.stato || 'fatta'; n[s] += quanteLez(l.ora_inizio, l.ora_fine) || 1; if (s === 'fatta') n.ore_fatte += Number(l.ore) || 0; });
+  n.ore_fatte = Math.round(n.ore_fatte * 100) / 100;
   return n;
 }
 function statoLez(s) { s = s || 'fatta'; return '<span class="tag ' + ({prevista: '', fatta: 'ok', annullata: 'err', persa: 'att'}[s] || '') + '">' + esc(s) + '</span>'; }
@@ -265,10 +266,10 @@ function frequenza(id, da, a, classe) {
       if (l.stato === 'prevista' || l.stato === 'annullata') return;
       tot += Number(l.ore) || 0;
       if (l.stato === 'persa' || String(l.assenti || '').split(/\s*,\s*/).indexOf(id) >= 0) { assenze.push(l.data); return; }
-      ore += Number(l.ore) || 0; lez += quanteLez(l.ora_inizio, l.ora_fine) || 1;
+      ore += Number(l.ore) || 0; lez++;
     });
   });
-  return {ore: ore, lezioni: lez, previste: tot, assenze: assenze.sort()};
+  return {ore: Math.round(ore * 100) / 100, lezioni: lez, previste: Math.round(tot * 100) / 100, assenze: assenze.sort()};
 }
 function statoTag(s) {
   var c = {Nuova: 'att', Confermata: '', Pagata: 'ok', 'In corso': 'ok', Conclusa: '', Annullata: 'err'}[s];
@@ -468,7 +469,7 @@ function apriStudente(id) {
       'dal <input type="date" id="s-dal" value="' + esc(dateIn(classiPossibili[0])[0]) + '"> al <input type="date" id="s-al" value="' + esc(dateIn(classiPossibili[0])[1]) + '"><button class="b" id="s-assegna">Metti in classe</button></div>' +
       (!v.inizio || !v.fine ? '<div class="tenue piccolo">Lo studente non ha le date del corso: scrivile sopra (Inizio, Fine) e salva.</div>' : '')
       : '<div class="tenue piccolo">Non ci sono classi in corso o future: creala in Classi.</div>') +
-    '<div class="piccolo">Frequenza dal registro: <b>' + f.ore + ' ore</b> su ' + f.previste + ' (' + f.lezioni + ' lezioni)</div>' +
+    '<div class="piccolo">Frequenza dal registro: <b>' + f.ore + ' ore</b> su ' + f.previste + '</div>' +
     (vuoleAlloggio(v) || soggiorniDi(id).length ? '<h3>Alloggio</h3><div class="piccolo">' + (v.alloggio ? 'Ha chiesto: <b>' + esc(v.alloggio) + '</b>' + (v.settimane_alloggio ? ', ' + esc(v.settimane_alloggio) + ' settimane' : '') : '') + '</div>' +
       (soggiorniDi(id).length ? '<ul class="lista">' + soggiorniDi(id).map(function (x) { var a = alloggioId(x.alloggio); return '<li>' + esc(a ? a.nome : x.alloggio) + ' <span class="tenue">' + gg(x.arrivo) + ' → ' + gg(x.partenza) + '</span>' + (x.note ? ' <span class="tenue piccolo">' + esc(x.note) + '</span>' : '') + ' <button class="b piccolo" data-modsog="' + esc(x.id) + '">Modifica</button> <button class="b piccolo r" data-togsog="' + esc(x.id) + '">Togli</button></li>'; }).join('') + '</ul>' : '<div class="vuoto-msg">Non ancora assegnato.</div>') +
       '<div class="barra"><button class="b" id="s-alloggio">Assegna un alloggio</button>' + (soggiorniDi(id).length ? '<button class="b" id="s-mandaall">Manda i dettagli dell’alloggio</button>' : '') + '</div>' : '') +
@@ -1371,7 +1372,6 @@ function dopoPlan(g) {
 }
 
 /* ---------- ORE DEGLI INSEGNANTI ---------- */
-function oreTesto(n) { var m = n * 50; return Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + m % 60 + '′' : ''); }
 function calOre() {
   var lun = U.calSett || lunedi(D.oggi), giorni = [0, 1, 2, 3, 4, 5, 6].map(function (i) { return piu(lun, i); });
   var m1 = lun.slice(0, 8) + '01';
@@ -1383,16 +1383,16 @@ function calOre() {
   if (!dom) giorni.pop();
   var h = '<div class="barra"><button class="b" id="cprec">‹</button><button class="b" id="coggi">Questa settimana</button><button class="b" id="csucc">›</button><b>' + gg(lun) + ' – ' + gg(piu(lun, 5)) + '</b><span class="spazio"></span>' + tastiVista() + '<button class="b" onclick="window.print()">Stampa</button></div>';
   if (!ins.length) return h + '<div class="card">Scrivi gli insegnanti in <button class="l" data-s="impostazioni">Impostazioni</button>.</div>';
-  h += '<h2>Lezioni della settimana <span class="tenue piccolo">di 50 minuti</span></h2><div class="scroll"><table class="oretab"><thead><tr><th>Insegnante</th>' + giorni.map(function (g) { return '<th>' + ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'][dataDa(g).getUTCDay()] + ' ' + gg(g) + '</th>'; }).join('') + '<th>Totale</th><th>Ore</th></tr></thead><tbody>' +
+  h += '<h2>Lezioni della settimana <span class="tenue piccolo">una lezione di 50 minuti = 1 ora</span></h2><div class="scroll"><table class="oretab"><thead><tr><th>Insegnante</th>' + giorni.map(function (g) { return '<th>' + ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'][dataDa(g).getUTCDay()] + ' ' + gg(g) + '</th>'; }).join('') + '<th>Totale</th></tr></thead><tbody>' +
     ins.map(function (n) {
       var t = 0;
       return '<tr><td><button class="l" data-oreins="' + esc(n) + '">' + esc(n) + '</button></td>' + giorni.map(function (g) {
         var k = lezioniIns(n, g); t += k;
         return '<td>' + (k || '<span class="tenue">–</span>') + (pausaDi(n, g) ? ' <span class="tag err">PAUSA</span>' : '') + (assenteIl(n, g, '') ? ' <span class="tag att">non può</span>' : '') + '</td>';
-      }).join('') + '<td><b>' + t + '</b></td><td class="tenue">' + oreTesto(t) + '</td></tr>';
+      }).join('') + '<td><b>' + t + '</b></td></tr>';
     }).join('') + '</tbody></table></div>';
   var mesi = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-  h += '<h2 style="margin-top:22px">' + mesi[+m1.slice(5, 7) - 1] + ' ' + m1.slice(0, 4) + ' <input type="month" id="oremese" class="no-stampa" value="' + m1.slice(0, 7) + '"></h2><div class="scroll"><table class="oretab"><thead><tr><th>Insegnante</th>' + sett.map(function (x) { var p = x < m1 ? m1 : x, u = piu(x, 6) > m2 ? m2 : piu(x, 6); return '<th>' + gg(p) + (u > p ? ' – ' + gg(u) : '') + '</th>'; }).join('') + '<th>Totale</th><th>Ore</th><th>Fino a oggi</th></tr></thead><tbody>' +
+  h += '<h2 style="margin-top:22px">' + mesi[+m1.slice(5, 7) - 1] + ' ' + m1.slice(0, 4) + ' <input type="month" id="oremese" class="no-stampa" value="' + m1.slice(0, 7) + '"></h2><div class="scroll"><table class="oretab"><thead><tr><th>Insegnante</th>' + sett.map(function (x) { var p = x < m1 ? m1 : x, u = piu(x, 6) > m2 ? m2 : piu(x, 6); return '<th>' + gg(p) + (u > p ? ' – ' + gg(u) : '') + '</th>'; }).join('') + '<th>Totale</th><th>Fino a oggi</th></tr></thead><tbody>' +
     ins.map(function (n) {
       var t = 0, fatte = 0;
       return '<tr><td>' + esc(n) + '</td>' + sett.map(function (x) {
@@ -1400,7 +1400,7 @@ function calOre() {
         for (i = 0; i < 7; i++) { g = piu(x, i); if (g < m1 || g > m2) continue; q = lezioniIns(n, g); k += q; if (g <= D.oggi) fatte += q; }
         t += k;
         return '<td>' + (k || '<span class="tenue">–</span>') + '</td>';
-      }).join('') + '<td><b>' + t + '</b></td><td class="tenue">' + oreTesto(t) + '</td><td>' + fatte + '</td></tr>';
+      }).join('') + '<td><b>' + t + '</b></td><td>' + fatte + '</td></tr>';
     }).join('') + '</tbody></table></div>';
   var sel = ins.indexOf(U.oreIns) >= 0 ? U.oreIns : ins[0];
   h += '<h2 style="margin-top:22px">Dettaglio della settimana <select id="oreins" class="no-stampa">' + ins.map(function (n) { return '<option' + (n === sel ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('') + '</select> <span class="tag">' + esc(sel) + ': ' + giorni.reduce(function (t, g) { return t + lezioniIns(sel, g); }, 0) + ' lezioni</span></h2>' +
@@ -1491,16 +1491,16 @@ VISTE.registro = function () {
     return '<button class="b piccolo" data-manca="' + i + '">' + giornoSett(x.g) + ' ' + gg(x.g) + ', ' + esc(x.b.inizio + '–' + x.b.fine) + (x.b.ins ? ' · ' + esc(x.b.ins) : '') + '</button>'; }).join('') + '</div></div>';
   h += '<div class="barra no-stampa"><span class="tenue">Periodo:</span> dal <input type="date" id="rdal" value="' + esc(fd) + '"> al <input type="date" id="ral" value="' + esc(fa) + '">' +
     '<button class="b piccolo" data-per="sett">Questa settimana</button><button class="b piccolo" data-per="prec">Settimana scorsa</button><button class="b piccolo" data-per="mese">Questo mese</button><button class="b piccolo" data-per="">Tutto</button></div>';
-  h += '<h2>Registro: ' + esc(c.nome) + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Ore</th><th>Lez.</th>' + COL_REG.map(function (k) { return '<th>' + k[1] + '</th>'; }).join('') + '<th>Assenti</th></tr></thead><tbody>' +
+  h += '<h2>Registro: ' + esc(c.nome) + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Ore</th>' + COL_REG.map(function (k) { return '<th>' + k[1] + '</th>'; }).join('') + '<th>Assenti</th></tr></thead><tbody>' +
     (lez.map(function (l) {
-      if (l.evento) return '<tr class="cl" data-evreg="' + esc(l.evento.id) + '"><td>' + ggA(l.data) + '</td><td colspan="12"><span class="tag ev">' + esc(l.evento.nome) + '</span> ' + esc(l.evento.ora || 'orario da decidere') + (l.evento.luogo ? ' · ' + esc(l.evento.luogo) : '') + (l.evento.responsabile ? ' · ' + esc(l.evento.responsabile) : '') + '</td></tr>';
+      if (l.evento) return '<tr class="cl" data-evreg="' + esc(l.evento.id) + '"><td>' + ggA(l.data) + '</td><td colspan="11"><span class="tag ev">' + esc(l.evento.nome) + '</span> ' + esc(l.evento.ora || 'orario da decidere') + (l.evento.luogo ? ' · ' + esc(l.evento.luogo) : '') + (l.evento.responsabile ? ' · ' + esc(l.evento.responsabile) : '') + '</td></tr>';
       var ass = String(l.assenti || '').split(/\s*,\s*/).filter(String).map(function (i) { return ISC[i] ? ISC[i].nome : i; }).join(', ');
-      return '<tr class="cl" data-lez="' + esc(l.id) + '"><td>' + ggA(l.data) + '<div class="tenue piccolo">' + esc([l.orario, l.aula, l.insegnante].filter(String).join(' · ')) + '</div>' + ((l.stato || 'fatta') !== 'fatta' ? statoLez(l.stato) : '') + '</td><td>' + esc(l.ore) + '</td><td>' + (quanteLez(l.ora_inizio, l.ora_fine) || '') + '</td>' +
+      return '<tr class="cl" data-lez="' + esc(l.id) + '"><td>' + ggA(l.data) + '<div class="tenue piccolo">' + esc([l.orario, l.aula, l.insegnante].filter(String).join(' · ')) + '</div>' + ((l.stato || 'fatta') !== 'fatta' ? statoLez(l.stato) : '') + '</td><td>' + esc(l.ore) + '</td>' +
         COL_REG.map(function (k) { return '<td style="white-space:pre-wrap">' + esc(l[k[0]]) + '</td>'; }).join('') + '<td>' + esc(ass) + '</td></tr>';
-    }).join('') || '<tr><td colspan="13" class="vuoto-msg">Nessuna lezione. Premi “Nuova lezione”.</td></tr>') + '</tbody></table></div>';
+    }).join('') || '<tr><td colspan="12" class="vuoto-msg">Nessuna lezione. Premi “Nuova lezione”.</td></tr>') + '</tbody></table></div>';
   var ass = assDiClasse(c.id).filter(function (a) { return ISC[a.iscrizione]; });
   ass = ass.filter(function (a) { return (!fd || a.al >= fd) && (!fa || a.dal <= fa); });
-  if (ass.length) h += '<h3>Presenze' + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h3><div class="scroll"><table><thead><tr><th>Studente</th><th>In classe</th><th>Ore frequentate</th><th>Lezioni</th><th>Assenze</th></tr></thead><tbody>' + ass.map(function (a) {
+  if (ass.length) h += '<h3>Presenze' + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h3><div class="scroll"><table><thead><tr><th>Studente</th><th>In classe</th><th>Ore frequentate</th><th>Volte</th><th>Assenze</th></tr></thead><tbody>' + ass.map(function (a) {
     var f = frequenza(a.iscrizione, fd, fa, c.id), v = ISC[a.iscrizione];
     return '<tr><td>' + linkStud(v) + '</td><td>' + gg(a.dal) + ' – ' + gg(a.al) + '</td><td>' + f.ore + ' su ' + f.previste + (f.previste ? ' (' + Math.round(100 * f.ore / f.previste) + '%)' : '') + '</td><td>' + f.lezioni + '</td>' +
       '<td>' + (f.assenze.length ? f.assenze.length + ' <span class="tenue piccolo">(' + f.assenze.map(function (g) { return gg(g); }).join(', ') + ')</span>' : '0') + '</td></tr>';
@@ -1599,7 +1599,7 @@ function lezione(id, classeId, dopo, pronta) {
   var assenti = String(l.assenti || '').split(/\s*,\s*/);
   var corpo = (cambiato ? '<p class="tag att">Era “prevista”: salvando diventa “fatta”. Cambia lo stato se non si è fatta.</p>' : '') +
     '<div class="campi">' + campo('l-data', 'Data', l.data, 'date') + campo('l-inizio', 'Ora inizio', l.ora_inizio, 'time') + campo('l-fine', 'Ora fine', l.ora_fine, 'time') +
-    campo('l-ore', 'Ore di lezione', l.ore, 'number', ' step="any" min="0" max="12"') + scelta('l-aula', 'Aula', l.aula, scelteAule(l.aula)) + campo('l-insegnante', 'Insegnante', l.insegnante, 'text', ' list="dl-ins"') + datiInsegnanti() +
+    campo('l-ore', 'Ore di lezione (50 minuti = 1 ora)', l.ore, 'number', ' step="any" min="0" max="12"') + scelta('l-aula', 'Aula', l.aula, scelteAule(l.aula)) + campo('l-insegnante', 'Insegnante', l.insegnante, 'text', ' list="dl-ins"') + datiInsegnanti() +
     scelta('l-stato', 'Stato', stato, D.stati_lezione) +
     campo('l-link', 'Link Zoom di questa lezione' + (online(c) && c.link ? ' (vuoto = quello del corso)' : ''), l.link, 'url', ' placeholder="' + esc(online(c) ? c.link : 'https://…') + '"') +
     COL_REG.map(function (k) { return '<label' + (k[0] === 'note' ? ' class="largo"' : '') + '>' + k[1] + '<textarea id="l-' + k[0] + '" style="min-height:44px">' + esc(l[k[0]]) + '</textarea></label>'; }).join('') + '</div>' +
@@ -1612,7 +1612,7 @@ function lezione(id, classeId, dopo, pronta) {
   }
   function ore() {
     var a = $('#l-inizio', d).value, b = $('#l-fine', d).value;
-    if (a && b && aMin(b) > aMin(a)) $('#l-ore', d).value = Math.round((aMin(b) - aMin(a)) * 100 / 60) / 100;
+    if (a && b && aMin(b) > aMin(a)) $('#l-ore', d).value = quanteLez(a, b);
   }
   studenti(); if (!l.ore) ore();
   $('#l-data', d).onchange = studenti;
