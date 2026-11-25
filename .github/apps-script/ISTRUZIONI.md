@@ -316,7 +316,8 @@ il registro. Un cambio nel planning vale più del registro.
   oggi): prima resta nella classe di prima, con il suo registro.
 - **Registro**: ogni insegnante apre **Registro**: ci sono le lezioni del giorno, di tutte le classi, e quelle
   ancora da scrivere. **Scrivi** apre la lezione con ora, aula e insegnante del planning. O sceglie la classe
-  (in alto c'è **Da scrivere**: gli ultimi 14 giorni) e **Nuova lezione**. Segna le attività e gli assenti. Le ore si sommano da sole. **Periodo** (dal… al…, o "Questa
+  (in alto c'è **Da scrivere**: gli ultimi 14 giorni) e **Nuova lezione**. Segna le attività e gli assenti. Le ore si sommano da sole: una lezione di 50 minuti vale 1 ora (9:00–12:30 = 4 ore), anche negli
+  attestati; la pausa non si conta. Le ore si possono correggere a mano. **Periodo** (dal… al…, o "Questa
   settimana", "Settimana scorsa", "Questo mese") filtra lezioni e presenze: ore, lezioni e giorni
   di assenza di ogni studente in quelle date.
 - **Pagamenti**: **Aggiorna da Fatture in Cloud** (lo fa anche da solo ogni mattina se i
@@ -326,6 +327,8 @@ il registro. Un cambio nel planning vale più del registro.
   colonne e non rinominare le schede.
 
 ## Dopo un aggiornamento dello script
+Le lezioni già nel registro con le ore calcolate da inizio e fine passano da sole, una volta, a 1 ora per lezione.
+Le ore scritte a mano non cambiano. Gli attestati già creati restano com'erano.
 Per il planning: si crea da sola la scheda **Planning**. In **Impostazioni** scrivete gli insegnanti, controllate
 le aule (se le avevate già salvate restano quelle di prima) e le ore delle lezioni.
 Le schede Classi e Registro hanno colonne nuove (Tipo, Modalità, Link online; Ora inizio, Ora fine,

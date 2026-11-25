@@ -323,6 +323,7 @@ function carica() {
   var u = autorizzato();
   intestazioni();
   var imp = impostazioni(), p = props();
+  if (!p.getProperty('ore_in_lezioni')) oreInLezioni_();
   return {
     utente: u, oggi: oggiIso(),
     iscrizioni: leggi('Iscrizioni'),
@@ -511,7 +512,34 @@ function link(s) {
   return s;
 }
 
-/* I campi di una lezione, controllati. Se mancano le ore, si calcolano da inizio e fine. */
+/* Una lezione di 50 minuti vale 1 ora (registro, presenze, attestati). Quante lezioni ci sono fra due orari: le ore fisse
+   delle impostazioni toccate almeno per metà o, fuori da quelle, la durata divisa per 50 minuti. Come quanteLez in Pagina.html. */
+var ORE_FISSE = null;
+function oreFisse_() {
+  if (ORE_FISSE) return ORE_FISSE;
+  var t = props().getProperty('lezioni');
+  ORE_FISSE = String(t === null ? IMPOSTAZIONI.lezioni : t).split(',').map(function (x) { return x.match(/(\d{1,2}[:.]\d{2})\s*[–\-]\s*(\d{1,2}[:.]\d{2})/); })
+    .filter(Boolean).map(function (m) { return [minuti(m[1].replace('.', ':')), minuti(m[2].replace('.', ':'))]; }).filter(function (o) { return o[1] > o[0]; });
+  return ORE_FISSE;
+}
+function quanteLez_(inizio, fine) {
+  var a = minuti(inizio), b = minuti(fine);
+  if (!(b > a)) return 0;
+  return oreFisse_().filter(function (o) { return 2 * (Math.min(o[1], b) - Math.max(o[0], a)) >= o[1] - o[0]; }).length || Math.max(1, Math.round((b - a) / 50));
+}
+/* Una volta sola: le lezioni già scritte con le ore d'orologio calcolate da sole passano a 1 ora per lezione.
+   Le ore scritte a mano (diverse dalla durata) non si toccano. */
+function oreInLezioni_() {
+  var s = scheda('Registro'), j = SCHEMI.Registro.map(function (c) { return c[0]; }).indexOf('ore') + 1;
+  leggi('Registro').forEach(function (l) {
+    if (!/^\d{1,2}:\d{2}$/.test(l.ora_inizio) || !/^\d{1,2}:\d{2}$/.test(l.ora_fine)) return;
+    var durata = (minuti(l.ora_fine) - minuti(l.ora_inizio)) / 60, n = quanteLez_(l.ora_inizio, l.ora_fine);
+    if (n && Math.abs(Number(l.ore) - durata) < 0.13 && Number(l.ore) !== n) s.getRange(l._r, j).setValue(n);
+  });
+  props().setProperty('ore_in_lezioni', '1');
+}
+
+/* I campi di una lezione, controllati. Se mancano le ore, si calcolano da inizio e fine: 1 per lezione. */
 function lezioneDa(l) {
   var o = {classe: l.classe, data: l.data, assenti: (l.assenti || []).join(', '), modificato: new Date()};
   CAMPI_LEZIONE.forEach(function (k) { o[k] = testo(l[k], 2000); });
@@ -519,7 +547,7 @@ function lezioneDa(l) {
   if (o.ora_inizio && o.ora_fine && minuti(o.ora_fine) <= minuti(o.ora_inizio)) throw new Error('L’ora di fine viene prima dell’inizio');
   o.orario = o.ora_inizio && o.ora_fine ? o.ora_inizio + '–' + o.ora_fine : testo(l.orario, 200);
   var ore = l.ore === '' || l.ore === undefined || l.ore === null
-    ? (o.ora_inizio && o.ora_fine ? (minuti(o.ora_fine) - minuti(o.ora_inizio)) / 60 : NaN) : Number(l.ore);
+    ? (o.ora_inizio && o.ora_fine ? quanteLez_(o.ora_inizio, o.ora_fine) : NaN) : Number(l.ore);
   if (!(ore >= 0 && ore <= 12)) throw new Error('Ore non valide');
   o.ore = Math.round(ore * 100) / 100;
   o.stato = l.stato || 'fatta';
@@ -931,10 +959,11 @@ function frequenza(id, ass, reg) {
       if (l.stato === 'persa') return;
       var assenti = String(l.assenti || '').split(/\s*,\s*/);
       if (assenti.indexOf(id) >= 0) return;
-      ore += Number(l.ore) || 0; lezioni++;
+      ore += Number(l.ore) || 0; lezioni += Number(l.ore) || 0;   // 1 ora = 1 lezione
     });
   });
-  return {ore: ore, lezioni: lezioni, ore_previste: totOre};
+  var tondo = function (x) { return Math.round(x * 100) / 100; };
+  return {ore: tondo(ore), lezioni: tondo(lezioni), ore_previste: tondo(totOre)};
 }
 
 /* ---------- ALLOGGI ---------- */
