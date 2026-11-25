@@ -22,7 +22,7 @@ var T=IT?{
   orari:'Gli orari delle lezioni si concordano dopo la conferma dell’iscrizione.',
   disponibili_dal:'Lezioni dal {a} al {b}.',
   durata:'Durata',settimana:'settimana',settimane:'settimane',
-  tariffa_1:'tariffa per 1 settimana',tariffa_da:'tariffa da {a} settimane in su',tariffa_ab:'tariffa per {a}–{b} settimane',
+  tariffa_una:'tariffa per {n}',tariffa_da:'tariffa da {a} settimane in su',tariffa_ab:'tariffa per {a}–{b} settimane',
   a_sett:'a settimana',mostra_tariffe:'Mostra le tariffe',nascondi_tariffe:'Nascondi le tariffe',
   col_durata:'Durata',col_tariffa:'A settimana',col_totale:'Totale',
   alloggio:'Alloggio',sett_alloggio:'Settimane di alloggio',tipo_camera:'Tipo di camera',stima:'stima',
@@ -89,7 +89,7 @@ var T=IT?{
   orari:'We agree the lesson times after confirming your enrolment.',
   disponibili_dal:'Lessons from {a} to {b}.',
   durata:'Duration',settimana:'week',settimane:'weeks',
-  tariffa_1:'1 week rate',tariffa_da:'{a}+ weeks rate',tariffa_ab:'{a}–{b} weeks rate',
+  tariffa_una:'{n} rate',tariffa_da:'{a}+ weeks rate',tariffa_ab:'{a}–{b} weeks rate',
   a_sett:'per week',mostra_tariffe:'Show pricing tiers',nascondi_tariffe:'Hide pricing tiers',
   col_durata:'Duration',col_tariffa:'Per week',col_totale:'Total',
   alloggio:'Accommodation',sett_alloggio:'Weeks of accommodation',tipo_camera:'Room type',stima:'est.',
@@ -156,7 +156,7 @@ var OGGI=new Date();OGGI.setHours(0,0,0,0);
 
 /* ---------- PREZZI ---------- */
 function tariffa(c,w){for(var i=0;i<c.tariffe.length;i++){var t=c.tariffe[i];if(w>=t.from&&w<=t.to)return t;}return c.tariffe[c.tariffe.length-1];}
-function nomeTariffa(t){return t.from===t.to?T.tariffa_1:(t.to>=48?fmt(T.tariffa_da,{a:t.from}):fmt(T.tariffa_ab,{a:t.from,b:t.to}));}
+function nomeTariffa(t){return t.from===t.to?fmt(T.tariffa_una,{n:settimane(t.from)}):(t.to>=48?fmt(T.tariffa_da,{a:t.from}):fmt(T.tariffa_ab,{a:t.from,b:t.to}));}
 /* Lezioni a pacchetti: prima i pacchetti più grandi, il resto a lezione singola. */
 function prezzoLezioni(f,n){
   var tagli=Object.keys(f.prezzi).map(Number).sort(function(a,b){return b-a;}),tot=0;
