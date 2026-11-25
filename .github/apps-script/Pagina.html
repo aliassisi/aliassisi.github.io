@@ -83,6 +83,17 @@ dialog::backdrop{background:rgba(20,30,45,.45)}
 .checks{display:flex;flex-wrap:wrap;gap:6px 14px}
 .checks label{display:flex;gap:5px;align-items:center}
 .vuoto-msg{color:var(--tenue);padding:10px 0}
+.plan{table-layout:fixed;min-width:940px}.plan th,.plan td{border-right:1px solid var(--linea);padding:4px;min-width:150px}.plan .pora{width:64px;min-width:64px;font-size:12px;font-weight:600;background:#fafbfc}.plan .patt{width:140px;min-width:120px;background:#faf7fd}
+.plan th .l{font-size:14px;font-weight:600;color:var(--testo)}
+.pc{border:1px solid var(--linea);border-radius:6px;margin-bottom:4px;background:#fff;overflow:hidden;cursor:pointer;font-size:12.5px}.pc:hover{border-color:var(--ardesia)}.pc.preso{opacity:.4}.pc.prev{border-style:dashed}.pc.annul{opacity:.5;text-decoration:line-through}.pc.conf{border-color:var(--err);box-shadow:0 0 0 1px var(--err) inset}
+.paula{font-size:11.5px;font-weight:600;text-align:center;padding:1px 4px}.pcorpo{padding:4px 6px}.ps{padding:1px 0}.ps .l{color:var(--testo);text-decoration:none}.ps .l:hover{text-decoration:underline}
+.c-super{color:#b3261e;font-weight:600}.c-duo{color:#a15c00;font-weight:600}.c-int{color:#1f5f9c;font-weight:600}.c-std{color:var(--tenue)}
+.chip.k-super{border-color:#d98b85}.chip.k-duo{border-color:#e0b366}.chip.k-int{border-color:#8fb4d9}
+.pnota{background:#fff8c9;padding:5px 7px;white-space:pre-wrap}.passente,.pcella.no{background:var(--err-f)}.passente{color:var(--err);padding:5px 7px}
+.pcella{height:44px}.pcella.sopra{outline:2px dashed var(--ardesia);outline-offset:-2px}.paggiungi{border:0;background:none;color:transparent;font:inherit;width:100%;cursor:pointer;min-height:30px}.pcella:hover .paggiungi,.paggiungi:focus{color:var(--tenue)}
+.plan .ppausa td{background:#e6f3f4;padding:2px 6px}.plan .ppausa td.on{background:var(--err-f);color:var(--err);font-weight:600}.plan .psep td{background:#8b95a1;padding:0;height:5px}
+.oretab td,.oretab th{border-right:1px solid var(--linea)}
+@media print{.plan{min-width:0;font-size:10px}.pc{break-inside:avoid}}
 @media print{header,.barra,.no-stampa,button{display:none!important}main{padding:0}.card,.scroll{border:0}body{background:#fff}th{position:static}}
 @media (max-width:640px){main{padding:10px}header{gap:4px}header .chi{display:none}}
 </style>
@@ -115,7 +126,7 @@ var MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott'
 function esc(s) { return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
 function $(s, r) { return (r || document).querySelector(s); }
 function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
-function gg(iso) { if (!iso) return ''; var p = String(iso).slice(0, 10).split('-'); return +p[2] + ' ' + MESI[+p[1] - 1]; }
+function gg(iso) { if (!iso) return ''; var p = String(iso).slice(0, 10).split('-'); return +p[2] + ' ' + MESI[+p[1] - 1] + (D && D.oggi && p[0] !== D.oggi.slice(0, 4) ? ' ' + p[0] : ''); }  // con l'anno, se non è quello in corso
 function ggA(iso) { if (!iso) return ''; var p = String(iso).slice(0, 10).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function euro(n) { if (n === '' || n === null || n === undefined || isNaN(n)) return ''; return Number(n).toLocaleString('it-IT', {style: 'currency', currency: 'EUR'}); }
 function dataDa(iso) { var p = iso.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
@@ -211,7 +222,7 @@ function avvio() {
 
 var ISC = {}, CLA = {};
 function indici() {
-  ISC = {}; CLA = {};
+  ISC = {}; CLA = {}; MEMO_CASELLE = {};
   D.iscrizioni.forEach(function (v) { ISC[v.id] = v; });
   D.classi.forEach(function (c) { CLA[c.id] = c; });
   $('#livelli').innerHTML = D.livelli.map(function (l) { return '<option value="' + esc(l) + '">'; }).join('');
@@ -233,7 +244,7 @@ function lezioniDi(id) {
 }
 function contaLez(lez) {
   var n = {prevista: 0, fatta: 0, annullata: 0, persa: 0, ore_fatte: 0};
-  lez.forEach(function (l) { var s = l.stato || 'fatta'; n[s]++; if (s === 'fatta') n.ore_fatte += Number(l.ore) || 0; });
+  lez.forEach(function (l) { var s = l.stato || 'fatta'; n[s] += quanteLez(l.ora_inizio, l.ora_fine) || 1; if (s === 'fatta') n.ore_fatte += Number(l.ore) || 0; });
   return n;
 }
 function statoLez(s) { s = s || 'fatta'; return '<span class="tag ' + ({prevista: '', fatta: 'ok', annullata: 'err', persa: 'att'}[s] || '') + '">' + esc(s) + '</span>'; }
@@ -254,7 +265,7 @@ function frequenza(id, da, a, classe) {
       if (l.stato === 'prevista' || l.stato === 'annullata') return;
       tot += Number(l.ore) || 0;
       if (l.stato === 'persa' || String(l.assenti || '').split(/\s*,\s*/).indexOf(id) >= 0) { assenze.push(l.data); return; }
-      ore += Number(l.ore) || 0; lez++;
+      ore += Number(l.ore) || 0; lez += quanteLez(l.ora_inizio, l.ora_fine) || 1;
     });
   });
   return {ore: ore, lezioni: lez, previste: tot, assenze: assenze.sort()};
@@ -584,15 +595,24 @@ VISTE.classi = function () {
     }).join('') + '</tr></thead><tbody>';
   // Un nome che si può trascinare in un'altra classe della stessa settimana (o in "Senza classe").
   var etichetta = function (v, da, s) {
-    return '<span class="chip" draggable="true" data-stud="' + esc(v.id) + '" data-da="' + esc(da) + '" data-sett="' + s + '" title="' + esc(nome(v) + (v.livello ? ' · ' + v.livello : '') + ' · ' + gg(v.inizio) + '–' + gg(v.fine)) + '">' + esc(v.nome + ' ' + String(v.cognome || '').charAt(0) + '.') + '</span>';
+    return '<span class="chip k' + corsoBreve(v).cl.slice(1) + '" draggable="true" data-stud="' + esc(v.id) + '" data-da="' + esc(da) + '" data-sett="' + s + '" title="' + esc(nome(v) + (v.livello ? ' · ' + v.livello : '') + ' · ' + corsoBreve(v).testo + ' · ' + gg(v.inizio) + '–' + gg(v.fine)) + '">' + esc(v.nome + ' ' + String(v.cognome || '').charAt(0) + '.') + (v.fine >= s && v.fine <= piu(s, 6) ? ' <span class="tenue">fino al ' + gg(v.fine) + '</span>' : '') + '</span>';
+  };
+  // Chi ha la classe quella settimana (dal planning) e quante lezioni sono.
+  var insSettimana = function (c, s) {
+    var chi = [], n = 0;
+    for (var i = 0; i < 6; i++) caselle(piu(s, i)).forEach(function (x) { if (x.classe.id !== c.id) return; n += x.n; if (x.ins && chi.indexOf(x.ins) < 0) chi.push(x.ins); });
+    return n ? (chi.join(', ') || 'senza insegnante') + ' · ' + n + ' lez.' : c.insegnante;
   };
   var blocco = function (c, s, fine, extra) {
     var st = assDiClasse(c.id).filter(function (a) { return sovrap(a.dal, a.al, s, fine) && ISC[a.iscrizione] && attiva(ISC[a.iscrizione]); });
     return '<div class="blocco' + (privato(c) ? ' priv' : ' bersaglio') + '" role="button" tabindex="0" data-classe="' + esc(c.id) + '" data-sett="' + s + '"><b>' + esc(c.nome) + '</b>' +
-      esc([c.livello, extra, c.insegnante].filter(Boolean).join(' · ')) +
+      esc([c.livello, extra, privato(c) ? c.insegnante : insSettimana(c, s)].filter(Boolean).join(' · ')) +
       (st.length ? '<span class="nomi">' + st.map(function (a) { return etichetta(ISC[a.iscrizione], c.id, s); }).join('') + '</span>' : (extra === undefined ? '<span class="nomi tenue">nessuno</span>' : '')) + '</div>';
   };
-  aule().concat(['']).forEach(function (aula) {
+  // Anche le aule che non sono nelle impostazioni, se una classe le usa.
+  var righeAule = aule();
+  gruppi.forEach(function (c) { if (c.aula && righeAule.indexOf(c.aula) < 0 && sovrap(c.inizio, c.fine, sett[0], piu(sett[7], 6))) righeAule.push(c.aula); });
+  righeAule.concat(['']).forEach(function (aula) {
     h += '<tr><td>' + (aula ? esc(aula) : '<span class="tenue">Senza aula</span>') + '</td>';
     sett.forEach(function (s) {
       var fine = piu(s, 6), cl = gruppi.filter(function (c) { return (c.aula || '') === aula && sovrap(c.inizio, c.fine, s, fine); });
@@ -682,7 +702,9 @@ function senzaClasse(s) {
 }
 
 function creaPrivato(idStud) {
-  chiama('creaPrivato', idStud).then(function (r) { avviso('Corso individuale creato'); disegna(); apriClasse(r.creata); });
+  var gia = assDi(idStud).map(function (a) { return CLA[a.classe]; }).filter(function (c) { return privato(c) && c.fine >= D.oggi; })[0];
+  if (gia && !confirm(nome(ISC[idStud]) + ' ha già un corso individuale: “' + gia.nome + '” (' + gg(gia.inizio) + ' – ' + gg(gia.fine) + '). Crearne un altro?')) { apriClasse(gia.id); return; }
+  chiama('creaPrivato', idStud, !!gia).then(function (r) { avviso('Corso individuale creato'); disegna(); apriClasse(r.creata); });
 }
 
 function modificaClasse(id, tipo) {
@@ -691,8 +713,8 @@ function modificaClasse(id, tipo) {
     scelta('c-tipo', 'Tipo', c.tipo || 'gruppo', [['gruppo', 'Gruppo'], ['privato', 'Individuale o duo']]) +
     scelta('c-modalita', 'Modalità', c.modalita || 'in sede', [['in sede', 'In sede'], ['online', 'Online']]) +
     campo('c-link', 'Link Zoom (per le lezioni online)', c.link, 'url', ' placeholder="https://us02web.zoom.us/j/…"') +
-    scelta('c-aula', 'Aula', c.aula, [''].concat(aule())) + campo('c-livello', 'Livello', c.livello, 'text', ' list="livelli"') +
-    campo('c-insegnante', 'Insegnante', c.insegnante) + campo('c-inizio', 'Inizio', c.inizio, 'date') + campo('c-fine', 'Fine', c.fine, 'date') +
+    scelta('c-aula', 'Aula', c.aula, scelteAule(c.aula)) + campo('c-livello', 'Livello', c.livello, 'text', ' list="livelli"') +
+    campo('c-insegnante', 'Insegnante', c.insegnante, 'text', ' list="dl-ins"') + datiInsegnanti() + campo('c-inizio', 'Inizio', c.inizio, 'date') + campo('c-fine', 'Fine', c.fine, 'date') +
     campo('c-orario', 'Orario (gruppi, es. 09:00–12:30)', c.orario) + campo('c-note', 'Note', c.note, 'textarea') + '</div>';
   var d = dialogo(id ? 'Modifica la classe' : 'Nuova classe', corpo, (id ? '<button class="b r" id="c-elimina">Elimina</button>' : '') + '<button class="b p" id="c-salva">Salva</button>');
   $('#c-salva', d).onclick = function () {
@@ -707,6 +729,9 @@ function modificaClasse(id, tipo) {
     chiama('eliminaClasse', id).then(function () { d.close(); disegna(); });
   };
 }
+
+/* L'ora proposta per le lezioni individuali: la prima del pomeriggio, se c'è. */
+function primaOra() { var o = orari(); return o.filter(function (x) { return x.inizio >= '13:00'; })[0] || o[0] || {inizio: '09:00', fine: '10:00'}; }
 
 /* Il riquadro delle lezioni di un corso individuale: elenco, stato, pianificazione, calendario allo studente. */
 function sezioneLezioni(c, ass) {
@@ -730,8 +755,8 @@ function sezioneLezioni(c, ass) {
     }).join('') + '</tbody></table></div>' : '<div class="vuoto-msg">Nessuna lezione. Pianificale qui sotto.</div>') +
     '<details' + (lez.length ? '' : ' open') + ' style="margin-top:10px"><summary><b>Pianifica le lezioni</b></summary><div class="campi" style="margin-top:8px">' +
     campo('p-dal', 'Dal', dal, 'date') + campo('p-al', 'Al', c.fine, 'date') +
-    campo('p-inizio', 'Ora inizio', '09:00', 'time') + campo('p-fine', 'Ora fine', '10:00', 'time') +
-    (online(c) ? '' : scelta('p-aula', 'Aula', c.aula, [''].concat(aule()))) + campo('p-ins', 'Insegnante', c.insegnante) +
+    campo('p-inizio', 'Ora inizio', primaOra().inizio, 'time') + campo('p-fine', 'Ora fine', primaOra().fine, 'time') +
+    (online(c) ? '' : scelta('p-aula', 'Aula', c.aula, [''].concat(aule()))) + campo('p-ins', 'Insegnante', c.insegnante, 'text', ' list="dl-ins"') + datiInsegnanti() +
     campo('p-quante', 'Quante lezioni al massimo', resto, 'number', ' min="1"') + '</div>' +
     '<div class="checks" style="margin:10px 0">' + [1, 2, 3, 4, 5, 6].map(function (g) { return '<label><input type="checkbox" class="p-g" value="' + g + '"' + (g <= 5 ? ' checked' : '') + '> ' + ['', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'][g] + '</label>'; }).join('') + '</div>' +
     '<div class="barra"><button class="b p" id="p-crea">Crea le lezioni</button><button class="b" id="p-una">Aggiungi una lezione</button></div></details>' +
@@ -808,12 +833,13 @@ function apriClasse(id) {
   }; });
   $('#p-una', d).onclick = function () { lezione(null, id, function () { apriClasse(id); }); };
   $('#p-crea', d).onclick = function () {
+    var lezVolta = quanteLez($('#p-inizio', d).value, $('#p-fine', d).value) || 1;   // una volta di 100 minuti sono due lezioni
     var p = {classe: id, dal: $('#p-dal', d).value, al: $('#p-al', d).value, ora_inizio: $('#p-inizio', d).value, ora_fine: $('#p-fine', d).value,
-      aula: $('#p-aula', d) ? $('#p-aula', d).value : '', insegnante: $('#p-ins', d).value.trim(), quante: $('#p-quante', d).value,
+      aula: $('#p-aula', d) ? $('#p-aula', d).value : '', insegnante: $('#p-ins', d).value.trim(), quante: $('#p-quante', d).value ? Math.max(1, Math.floor($('#p-quante', d).value / lezVolta)) : '',
       giorni: $$('.p-g:checked', d).map(function (i) { return +i.value; })};
     chiama('pianificaLezioni', p).then(function (r) {
       var n = Object.keys(conflitti()).filter(function (k) { var l = lezioneDaId(k); return l && l.classe === id; }).length;
-      avviso('Create ' + r.create + ' lezioni' + (r.chiusi ? ' (saltati ' + r.chiusi + ' giorni di chiusura)' : '') + (n ? '. Attenzione: ' + n + ' si sovrappongono ad altre lezioni.' : ''), !!n);
+      avviso('Create ' + r.create * lezVolta + ' lezioni' + (lezVolta > 1 ? ' (' + r.create + ' giorni)' : '') + (r.chiusi ? ' (saltati ' + r.chiusi + ' giorni di chiusura)' : '') + (n ? '. Attenzione: ' + n + ' si sovrappongono ad altre lezioni.' : ''), !!n);
       disegna(); apriClasse(id);
     });
   };
@@ -826,7 +852,7 @@ function aMin(h) { var p = h.split(':'); return +p[0] * 60 + +p[1]; }
 function impegni(g) {
   var dow = dataDa(g).getUTCDay(), r = [];
   if (dow >= 1 && dow <= 5 && !chiusura(g)) D.classi.forEach(function (c) {
-    if (privato(c) || c.inizio > g || c.fine < g) return;
+    if (privato(c) || c.inizio > g || c.fine < g || planDi(g).some(function (x) { return x.classe === c.id; })) return;
     var o = orarioDi(c.orario);
     r.push({id: 'g:' + c.id + ':' + g, classe: c, titolo: c.nome, inizio: o[0], fine: o[1], aula: online(c) ? 'online' : c.aula, ins: c.insegnante, stato: ''});
   });
@@ -836,6 +862,11 @@ function impegni(g) {
     var st = assDiClasse(c.id).filter(function (a) { return ISC[a.iscrizione] && a.dal <= g && a.al >= g; }).map(function (a) { return ISC[a.iscrizione].nome + ' ' + ISC[a.iscrizione].cognome; });
     var url = linkDi(l, c);
     r.push({id: l.id, lez: l, classe: c, titolo: st.join(' e ') || c.nome, inizio: l.ora_inizio || '', fine: l.ora_fine || '', aula: url ? 'online' : (l.aula || c.aula), ins: l.insegnante || c.insegnante, stato: l.stato || 'fatta', link: url});
+  });
+  // Quello che qualcuno ha cambiato nel planning: i blocchi delle classi e le altre lezioni.
+  blocchi(caselle(g).filter(function (x) { return !x.lez && x.id && eLezione(x); })).forEach(function (x) {
+    r.push({id: 'p:' + x.id, plan: true, classe: x.classe.id ? x.classe : {id: '', nome: x.testo}, titolo: x.classe.id ? x.classe.nome : x.testo, inizio: x.inizio, fine: x.fine,
+      aula: /^online$/i.test(x.aula) ? 'online' : x.aula, ins: x.ins, stato: ''});
   });
   eventiDel(g).forEach(function (e) {
     var o = orarioDi(e.ora);
@@ -849,6 +880,7 @@ function impegni(g) {
 function conflitti() {
   var giorni = {}, out = {}, aul = aule();
   D.registro.forEach(function (l) { if (privato(CLA[l.classe]) && l.data >= piu(D.oggi, -7)) giorni[l.data] = true; });
+  (D.planning || []).forEach(function (x) { if (x.data >= piu(D.oggi, -7)) giorni[x.data] = true; });
   Object.keys(giorni).forEach(function (g) {
     var e = impegni(g).filter(function (x) { return x.inizio && x.fine && x.stato !== 'annullata'; });
     e.forEach(function (a, i) { e.slice(i + 1).forEach(function (b) {
@@ -862,7 +894,7 @@ function conflitti() {
   });
   return out;
 }
-try { U.calVista = localStorage.getItem('alia-calvista') || 'giorno'; } catch (e) { U.calVista = 'giorno'; }
+try { U.calVista = localStorage.getItem('alia-calvista2') || 'planning'; } catch (e) { U.calVista = 'planning'; }
 /* Il filtro del calendario (insegnante, aula, solo individuali, solo online). */
 function filtroCal(x) {
   var f = U.calFiltro || '';
@@ -872,16 +904,17 @@ function filtroCal(x) {
   return true;
 }
 function barraCal(titolo, perGiorno) {
-  var insegnanti = {};
-  D.classi.forEach(function (c) { if (c.insegnante) insegnanti[c.insegnante] = 1; });
-  D.registro.forEach(function (l) { if (l.insegnante && privato(CLA[l.classe])) insegnanti[l.insegnante] = 1; });
+  var nomi = {};
+  D.classi.forEach(function (c) { if (c.insegnante) nomi[c.insegnante] = 1; });
+  D.registro.forEach(function (l) { if (l.insegnante && privato(CLA[l.classe])) nomi[l.insegnante] = 1; });
+  insegnanti().forEach(function (n) { nomi[n] = 1; });
   return '<div class="barra"><button class="b" id="cprec">‹</button><button class="b" id="coggi">' + (perGiorno ? 'Oggi' : 'Questa settimana') + '</button><button class="b" id="csucc">›</button>' +
     (perGiorno ? '<input type="date" id="cgiorno" value="' + esc(U.calGiorno || D.oggi) + '">' : '') + '<b>' + titolo + '</b>' +
     '<select id="cfiltro"><option value="">Tutti</option>' +
-    Object.keys(insegnanti).sort().map(function (n) { return '<option value="ins:' + esc(n) + '">Insegnante: ' + esc(n) + '</option>'; }).join('') +
+    Object.keys(nomi).sort().map(function (n) { return '<option value="ins:' + esc(n) + '">Insegnante: ' + esc(n) + '</option>'; }).join('') +
     aule().map(function (a) { return '<option value="aula:' + esc(a) + '">' + esc(a) + '</option>'; }).join('') +
     '<option value="priv">Solo corsi individuali</option><option value="aula:online">Solo online</option></select><span class="spazio"></span>' +
-    '<span class="tasti"><button class="b' + (perGiorno ? ' p' : '') + '" data-vista="giorno">Giorno</button><button class="b' + (perGiorno ? '' : ' p') + '" data-vista="settimana">Settimana</button></span>' +
+    tastiVista() +
     '<button class="b" id="cclassi" title="Le classi di questa settimana">Classi</button><button class="b" onclick="window.print()">Stampa</button></div>';
 }
 /* Gli studenti di un impegno quel giorno (classe o lezione individuale), con le loro note per le lezioni. */
@@ -902,7 +935,7 @@ function calGiorno() {
   var e = impegni(g).filter(filtroCal);
   var colonne = aule().slice();
   e.forEach(function (x) { var a = x.aula || ''; if (colonne.indexOf(a) < 0) colonne.push(a); });
-  var h = barraCal(['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'][dataDa(g).getUTCDay()] + ' ' + gg(g) + ' ' + g.slice(0, 4) + (g === D.oggi ? ' (oggi)' : ''), true) +
+  var h = barraCal(['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'][dataDa(g).getUTCDay()] + ' ' + gg(g) + (g === D.oggi ? ' (oggi)' : ''), true) +
     (chiuso ? '<div class="chiuso" style="font-size:14px;padding:8px 12px;margin-bottom:10px">Scuola chiusa: ' + esc(chiuso.nome) + '</div>' : '');
   var libera = function (a) { return !e.some(function (x) { return (x.aula || '') === a; }); };
   h += '<div class="scroll"><table class="cal giorno"><thead><tr>' + colonne.map(function (a) { return '<th' + (libera(a) ? ' class="libera"' : '') + '>' + esc(a || 'Senza aula') + '</th>'; }).join('') + '</tr></thead><tbody><tr>' +
@@ -912,7 +945,7 @@ function calGiorno() {
         if (x.evento) return '<div class="blocco ev" role="button" tabindex="0" data-evcal="' + esc(x.evento.id) + '"><b>' + esc(x.ora || 'orario da decidere') + '</b>' + esc(x.titolo) + '<br>' + esc([x.ins, chiVa(x.evento)].filter(String).join(' · ')) + '</div>';
         var st = studentiImpegno(x, g);
         return '<div class="blocco' + (x.lez ? ' priv' : '') + (x.stato === 'prevista' ? ' prev' : '') + (x.stato === 'annullata' ? ' annul' : '') + (conf[x.id] ? ' conf' : '') + '" role="button" tabindex="0" ' +
-          (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + ' · ' + esc(x.classe.nome || x.titolo) + '</b>' +
+          (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : x.plan && !x.classe.id ? 'data-vaiplan="' + g + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + ' · ' + esc(x.classe.nome || x.titolo) + '</b>' +
           esc([x.ins, x.lez && x.stato !== 'fatta' ? x.stato : ''].filter(String).join(' · ')) +
           (conf[x.id] ? '<br><span class="tag err">' + esc(conf[x.id]) + '</span>' : '') +
           (st.length ? '<div class="studenti">' + st.map(rigaStudente).join('') + '</div>' : '<div class="tenue piccolo">nessuno studente</div>') + '</div>';
@@ -920,7 +953,7 @@ function calGiorno() {
     }).join('') + '</tr></tbody></table></div><p class="tenue piccolo">Clic sul nome: la scheda dello studente. ✎: la nota per le lezioni (cosa ripetere, ripassare…), la vedono tutti gli insegnanti. Clic sul riquadro: la classe o la lezione.</p>';
   return h;
 }
-VISTE.calendario = function () { return U.calVista === 'settimana' ? calSettimana() : calGiorno(); };
+VISTE.calendario = function () { return ({settimana: calSettimana, giorno: calGiorno, ore: calOre}[U.calVista] || calPlanning)(); };
 function calSettimana() {
   var lun = U.calSett || lunedi(D.oggi), conf = conflitti();
   var h = barraCal(gg(lun) + ' – ' + gg(piu(lun, 5)), false) +
@@ -932,15 +965,26 @@ function calSettimana() {
       if (x.evento) return '<button class="blocco ev" data-evcal="' + esc(x.evento.id) + '"><b>' + esc(x.ora || 'orario da decidere') + '</b>' + esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) +
         ' · ' + esc(chiVa(x.evento)) + '</button>';
       return '<button class="blocco' + (x.lez ? ' priv' : '') + (x.stato === 'prevista' ? ' prev' : '') + (x.stato === 'annullata' ? ' annul' : '') + (conf[x.id] ? ' conf' : '') + '" ' +
-        (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + '</b>' +
+        (x.lez ? 'data-lezcal="' + esc(x.id) + '"' : x.plan && !x.classe.id ? 'data-vaiplan="' + piu(lun, i) + '"' : 'data-classe="' + esc(x.classe.id) + '"') + '><b>' + esc(x.inizio ? x.inizio + (x.fine ? '–' + x.fine : '') : 'senza orario') + '</b>' +
         esc(x.titolo) + '<br>' + esc([x.aula, x.ins].filter(String).join(' · ')) + (x.lez && x.stato !== 'fatta' ? ' · ' + esc(x.stato) : '') +
         (conf[x.id] ? '<br><span class="tag err">' + esc(conf[x.id]) + '</span>' : '') + '</button>';
     }).join('') || (chiuso ? '' : '<span class="tenue piccolo">—</span>')) + '</td>';
   });
-  return h + '</tr></tbody></table></div><p class="tenue piccolo">Blu: classi di gruppo (lun–ven, con l’orario della classe). Verde: lezioni individuali; tratteggiate se previste. Viola: laboratori e attività. Rosso: stesso insegnante o stessa aula alla stessa ora.</p>';
+  return h + '</tr></tbody></table></div><p class="tenue piccolo">Blu: classi di gruppo (con l’orario della classe o come cambiate nel Planning). Verde: lezioni individuali; tratteggiate se previste. Viola: laboratori e attività. Rosso: stesso insegnante o stessa aula alla stessa ora.</p>';
 }
 DOPO.calendario = function () {
-  var giorno = U.calVista !== 'settimana', lun = U.calSett || lunedi(D.oggi), g = U.calGiorno || D.oggi;
+  var giorno = U.calVista !== 'settimana' && U.calVista !== 'ore', lun = U.calSett || lunedi(D.oggi), g = U.calGiorno || D.oggi;
+  $$('[data-vista]').forEach(function (b) { b.onclick = function () {
+    var v = b.getAttribute('data-vista'), sett = v === 'settimana' || v === 'ore';
+    if (giorno && sett) U.calSett = lunedi(g);
+    else if (!giorno && !sett && U.calSett) U.calGiorno = U.calSett <= D.oggi && piu(U.calSett, 6) >= D.oggi ? null : U.calSett;
+    U.calVista = v;
+    try { localStorage.setItem('alia-calvista2', U.calVista); } catch (e) {}
+    disegna();
+  }; });
+  $$('[data-vaiplan]').forEach(function (b) { b.onclick = function () { U.calGiorno = b.getAttribute('data-vaiplan'); U.calVista = 'planning'; disegna(); }; });
+  $$('[data-evcal]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evcal')); }; });
+  if (U.calVista === 'ore') { dopoOre(); return; }
   $('#cfiltro').value = U.calFiltro || '';
   $('#cfiltro').onchange = function () { U.calFiltro = this.value; disegna(); };
   $('#cprec').onclick = function () { if (giorno) U.calGiorno = piu(g, dataDa(g).getUTCDay() === 1 ? -2 : -1); else U.calSett = piu(lun, -7); disegna(); };
@@ -948,17 +992,11 @@ DOPO.calendario = function () {
   $('#coggi').onclick = function () { U.calGiorno = null; U.calSett = null; disegna(); };
   $('#cclassi').onclick = function () { vaiClassi(giorno ? lunedi(g) : lun); };
   if ($('#cgiorno')) $('#cgiorno').onchange = function () { if (this.value) { U.calGiorno = this.value; disegna(); } };
-  $$('[data-vista]').forEach(function (b) { b.onclick = function () {
-    U.calVista = b.getAttribute('data-vista');
-    if (U.calVista === 'settimana') U.calSett = lunedi(g); else if (U.calSett) U.calGiorno = U.calSett <= D.oggi && piu(U.calSett, 6) >= D.oggi ? null : U.calSett;
-    try { localStorage.setItem('alia-calvista', U.calVista); } catch (e) {}
-    disegna();
-  }; });
-  $$('[data-evcal]').forEach(function (b) { b.onclick = function () { evento(b.getAttribute('data-evcal')); }; });
   $$('[data-lezcal]').forEach(function (b) { b.onclick = function () { var l = lezioneDaId(b.getAttribute('data-lezcal')); lezione(l.id, l.classe); }; });
   $$('[data-nota]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); scriviNota(b.getAttribute('data-nota')); }; });
   // Nella vista del giorno un clic sul nome apre lo studente, non la classe.
-  $$('.cal.giorno [data-stud]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); apriStudente(b.getAttribute('data-stud')); }; });
+  if (U.calVista === 'planning') dopoPlan(g);
+  $$('.cal.giorno [data-stud], .plan [data-stud]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); apriStudente(b.getAttribute('data-stud')); }; });
 };
 
 /* La nota per le lezioni di uno studente, scritta dal calendario. */
@@ -972,15 +1010,473 @@ function scriviNota(id) {
   };
 }
 
+/* ---------- PLANNING: le caselle di 50 minuti per insegnante ---------- */
+/* Le ore di lezione dalle impostazioni: [{inizio, fine, n}]. */
+function orari() {
+  return String(D.impostazioni.lezioni || '').split(',').map(function (t) { return orarioDi(t); }).filter(function (o) { return o[0] && aMin(o[1]) > aMin(o[0]); })
+    .sort(function (a, b) { return aMin(a[0]) - aMin(b[0]); }).map(function (o, i) { return {inizio: o[0], fine: o[1], n: i}; });
+}
+/* Le ore toccate da un orario: almeno metà della lezione. */
+function oreDi(inizio, fine) {
+  if (!inizio || !fine) return [];
+  return orari().filter(function (o) {
+    return 2 * (Math.min(aMin(o.fine), aMin(fine)) - Math.max(aMin(o.inizio), aMin(inizio))) >= aMin(o.fine) - aMin(o.inizio);
+  });
+}
+/* Quante lezioni vale un orario: le ore che tocca o, fuori dalle ore fisse, la durata divisa per 50 minuti. */
+function quanteLez(inizio, fine) {
+  if (!inizio || !fine || aMin(fine) <= aMin(inizio)) return 0;
+  return oreDi(inizio, fine).length || Math.max(1, Math.round((aMin(fine) - aMin(inizio)) / 50));
+}
+function planDi(g) { return (D.planning || []).filter(function (x) { return x.data === g; }); }
+function assenteIl(ins, g, inizio) { return !!ins && planDi(g).some(function (x) { return x.tipo === 'assente' && x.insegnante === ins && (!x.ora_inizio || x.ora_inizio === inizio); }); }
+var MEMO_CASELLE = {};
+/* Le caselle di un giorno, una per lezione: classi di gruppo (dal planning o, se nessuno l'ha cambiato, dal registro e
+   dall'orario della classe), lezioni individuali (dal registro), lezioni con un testo e note. */
+function caselle(g) {
+  if (MEMO_CASELLE[g]) return MEMO_CASELLE[g];
+  var r = [], plan = planDi(g), dow = dataDa(g).getUTCDay(), chiuso = chiusura(g);
+  D.classi.forEach(function (c) {
+    if (privato(c)) return;
+    var sue = plan.filter(function (x) { return x.classe === c.id; });
+    if (sue.length) {
+      sue.forEach(function (x) {
+        if (x.tipo === 'lezione') r.push({id: x.id, classe: c, inizio: x.ora_inizio, fine: x.ora_fine, ins: x.insegnante, aula: x.aula, conta: x.conta !== 'no', testo: x.testo, n: 1});
+      });
+      return;
+    }
+    if (chiuso || c.inizio > g || c.fine < g) return;
+    var reg = D.registro.filter(function (l) { return l.classe === c.id && l.data === g; });
+    var o = orarioDi(c.orario), suo = dow >= 1 && dow <= 5 ? oreDi(o[0], o[1]) : [], viste = {};
+    suo.concat([].concat.apply([], reg.map(function (l) { return oreDi(l.ora_inizio, l.ora_fine); }))).forEach(function (x) {
+      if (viste[x.n]) return;
+      viste[x.n] = true;
+      // Se il registro c'è già, l'insegnante e l'aula sono quelli scritti lì.
+      var l = reg.filter(function (y) { return !y.ora_inizio || oreDi(y.ora_inizio, y.ora_fine).some(function (z) { return z.n === x.n; }); })[0];
+      if (l && l.stato === 'annullata') return;
+      r.push({classe: c, inizio: x.inizio, fine: x.fine, ins: (l && l.insegnante) || c.insegnante || '', aula: online(c) ? 'Online' : ((l && l.aula) || c.aula || ''), conta: true, testo: '', n: 1});
+    });
+  });
+  D.registro.forEach(function (l) {
+    var c = CLA[l.classe];
+    if (l.data !== g || !privato(c)) return;
+    var ore = oreDi(l.ora_inizio, l.ora_fine), base = {lez: l, classe: c, ins: l.insegnante || c.insegnante || '', aula: linkDi(l, c) || online(c) ? 'Online' : (l.aula || c.aula || ''), conta: l.stato !== 'annullata', testo: ''};
+    if (!ore.length) { r.push(Object.assign({inizio: l.ora_inizio || '', fine: l.ora_fine || '', n: quanteLez(l.ora_inizio, l.ora_fine) || 1, fuori: true}, base)); return; }
+    ore.forEach(function (o) { r.push(Object.assign({inizio: o.inizio, fine: o.fine, n: 1}, base)); });
+  });
+  plan.forEach(function (x) {
+    if (x.classe || x.tipo === 'vuota' || x.tipo === 'pausa') return;
+    r.push({id: x.id, tipo: x.tipo, classe: {id: ''}, inizio: x.ora_inizio, fine: x.ora_fine, ins: x.insegnante, aula: x.aula, conta: x.tipo === 'lezione' && x.conta !== 'no', testo: x.testo, n: x.tipo === 'lezione' ? 1 : 0});
+  });
+  r.sort(function (a, b) { return (a.inizio || '99') < (b.inizio || '99') ? -1 : (a.inizio || '99') > (b.inizio || '99') ? 1 : 0; });
+  return (MEMO_CASELLE[g] = r);
+}
+/* Le caselle una dopo l'altra della stessa classe, con lo stesso insegnante e la stessa aula (la pausa non le divide). */
+function blocchi(l) {
+  var r = [];
+  l.forEach(function (x) {
+    var p = r.filter(function (b) { return b.classe.id === x.classe.id && (b.lez || null) === (x.lez || null) && (b.testo || '') === (x.testo || '') && b.ins === x.ins && b.aula === x.aula && b.fine && x.inizio && aMin(x.inizio) >= aMin(b.fine) && aMin(x.inizio) - aMin(b.fine) <= 30; })[0];
+    if (p) { p.fine = x.fine; p.n += x.n; p.caselle.push(x); } else r.push(Object.assign({}, x, {caselle: [x]}));
+  });
+  return r;
+}
+/* Stesso insegnante o stessa aula nello stesso momento. */
+function confCasella(x, tutte) {
+  if (!eLezione(x) || !x.inizio || (x.lez && x.lez.stato === 'annullata')) return '';
+  var aul = aule(), y = tutte.filter(function (y) {
+    if (y === x || !eLezione(y) || !y.inizio || (y.lez && y.lez.stato === 'annullata')) return false;
+    if (aMin(x.inizio) >= aMin(y.fine) || aMin(y.inizio) >= aMin(x.fine)) return false;
+    return (x.ins && x.ins === y.ins) || (x.aula && x.aula === y.aula && aul.indexOf(x.aula) >= 0);
+  })[0];
+  return y ? (x.ins && x.ins === y.ins ? 'stesso insegnante: ' : 'stessa aula: ') + (y.classe.id ? y.classe.nome : y.testo) : '';
+}
+function eLezione(x) { return !x.tipo || x.tipo === 'lezione'; }
+/* Il numero della lezione nella settimana (lun–sab) per la sua classe: la "(8)" del vecchio planning. */
+function numeroLez(x, g) {
+  if (!x.classe.id || (x.lez && x.lez.stato === 'annullata')) return 0;
+  var lun = lunedi(g), n = 0, i, viste;
+  for (i = 0; i < 7; i++) {
+    viste = {};
+    var qui = caselle(piu(lun, i)).filter(function (y) { return y.classe.id === x.classe.id && !(y.lez && y.lez.stato === 'annullata'); });
+    for (var k = 0; k < qui.length; k++) {
+      var chiave = qui[k].inizio + (qui[k].lez ? qui[k].lez.id : '');
+      if (!viste[chiave]) { viste[chiave] = true; n += qui[k].n; }
+      if (piu(lun, i) === g && qui[k].inizio === x.inizio && (qui[k].lez || null) === (x.lez || null)) return n;
+    }
+  }
+  return n;
+}
+/* Gli insegnanti: prima quelli delle impostazioni, nel loro ordine, poi gli altri che hanno lezione fra "da" e "a". */
+function insegnanti(da, a) {
+  var r = String(D.impostazioni.insegnanti || '').split(',').map(function (s) { return s.trim(); }).filter(String);
+  var metti = function (n) { if (n && r.indexOf(n) < 0) r.push(n); }, g, altri = [];
+  if (da) for (g = da; g <= a; g = piu(g, 1)) {
+    caselle(g).forEach(function (x) { altri.push(x.ins); });
+    planDi(g).forEach(function (x) { altri.push(x.insegnante); });
+  }
+  else { D.classi.forEach(function (c) { altri.push(c.insegnante); }); D.registro.forEach(function (l) { altri.push(l.insegnante); }); (D.planning || []).forEach(function (x) { altri.push(x.insegnante); }); }
+  altri.filter(Boolean).sort().forEach(metti);
+  return r;
+}
+function pausaDi(ins, g) { return planDi(g).filter(function (x) { return x.tipo === 'pausa' && x.insegnante === ins; })[0]; }
+function lezioniIns(ins, g) { return caselle(g).reduce(function (n, x) { return n + (x.ins === ins && x.conta ? x.n : 0); }, 0); }
+/* Le aule con un colore fisso, nell'ordine delle impostazioni; le lezioni online in giallo. */
+var COLORI_AULE = ['#c8ecd0', '#c3d7f5', '#dccdf2', '#bfe4e3', '#f6dcc0', '#f3cfdb', '#e2e2b8', '#d8dde3'];
+function coloreAula(a) {
+  if (/^online$/i.test(a)) return '#fff0a3';
+  var i = aule().indexOf(a);
+  return i < 0 ? '#e3e7ec' : COLORI_AULE[i % COLORI_AULE.length];
+}
+/* Il corso di uno studente in poche parole e il suo colore (come nel vecchio planning). */
+function corsoBreve(v) {
+  var t = [String(v.corso_nome || '').replace(/^(corso|italian)\s+/i, '').replace(/\s+course$/i, ''), v.formula].filter(Boolean).join(' ');
+  return {testo: t.charAt(0).toUpperCase() + t.slice(1), cl: /duo|trio/i.test(t) ? 'c-duo' : /super/i.test(t) ? 'c-super' : /intensiv/i.test(t) ? 'c-int' : 'c-std'};
+}
+function rigaPlan(v, note) {
+  var c = corsoBreve(v), n = note ? String(v.note_lezioni || '') : '';
+  return '<div class="ps"><button class="l" data-stud="' + esc(v.id) + '">' + esc(nome(v)) + '</button>' + (v.fine ? ' – ' + gg(v.fine) : '') + (c.testo ? ' <span class="' + c.cl + '">' + esc(c.testo) + '</span>' : '') +
+    ' <button class="l nota-mod no-stampa" data-nota="' + esc(v.id) + '" title="Scrivi una nota">✎</button>' + (n ? '<div class="nota" title="' + esc(n) + '">' + esc(n.length > 120 ? n.slice(0, 120) + '…' : n) + '</div>' : '') + '</div>';
+}
+/* La griglia di un giorno: una colonna per insegnante (più le attività), una riga per ora di lezione. */
+function calPlanning() {
+  var g = U.calGiorno || D.oggi, chiuso = chiusura(g), ore = orari(), tutte = caselle(g), lun = lunedi(g);
+  var ins = insegnanti(lun, piu(lun, 6));
+  if (tutte.some(function (x) { return !x.ins; })) ins.push('');
+  var mostra = (U.calFiltro || '').indexOf('ins:') === 0 ? ins.filter(function (n) { return n === U.calFiltro.slice(4); }) : ins;
+  var visibile = function (x) { return filtroCal({lez: x.lez, ins: x.ins, aula: /^online$/i.test(x.aula) ? 'online' : x.aula}); };
+  var ev = eventiDel(g), nomeGiorno = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'][dataDa(g).getUTCDay()];
+  var settOre = function (n) { var t = 0; for (var i = 0; i < 7; i++) t += lezioniIns(n, piu(lun, i)); return t; };
+  var h = barraCal(nomeGiorno + ' ' + gg(g) + (g === D.oggi ? ' (oggi)' : ''), true) +
+    '<div class="barra no-stampa"><span class="tasti">' + [0, 1, 2, 3, 4, 5].map(function (i) { var d = piu(lun, i); return '<button class="b' + (d === g ? ' p' : '') + '" data-vaig="' + d + '">' + ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'][i] + ' ' + (+d.slice(8)) + '</button>'; }).join('') +
+    '</span><span class="spazio"></span><button class="b" id="pcopia">Copia la settimana…</button></div>' +
+    (chiuso ? '<div class="chiuso" style="font-size:14px;padding:8px 12px;margin-bottom:10px">Scuola chiusa: ' + esc(chiuso.nome) + '</div>' : '');
+  if (!mostra.length) return h + '<div class="card">Scrivi gli insegnanti in <button class="l" data-s="impostazioni">Impostazioni</button>: qui c’è una colonna per ognuno.</div>';
+  var sopra = {};   // l'ultima casella disegnata per insegnante, per "come sopra"
+  var casella = function (x, i, senzaOra) {
+    var prec = sopra[x.ins + '|' + (x.classe.id || '')], stesso = !senzaOra && x.classe.id && prec && prec.i === i - 1 && prec.x.classe.id === x.classe.id && prec.x.aula === x.aula && (prec.x.lez || null) === (x.lez || null);
+    if (!senzaOra) sopra[x.ins + '|' + (x.classe.id || '')] = {i: i, x: x};
+    var attr = ' data-cas="' + tutte.indexOf(x) + '" role="button" tabindex="0"';
+    if (x.tipo === 'nota') return '<div class="pc pnota"' + attr + '>' + esc(x.testo) + '</div>';
+    if (x.tipo === 'assente') return '<div class="pc passente"' + attr + '>non può' + (x.testo ? ': ' + esc(x.testo) : '') + '</div>';
+    var st = studentiImpegno(x, g), num = numeroLez(x, g), err = confCasella(x, tutte) || (assenteIl(x.ins, g, x.inizio) ? x.ins + ' non può' : '');
+    var att = ev.filter(function (e) { var o = orarioDi(e.ora); return classiEv(e).indexOf(x.classe.id) >= 0 && o[0] && aMin(o[0]) < aMin(x.fine) && aMin(x.inizio) < aMin(o[1]); });
+    return '<div class="pc' + (x.lez && x.lez.stato === 'prevista' ? ' prev' : '') + (x.lez && x.lez.stato === 'annullata' ? ' annul' : '') + (err ? ' conf' : '') + '" draggable="true"' + attr + '>' +
+      '<div class="paula" style="background:' + coloreAula(x.aula) + '">' + esc(x.aula || 'senza aula') + (x.conta || (x.lez && x.lez.stato === 'annullata') ? '' : ' <span class="piccolo">(non conta)</span>') + '</div><div class="pcorpo">' +
+      (senzaOra ? '<b>' + esc(x.inizio ? x.inizio + '–' + x.fine : 'senza orario') + '</b> ' : '') +
+      (stesso ? '<div class="tenue" style="text-align:center">come sopra' + (num ? ' (' + num + ')' : '') + '</div>'
+        : '<b>' + esc(x.classe.id ? x.classe.nome : x.testo) + '</b>' + (num ? ' <span class="tenue">(' + num + ')</span>' : '') + st.map(function (v) { return rigaPlan(v, true); }).join('')) +
+      (x.classe.id && x.testo ? '<div class="nota">' + esc(x.testo) + '</div>' : '') +
+      (x.lez && x.lez.stato !== 'prevista' && x.lez.stato !== 'fatta' ? statoLez(x.lez.stato) : '') +
+      att.map(function (e) { return '<span class="tag ev">' + esc(e.nome) + '</span>'; }).join('') + (err ? '<span class="tag err">' + esc(err) + '</span>' : '') + '</div></div>';
+  };
+  h += '<div class="scroll"><table class="plan"><thead><tr><th class="pora">' + esc(nomeGiorno) + '</th>' + mostra.map(function (n) {
+    return '<th>' + (n ? '<button class="l" data-oreins="' + esc(n) + '">' + esc(n) + '</button> <span class="tag">' + lezioniIns(n, g) + ' lez.</span><div class="tenue piccolo">settimana ' + settOre(n) + '</div>' : '<span class="tag att">Senza insegnante</span>') + '</th>';
+  }).join('') + '<th class="patt">Attività</th></tr></thead><tbody>';
+  var evDi = function (o, i) {   // un'attività sta nella prima ora che tocca
+    return ev.filter(function (e) { var t = orarioDi(e.ora), q = oreDi(t[0], t[1]); return q.length ? q[0].n === o.n : t[0] && aMin(t[0]) >= aMin(o.inizio) && (i === ore.length - 1 || aMin(t[0]) < aMin(ore[i + 1].inizio)); });
+  };
+  var bloccoEv = function (e) { return '<div class="blocco ev" role="button" tabindex="0" data-evcal="' + esc(e.id) + '"><b>' + esc(e.ora || 'orario da decidere') + '</b>' + esc(e.nome) + '<br>' + esc([e.luogo, e.responsabile, chiVa(e)].filter(String).join(' · ')) + '</div>'; };
+  var messi = [];
+  var liberi = tutte.filter(function (x) { return !ore.some(function (o) { return o.inizio === x.inizio; }); });
+  // In testa: assenze di tutto il giorno, note senza ora, attività senza ora.
+  var testa = liberi.filter(function (x) { return !x.inizio && !eLezione(x); }), evTesta = ev.filter(function (e) { return !ore.some(function (o, i) { return evDi(o, i).indexOf(e) >= 0; }); });
+  if (testa.length || evTesta.length) h += '<tr><td class="pora tenue">giorno</td>' + mostra.map(function (n) { return '<td>' + testa.filter(function (x) { return x.ins === n; }).map(function (x) { return casella(x, -9, true); }).join('') + '</td>'; }).join('') + '<td class="patt">' + evTesta.map(bloccoEv).join('') + '</td></tr>';
+  ore.forEach(function (o, i) {
+    if (i) {
+      var vuoto = aMin(o.inizio) - aMin(ore[i - 1].fine);
+      if (vuoto > 30) h += '<tr class="psep"><td colspan="' + (mostra.length + 2) + '"></td></tr>';
+      else if (vuoto > 0) h += '<tr class="ppausa"><td class="pora">PAUSA</td>' + mostra.map(function (n) { return '<td class="' + (n && pausaDi(n, g) ? 'on' : '') + '">' + (n ? '<label class="piccolo"><input type="checkbox" data-pausa="' + esc(n) + '"' + (pausaDi(n, g) ? ' checked' : '') + '> pausa</label>' : '') + '</td>'; }).join('') + '<td class="patt"></td></tr>';
+    }
+    h += '<tr><td class="pora">' + o.inizio + '<br>' + o.fine + '</td>' + mostra.map(function (n) {
+      var qui = tutte.filter(function (x) { return x.ins === n && x.inizio === o.inizio && visibile(x); });
+      return '<td class="pcella' + (assenteIl(n, g, o.inizio) ? ' no' : '') + '" data-ins="' + esc(n) + '" data-ora="' + o.n + '">' + qui.map(function (x) { return casella(x, i); }).join('') + (qui.length ? '' : '<button class="paggiungi no-stampa" title="Aggiungi">+</button>') + '</td>';
+    }).join('') + '<td class="patt">' + evDi(o, i).map(bloccoEv).join('') + '</td></tr>';
+  });
+  var fuori = liberi.filter(function (x) { return testa.indexOf(x) < 0 && visibile(x); });
+  if (fuori.length) h += '<tr><td class="pora tenue">altro orario</td>' + mostra.map(function (n) { return '<td>' + fuori.filter(function (x) { return x.ins === n; }).map(function (x) { return casella(x, -9, true); }).join('') + '</td>'; }).join('') + '<td class="patt"></td></tr>';
+  var senzaOrario = D.classi.filter(function (c) { return !privato(c) && c.inizio <= g && c.fine >= g && !orarioDi(c.orario)[0] && !planDi(g).some(function (x) { return x.classe === c.id; }); });
+  return h + '</tbody></table></div>' + (senzaOrario.length && !chiuso ? '<p class="piccolo"><span class="tag att">senza orario</span> ' + senzaOrario.map(function (c) { return '<button class="l" data-classe="' + esc(c.id) + '">' + esc(c.nome) + '</button>'; }).join(', ') + ': scrivi l’orario della classe (es. 09:00–12:30) o aggiungi le lezioni qui.</p>' : '') +
+    '<p class="tenue piccolo no-stampa">Clic su una casella: cambia insegnante, aula, ora. Trascina una casella su un altro insegnante o un’altra ora. “+”: una lezione, una nota, un insegnante che non può. Il numero tra parentesi è la lezione della settimana di quella classe. Le lezioni sono di 50 minuti; la pausa si segna ma non si conta.</p>';
+}
+/* Le righe del planning di una classe in un giorno; se non ci sono ancora, quelle del suo orario da salvare. */
+function righeClasse(c, g) {
+  return caselle(g).filter(function (x) { return x.classe.id === c && !x.lez; }).map(function (x) {
+    return {id: x.id || '', data: g, ora_inizio: x.inizio, ora_fine: x.fine, tipo: 'lezione', insegnante: x.ins, aula: x.aula, classe: c, testo: x.testo || '', conta: x.conta ? 'sì' : 'no'};
+  });
+}
+function dopoPlanning(msg) { return function (r) { var d = $('#dlg'); if (d.open) d.close(); avviso(msg); disegna(); return r; }; }
+function datiInsegnanti() { return '<datalist id="dl-ins">' + insegnanti().map(function (n) { return '<option value="' + esc(n) + '">'; }).join('') + '</datalist>'; }
+function scelteAule(a) { var l = [''].concat(aule(), ['Online']); if (a && l.indexOf(a) < 0) l.push(a); return l; }
+/* La finestra di una casella che c'è già. */
+function finestraCasella(x, g) {
+  if (x.lez) { lezione(x.lez.id, x.classe.id); return; }
+  var ore = orari(), mie = x.classe.id ? righeClasse(x.classe.id, g) : [], stessi = mie.filter(function (r) { return r.insegnante === x.ins && r.aula === x.aula && r.ora_inizio !== x.inizio; });
+  var tit = x.classe.id ? esc(x.classe.nome) : x.tipo === 'nota' ? 'Nota' : x.tipo === 'assente' ? 'Non può' : esc(x.testo);
+  var corpo = datiInsegnanti() + '<p class="tenue">' + giornoSett(g) + ' ' + ggA(g) + (x.inizio ? ', ' + x.inizio + '–' + x.fine : '') + '</p><div class="campi">' +
+    campo('q-ins', 'Insegnante', x.ins, 'text', ' list="dl-ins"') + (eLezione(x) ? scelta('q-aula', 'Aula', x.aula, scelteAule(x.aula)) : '') +
+    (x.inizio ? scelta('q-ora', 'Ora', x.inizio, (ore.some(function (o) { return o.inizio === x.inizio; }) ? [] : [[x.inizio, x.inizio + '–' + x.fine]]).concat(ore.map(function (o) { return [o.inizio, o.inizio + '–' + o.fine]; }))) : '') +
+    (eLezione(x) ? scelta('q-conta', 'Conta nelle ore dell’insegnante', x.conta ? 'sì' : 'no', ['sì', 'no']) : '') +
+    campo('q-testo', x.classe.id ? 'Nota su questa lezione' : 'Testo', x.testo, 'textarea') + '</div>' +
+    (stessi.length ? '<label class="checks" style="margin-top:8px"><input type="checkbox" id="q-tutte" checked> Insegnante e aula anche per le altre lezioni di questa classe oggi che hanno lo stesso insegnante (' + stessi.map(function (r) { return r.ora_inizio; }).join(', ') + ')</label>' : '') +
+    (x.classe.id ? '<h3>Studenti</h3>' + (studentiImpegno(x, g).map(function (v) { return rigaPlan(v, true); }).join('') || '<span class="tenue">nessuno</span>') +
+      '<div class="barra" style="margin-top:12px"><button class="b" id="q-classe">Apri la classe</button><button class="b" id="q-reg">Scrivi nel registro</button>' + (x.id ? '<button class="b" id="q-ripr">Torna all’orario della classe</button>' : '') + '</div>' : '');
+  var d = dialogo(tit, corpo, '<button class="b r" id="q-togli">Togli</button><button class="b p" id="q-salva">Salva</button>');
+  $$('[data-nota]', d).forEach(function (b) { b.onclick = function () { scriviNota(b.getAttribute('data-nota')); }; });
+  $('#q-salva', d).onclick = function () {
+    var ins = $('#q-ins', d).value.trim(), o = x.inizio ? ore.filter(function (y) { return y.inizio === $('#q-ora', d).value; })[0] : null;
+    if (assenteIl(ins, g, o ? o.inizio : x.inizio) && x.tipo !== 'assente' && !confirm(ins + ' in quel momento non può. Salvare lo stesso?')) return;
+    var r = {insegnante: ins, aula: eLezione(x) ? $('#q-aula', d).value : '', conta: eLezione(x) ? $('#q-conta', d).value : 'no', testo: $('#q-testo', d).value.trim()};
+    if (o && o.inizio !== x.inizio) { r.ora_inizio = o.inizio; r.ora_fine = o.fine; }
+    if (!x.classe.id) {
+      chiama('salvaPlanning', [Object.assign({id: x.id, data: g, ora_inizio: x.inizio, ora_fine: x.fine, tipo: x.tipo || 'lezione', classe: ''}, r)]).then(dopoPlanning('Salvato'));
+      return;
+    }
+    var righe = righeClasse(x.classe.id, g), tutte = $('#q-tutte', d) && $('#q-tutte', d).checked;
+    if (r.ora_inizio && righe.some(function (y) { return y.ora_inizio === r.ora_inizio; })) { avviso('Questa classe ha già lezione a quell’ora', true); return; }
+    righe.forEach(function (y) {
+      if (y.ora_inizio === x.inizio) Object.assign(y, r);
+      else if (tutte && y.insegnante === x.ins && y.aula === x.aula) { y.insegnante = r.insegnante; y.aula = r.aula; }
+    });
+    // Se si sposta l'ora, l'ora di prima resta vuota: con una riga nel planning l'orario della classe quel giorno non vale più.
+    chiama('salvaPlanning', righe).then(dopoPlanning('Salvato'));
+  };
+  $('#q-togli', d).onclick = function () {
+    if (!x.classe.id) { if (confirm('Togliere?')) chiama('eliminaPlanning', [x.id]).then(dopoPlanning('Tolto')); return; }
+    if (!confirm('Togliere la lezione delle ' + x.inizio + ' di ' + x.classe.nome + ' (solo ' + giornoSett(g) + ' ' + gg(g) + ')?')) return;
+    togliCasella(x, g);
+  };
+  if (!x.classe.id) return;
+  $('#q-classe', d).onclick = function () { apriClasse(x.classe.id); };
+  $('#q-reg', d).onclick = function () { var b = blocchi(caselle(g).filter(function (y) { return y.classe.id === x.classe.id; })).filter(function (y) { return y.caselle.indexOf(x) >= 0; })[0]; scriviRegistro(b || x, g); };
+  if ($('#q-ripr', d)) $('#q-ripr', d).onclick = function () {
+    if (!confirm('Togliere tutti i cambi di ' + x.classe.nome + ' in questo giorno e tornare al suo orario?')) return;
+    chiama('eliminaPlanning', planDi(g).filter(function (y) { return y.classe === x.classe.id; }).map(function (y) { return y.id; })).then(dopoPlanning('Tornata all’orario della classe'));
+  };
+}
+/* Toglie una lezione di una classe da un giorno: resta una riga "vuota", così l'orario della classe non la rimette. */
+function togliCasella(x, g) {
+  return chiama('salvaPlanning', righeClasse(x.classe.id, g).map(function (r) { if (r.ora_inizio === x.inizio) r.tipo = 'vuota'; return r; })).then(dopoPlanning('Tolta'));
+}
+/* Una casella nuova: da "+" o da un clic su una casella libera. */
+function nuovaCasella(ins, g, n) {
+  var ore = orari(), o = ore[n];
+  var gruppi = D.classi.filter(function (c) { return !privato(c) && c.inizio <= g && c.fine >= g; }), priv = D.classi.filter(function (c) { return privato(c) && c.inizio <= piu(g, 30) && c.fine >= piu(g, -30); });
+  var corpo = datiInsegnanti() + '<p class="tenue">' + giornoSett(g) + ' ' + ggA(g) + '</p><div class="campi">' +
+    scelta('w-tipo', 'Cosa', gruppi.length ? 'classe' : 'testo', [['classe', 'Lezione di una classe'], ['privato', 'Lezione individuale'], ['testo', 'Altra lezione (testo)'], ['nota', 'Nota'], ['assente', 'L’insegnante non può']]) +
+    '<span id="w-classe-b">' + scelta('w-classe', 'Classe', '', gruppi.map(function (c) { return [c.id, c.nome]; })) + '</span>' +
+    '<span id="w-priv-b">' + scelta('w-priv', 'Corso individuale', '', priv.map(function (c) { return [c.id, c.nome]; })) + '</span>' +
+    campo('w-ins', 'Insegnante', ins, 'text', ' list="dl-ins"') +
+    scelta('w-da', 'Dalle', String(n), ore.map(function (x) { return [x.n, x.inizio]; })) + scelta('w-a', 'Alle', String(n), ore.map(function (x) { return [x.n, x.fine]; })) +
+    '<span id="w-aula-b">' + scelta('w-aula', 'Aula', '', scelteAule('')) + '</span>' +
+    '<span id="w-conta-b">' + scelta('w-conta', 'Conta nelle ore', 'sì', ['sì', 'no']) + '</span>' +
+    campo('w-testo', 'Testo', '', 'textarea') + '</div><label class="checks" id="w-giorno-b" style="margin-top:8px"><input type="checkbox" id="w-giorno" checked> Tutto il giorno</label>';
+  var d = dialogo('Aggiungi al planning', corpo, '<button class="b p" id="w-salva">Salva</button>');
+  var val = function (k) { return $('#w-' + k, d).value; };
+  var mostra = function () {
+    var t = val('tipo'), vis = {'classe-b': t === 'classe', 'priv-b': t === 'privato', 'aula-b': t !== 'nota' && t !== 'assente', 'conta-b': t === 'classe' || t === 'testo', 'giorno-b': t === 'assente'};
+    Object.keys(vis).forEach(function (k) { $('#w-' + k, d).style.display = vis[k] ? '' : 'none'; });
+    var c = CLA[t === 'classe' ? val('classe') : t === 'privato' ? val('priv') : ''];
+    if (c) $('#w-aula', d).value = online(c) ? 'Online' : (scelteAule('').indexOf(c.aula) >= 0 ? c.aula : '');
+  };
+  $('#w-tipo', d).onchange = mostra; $('#w-classe', d).onchange = mostra; $('#w-priv', d).onchange = mostra; mostra();
+  $('#w-salva', d).onclick = function () {
+    var t = val('tipo'), a = +val('da'), b = Math.max(+val('a'), a), chi = val('ins').trim(), scelte = ore.slice(a, b + 1), txt = val('testo').trim();
+    if (t !== 'assente' && scelte.some(function (x) { return assenteIl(chi, g, x.inizio); }) && !confirm(chi + ' in quel momento non può. Salvare lo stesso?')) return;
+    if (t !== 'nota' && t !== 'assente' && chiusura(g) && !confirm('Quel giorno la scuola è chiusa (' + chiusura(g).nome + '). Continuare?')) return;
+    if (t === 'privato') {
+      if (!val('priv')) { avviso('Scegli il corso individuale', true); return; }
+      // Un giro di lezioni con la pausa in mezzo diventa due lezioni: una per ogni gruppo di ore attaccate.
+      var gruppiOre = []; scelte.forEach(function (x) { var u = gruppiOre[gruppiOre.length - 1]; if (u && u.fine === x.inizio) u.fine = x.fine; else gruppiOre.push({inizio: x.inizio, fine: x.fine}); });
+      var p = Promise.resolve();
+      gruppiOre.forEach(function (x) { p = p.then(function () { return chiama('salvaLezione', {classe: val('priv'), data: g, ora_inizio: x.inizio, ora_fine: x.fine, ore: '', aula: val('aula') === 'Online' ? '' : val('aula'), insegnante: chi, stato: 'prevista', link: '', note: txt, assenti: []}); }); });
+      p.then(dopoPlanning('Lezione aggiunta')).catch(function () {});
+      return;
+    }
+    if (t === 'classe') {
+      var c = val('classe'); if (!c) { avviso('Scegli la classe', true); return; }
+      var righe = righeClasse(c, g);
+      scelte.forEach(function (x) {
+        var r = righe.filter(function (y) { return y.ora_inizio === x.inizio; })[0];
+        if (!r) righe.push(r = {data: g, ora_inizio: x.inizio, ora_fine: x.fine, tipo: 'lezione', classe: c});
+        Object.assign(r, {insegnante: chi, aula: val('aula'), conta: val('conta'), testo: txt});
+      });
+      chiama('salvaPlanning', righe).then(dopoPlanning('Salvato'));
+      return;
+    }
+    var tutto = t === 'assente' && $('#w-giorno', d).checked;
+    chiama('salvaPlanning', (tutto ? [{inizio: '', fine: ''}] : t === 'nota' ? scelte.slice(0, 1) : scelte).map(function (x) {
+      return {data: g, ora_inizio: x.inizio, ora_fine: x.fine, tipo: t === 'testo' ? 'lezione' : t, insegnante: chi, aula: t === 'testo' ? val('aula') : '', classe: '', testo: txt, conta: val('conta')};
+    })).then(dopoPlanning('Salvato'));
+  };
+}
+/* Trascina una casella su un altro insegnante o un'altra ora dello stesso giorno. */
+function spostaCasella(x, g, ins, o) {
+  if (x.ins === ins && x.inizio === o.inizio) return;
+  if (assenteIl(ins, g, o.inizio) && !confirm(ins + ' in quel momento non può. Spostare lo stesso?')) return;
+  if (x.lez) {
+    var l = perSalvare(x.lez), tutte = caselle(g).filter(function (y) { return y.lez === x.lez; });
+    if (x.lez.stato === 'fatta' && !confirm('La lezione risulta già fatta. Spostarla lo stesso?')) return;
+    l.insegnante = ins;
+    if (x.inizio !== o.inizio) {   // si sposta tutta la lezione: la prima ora va dove è stata lasciata la casella trascinata
+      var ore = orari(), salto = o.n - ore.filter(function (y) { return y.inizio === x.inizio; })[0].n, idx = tutte.map(function (y) { return ore.filter(function (z) { return z.inizio === y.inizio; })[0].n + salto; });
+      if (idx.some(function (k) { return !ore[k]; })) { avviso('Non ci sono abbastanza ore', true); return; }
+      l.ora_inizio = ore[idx[0]].inizio; l.ora_fine = ore[idx[idx.length - 1]].fine; l.ore = '';
+    }
+    chiama('salvaLezione', l).then(dopoPlanning('Spostata'));
+    return;
+  }
+  if (!x.classe.id) { chiama('salvaPlanning', [{id: x.id, data: g, ora_inizio: o.inizio, ora_fine: o.fine, tipo: x.tipo, insegnante: ins, aula: x.aula, classe: '', testo: x.testo, conta: x.conta ? 'sì' : 'no'}]).then(dopoPlanning('Spostata')); return; }
+  var righe = righeClasse(x.classe.id, g);
+  if (o.inizio !== x.inizio && righe.some(function (y) { return y.ora_inizio === o.inizio; })) { avviso('Questa classe ha già lezione a quell’ora', true); return; }
+  righe.forEach(function (y) { if (y.ora_inizio === x.inizio) Object.assign(y, {insegnante: ins, ora_inizio: o.inizio, ora_fine: o.fine}); });
+  chiama('salvaPlanning', righe).then(dopoPlanning('Spostata'));
+}
+function copiaSettimana(lun) {
+  var d = dialogo('Copia la settimana', '<p>Copia le caselle cambiate a mano (insegnante, aula, ora delle classi) da una settimana all’altra. Quello che nessuno ha cambiato segue già l’orario della classe.</p><div class="campi">' +
+    campo('cp-da', 'Dal lunedì', piu(lun, -7), 'date') + campo('cp-a', 'Al lunedì', lun, 'date') + '</div>' +
+    '<label class="checks" style="margin:10px 0"><input type="checkbox" id="cp-testi" checked> Anche le altre lezioni (quelle con un testo)</label>' +
+    '<p class="tenue piccolo">Non copia note, pause e assenze, né le lezioni individuali (si pianificano dal corso). Salta i giorni di chiusura, le classi finite e quelle che nel giorno nuovo hanno già le loro caselle.</p>',
+    '<button class="b p" id="cp-ok">Copia</button>');
+  $('#cp-ok', d).onclick = function () {
+    chiama('copiaPlanning', lunedi($('#cp-da', d).value), lunedi($('#cp-a', d).value), $('#cp-testi', d).checked).then(function (r) {
+      d.close(); disegna(); avviso('Copiate ' + r.copiate + ' caselle' + (r.saltate ? ', saltate ' + r.saltate : ''));
+    });
+  };
+}
+function dopoPlan(g) {
+  $$('[data-vaig]').forEach(function (b) { b.onclick = function () { U.calGiorno = b.getAttribute('data-vaig'); disegna(); }; });
+  $('#pcopia').onclick = function () { copiaSettimana(lunedi(g)); };
+  $$('[data-oreins]').forEach(function (b) { b.onclick = function () { U.oreIns = b.getAttribute('data-oreins'); U.calSett = lunedi(g); U.calVista = 'ore'; disegna(); }; });
+  $$('[data-pausa]').forEach(function (b) { b.onchange = function () {
+    var n = b.getAttribute('data-pausa'), p = pausaDi(n, g);
+    (p ? chiama('eliminaPlanning', [p.id]) : chiama('salvaPlanning', [{data: g, tipo: 'pausa', insegnante: n}])).then(function () { disegna(); });
+  }; });
+  var tutte = caselle(g), preso = null;
+  $$('.plan [data-cas]').forEach(function (b) {
+    var x = tutte[+b.getAttribute('data-cas')];
+    b.onclick = function (e) { if (e.target.closest('[data-stud],[data-nota]')) return; e.stopPropagation(); finestraCasella(x, g); };
+    b.onkeydown = function (e) { if (e.key === 'Enter' && e.target === b) finestraCasella(x, g); };
+    b.addEventListener('dragstart', function (e) { preso = x; e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', 'casella'); } catch (err) {} b.classList.add('preso'); });
+    b.addEventListener('dragend', function () { preso = null; b.classList.remove('preso'); $$('.sopra').forEach(function (z) { z.classList.remove('sopra'); }); });
+  });
+  $$('.plan .pcella').forEach(function (td) {
+    var ins = td.getAttribute('data-ins'), n = +td.getAttribute('data-ora');
+    td.onclick = function (e) { if (e.target === td || e.target.classList.contains('paggiungi')) nuovaCasella(ins, g, n); };
+    td.addEventListener('dragover', function (e) { if (preso) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; td.classList.add('sopra'); } });
+    td.addEventListener('dragleave', function () { td.classList.remove('sopra'); });
+    td.addEventListener('drop', function (e) { e.preventDefault(); td.classList.remove('sopra'); var x = preso; preso = null; if (x && x.inizio) spostaCasella(x, g, ins, orari()[n]); });
+  });
+}
+
+/* ---------- ORE DEGLI INSEGNANTI ---------- */
+function oreTesto(n) { var m = n * 50; return Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + m % 60 + '′' : ''); }
+function calOre() {
+  var lun = U.calSett || lunedi(D.oggi), giorni = [0, 1, 2, 3, 4, 5, 6].map(function (i) { return piu(lun, i); });
+  var m1 = lun.slice(0, 8) + '01';
+  if (U.oreMese) m1 = U.oreMese + '-01';
+  var m2 = piu(isoDa(new Date(Date.UTC(+m1.slice(0, 4), +m1.slice(5, 7), 1))), -1), sett = [], s;
+  for (s = lunedi(m1); s <= m2; s = piu(s, 7)) sett.push(s);
+  var ins = insegnanti(lunedi(m1) < lun ? lunedi(m1) : lun, m2 > piu(lun, 6) ? m2 : piu(lun, 6));
+  var dom = giorni.some(function (g) { return dataDa(g).getUTCDay() === 0 && ins.some(function (n) { return lezioniIns(n, g); }); });
+  if (!dom) giorni.pop();
+  var h = '<div class="barra"><button class="b" id="cprec">‹</button><button class="b" id="coggi">Questa settimana</button><button class="b" id="csucc">›</button><b>' + gg(lun) + ' – ' + gg(piu(lun, 5)) + '</b><span class="spazio"></span>' + tastiVista() + '<button class="b" onclick="window.print()">Stampa</button></div>';
+  if (!ins.length) return h + '<div class="card">Scrivi gli insegnanti in <button class="l" data-s="impostazioni">Impostazioni</button>.</div>';
+  h += '<h2>Lezioni della settimana <span class="tenue piccolo">di 50 minuti</span></h2><div class="scroll"><table class="oretab"><thead><tr><th>Insegnante</th>' + giorni.map(function (g) { return '<th>' + ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'][dataDa(g).getUTCDay()] + ' ' + gg(g) + '</th>'; }).join('') + '<th>Totale</th><th>Ore</th></tr></thead><tbody>' +
+    ins.map(function (n) {
+      var t = 0;
+      return '<tr><td><button class="l" data-oreins="' + esc(n) + '">' + esc(n) + '</button></td>' + giorni.map(function (g) {
+        var k = lezioniIns(n, g); t += k;
+        return '<td>' + (k || '<span class="tenue">–</span>') + (pausaDi(n, g) ? ' <span class="tag err">PAUSA</span>' : '') + (assenteIl(n, g, '') ? ' <span class="tag att">non può</span>' : '') + '</td>';
+      }).join('') + '<td><b>' + t + '</b></td><td class="tenue">' + oreTesto(t) + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+  var mesi = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+  h += '<h2 style="margin-top:22px">' + mesi[+m1.slice(5, 7) - 1] + ' ' + m1.slice(0, 4) + ' <input type="month" id="oremese" class="no-stampa" value="' + m1.slice(0, 7) + '"></h2><div class="scroll"><table class="oretab"><thead><tr><th>Insegnante</th>' + sett.map(function (x) { var p = x < m1 ? m1 : x, u = piu(x, 6) > m2 ? m2 : piu(x, 6); return '<th>' + gg(p) + (u > p ? ' – ' + gg(u) : '') + '</th>'; }).join('') + '<th>Totale</th><th>Ore</th><th>Fino a oggi</th></tr></thead><tbody>' +
+    ins.map(function (n) {
+      var t = 0, fatte = 0;
+      return '<tr><td>' + esc(n) + '</td>' + sett.map(function (x) {
+        var k = 0, i, g, q;
+        for (i = 0; i < 7; i++) { g = piu(x, i); if (g < m1 || g > m2) continue; q = lezioniIns(n, g); k += q; if (g <= D.oggi) fatte += q; }
+        t += k;
+        return '<td>' + (k || '<span class="tenue">–</span>') + '</td>';
+      }).join('') + '<td><b>' + t + '</b></td><td class="tenue">' + oreTesto(t) + '</td><td>' + fatte + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+  var sel = ins.indexOf(U.oreIns) >= 0 ? U.oreIns : ins[0];
+  h += '<h2 style="margin-top:22px">Dettaglio della settimana <select id="oreins" class="no-stampa">' + ins.map(function (n) { return '<option' + (n === sel ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('') + '</select> <span class="tag">' + esc(sel) + ': ' + giorni.reduce(function (t, g) { return t + lezioniIns(sel, g); }, 0) + ' lezioni</span></h2>' +
+    '<div class="scroll"><table><thead><tr><th>Giorno</th><th>Lezioni</th><th>Cosa</th></tr></thead><tbody>' + giorni.map(function (g) {
+      var b = blocchi(caselle(g).filter(function (x) { return x.ins === sel && eLezione(x); }));
+      return '<tr><td><button class="l" data-vaiplan="' + g + '">' + giornoSett(g) + ' ' + gg(g) + '</button></td><td><b>' + lezioniIns(sel, g) + '</b>' + (pausaDi(sel, g) ? ' <span class="tag err">PAUSA</span>' : '') + '</td><td>' +
+        (b.map(function (x) { return '<div>' + esc(x.inizio + '–' + x.fine) + ' · ' + esc(x.classe.id ? x.classe.nome : x.testo) + (x.aula ? ' · ' + esc(x.aula) : '') + ' <span class="tenue">' + (x.conta ? x.n + ' lez.' : x.lez && x.lez.stato === 'annullata' ? 'annullata' : 'non conta') + '</span></div>'; }).join('') || '<span class="tenue">–</span>') + '</td></tr>';
+    }).join('') + '</tbody></table></div><p class="tenue piccolo">Si contano le caselle del planning: classi, lezioni individuali (anche quelle perse dallo studente, non le annullate) e le altre lezioni, una per ogni 50 minuti. La pausa si segna ma non si conta. Le attività della colonna “Attività” non si contano.</p>';
+  return h;
+}
+function dopoOre() {
+  var lun = U.calSett || lunedi(D.oggi);
+  $('#cprec').onclick = function () { U.calSett = piu(lun, -7); U.oreMese = ''; disegna(); };
+  $('#csucc').onclick = function () { U.calSett = piu(lun, 7); U.oreMese = ''; disegna(); };
+  $('#coggi').onclick = function () { U.calSett = null; U.oreMese = ''; disegna(); };
+  if ($('#oremese')) $('#oremese').onchange = function () { U.oreMese = this.value; disegna(); };
+  if ($('#oreins')) $('#oreins').onchange = function () { U.oreIns = this.value; disegna(); };
+  $$('[data-oreins]').forEach(function (b) { b.onclick = function () { U.oreIns = b.getAttribute('data-oreins'); disegna(); }; });
+  $$('[data-vaiplan]').forEach(function (b) { b.onclick = function () { U.calGiorno = b.getAttribute('data-vaiplan'); U.calVista = 'planning'; disegna(); }; });
+}
+function tastiVista() {
+  return '<span class="tasti">' + [['planning', 'Planning'], ['giorno', 'Aule'], ['settimana', 'Settimana'], ['ore', 'Ore insegnanti']].map(function (v) { return '<button class="b' + (U.calVista === v[0] ? ' p' : '') + '" data-vista="' + v[0] + '">' + v[1] + '</button>'; }).join('') + '</span>';
+}
+
+/* ---------- DAL PLANNING AL REGISTRO ---------- */
+/* Le lezioni in programma un giorno (una riga per classe e insegnante), con la pagina del registro se c'è già. */
+function daRegistrare(g, classe) {
+  var usate = {};
+  return blocchi(caselle(g).filter(function (x) { return x.classe.id && (!classe || x.classe.id === classe); })).map(function (b) {
+    var l = b.lez || D.registro.filter(function (y) {
+      if (usate[y.id] || y.classe !== b.classe.id || y.data !== g) return false;
+      if (y.ora_inizio && y.ora_fine && b.inizio && b.fine) return aMin(y.ora_inizio) < aMin(b.fine) && aMin(b.inizio) < aMin(y.ora_fine);
+      return !y.insegnante || !b.ins || y.insegnante === b.ins;
+    })[0];
+    if (l) usate[l.id] = true;
+    return {b: b, l: l, scritta: !!l && l.stato !== 'prevista'};
+  });
+}
+function scriviRegistro(b, g) {
+  lezione(null, b.classe.id, null, {data: g, ora_inizio: b.inizio, ora_fine: b.fine, orario: '', aula: /^online$/i.test(b.aula) ? '' : b.aula, insegnante: b.ins, ore: ''});
+}
+function registroGiorno() {
+  var g = U.regGiorno || D.oggi, l = daRegistrare(g).sort(function (a, b) { return a.b.inizio < b.b.inizio ? -1 : 1; });
+  var h = '<div class="barra"><button class="b" id="rgprec">‹</button><button class="b" id="rgoggi">Oggi</button><button class="b" id="rgsucc">›</button><input type="date" id="rggiorno" value="' + g + '"><b>' + ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'][dataDa(g).getUTCDay()] + ' ' + gg(g) + '</b>' +
+    '<span class="tenue">' + l.filter(function (x) { return x.scritta; }).length + ' scritte su ' + l.length + '</span></div>' + (chiusura(g) ? '<div class="chiuso">Scuola chiusa: ' + esc(chiusura(g).nome) + '</div>' : '');
+  return h + '<div class="scroll"><table><thead><tr><th>Ora</th><th>Classe</th><th>Insegnante</th><th>Aula</th><th>Lezioni</th><th>Registro</th></tr></thead><tbody>' + (l.map(function (x, i) {
+    return '<tr><td>' + esc(x.b.inizio ? x.b.inizio + '–' + x.b.fine : 'senza orario') + '</td><td><button class="l" data-regclasse="' + esc(x.b.classe.id) + '">' + esc(x.b.classe.nome) + '</button></td><td>' + (esc(x.b.ins) || '<span class="tag att">manca</span>') + '</td><td>' + esc(x.b.aula) + '</td><td>' + x.b.n + '</td><td>' +
+      (x.scritta ? '<button class="b piccolo" data-rapri="' + esc(x.l.id) + '">' + (x.l.stato === 'annullata' ? 'annullata' : 'Apri') + '</button> <span class="tenue piccolo">' + esc([x.l.volume, x.l.novita].filter(String).join(' · ').slice(0, 80)) + '</span>'
+        : g > D.oggi ? '<span class="tenue">in programma</span>' : '<button class="b p piccolo" data-rscrivi="' + i + '">Scrivi</button>') + '</td></tr>';
+  }).join('') || '<tr><td colspan="6" class="vuoto-msg">Nessuna lezione in programma.</td></tr>') + '</tbody></table></div>';
+}
+function dopoRegistroGiorno() {
+  var g = U.regGiorno || D.oggi, l = daRegistrare(g).sort(function (a, b) { return a.b.inizio < b.b.inizio ? -1 : 1; });
+  $('#rgprec').onclick = function () { U.regGiorno = piu(g, dataDa(g).getUTCDay() === 1 ? -2 : -1); disegna(); };
+  $('#rgsucc').onclick = function () { U.regGiorno = piu(g, dataDa(g).getUTCDay() === 6 ? 2 : 1); disegna(); };
+  $('#rgoggi').onclick = function () { U.regGiorno = ''; disegna(); };
+  $('#rggiorno').onchange = function () { if (this.value) { U.regGiorno = this.value; disegna(); } };
+  $$('[data-regclasse]').forEach(function (b) { b.onclick = function () { U.classeReg = b.getAttribute('data-regclasse'); disegna(); }; });
+  $$('[data-rapri]').forEach(function (b) { b.onclick = function () { var x = lezioneDaId(b.getAttribute('data-rapri')); lezione(x.id, x.classe); }; });
+  $$('[data-rscrivi]').forEach(function (b) { b.onclick = function () { var x = l[+b.getAttribute('data-rscrivi')]; if (x.l) lezione(x.l.id, x.l.classe); else scriviRegistro(x.b, g); }; });
+}
+/* Le lezioni di una classe degli ultimi 14 giorni che nel registro non ci sono ancora. */
+function nonScritte(c) {
+  var r = [], g;
+  for (g = piu(D.oggi, -14); g <= D.oggi; g = piu(g, 1)) if (g >= c.inizio && g <= c.fine) daRegistrare(g, c.id).forEach(function (x) { if (!x.scritta) r.push({g: g, b: x.b, l: x.l}); });
+  return r;
+}
+
 /* ---------- REGISTRO ---------- */
 var COL_REG = [['volume', 'Volume/Capitolo'], ['novita', 'Novità'], ['ascolto', 'Attività ascolto'], ['lettura', 'Attività lettura'], ['scritta', 'Attività prod. scritta'], ['orale', 'Attività prod. orale'], ['ripetuto', 'Ripetuto'], ['da_ripetere', 'Da ripetere'], ['note', 'Note']];
 VISTE.registro = function () {
   // Prima le classi in corso oggi, poi le future, poi le finite.
   var ordine = function (c) { return c.inizio <= D.oggi && c.fine >= D.oggi ? 0 : c.inizio > D.oggi ? 1 : 2; };
   var cl = D.classi.slice().sort(function (a, b) { return ordine(a) - ordine(b) || (a.inizio < b.inizio ? 1 : -1); });
-  if (!U.classeReg || !CLA[U.classeReg]) U.classeReg = cl.length ? cl[0].id : '';
-  var h = '<div class="barra"><select id="rclasse">' + cl.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === U.classeReg ? ' selected' : '') + '>' + esc(c.nome) + ' (' + gg(c.inizio) + '–' + gg(c.fine) + ')</option>'; }).join('') + '</select>' +
-    '<span class="spazio"></span><button class="b" onclick="window.print()">Stampa</button><button class="b p" id="nuovalez">Nuova lezione</button></div>';
+  if (!U.classeReg || (U.classeReg !== '*' && !CLA[U.classeReg])) U.classeReg = cl.length ? '*' : '';
+  var h = '<div class="barra"><select id="rclasse"><option value="*"' + (U.classeReg === '*' ? ' selected' : '') + '>Un giorno, tutte le classi</option>' + cl.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === U.classeReg ? ' selected' : '') + '>' + esc(c.nome) + ' (' + gg(c.inizio) + '–' + gg(c.fine) + ')</option>'; }).join('') + '</select>' +
+    '<span class="spazio"></span><button class="b" onclick="window.print()">Stampa</button>' + (U.classeReg === '*' ? '' : '<button class="b p" id="nuovalez">Nuova lezione</button>') + '</div>';
+  if (U.classeReg === '*') return h + registroGiorno();
   if (!U.classeReg) return h + '<div class="vuoto-msg">Crea prima una classe in Classi.</div>';
   var c = CLA[U.classeReg];
   // Il filtro per date: vale per le lezioni elencate e per le presenze.
@@ -988,16 +1484,18 @@ VISTE.registro = function () {
   var lez = D.registro.filter(function (l) { return l.classe === c.id && nelPeriodo(l.data); }).sort(perDataOra);
   var evCl = D.eventi.filter(function (e) { return classiEv(e).indexOf(c.id) >= 0 && nelPeriodo(e.dal); });
   lez = lez.concat(evCl.map(function (e) { return {evento: e, data: e.dal, ora_inizio: orarioDi(e.ora)[0] || e.ora}; })).sort(perDataOra);
-  var lun = lunedi(D.oggi);
+  var mancano = nonScritte(c);
+  if (mancano.length) h += '<div class="card no-stampa"><b>Da scrivere</b> <span class="tenue piccolo">lezioni degli ultimi 14 giorni che nel registro non ci sono</span><div class="checks" style="margin-top:6px">' + mancano.map(function (x, i) {
+    return '<button class="b piccolo" data-manca="' + i + '">' + giornoSett(x.g) + ' ' + gg(x.g) + ', ' + esc(x.b.inizio + '–' + x.b.fine) + (x.b.ins ? ' · ' + esc(x.b.ins) : '') + '</button>'; }).join('') + '</div></div>';
   h += '<div class="barra no-stampa"><span class="tenue">Periodo:</span> dal <input type="date" id="rdal" value="' + esc(fd) + '"> al <input type="date" id="ral" value="' + esc(fa) + '">' +
     '<button class="b piccolo" data-per="sett">Questa settimana</button><button class="b piccolo" data-per="prec">Settimana scorsa</button><button class="b piccolo" data-per="mese">Questo mese</button><button class="b piccolo" data-per="">Tutto</button></div>';
-  h += '<h2>Registro: ' + esc(c.nome) + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Ore</th>' + COL_REG.map(function (k) { return '<th>' + k[1] + '</th>'; }).join('') + '<th>Assenti</th></tr></thead><tbody>' +
+  h += '<h2>Registro: ' + esc(c.nome) + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h2><div class="scroll"><table><thead><tr><th>Data</th><th>Ore</th><th>Lez.</th>' + COL_REG.map(function (k) { return '<th>' + k[1] + '</th>'; }).join('') + '<th>Assenti</th></tr></thead><tbody>' +
     (lez.map(function (l) {
-      if (l.evento) return '<tr class="cl" data-evreg="' + esc(l.evento.id) + '"><td>' + ggA(l.data) + '</td><td colspan="11"><span class="tag ev">' + esc(l.evento.nome) + '</span> ' + esc(l.evento.ora || 'orario da decidere') + (l.evento.luogo ? ' · ' + esc(l.evento.luogo) : '') + (l.evento.responsabile ? ' · ' + esc(l.evento.responsabile) : '') + '</td></tr>';
+      if (l.evento) return '<tr class="cl" data-evreg="' + esc(l.evento.id) + '"><td>' + ggA(l.data) + '</td><td colspan="12"><span class="tag ev">' + esc(l.evento.nome) + '</span> ' + esc(l.evento.ora || 'orario da decidere') + (l.evento.luogo ? ' · ' + esc(l.evento.luogo) : '') + (l.evento.responsabile ? ' · ' + esc(l.evento.responsabile) : '') + '</td></tr>';
       var ass = String(l.assenti || '').split(/\s*,\s*/).filter(String).map(function (i) { return ISC[i] ? ISC[i].nome : i; }).join(', ');
-      return '<tr class="cl" data-lez="' + esc(l.id) + '"><td>' + ggA(l.data) + '<div class="tenue piccolo">' + esc([l.orario, l.aula].filter(String).join(' · ')) + '</div>' + ((l.stato || 'fatta') !== 'fatta' ? statoLez(l.stato) : '') + '</td><td>' + esc(l.ore) + '</td>' +
+      return '<tr class="cl" data-lez="' + esc(l.id) + '"><td>' + ggA(l.data) + '<div class="tenue piccolo">' + esc([l.orario, l.aula, l.insegnante].filter(String).join(' · ')) + '</div>' + ((l.stato || 'fatta') !== 'fatta' ? statoLez(l.stato) : '') + '</td><td>' + esc(l.ore) + '</td><td>' + (quanteLez(l.ora_inizio, l.ora_fine) || '') + '</td>' +
         COL_REG.map(function (k) { return '<td style="white-space:pre-wrap">' + esc(l[k[0]]) + '</td>'; }).join('') + '<td>' + esc(ass) + '</td></tr>';
-    }).join('') || '<tr><td colspan="12" class="vuoto-msg">Nessuna lezione. Premi “Nuova lezione”.</td></tr>') + '</tbody></table></div>';
+    }).join('') || '<tr><td colspan="13" class="vuoto-msg">Nessuna lezione. Premi “Nuova lezione”.</td></tr>') + '</tbody></table></div>';
   var ass = assDiClasse(c.id).filter(function (a) { return ISC[a.iscrizione]; });
   ass = ass.filter(function (a) { return (!fd || a.al >= fd) && (!fa || a.dal <= fa); });
   if (ass.length) h += '<h3>Presenze' + (fd || fa ? ' <span class="tenue piccolo">' + (fd ? 'dal ' + ggA(fd) : '') + (fa ? ' al ' + ggA(fa) : '') + '</span>' : '') + '</h3><div class="scroll"><table><thead><tr><th>Studente</th><th>In classe</th><th>Ore frequentate</th><th>Lezioni</th><th>Assenze</th></tr></thead><tbody>' + ass.map(function (a) {
@@ -1022,6 +1520,8 @@ DOPO.registro = function () {
       disegna();
     }; });
   }
+  if (U.classeReg === '*') { dopoRegistroGiorno(); return; }
+  if (CLA[U.classeReg]) { var mancano = nonScritte(CLA[U.classeReg]); $$('[data-manca]').forEach(function (b) { b.onclick = function () { var x = mancano[+b.getAttribute('data-manca')]; if (x.l) lezione(x.l.id, x.l.classe); else scriviRegistro(x.b, x.g); }; }); }
   $('#nuovalez').onclick = function () { if (U.classeReg) lezione(null, U.classeReg); };
   $$('[data-lez]').forEach(function (r) { r.onclick = function () { lezione(r.getAttribute('data-lez'), U.classeReg); }; });
   $$('[data-evreg]').forEach(function (r) { r.onclick = function () { evento(r.getAttribute('data-evreg')); }; });
@@ -1085,18 +1585,19 @@ function finestraRecupero(lid, annullare, dopo) {
   };
 }
 
-function lezione(id, classeId, dopo) {
+function lezione(id, classeId, dopo, pronta) {
   var c = CLA[classeId];
   var prec = D.registro.filter(function (l) { return l.classe === c.id; }).sort(perDataOra).slice(-1)[0];
   var o = orarioDi(c.orario);
   var l = id ? lezioneDaId(id) : {data: D.oggi, ora_inizio: (prec && prec.ora_inizio) || o[0], ora_fine: (prec && prec.ora_fine) || o[1], orario: (prec && prec.orario) || c.orario,
     ore: '', aula: (prec && prec.aula) || c.aula, insegnante: (prec && prec.insegnante) || c.insegnante, assenti: '', stato: privato(c) ? 'prevista' : 'fatta'};
+  if (pronta) Object.keys(pronta).forEach(function (k) { l[k] = pronta[k]; });
   var stato = l.stato || 'fatta', cambiato = false;
   if (id && stato === 'prevista' && l.data <= D.oggi) { stato = 'fatta'; cambiato = true; }
   var assenti = String(l.assenti || '').split(/\s*,\s*/);
   var corpo = (cambiato ? '<p class="tag att">Era “prevista”: salvando diventa “fatta”. Cambia lo stato se non si è fatta.</p>' : '') +
     '<div class="campi">' + campo('l-data', 'Data', l.data, 'date') + campo('l-inizio', 'Ora inizio', l.ora_inizio, 'time') + campo('l-fine', 'Ora fine', l.ora_fine, 'time') +
-    campo('l-ore', 'Ore di lezione', l.ore, 'number', ' step="0.25" min="0" max="12"') + scelta('l-aula', 'Aula', l.aula, [''].concat(aule())) + campo('l-insegnante', 'Insegnante', l.insegnante) +
+    campo('l-ore', 'Ore di lezione', l.ore, 'number', ' step="any" min="0" max="12"') + scelta('l-aula', 'Aula', l.aula, scelteAule(l.aula)) + campo('l-insegnante', 'Insegnante', l.insegnante, 'text', ' list="dl-ins"') + datiInsegnanti() +
     scelta('l-stato', 'Stato', stato, D.stati_lezione) +
     campo('l-link', 'Link Zoom di questa lezione' + (online(c) && c.link ? ' (vuoto = quello del corso)' : ''), l.link, 'url', ' placeholder="' + esc(online(c) ? c.link : 'https://…') + '"') +
     COL_REG.map(function (k) { return '<label' + (k[0] === 'note' ? ' class="largo"' : '') + '>' + k[1] + '<textarea id="l-' + k[0] + '" style="min-height:44px">' + esc(l[k[0]]) + '</textarea></label>'; }).join('') + '</div>' +
@@ -1109,7 +1610,7 @@ function lezione(id, classeId, dopo) {
   }
   function ore() {
     var a = $('#l-inizio', d).value, b = $('#l-fine', d).value;
-    if (a && b && aMin(b) > aMin(a)) $('#l-ore', d).value = Math.round((aMin(b) - aMin(a)) / 15) / 4;
+    if (a && b && aMin(b) > aMin(a)) $('#l-ore', d).value = Math.round((aMin(b) - aMin(a)) * 100 / 60) / 100;
   }
   studenti(); if (!l.ore) ore();
   $('#l-data', d).onchange = studenti;
@@ -1537,7 +2038,8 @@ VISTE.impostazioni = function () {
   var i = D.impostazioni;
   return '<div class="card"><h3 style="margin-top:0">Staff e aule</h3><div class="campi">' +
     campo('i-staff', 'Email dello staff che può aprire il gestionale (separate da virgola)', i.staff, 'textarea') +
-    campo('i-aule', 'Aule (separate da virgola)', i.aule) + campo('i-url_gestionale', 'Link di questo gestionale (per il menu del foglio e il riepilogo)', i.url_gestionale) +
+    campo('i-aule', 'Aule (separate da virgola)', i.aule) + campo('i-insegnanti', 'Insegnanti, nell’ordine delle colonne del planning (separati da virgola)', i.insegnanti) +
+    campo('i-lezioni', 'Ore delle lezioni (separate da virgola; un vuoto fino a 30 minuti è la PAUSA)', i.lezioni) + campo('i-url_gestionale', 'Link di questo gestionale (per il menu del foglio e il riepilogo)', i.url_gestionale) +
     campo('i-url_sito', 'Indirizzo del sito (da qui si leggono chiusure e laboratori)', i.url_sito) + '</div></div>' +
     '<div class="card"><h3 style="margin-top:0">Modelli di diploma e attestato</h3><p class="tenue piccolo">Un Documento o una Presentazione Google (per un diploma grafico, orizzontale, meglio una Presentazione). Se il modello è in Word o PowerPoint: caricalo su Drive, aprilo con Google e scegli File → Salva come Documenti/Presentazioni Google. Poi incolla qui il link. Scrivi i campi tra doppie graffe: {{nome}} {{cognome}} {{periodo}} {{livello}} {{corso}} {{ore}} {{data}} {{numero}}…</p><div class="campi">' +
     campo('i-modello_diploma', 'Link del modello del diploma', i.modello_diploma ? 'https://drive.google.com/open?id=' + i.modello_diploma : '') +
@@ -1553,7 +2055,7 @@ VISTE.impostazioni = function () {
 DOPO.impostazioni = function () {
   $('#i-salva').onclick = function () {
     var o = {};
-    ['staff', 'aule', 'url_gestionale', 'url_sito', 'modello_diploma', 'modello_attestato', 'fic_token'].forEach(function (k) { o[k] = $('#i-' + k).value.trim(); });
+    ['staff', 'aule', 'insegnanti', 'lezioni', 'url_gestionale', 'url_sito', 'modello_diploma', 'modello_attestato', 'fic_token'].forEach(function (k) { o[k] = $('#i-' + k).value.trim(); });
     chiama('salvaImpostazioni', o).then(function () { avviso('Impostazioni salvate'); disegna(); });
   };
   $('#im-vedi').onclick = function () {

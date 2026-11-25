@@ -47,6 +47,15 @@ var SCHEMI = {
 SCHEMI.Eventi = [['id', 'ID'], ['tipo', 'Tipo'], ['nome', 'Nome'], ['nome_en', 'Nome (inglese)'], ['dal', 'Dal'], ['al', 'Al'],
   ['ora', 'Orario'], ['luogo', 'Luogo'], ['responsabile', 'Chi lo segue'], ['posti', 'Posti'], ['note', 'Note'], ['origine', 'Origine'],
   ['per', 'Per chi'], ['classi', 'Classi']];
+/* Il planning: una riga per casella (una lezione di 50 minuti di un insegnante). Le lezioni di una classe di gruppo
+   in un giorno si prendono dall'orario della classe finché qualcuno non le cambia; da allora valgono queste righe.
+   tipo: lezione (di una classe o con un testo), vuota (la classe quel giorno non ha lezione a quell'ora), nota,
+   assente (l'insegnante non può: senza ora = tutto il giorno), pausa (la casella PAUSA). Le lezioni individuali stanno nel Registro. */
+SCHEMI.Planning = [['id', 'ID'], ['data', 'Data'], ['ora_inizio', 'Ora inizio'], ['ora_fine', 'Ora fine'], ['tipo', 'Tipo'],
+  ['insegnante', 'Insegnante'], ['aula', 'Aula'], ['classe', 'Classe'], ['testo', 'Testo'], ['conta', 'Conta nelle ore'], ['modificato', 'Modificato']];
+var TIPI_PLANNING = ['lezione', 'vuota', 'nota', 'assente', 'pausa'];
+/* Le ore si scrivono come testo: se no il foglio le trasforma in orari e rileggendole non sono più "09:00". */
+var CHIAVI_ORA = ['ora_inizio', 'ora_fine', 'ora', 'orario'];
 SCHEMI.Partecipanti = [['evento', 'Evento'], ['iscrizione', 'N. iscrizione']];
 var TIPI_EVENTO = [['chiusura', 'Chiusura'], ['laboratorio', 'Laboratorio'], ['attivita', 'Attività']];
 var TIPI_ALLOGGIO = [['singola', 'Camera singola'], ['singola_bagno', 'Camera singola con bagno'], ['doppia', 'Camera doppia'],
@@ -56,7 +65,8 @@ var CHIAVI_DATA = ['inizio', 'fine', 'dal', 'al', 'data', 'arrivo', 'partenza', 
 
 /* Le impostazioni che la pagina può leggere e cambiare (il token di Fatture in Cloud si scrive ma non si rilegge). */
 var IMPOSTAZIONI = {
-  staff: '', aule: 'Aula 1, Aula 2, Aula 3, Aula 4, Aula 5',
+  staff: '', aule: 'Biblioteca, Aula Magna, S.M. delle Rose, Segreteria, Terrazzino',
+  insegnanti: '', lezioni: '9:00–9:50, 9:50–10:40, 10:50–11:40, 11:40–12:30, 14:00–14:50, 14:50–15:40, 15:40–16:30, 16:30–17:20',
   modello_diploma: '', modello_attestato: '',
   fic_azienda: '',
   promemoria: 'no', promemoria_giorni: '7', dati_pagamento: '',
@@ -100,7 +110,8 @@ var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaCla
   'salvaLezione', 'eliminaLezione', 'creaPrivato', 'pianificaLezioni', 'mandaCalendario', 'mandaLink', 'annullaLezione', 'recuperaLezione',
   'creaDocumenti', 'sincronizzaFIC', 'abbinaFattura', 'mandaPromemoria', 'attivaInvii', 'emailClasse', 'salvaImpostazioni',
   'salvaAlloggio', 'eliminaAlloggio', 'prenotaAlloggio', 'togliSoggiorno', 'mandaAlloggio',
-  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento', 'datiProforma', 'creaProforma', 'anteprimaImport', 'importaVecchioFoglio'];
+  'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento', 'datiProforma', 'creaProforma', 'anteprimaImport', 'importaVecchioFoglio',
+  'salvaPlanning', 'eliminaPlanning', 'copiaPlanning'];
 
 function utente() {
   if (UTENTE) return UTENTE;
@@ -205,6 +216,7 @@ function puliziaSessioni() {
 function fusoOrario() { return SpreadsheetApp.getActive().getSpreadsheetTimeZone() || 'Europe/Rome'; }
 function iso(v) {
   if (!(v instanceof Date)) return v === null || v === undefined ? '' : v;
+  if (v.getFullYear() < 1901) return Utilities.formatDate(v, fusoOrario(), 'HH:mm');   // un orario, non un giorno
   return Utilities.formatDate(v, fusoOrario(), 'yyyy-MM-dd');
 }
 function isoOra(v) { return v instanceof Date ? Utilities.formatDate(v, fusoOrario(), 'yyyy-MM-dd HH:mm') : (v || ''); }
@@ -248,6 +260,7 @@ function leggi(nome) {
 function valoreCella(k, v) {
   if (v === undefined || v === null) return '';
   if (CHIAVI_DATA.indexOf(k) >= 0 && typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) return giorno(v);
+  if (CHIAVI_ORA.indexOf(k) >= 0 && typeof v === 'string' && /^\d/.test(v)) return "'" + v;
   return v;
 }
 
@@ -315,7 +328,7 @@ function carica() {
     iscrizioni: leggi('Iscrizioni'),
     classi: leggi('Classi'),
     assegnazioni: leggi('Assegnazioni'),
-    registro: leggi('Registro'),
+    registro: leggi('Registro'), planning: leggi('Planning'),
     fatture: leggi('Fatture'),
     promemoria: leggi('Promemoria').slice(-300),
     documenti: leggi('Documenti'),
@@ -417,6 +430,8 @@ function eliminaClasse(id) {
     if (r) scheda('Classi').deleteRow(r._r);
     leggi('Assegnazioni').filter(function (a) { return a.classe === id; }).reverse()
       .forEach(function (a) { scheda('Assegnazioni').deleteRow(a._r); });
+    leggi('Planning').filter(function (x) { return x.classe === id; }).reverse()
+      .forEach(function (x) { scheda('Planning').deleteRow(x._r); });
     return carica();
   });
 }
@@ -534,6 +549,91 @@ function salvaLezione(l) {
   });
 }
 
+/* ---------- PLANNING ---------- */
+
+/* Salva una o più caselle. Con l'id si cambia quella riga; per una classe c'è una riga sola per giorno e ora. */
+function salvaPlanning(righe) {
+  autorizzato();
+  if (!righe || !righe.length) throw new Error('Niente da salvare');
+  if (righe.length > 100) throw new Error('Troppe caselle insieme');
+  return conBlocco(function () {
+    var classi = {};
+    leggi('Classi').forEach(function (c) { classi[c.id] = true; });
+    var pronte = righe.map(function (x) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(x.data || '')) throw new Error('Data non valida');
+      if (TIPI_PLANNING.indexOf(x.tipo) < 0) throw new Error('Tipo non valido');
+      var o = {data: x.data, tipo: x.tipo, ora_inizio: ora(x.ora_inizio), ora_fine: ora(x.ora_fine), insegnante: testo(String(x.insegnante || '').trim(), 100),
+        aula: testo(String(x.aula || '').trim(), 100), classe: x.classe || '', testo: testo(String(x.testo || '').trim(), 1000), conta: x.conta === 'no' ? 'no' : 'sì', modificato: new Date()};
+      if ((o.tipo === 'lezione' || o.tipo === 'vuota') && (!o.ora_inizio || !o.ora_fine)) throw new Error('Manca l’ora');
+      if (o.ora_inizio && o.ora_fine && minuti(o.ora_fine) <= minuti(o.ora_inizio)) throw new Error('L’ora di fine viene prima dell’inizio');
+      if (o.classe && !classi[o.classe]) throw new Error('Classe non trovata');
+      if (o.tipo === 'lezione' && !o.classe && !o.testo) throw new Error('Scrivi la classe o un testo');
+      if (o.tipo === 'nota' && !o.testo) throw new Error('Scrivi la nota');
+      if ((o.tipo === 'assente' || o.tipo === 'pausa') && !o.insegnante) throw new Error('Manca l’insegnante');
+      if (o.tipo !== 'lezione') o.conta = 'no';
+      o.id = x.id || '';
+      return o;
+    });
+    var ci = leggi('Planning'), s = scheda('Planning'), nuove = [];
+    pronte.forEach(function (o) {
+      var r = ci.filter(function (y) { return o.id ? y.id === o.id : ((o.classe && y.classe === o.classe && y.data === o.data && y.ora_inizio === o.ora_inizio) ||
+        (o.tipo === 'pausa' && y.tipo === 'pausa' && y.data === o.data && y.insegnante === o.insegnante)); })[0];
+      if (o.id && !r) throw new Error('Casella non trovata: aggiorna la pagina');
+      o.id = r ? r.id : nuovoNumero('planning', 'P');
+      var riga = SCHEMI.Planning.map(function (c) { return valoreCella(c[0], o[c[0]]); });
+      if (r) s.getRange(r._r, 1, 1, riga.length).setValues([riga]);
+      else nuove.push(riga);
+    });
+    aggiungiRighe_(s, nuove);
+    return carica();
+  });
+}
+
+function aggiungiRighe_(s, nuove) {
+  if (!nuove.length) return;
+  righeBastanti(s, s.getLastRow() + nuove.length);
+  s.getRange(s.getLastRow() + 1, 1, nuove.length, nuove[0].length).setValues(nuove);
+}
+
+function eliminaPlanning(ids) {
+  autorizzato();
+  return conBlocco(function () {
+    var via = {}, s = scheda('Planning');
+    (ids || []).forEach(function (i) { via[i] = true; });
+    leggi('Planning').filter(function (x) { return via[x.id]; }).reverse().forEach(function (x) { s.deleteRow(x._r); });
+    return carica();
+  });
+}
+
+/* Copia le caselle della settimana che comincia il lunedì "da" in quella del lunedì "a". Non tocca i giorni di chiusura,
+   le classi finite o non cominciate, quelle che nel giorno nuovo hanno già le loro caselle e gli insegnanti che non possono.
+   Le lezioni con un testo si copiano solo con "testi"; note, assenze e pause mai. */
+function copiaPlanning(da, a, testi) {
+  autorizzato();
+  [da, a].forEach(function (g) { if (!/^\d{4}-\d{2}-\d{2}$/.test(g || '') || giorno(g).getDay() !== 1) throw new Error('Scegli due lunedì'); });
+  if (da === a) throw new Error('È la stessa settimana');
+  return conBlocco(function () {
+    var ci = leggi('Planning'), classi = {}, gia = {}, salti = giorniTra(da, a), nuove = [], saltate = 0;
+    var chiusure = leggi('Eventi').filter(function (e) { return e.tipo === 'chiusura'; });
+    leggi('Classi').forEach(function (c) { classi[c.id] = c; });
+    ci.forEach(function (x) { gia[x.classe ? x.classe + '|' + x.data : [x.data, x.ora_inizio, x.insegnante, x.testo].join('|')] = true; });
+    ci.filter(function (x) { return x.data >= da && x.data <= piuGiorni(da, 6) && (x.classe || (testi && x.tipo === 'lezione')); }).forEach(function (x) {
+      var g = piuGiorni(x.data, salti), c = classi[x.classe];
+      var assente = ci.some(function (y) { return y.tipo === 'assente' && y.data === g && y.insegnante === x.insegnante && (!y.ora_inizio || y.ora_inizio === x.ora_inizio); });
+      if (gia[x.classe ? x.classe + '|' + g : [g, x.ora_inizio, x.insegnante, x.testo].join('|')] || (x.classe && (!c || c.inizio > g || c.fine < g)) ||
+        chiusure.some(function (e) { return e.dal <= g && e.al >= g; })) { saltate++; return; }
+      var o = {id: nuovoNumero('planning', 'P'), data: g, ora_inizio: x.ora_inizio, ora_fine: x.ora_fine, tipo: x.tipo, insegnante: assente ? '' : x.insegnante, aula: x.aula,
+        classe: x.classe, testo: x.testo, conta: x.conta || 'sì', modificato: new Date()};
+      nuove.push(SCHEMI.Planning.map(function (k) { return valoreCella(k[0], o[k[0]]); }));
+    });
+    aggiungiRighe_(scheda('Planning'), nuove);
+    var d = carica();
+    d.copiate = nuove.length;
+    d.saltate = saltate;
+    return d;
+  });
+}
+
 function eliminaLezione(id) {
   autorizzato();
   return conBlocco(function () {
@@ -559,12 +659,18 @@ function estendiCorso(classe, dal, al) {
 }
 
 /* Un corso privato (o per due) per uno studente: la classe e l'assegnazione insieme. */
-function creaPrivato(iscrizione) {
+function creaPrivato(iscrizione, ancora) {
   autorizzato();
   return conBlocco(function () {
     var v = trova('Iscrizioni', 'id', iscrizione);
     if (!v) throw new Error('Iscrizione non trovata');
     var dal = v.inizio || oggiIso(), al = v.fine || piuGiorni(dal, 27);
+    if (!ancora) {
+      var privati = {};
+      leggi('Classi').forEach(function (c) { if (c.tipo === 'privato' && c.fine >= oggiIso()) privati[c.id] = c.nome; });
+      var gia = leggi('Assegnazioni').filter(function (a) { return a.iscrizione === v.id && privati[a.classe]; })[0];
+      if (gia) throw new Error(v.nome + ' ' + v.cognome + ' ha già un corso individuale: ' + privati[gia.classe]);
+    }
     var id = nuovoNumero('classi', 'C');
     var online = /online/i.test(String(v.corso_nome) + ' ' + String(v.formula) + ' ' + String(v.tema));
     aggiungi('Classi', {id: id, nome: (online ? 'Online – ' : 'Privato – ') + v.cognome + ' ' + v.nome, aula: '', livello: v.livello, insegnante: '',
