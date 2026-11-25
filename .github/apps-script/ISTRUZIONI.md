@@ -284,14 +284,17 @@ lezione nella settimana e gli studenti con la data di fine e il corso.
 - **Clic su una casella**: cambia insegnante, aula, ora, o toglila per quel giorno. Da allora quel giorno
   la classe segue il planning. **Torna all'orario della classe** annulla i cambi.
 - **Trascina** una casella su un altro insegnante o un'altra ora dello stesso giorno.
+- **Cambia gli studenti** di un gruppo: clic sulla sua casella → **Cambia gli studenti**, solo quel giorno o da lì in poi.
 - **Sposta uno studente**: trascina il suo nome su un'altra classe (o su **Senza classe**, sotto la griglia), o premi
   **⇄** accanto al nome (anche nella vista Aule). Scegli: solo quel giorno, da lì in poi, fino a una data. Negli
   altri giorni resta dov'era; registro e presenze di quei giorni seguono la classe nuova.
-- **Dalla scheda dello studente**, in **Giorno per giorno**: la sua settimana, con la classe e l'insegnante di ogni
-  giorno. La classe scelta vale per quel giorno (⇄ per più giorni). L'insegnante di una classe di gruppo cambia per
-  tutta la classe in quelle ore; quello di una lezione individuale solo per lo studente. **+ lezione**
+- **Dalla scheda dello studente**, in **Giorno per giorno**: la sua settimana, con classe, insegnante e aula di
+  ogni giorno. La classe scelta vale per quel giorno (⇄ per più giorni). Insegnante e aula di una classe di gruppo
+  cambiano per tutta la classe in quelle ore; quelli di una lezione individuale solo per lo studente. **+ lezione**
   aggiunge una lezione con il suo insegnante (e crea il corso individuale, se manca).
-- **+** in una casella libera: lezione di una classe (anche di sabato), lezione individuale, altra lezione
+- **+** in una casella libera: scegli insegnante, aula, ore e **spunta gli studenti**. Il gruppo si riconosce da solo
+  (se gli studenti sono quelli di un gruppo che c'è già) o nasce da solo, con un nome che puoi cambiare. Prima di
+  salvare si vede chi entra, chi esce e chi lascia un altro gruppo. Con “+” anche: lezione individuale, altra lezione
   (un testo, per esempio un progetto), nota, insegnante che non può (un'ora o tutto il giorno).
 - **Copia la settimana**: porta i cambi da una settimana all'altra.
 - Rosso: stesso insegnante o stessa aula nello stesso momento, o un insegnante che non può.
@@ -316,8 +319,9 @@ il registro. Un cambio nel planning vale più del registro.
     proposto e "Arrivano nei prossimi giorni" usano queste date.
   - Dopo questo aggiornamento lanciate **ALIA → Prepara il foglio** una volta: aggiunge le colonne
     nuove e rifà le formule di "Da pagare" con lo sconto.
-- **Classe**: in **Classi** crea la classe (aula, livello, insegnante, date). Mettici gli studenti
-  dalla classe stessa, dalla scheda dello studente, o dalla riga "Senza classe" del planning.
+- **Classe** (il gruppo di studenti): di solito nasce dal **Planning** con “+”. Si può creare anche in **Classi**:
+  bastano nome e date; insegnante, aula e ore li decide il planning. Con un orario fisso il planning si riempie da
+  solo. Mettici gli studenti dalla classe stessa, dalla scheda dello studente, o dalla riga "Senza classe" del planning.
   Uno studente può cambiare classe: nel planning **trascina il suo nome** su un'altra classe della stessa
   settimana (o su "Senza classe"). Lo sposta da quella settimana in poi (se è la settimana in corso, da
   oggi): prima resta nella classe di prima, con il suo registro.

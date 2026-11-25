@@ -111,7 +111,7 @@ var FUNZIONI_PAGINA = ['carica', 'salvaIscrizione', 'nuovaIscrizione', 'salvaCla
   'creaDocumenti', 'sincronizzaFIC', 'abbinaFattura', 'mandaPromemoria', 'attivaInvii', 'emailClasse', 'salvaImpostazioni',
   'salvaAlloggio', 'eliminaAlloggio', 'prenotaAlloggio', 'togliSoggiorno', 'mandaAlloggio',
   'importaDalSito', 'salvaEvento', 'eliminaEvento', 'iscriviEvento', 'emailEvento', 'datiProforma', 'creaProforma', 'anteprimaImport', 'importaVecchioFoglio',
-  'salvaPlanning', 'eliminaPlanning', 'copiaPlanning'];
+  'salvaPlanning', 'eliminaPlanning', 'copiaPlanning', 'gruppoGiorno'];
 
 function utente() {
   if (UTENTE) return UTENTE;
@@ -462,32 +462,87 @@ function spostaStudente(iscrizione, da, a, dal, al) {
   if (al && al < dal) throw new Error('La fine viene prima dell’inizio');
   if (!da && !a) throw new Error('Niente da spostare');
   if (da === a) throw new Error('È già in questa classe');
+  return conBlocco(function () { sposta_(iscrizione, da, a, dal, al); return carica(); });
+}
+/* Lo spostamento vero e proprio, dentro un blocco già preso. Con "prova" controlla soltanto. */
+function sposta_(iscrizione, da, a, dal, al, prova) {
+  var v = trova('Iscrizioni', 'id', iscrizione), s = scheda('Assegnazioni');
+  if (!v) throw new Error('Iscrizione non trovata');
+  if (a) {
+    var c = trova('Classi', 'id', a);
+    if (!c) throw new Error('Classe non trovata');
+    var inizio = [dal, v.inizio || dal, c.inizio].sort().pop(), fine = [al || '9999-12-31', v.fine || c.fine, c.fine].sort()[0];
+    if (fine < inizio) throw new Error('Dal ' + dataTesto(giorno(dal)) + ' lo studente non è più in corso o la classe è finita.');
+  }
+  if (prova) return;
+  var mie = function (classe) { return leggi('Assegnazioni').filter(function (x) { return x.iscrizione === iscrizione && x.classe === classe; }); };
+  var togli = function (righe) { righe.slice().sort(function (x, y) { return y._r - x._r; }).forEach(function (x) { s.deleteRow(x._r); }); };
+  if (da) {
+    var toccate = mie(da).filter(function (x) { return x.al >= dal && (!al || x.dal <= al); });
+    togli(toccate);
+    toccate.forEach(function (x) {
+      if (x.dal < dal) aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: da, dal: x.dal, al: piuGiorni(dal, -1)});
+      if (al && x.al > al) aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: da, dal: piuGiorni(al, 1), al: x.al});
+    });
+  }
+  if (a) {
+    var vicine = mie(a).filter(function (x) { return x.dal <= piuGiorni(fine, 1) && piuGiorni(x.al, 1) >= inizio; });
+    togli(vicine);
+    vicine.forEach(function (x) { if (x.dal < inizio) inizio = x.dal; if (x.al > fine) fine = x.al; });
+    aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: a, dal: inizio, al: fine});
+  }
+}
+
+/* Il gruppo di studenti di un giorno, dal planning: gli studenti spuntati e basta.
+   x: {gruppo (vuoto = nuovo), nome, data, al (vuoto = da lì in poi), studenti: [id], via: {id: classe da lasciare in quei giorni}}.
+   Un gruppo nuovo non ha orario, insegnante né aula fissi: li decide il planning. Restituisce i dati con "gruppo". */
+function gruppoGiorno(x) {
+  autorizzato();
+  x = x || {};
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(x.data || '') || (x.al && !/^\d{4}-\d{2}-\d{2}$/.test(x.al))) throw new Error('Data non valida');
+  if (x.al && x.al < x.data) throw new Error('La fine viene prima dell’inizio');
+  var chi = (x.studenti || []).filter(function (i, k, l) { return i && l.indexOf(i) === k; }), via = x.via || {};
+  if (!chi.length) throw new Error('Scegli almeno uno studente');
+  if (chi.length > 60) throw new Error('Troppi studenti');
   return conBlocco(function () {
-    var v = trova('Iscrizioni', 'id', iscrizione), s = scheda('Assegnazioni');
-    if (!v) throw new Error('Iscrizione non trovata');
-    if (a) {
-      var c = trova('Classi', 'id', a);
-      if (!c) throw new Error('Classe non trovata');
-      var inizio = [dal, v.inizio || dal, c.inizio].sort().pop(), fine = [al || '9999-12-31', v.fine || c.fine, c.fine].sort()[0];
-      if (fine < inizio) throw new Error('Dal ' + dataTesto(giorno(dal)) + ' lo studente non è più in corso o la classe è finita.');
+    var isc = {}, oggi = {};
+    leggi('Iscrizioni').forEach(function (v) { isc[v.id] = v; });
+    chi.forEach(function (i) {
+      var v = isc[i];
+      if (!v || v.stato === 'Annullata') throw new Error('Iscrizione non trovata: ' + i);
+      if ((v.inizio && v.inizio > x.data) || (v.fine && v.fine < x.data)) throw new Error(v.nome + ' ' + v.cognome + ' non è in corso il ' + dataTesto(giorno(x.data)));
+    });
+    var fine = x.al || chi.map(function (i) { return isc[i].fine || piuGiorni(x.data, 27); }).sort().pop(), id = x.gruppo, c;
+    if (id) {
+      c = trova('Classi', 'id', id);
+      if (!c || c.tipo === 'privato') throw new Error('Gruppo non trovato');
+      // Un gruppo senza orario si allunga se i suoi studenti restano di più.
+      var o = {};
+      if (!c.orario && fine > c.fine) o.fine = fine;
+      if (!c.orario && x.data < c.inizio) o.inizio = x.data;
+      if (o.fine || o.inizio) { aggiorna('Classi', c._r, o); c = trova('Classi', 'id', id); }
+      if (c.inizio > x.data || c.fine < x.data) throw new Error('Il gruppo ' + c.nome + ' non c’è in quel giorno');
+    } else {
+      var nome = testo(String(x.nome || '').trim(), 200) || 'Gruppo', base = nome, n = 2;
+      while (trova('Classi', 'nome', nome)) nome = base + ' ' + n++;
+      id = nuovoNumero('classi', 'C');
+      aggiungi('Classi', {id: id, nome: nome, aula: '', livello: testo(x.livello, 50), insegnante: '', inizio: x.data, fine: fine, orario: '', note: '', tipo: 'gruppo', modalita: 'in sede', link: ''});
     }
-    var mie = function (classe) { return leggi('Assegnazioni').filter(function (x) { return x.iscrizione === iscrizione && x.classe === classe; }); };
-    var togli = function (righe) { righe.slice().sort(function (x, y) { return y._r - x._r; }).forEach(function (x) { s.deleteRow(x._r); }); };
-    if (da) {
-      var toccate = mie(da).filter(function (x) { return x.al >= dal && (!al || x.dal <= al); });
-      togli(toccate);
-      toccate.forEach(function (x) {
-        if (x.dal < dal) aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: da, dal: x.dal, al: piuGiorni(dal, -1)});
-        if (al && x.al > al) aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: da, dal: piuGiorni(al, 1), al: x.al});
-      });
+    leggi('Assegnazioni').forEach(function (a) { if (a.classe === id && a.dal <= x.data && a.al >= x.data && isc[a.iscrizione] && isc[a.iscrizione].stato !== 'Annullata') oggi[a.iscrizione] = true; });
+    var mosse = chi.filter(function (i) { return !oggi[i]; }).map(function (i) { return [i, via[i] && via[i] !== id ? via[i] : '', id]; })
+      .concat(Object.keys(oggi).filter(function (i) { return chi.indexOf(i) < 0; }).map(function (i) { return [i, id, '']; }));
+    if (!x.gruppo) {   // in un gruppo nuovo chi non lascia un'altra classe entra con una scrittura sola
+      aggiungiRighe_(scheda('Assegnazioni'), mosse.filter(function (m) { return !m[1]; }).map(function (m) {
+        var o = {iscrizione: m[0], classe: id, dal: x.data, al: isc[m[0]].fine && isc[m[0]].fine < fine ? isc[m[0]].fine : fine};
+        return SCHEMI.Assegnazioni.map(function (k) { return valoreCella(k[0], o[k[0]]); });
+      }));
+      mosse = mosse.filter(function (m) { return m[1]; });
     }
-    if (a) {
-      var vicine = mie(a).filter(function (x) { return x.dal <= piuGiorni(fine, 1) && piuGiorni(x.al, 1) >= inizio; });
-      togli(vicine);
-      vicine.forEach(function (x) { if (x.dal < inizio) inizio = x.dal; if (x.al > fine) fine = x.al; });
-      aggiungi('Assegnazioni', {iscrizione: iscrizione, classe: a, dal: inizio, al: fine});
-    }
-    return carica();
+    mosse.forEach(function (m) { sposta_(m[0], m[1], m[2], x.data, x.al || '', true); });
+    mosse.forEach(function (m) { sposta_(m[0], m[1], m[2], x.data, x.al || ''); });
+    var r = carica();
+    r.gruppo = id;
+    return r;
   });
 }
 
